@@ -14,11 +14,15 @@ module Chingu
     # 
     # in Gosu::Window#initialize: Actor.center_x = Actor.center_y = 0
     #
+    @@zorder = 100
     @@center_x = 0.5
     @@center_y = 0.5
     @@factor_x = 1.0
     @@factor_y = 1.0
-    
+
+    def self.zorder; @@zorder; end
+    def self.zorder=(value); @@zorder = value; end
+
     def self.center_x; @@center_x; end
     def self.center_x=(value); @@center_x = value; end
 
@@ -53,7 +57,7 @@ module Chingu
       @x = options[:x] || 0
       @y = options[:y] || 0
       @angle = options[:angle] || 0
-      @zorder = options[:zorder] || 100
+      @zorder = options[:zorder] || @zorder
       @center_x = options[:center_x] || @@center_x
       @center_y = options[:center_y] || @@center_y
       @factor_x = options[:factor_x] || @@factor_x
