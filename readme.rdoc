@@ -1,4 +1,5 @@
 = CHINGU
+*** This is a early preview, alot of functionality is missing ***
 
 == DESCRIPTION
 Game framework built on top of the opengl accelerated gamelib Gosu. Chingu == Friend in korean.
