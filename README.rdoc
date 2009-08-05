@@ -21,12 +21,120 @@ By no means do I claim Chingu to be a "complete stack" for gamedev. Rather it's 
 While others has gone for very flexible systems with premade includable gamelogic and "behaivor"-modules Chingus core is pretty simple and minimalistic.
 
 == THE BASICS
-Gosu::Window ...
+
+You're probably familiar with this very common Gosu pattern:
+  
+  ROOT_PATH = File.dirname(File.expand_path(__FILE__))
+  class Game < Gosu::Window
+    def initialize
+      @player = Player.new
+    end
+    
+    def update
+      if button_down? Button::KbLeft
+				@player.left
+			elsif button_down? Button::KbRight
+				@player.right
+			end
+
+      @player.update      
+    end
+    
+    def draw
+      @player.draw
+    end
+  end
+  
+  class Player
+    attr_accessor :x,:y,:image
+    def initialize(options)
+      @x = options[:x]
+      @y = options[:y]
+      @image = Image.new(File.join(ROOT_PATH, "media", "player.png"))
+    end
+    
+    def move_left
+      @x -= 1
+    end
+    
+    def move_right
+      @x += 1
+    end
+    
+    def draw
+      @image.draw(@x,@y,100)
+    end
+  end
+  
+  Game.new.show   # Start the Game update/draw loop!
+
+
+Chingu doesn't change any fundamental concept of Gosu, but it will make the above code cleaner:
+  
+  #
+  # We use Chingu::Window instead of Gosu::Window
+  #
+  class Game < Chingu:Window
+    def initialize
+      #
+      # Player will automaticly be updated and drawn since it's a Chingu::Actor
+      # You'll need your own Game#update/#draw after a while, but just put #super there and Chingu can do its thing!
+      #
+      @player = Player.new
+      @player.keymap = {:left => :move_left, :right => :move_right}
+    end    
+  end
+    
+  #
+  # If we create classes from Chingu::Actor we get stuff for free.
+  # The accessors: image,x,y,zorder,angle,factor_x,factor_y,center_x,center_y,mode,update,draw
+  # You might regognize thoose from #draw_rot - http://www.libgosu.org/rdoc/classes/Gosu/Image.html#M000023
+  # And in it's core, that's what Chingu::Actor is, an encapsulation of draw_rot with some extra cheese.
+  # For eaxmple, we get automatic calls to draw/update with Chingu::Actor, which usually is what you want. 
+  # You could stop this by doing: @player = Player.new(:draw => false, :update => false)
+  #
+  class Player < Chingu::Actor
+    def initialize(options)
+      super(options.merge(:image => Image["player.png"])
+    end
+    
+    def move_left
+      @x -= 1
+    end
+    
+    def move_right
+      @x += 1
+    end    
+  end
+
+  Game.new.show   # Start the Game update/draw loop!
+  
+Roughly 50 lines became 25 more powerfull lines. (you can do @player.angle = 100 for example)
+
+If you've worked with Gosu for a while you're probably tired of passing around the window-argument.
+Chingu solves this (as many other developers) with a global variable $window. Yes, globals are bad, but in this case it kinda makes sense.
+It's used under the hood in various places.
+
+You might wonder why this is nessesary in the straight Gosu example:
+  ROOT_PATH = File.dirname(File.expand_path(__FILE__))
+  @image = Image.new(File.join(ROOT_PATH, "media", "player.png"))
+
+It enables you to start your game from any directory and it will still find your assets correctly.
+For a local developmentversion this might not be important, you're likely to start the game from the game root-dir.
+But as soon as you try to deploy (for example to windows with Ocra - http://github.com/larsch/ocra/tree/master) you'll run into trouble of you dont do it like that.
+ 
+Chingu solves this problem behind the scenes for the most common assets. The 2 lines above can be replaced with:
+Image["player.png"]
+You also have Sound["player.png"]
+
+Tiles and fonts are trickier since they require extra parameters so you'll have to do thoose the ordinary way.
+You'll get $window.root (equivalent to ROOT_PATH above) for free though which points to the dir containing the game.
+
 
 == WHY?
 * Plain gosu is very minimalistic
 * Deployment and assethandling should be simple
-* There is patterns in gamedevelopment
+* There are patterns in gamedevelopment
 
 == OPINIONS
 * Less code is usually better
