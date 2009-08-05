@@ -1,5 +1,5 @@
 = CHINGU
-This is a early preview, alot of functionality is missing
+This is a early preview, alot of functionality is missing 
 
 == DESCRIPTION
 Game framework built on top of the opengl accelerated gamelib Gosu. "Chingu" means "Friend" in korean.
@@ -32,11 +32,11 @@ You're probably familiar with this very common Gosu pattern:
     
     def update
       if button_down? Button::KbLeft
-				@player.left
-			elsif button_down? Button::KbRight
-				@player.right
-			end
-
+        @player.left
+      elsif button_down? Button::KbRight
+        @player.right
+      end
+      
       @player.update      
     end
     
@@ -76,6 +76,7 @@ Chingu doesn't change any fundamental concept of Gosu, but it will make the abov
   #
   class Game < Chingu:Window
     def initialize
+      super # This is always needed
       #
       # Player will automaticly be updated and drawn since it's a Chingu::Actor
       # You'll need your own Game#update/#draw after a while, but just put #super there and Chingu can do its thing!
@@ -109,7 +110,7 @@ Chingu doesn't change any fundamental concept of Gosu, but it will make the abov
 
   Game.new.show   # Start the Game update/draw loop!
   
-Roughly 50 lines became 25 more powerfull lines. (you can do @player.angle = 100 for example)
+Roughly 50 lines became 26 more powerful lines. (you can do @player.angle = 100 for example)
 
 If you've worked with Gosu for a while you're probably tired of passing around the window-argument.
 Chingu solves this (as many other developers) with a global variable $window. Yes, globals are bad, but in this case it kinda makes sense.
@@ -129,6 +130,18 @@ You also have Sound["player.png"]
 
 Tiles and fonts are trickier since they require extra parameters so you'll have to do thoose the ordinary way.
 You'll get $window.root (equivalent to ROOT_PATH above) for free though which points to the dir containing the game.
+
+
+== TODO:
+* Complete the keymap-definitions with all possible keys
+* More gfx effects, for example: fade in/out to a specific color (black makes sense between levels).
+* Summon good proven community gosu snippets into Chingu
+* Generate docs @ ippa.github.com
+* A good scene-manager to manage welcomescreens, levels and gameflow
+* More docs
+* More examples when effects are more complete
+* class ChipmunkActor
+* class AdvancedActor/MovingActor (?). Would ppl find is useful?
 
 
 == WHY?

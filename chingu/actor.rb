@@ -105,6 +105,7 @@ module Chingu
     
     #
     # The core of the gameclass, the draw_rot encapsulation. Draws the sprite on screen.
+    # Calling #to_i on @x and @y enables thoose to be Float's, for subpixel slow movement in #update
     #
     def draw
       @image.draw_rot(@x.to_i, @y.to_i, @zorder, @angle, @center_x, @center_y, @factor_x, @factor_y)

@@ -3,9 +3,18 @@ module Chingu
 		attr_reader :root, :keymap, :update_list, :draw_list, :tick
 		attr_accessor :key_recievers
 		
-		def initialize(width = nil, height = nil)
-			@width = width || 640
-			@height = height || 480
+    #
+    # See http://www.libgosu.org/rdoc/classes/Gosu/Window.html
+    #
+    # On top of that we add:
+    # - Default widht / height, --fullscreen option from console
+    # - Global variable $window
+    # - Standard #update which updates all Chingu::Actor's 
+    # - Standard #draw which goes through 
+    # - Assethandling with Image["picture.png"] and Sample["shot.wav"]
+    # - Default keymap mapping escape to close 
+    #
+		def initialize(width = 640, height = 480)
 			full_screen = ARGV.include?("--fullscreen")
 			$window = super(@width, @height, full_screen)
 			
@@ -22,11 +31,17 @@ module Chingu
 			@draw_list = []
 			self.keymap = { :escape => close }
 		end
-
+    
+    #
+    # Adds object to a list of objects that Chingu calls #update automaticly on
+    #
 		def automatic_update_for(object)
 			@update_list << object	unless @update_list.include?(self)
 		end
-		
+
+    #
+    # Adds object to a list of objects that Chingu calls #draw automaticly on
+    #
 		def automatic_draw_for(object)
 			@draw_list << object		unless @draw_list.include?(self)
 		end
@@ -46,6 +61,10 @@ module Chingu
 			@fps_counter.fps
 		end
 	
+    #
+    # Standard GOSU main class update
+    #
+    #
 		def update
 			@fps_counter.register_tick
 			update_tick
@@ -71,6 +90,10 @@ module Chingu
 		def fill(color)
 			self.draw_quad(0, 0, color, self.width, 0, color, self.width, self.width, color, 0, self.height, color, 0, :default) 
 		end
+    
+    def fade(options = {})
+      
+    end
 	end
 end
 
