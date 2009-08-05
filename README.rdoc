@@ -1,8 +1,8 @@
 = CHINGU
-*** This is a early preview, alot of functionality is missing ***
+This is a early preview, alot of functionality is missing
 
 == DESCRIPTION
-Game framework built on top of the opengl accelerated gamelib Gosu. Chingu == Friend in korean.
+Game framework built on top of the opengl accelerated gamelib Gosu. "Chingu" means "Friend" in korean.
 
 == THE STORY
 The last years I've dabbled around alot with gamedevelopment.
@@ -21,7 +21,7 @@ By no means do I claim Chingu to be a "complete stack" for gamedev. Rather it's 
 While others has gone for very flexible systems with premade includable gamelogic and "behaivor"-modules Chingus core is pretty simple and minimalistic.
 
 == THE BASICS
-Gosu::Window
+Gosu::Window ...
 
 == WHY?
 * Plain gosu is very minimalistic
