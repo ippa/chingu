@@ -16,7 +16,7 @@ module Chingu
     #
 		def initialize(width = 640, height = 480)
 			full_screen = ARGV.include?("--fullscreen")
-			$window = super(@width, @height, full_screen)
+			$window = super(width, height, full_screen)
 			
 			@root = File.dirname(File.expand_path($0))
 			Image.autoload_dirs = [".", File.join(@root, "gfx"), File.join(@root, "media")]

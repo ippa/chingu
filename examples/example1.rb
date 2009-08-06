@@ -1,5 +1,5 @@
 require 'rubygems'
-require '../chingu.rb'
+require '../lib/chingu.rb'
 include Gosu
 
 #

@@ -7,6 +7,7 @@ module Chingu
     attr_accessor :image, :x, :y, :angle, :center_x, :center_t, :factor_x, :factor_y, :mode
     attr_accessor :update, :draw, :keymap
     attr_accessor :height, :width
+    attr_reader :options
     
     #
     # Class-level default values. This allows you to set default-values that affect all created actors after that.
@@ -52,12 +53,16 @@ module Chingu
     # :draw   [true|false] Automaticly call #update on object each gameloop. Default +true+.
     #
     def initialize(options = {})
+      @options = options
+      
       # draw_rot arguments
-      @image = options[:image]
+      @image = options[:image]          if options[:image].is_a? Gosu::Image
+      @image = Image[options[:image]]   if options[:image].is_a? String
+      
       @x = options[:x] || 0
       @y = options[:y] || 0
       @angle = options[:angle] || 0
-      @zorder = options[:zorder] || @zorder
+      @zorder = options[:zorder] || @@zorder
       @center_x = options[:center_x] || @@center_x
       @center_y = options[:center_y] || @@center_y
       @factor_x = options[:factor_x] || @@factor_x
