@@ -1,5 +1,8 @@
 = CHINGU
-This is a early preview, alot of functionality is missing 
+SOURCE: http://github.com/ippa/chingu/tree/master
+DOCUMENTATION: http://rdoc.info/projects/ippa/chingu
+
+This is a early preview, alot of functionality is still missing!
 
 == DESCRIPTION
 Game framework built on top of the opengl accelerated gamelib Gosu. "Chingu" means "Friend" in korean.
@@ -112,20 +115,21 @@ Chingu doesn't change any fundamental concept of Gosu, but it will make the abov
   
 Roughly 50 lines became 26 more powerful lines. (you can do @player.angle = 100 for example)
 
-If you've worked with Gosu for a while you're probably tired of passing around the window-argument.
-Chingu solves this (as many other developers) with a global variable $window. Yes, globals are bad, but in this case it kinda makes sense.
+If you've worked with Gosu for a while you're probably tired of passing around the window-parameter.
+Chingu solves this (as has many other developers) with a global variable $window. Yes, globals are bad, but in this case it kinda makes sense.
 It's used under the hood in various places.
 
 You might wonder why this is nessesary in the straight Gosu example:
   ROOT_PATH = File.dirname(File.expand_path(__FILE__))
   @image = Image.new(File.join(ROOT_PATH, "media", "player.png"))
 
-It enables you to start your game from any directory and it will still find your assets correctly.
-For a local developmentversion this might not be important, you're likely to start the game from the game root-dir.
+It enables you to start your game from any directory and it will still find your assets (pictures, samples, fonts etc..) correctly.
+For a local developmentversion this might not be important, you're likely to start the game from the games root-dir.
 But as soon as you try to deploy (for example to windows with Ocra - http://github.com/larsch/ocra/tree/master) you'll run into trouble of you dont do it like that.
  
 Chingu solves this problem behind the scenes for the most common assets. The 2 lines above can be replaced with:
 Image["player.png"]
+
 You also have Sound["player.png"]
 
 Tiles and fonts are trickier since they require extra parameters so you'll have to do thoose the ordinary way.
@@ -139,9 +143,11 @@ You'll get $window.root (equivalent to ROOT_PATH above) for free though which po
 * Generate docs @ ippa.github.com
 * A good scene-manager to manage welcomescreens, levels and gameflow
 * More docs
+* Make a gem
 * More examples when effects are more complete
 * class ChipmunkActor
 * class AdvancedActor/MovingActor (?). Would ppl find is useful?
+* Tests
 
 
 == WHY?

@@ -1,0 +1,648 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Class: Chingu::Actor</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Class</strong></td>
+          <td class="class-name-in-header">Chingu::Actor</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../../files/lib/chingu/actor_rb.html">
+                lib/chingu/actor.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        <tr class="top-aligned-row">
+            <td><strong>Parent:</strong></td>
+            <td>
+                Object
+            </td>
+        </tr>
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <p>
+A basic class, all your gameobjects / actors should be built on this.
+Encapsulates Gosus draw_rot and it&#8216;s parameters.
+</p>
+
+    </div>
+
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000155">automatic_draw!</a>&nbsp;&nbsp;
+      <a href="#M000154">automatic_update!</a>&nbsp;&nbsp;
+      <a href="#M000145">center_x</a>&nbsp;&nbsp;
+      <a href="#M000146">center_x=</a>&nbsp;&nbsp;
+      <a href="#M000147">center_y</a>&nbsp;&nbsp;
+      <a href="#M000148">center_y=</a>&nbsp;&nbsp;
+      <a href="#M000158">draw</a>&nbsp;&nbsp;
+      <a href="#M000149">factor_x</a>&nbsp;&nbsp;
+      <a href="#M000150">factor_x=</a>&nbsp;&nbsp;
+      <a href="#M000151">factor_y</a>&nbsp;&nbsp;
+      <a href="#M000152">factor_y=</a>&nbsp;&nbsp;
+      <a href="#M000156">keymap=</a>&nbsp;&nbsp;
+      <a href="#M000153">new</a>&nbsp;&nbsp;
+      <a href="#M000157">update</a>&nbsp;&nbsp;
+      <a href="#M000143">zorder</a>&nbsp;&nbsp;
+      <a href="#M000144">zorder=</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+    <div id="attribute-list">
+      <h3 class="section-bar">Attributes</h3>
+
+      <div class="name-list">
+        <table>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">angle</td>
+          <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
+          <td class="context-item-desc"></td>
+        </tr>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">center_t</td>
+          <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
+          <td class="context-item-desc"></td>
+        </tr>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">center_x</td>
+          <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
+          <td class="context-item-desc"></td>
+        </tr>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">draw</td>
+          <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
+          <td class="context-item-desc"></td>
+        </tr>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">factor_x</td>
+          <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
+          <td class="context-item-desc"></td>
+        </tr>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">factor_y</td>
+          <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
+          <td class="context-item-desc"></td>
+        </tr>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">height</td>
+          <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
+          <td class="context-item-desc"></td>
+        </tr>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">image</td>
+          <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
+          <td class="context-item-desc"></td>
+        </tr>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">keymap</td>
+          <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
+          <td class="context-item-desc"></td>
+        </tr>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">mode</td>
+          <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
+          <td class="context-item-desc"></td>
+        </tr>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">update</td>
+          <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
+          <td class="context-item-desc"></td>
+        </tr>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">width</td>
+          <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
+          <td class="context-item-desc"></td>
+        </tr>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">x</td>
+          <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
+          <td class="context-item-desc"></td>
+        </tr>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">y</td>
+          <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
+          <td class="context-item-desc"></td>
+        </tr>
+        </table>
+      </div>
+    </div>
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Class methods</h3>
+
+      <div id="method-M000145" class="method-detail">
+        <a name="M000145"></a>
+
+        <div class="method-heading">
+          <a href="#M000145" class="method-signature">
+          <span class="method-name">center_x</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000145-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000145-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/chingu/actor.rb, line 26</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">center_x</span>; <span class="ruby-ivar">@@center_x</span>; <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000146" class="method-detail">
+        <a name="M000146"></a>
+
+        <div class="method-heading">
+          <a href="#M000146" class="method-signature">
+          <span class="method-name">center_x=</span><span class="method-args">(value)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000146-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000146-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/chingu/actor.rb, line 27</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">center_x=</span>(<span class="ruby-identifier">value</span>); <span class="ruby-ivar">@@center_x</span> = <span class="ruby-identifier">value</span>; <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000147" class="method-detail">
+        <a name="M000147"></a>
+
+        <div class="method-heading">
+          <a href="#M000147" class="method-signature">
+          <span class="method-name">center_y</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000147-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000147-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/chingu/actor.rb, line 29</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">center_y</span>; <span class="ruby-ivar">@@center_y</span>; <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000148" class="method-detail">
+        <a name="M000148"></a>
+
+        <div class="method-heading">
+          <a href="#M000148" class="method-signature">
+          <span class="method-name">center_y=</span><span class="method-args">(value)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000148-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000148-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/chingu/actor.rb, line 30</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">center_y=</span>(<span class="ruby-identifier">value</span>); <span class="ruby-ivar">@@center_y</span> = <span class="ruby-identifier">value</span>; <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000149" class="method-detail">
+        <a name="M000149"></a>
+
+        <div class="method-heading">
+          <a href="#M000149" class="method-signature">
+          <span class="method-name">factor_x</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000149-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000149-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/chingu/actor.rb, line 32</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">factor_x</span>; <span class="ruby-ivar">@@factor_x</span>; <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000150" class="method-detail">
+        <a name="M000150"></a>
+
+        <div class="method-heading">
+          <a href="#M000150" class="method-signature">
+          <span class="method-name">factor_x=</span><span class="method-args">(value)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000150-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000150-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/chingu/actor.rb, line 33</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">factor_x=</span>(<span class="ruby-identifier">value</span>); <span class="ruby-ivar">@@factor_x</span> = <span class="ruby-identifier">value</span>; <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000151" class="method-detail">
+        <a name="M000151"></a>
+
+        <div class="method-heading">
+          <a href="#M000151" class="method-signature">
+          <span class="method-name">factor_y</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000151-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000151-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/chingu/actor.rb, line 35</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">factor_y</span>; <span class="ruby-ivar">@@factor_y</span>; <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000152" class="method-detail">
+        <a name="M000152"></a>
+
+        <div class="method-heading">
+          <a href="#M000152" class="method-signature">
+          <span class="method-name">factor_y=</span><span class="method-args">(value)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000152-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000152-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/chingu/actor.rb, line 36</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">factor_y=</span>(<span class="ruby-identifier">value</span>); <span class="ruby-ivar">@@factor_y</span> = <span class="ruby-identifier">value</span>; <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000153" class="method-detail">
+        <a name="M000153"></a>
+
+        <div class="method-heading">
+          <a href="#M000153" class="method-signature">
+          <span class="method-name">new</span><span class="method-args">(options = {})</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Create a <a href="Actor.html#M000153">new</a> <a
+href="Actor.html">Actor</a>. Arguments are given in hash-format:
+</p>
+<p>
+:x screen x-coordinate (default 0, to the left) :y screen y-coordinate
+(default 0, top of screen) :angle angle of object, used in draw_rot,
+(default 0, no rotation) :<a href="Actor.html#M000143">zorder</a> a
+gameclass &quot;foo&quot; with higher <a
+href="Actor.html#M000143">zorder</a> then gameclass &quot;bar&quot; is
+drawn on top of &quot;foo&quot;. :<a href="Actor.html#M000145">center_x</a>
+relative horizontal position of the rotation center on the image.
+</p>
+<pre>
+          0 is the left border, 1 is the right border, 0.5 is the center (default 0.5)
+</pre>
+<p>
+:<a href="Actor.html#M000147">center_y</a> see <a
+href="Actor.html#M000145">center_x</a>. (default 0.5) :<a
+href="Actor.html#M000149">factor_x</a> horizontal zoom-factor, use &gt;1.0
+to zoom in. (default 1.0, no zoom). :<a
+href="Actor.html#M000151">factor_y</a> vertical zoom-factor, use &gt;1.0 to
+zoom in. (default 1.0, no zoom).
+</p>
+<p>
+:<a href="Actor.html#M000157">update</a> [true|false] Automaticly call <a
+href="Actor.html#M000157">update</a> on object each gameloop. Default
+<tt>true</tt>. :<a href="Actor.html#M000158">draw</a> [true|false]
+Automaticly call <a href="Actor.html#M000157">update</a> on object each
+gameloop. Default <tt>true</tt>.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000153-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000153-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/chingu/actor.rb, line 54</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">options</span> = {})
+      <span class="ruby-comment cmt"># draw_rot arguments</span>
+      <span class="ruby-ivar">@image</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:image</span>]
+      <span class="ruby-ivar">@x</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:x</span>] <span class="ruby-operator">||</span> <span class="ruby-value">0</span>
+      <span class="ruby-ivar">@y</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:y</span>] <span class="ruby-operator">||</span> <span class="ruby-value">0</span>
+      <span class="ruby-ivar">@angle</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:angle</span>] <span class="ruby-operator">||</span> <span class="ruby-value">0</span>
+      <span class="ruby-ivar">@zorder</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:zorder</span>] <span class="ruby-operator">||</span> <span class="ruby-ivar">@zorder</span>
+      <span class="ruby-ivar">@center_x</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:center_x</span>] <span class="ruby-operator">||</span> <span class="ruby-ivar">@@center_x</span>
+      <span class="ruby-ivar">@center_y</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:center_y</span>] <span class="ruby-operator">||</span> <span class="ruby-ivar">@@center_y</span>
+      <span class="ruby-ivar">@factor_x</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:factor_x</span>] <span class="ruby-operator">||</span> <span class="ruby-ivar">@@factor_x</span>
+      <span class="ruby-ivar">@factor_y</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:factor_y</span>] <span class="ruby-operator">||</span> <span class="ruby-ivar">@@factor_y</span>
+      <span class="ruby-ivar">@mode</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:mode</span>] <span class="ruby-operator">||</span> <span class="ruby-value">0</span>
+      
+      <span class="ruby-comment cmt"># gameloop logic</span>
+      <span class="ruby-ivar">@update</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:update</span>] <span class="ruby-operator">||</span> <span class="ruby-keyword kw">true</span>
+      <span class="ruby-ivar">@draw</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:draw</span>] <span class="ruby-operator">||</span> <span class="ruby-keyword kw">true</span>
+      
+      <span class="ruby-comment cmt"># sprite/image logic</span>
+      <span class="ruby-ivar">@height</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:height</span>]
+      <span class="ruby-ivar">@width</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:width</span>]
+      
+      <span class="ruby-identifier">automatic_update!</span> <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@update</span>
+      <span class="ruby-identifier">automatic_draw!</span>           <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@draw</span>
+    <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000143" class="method-detail">
+        <a name="M000143"></a>
+
+        <div class="method-heading">
+          <a href="#M000143" class="method-signature">
+          <span class="method-name">zorder</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000143-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000143-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/chingu/actor.rb, line 23</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">zorder</span>; <span class="ruby-ivar">@@zorder</span>; <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000144" class="method-detail">
+        <a name="M000144"></a>
+
+        <div class="method-heading">
+          <a href="#M000144" class="method-signature">
+          <span class="method-name">zorder=</span><span class="method-args">(value)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000144-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000144-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/chingu/actor.rb, line 24</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">zorder=</span>(<span class="ruby-identifier">value</span>); <span class="ruby-ivar">@@zorder</span> = <span class="ruby-identifier">value</span>; <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000155" class="method-detail">
+        <a name="M000155"></a>
+
+        <div class="method-heading">
+          <a href="#M000155" class="method-signature">
+          <span class="method-name">automatic_draw!</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Add self to the list of objects that <a href="../Chingu.html">Chingu</a>
+calls <a href="Actor.html#M000158">draw</a> on each <a
+href="Actor.html#M000157">update</a>-loop. This is done by default except
+if you create a gameobject with {:<a href="Actor.html#M000158">draw</a>
+=&gt; false}
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000155-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000155-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/chingu/actor.rb, line 90</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">automatic_draw!</span>
+      <span class="ruby-identifier">$window</span>.<span class="ruby-identifier">automatic_draw_for</span>(<span class="ruby-keyword kw">self</span>)
+    <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000154" class="method-detail">
+        <a name="M000154"></a>
+
+        <div class="method-heading">
+          <a href="#M000154" class="method-signature">
+          <span class="method-name">automatic_update!</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Add self to the list of objects that <a href="../Chingu.html">Chingu</a>
+calls <a href="Actor.html#M000157">update</a> on each <a
+href="Actor.html#M000157">update</a>-loop. This is done by default except
+if you create a gameobject with {:<a href="Actor.html#M000157">update</a>
+=&gt; false}
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000154-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000154-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/chingu/actor.rb, line 83</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">automatic_update!</span>
+      <span class="ruby-identifier">$window</span>.<span class="ruby-identifier">automatic_update_for</span>(<span class="ruby-keyword kw">self</span>)
+    <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000158" class="method-detail">
+        <a name="M000158"></a>
+
+        <div class="method-heading">
+          <a href="#M000158" class="method-signature">
+          <span class="method-name">draw</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+The core of the gameclass, the draw_rot encapsulation. Draws the sprite on
+screen. Calling to_i on @x and @y enables thoose to be Float&#8216;s, for
+subpixel slow movement in <a href="Actor.html#M000157">update</a>
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000158-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000158-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/chingu/actor.rb, line 110</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">draw</span>
+      <span class="ruby-ivar">@image</span>.<span class="ruby-identifier">draw_rot</span>(<span class="ruby-ivar">@x</span>.<span class="ruby-identifier">to_i</span>, <span class="ruby-ivar">@y</span>.<span class="ruby-identifier">to_i</span>, <span class="ruby-ivar">@zorder</span>, <span class="ruby-ivar">@angle</span>, <span class="ruby-ivar">@center_x</span>, <span class="ruby-ivar">@center_y</span>, <span class="ruby-ivar">@factor_x</span>, <span class="ruby-ivar">@factor_y</span>)
+    <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000156" class="method-detail">
+        <a name="M000156"></a>
+
+        <div class="method-heading">
+          <a href="#M000156" class="method-signature">
+          <span class="method-name">keymap=</span><span class="method-args">(keymap)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000156-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000156-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/chingu/actor.rb, line 94</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">keymap=</span>(<span class="ruby-identifier">keymap</span>)
+      <span class="ruby-ivar">@keymap</span> = <span class="ruby-identifier">keymap</span>
+      <span class="ruby-identifier">$window</span>.<span class="ruby-identifier">key_recievers</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-keyword kw">self</span>             <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">$window</span>.<span class="ruby-identifier">key_recievers</span>.<span class="ruby-identifier">include?</span> <span class="ruby-keyword kw">self</span>
+    <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000157" class="method-detail">
+        <a name="M000157"></a>
+
+        <div class="method-heading">
+          <a href="#M000157" class="method-signature">
+          <span class="method-name">update</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Override this with your own actor/game-logic
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000157-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000157-source">
+<pre>
+<span class="ruby-comment cmt"># File lib/chingu/actor.rb, line 102</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">update</span>
+                        
+                <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>
