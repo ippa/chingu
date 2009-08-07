@@ -1,16 +1,18 @@
 module Chingu
   #
   # A basic class, all your gameobjects / actors should be built on this. Encapsulates
-  # Gosus draw_rot and it's parameters.
+  # Gosus draw_rot and it's parameters. 
+  #
+  # All objects that inherits from this class will automaticly be updated and drawn.
   #
   class Actor
     attr_accessor :image, :x, :y, :angle, :center_x, :center_t, :factor_x, :factor_y, :mode
     attr_accessor :update, :draw, :keymap
-    attr_accessor :height, :width
     attr_reader :options
     
     #
-    # Class-level default values. This allows you to set default-values that affect all created actors after that.
+    # Class-level default values. 
+    # This allows you to set default-values that affect all created actors after that.
     # You might want to draw screenobjects from the top-left @ x/y instead of putting it's center there:
     # 
     # in Gosu::Window#initialize: Actor.center_x = Actor.center_y = 0
@@ -63,19 +65,15 @@ module Chingu
       @y = options[:y] || 0
       @angle = options[:angle] || 0
       @zorder = options[:zorder] || @@zorder
-      @center_x = options[:center_x] || @@center_x
-      @center_y = options[:center_y] || @@center_y
-      @factor_x = options[:factor_x] || @@factor_x
-      @factor_y = options[:factor_y] || @@factor_y
-      @mode = options[:mode] || 0
+      @center_x = options[:center_x] || options[:center] || @@center_x
+      @center_y = options[:center_y] || options[:center] || @@center_y
+      @factor_x = options[:factor_x] || options[:factor] || @@factor_x
+      @factor_y = options[:factor_y] || options[:factor] || @@factor_y
+      @mode = options[:mode] || :additive
       
       # gameloop logic
       @update = options[:update] || true
       @draw = options[:draw] || true
-      
-      # sprite/image logic
-      @height = options[:height]
-      @width = options[:width]
       
       automatic_update!	if @update
       automatic_draw!		if @draw
@@ -113,7 +111,7 @@ module Chingu
     # Calling #to_i on @x and @y enables thoose to be Float's, for subpixel slow movement in #update
     #
     def draw
-      @image.draw_rot(@x.to_i, @y.to_i, @zorder, @angle, @center_x, @center_y, @factor_x, @factor_y)
+      @image.draw_rot(@x.to_i, @y.to_i, @zorder, @angle, @center_x, @center_y, @factor_x, @factor_y, @mode)
     end
   end
 end
