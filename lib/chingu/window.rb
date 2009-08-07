@@ -9,7 +9,7 @@ module Chingu
     # On top of that we add:
     # - Default widht / height, --fullscreen option from console
     # - Global variable $window
-    # - Standard #update which updates all Chingu::Actor's 
+    # - Standard #update which updates all Chingu::GameObject's 
     # - Standard #draw which goes through 
     # - Assethandling with Image["picture.png"] and Sample["shot.wav"]
     # - Default keymap mapping escape to close 

@@ -3,7 +3,7 @@
 # See: http://en.wikipedia.org/wiki/Parallax_scrolling
 #
 module Chingu
-  class Paralaxx < Chingu::Actor
+  class Paralaxx < Chingu::GameObject
     attr_reader :backgrounds
 
     #
@@ -61,7 +61,7 @@ module Chingu
   #
   # One background item
   #
-  class ParalaxxBackground < Chingu::Actor
+  class ParalaxxBackground < Chingu::GameObject
     @@zorder_counter = 0
     attr_reader :damping
     

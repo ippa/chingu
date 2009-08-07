@@ -1,21 +1,21 @@
 module Chingu
   #
-  # A basic class, all your gameobjects / actors should be built on this. Encapsulates
+  # A basic class, all your ingame objects should be built on this. Encapsulates
   # Gosus draw_rot and it's parameters. 
   #
   # All objects that inherits from this class will automaticly be updated and drawn.
   #
-  class Actor
-    attr_accessor :image, :x, :y, :angle, :center_x, :center_t, :factor_x, :factor_y, :mode
+  class GameObject
+    attr_accessor :image, :x, :y, :angle, :center_x, :center_y, :factor_x, :factor_y, :mode
     attr_accessor :update, :draw, :keymap
     attr_reader :options
     
     #
     # Class-level default values. 
-    # This allows you to set default-values that affect all created actors after that.
-    # You might want to draw screenobjects from the top-left @ x/y instead of putting it's center there:
+    # This allows you to set default-values that affect all created GameObjects after that.
+    # You might want to draw gameobjects from the top-left @ x/y instead of putting it's center there:
     # 
-    # in Gosu::Window#initialize: Actor.center_x = Actor.center_y = 0
+    # in Gosu::Window#initialize: GameObject.center_x = GameObject.center_y = 0
     #
     @@zorder = 100
     @@center_x = 0.5
@@ -39,7 +39,7 @@ module Chingu
     def self.factor_y=(value); @@factor_y = value; end
 
     #
-    # Create a new Actor. Arguments are given in hash-format:
+    # Create a new GameObject. Arguments are given in hash-format:
     # 
     # :x        screen x-coordinate (default 0, to the left)
     # :y        screen y-coordinate (default 0, top of screen)
@@ -100,7 +100,7 @@ module Chingu
     end
     
     #
-    # Override this with your own actor/game-logic
+    # Override this with your own game-logic
     # 
     def update
 			

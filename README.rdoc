@@ -12,12 +12,12 @@ The last years I've dabbled around alot with gamedevelopment.
 I've developed games in both Rubygame and Gosu. I've looked at gamebox.
 Rubygame is a very capable framework with alot of functionallity (collision detection, very good eventsystem etc). Gosu is way more minimalistic but also faster with OpenGL-acceleration. Gosu isn't likely to get much more complex since it does what it should do very well and fast.
 
-After 10+ gameprototypes and some finished smaller games I started to see patterns each time I started a new game. Making classes with x/y/image/other-parameters that I called updat/draw on in the mainloop. This became the basic Chingu::Actor which encapsulates Gosus "Image.draw_rot" and enables automatic updating/drawing.
+After 10+ gameprototypes and some finished smaller games I started to see patterns each time I started a new game. Making classes with x/y/image/other-parameters that I called updat/draw on in the mainloop. This became the basic Chingu::GameObject which encapsulates Gosus "Image.draw_rot" and enables automatic updating/drawing.
 
 There was always a huge big chunk of checking keyboard-events in the mainloop.
 Borrowing from ideas in rubygame this has now become @player.keyboard(:left => :move_left, :space => :fire ... etc.
 
-With Gosu the mainwindow inherits from Gosu::Window. In Chingu we use Chingu::Window. It's a basic Gosu::Window with extra cheese on top of it. keyboardhandling, automatic update/draw calls to all actors, fps counting etc.
+With Gosu the mainwindow inherits from Gosu::Window. In Chingu we use Chingu::Window. It's a basic Gosu::Window with extra cheese on top of it. keyboardhandling, automatic update/draw calls to all gameobjects, fps counting etc.
 
 By no means do I claim Chingu to be a "complete stack" for gamedev. Rather it's a set of extensions to the minimalistic but fast Gosu to make you do more with less code.
 
@@ -83,7 +83,7 @@ Chingu doesn't change any fundamental concept of Gosu, but it will make the abov
     def initialize
       super # This is always needed
       #
-      # Player will automaticly be updated and drawn since it's a Chingu::Actor
+      # Player will automaticly be updated and drawn since it's a Chingu::GameObject
       # You'll need your own Game#update/#draw after a while, but just put #super there and Chingu can do its thing!
       #
       @player = Player.new
@@ -92,14 +92,14 @@ Chingu doesn't change any fundamental concept of Gosu, but it will make the abov
   end
     
   #
-  # If we create classes from Chingu::Actor we get stuff for free.
+  # If we create classes from Chingu::GameObject we get stuff for free.
   # The accessors: image,x,y,zorder,angle,factor_x,factor_y,center_x,center_y,mode,update,draw
   # You might regognize thoose from #draw_rot - http://www.libgosu.org/rdoc/classes/Gosu/Image.html#M000023
-  # And in it's core, that's what Chingu::Actor is, an encapsulation of draw_rot with some extra cheese.
-  # For eaxmple, we get automatic calls to draw/update with Chingu::Actor, which usually is what you want. 
+  # And in it's core, that's what Chingu::GameObject is, an encapsulation of draw_rot with some extra cheese.
+  # For eaxmple, we get automatic calls to draw/update with Chingu::GameObject, which usually is what you want. 
   # You could stop this by doing: @player = Player.new(:draw => false, :update => false)
   #
-  class Player < Chingu::Actor
+  class Player < Chingu::GameObject
     def initialize(options)
       super(options.merge(:image => Image["player.png"])
     end
@@ -120,14 +120,14 @@ Roughly 50 lines became 26 more powerful lines. (you can do @player.angle = 100 
 If you've worked with Gosu for a while you're probably tired of passing around the window-parameter.
 Chingu solves this (as has many other developers) with a global variable $window. Yes, globals are bad, but in this case it kinda makes sense. It's used under the hood in various places.
 
-=== Chingu::Actor
-This is our basic "gameunit"-class, meaning most ingame objects (players, enemies, bullets etc) should be inherited from Chingu::Actor. The basic ideas behind it are:
+=== Chingu::GameObject
+This is our basic "gameunit"-class, meaning most ingame objects (players, enemies, bullets etc) should be inherited from Chingu::GameObject. The basic ideas behind it are:
 
 * Encapsulate only the very common basics that Most ingame objects need
 * Keep naming close to Gosu, but add smart convenientmethods / shortcuts and a more rubyish feeling
 * No gamelogic at all allowed in ScreenObject, since that is most likely usefull for others
 
-I've chose to base it around Image#draw_rot. So basicly all the arguments that you pass to draw_rot can be passed to Actor#new when creating a new object, an example using almost all arguments would be:
+I've chose to base it around Image#draw_rot. So basicly all the arguments that you pass to draw_rot can be passed to GameObject#new when creating a new object, an example using almost all arguments would be:
   
   #
   # You probably recognize the arguments from http://www.libgosu.org/rdoc/classes/Gosu/Image.html#M000023
@@ -183,8 +183,8 @@ You'll get $window.root (equivalent to ROOT_PATH above) for free though which po
 * More docs
 * Make a gem
 * More examples when effects are more complete
-* class ChipmunkActor
-* class AdvancedActor/MovingActor (?). Would ppl find is useful?
+* class ChipmunkObject
+* class Actor/MovingActor (?). Would ppl find is useful?
 * Tests
 
 == WHY?

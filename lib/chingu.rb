@@ -9,8 +9,7 @@ require 'gosu'
 		fpscounter
 		named_resource
 		assets
-    actor
-		advanced_actor
+    game_object
 		data_structures
 		rect
 		animation
