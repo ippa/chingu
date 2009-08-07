@@ -25,6 +25,8 @@ While others has gone for very flexible systems with premade includable gamelogi
 
 == THE BASICS
 
+=== Chingu::Window
+
 You're probably familiar with this very common Gosu pattern:
   
   ROOT_PATH = File.dirname(File.expand_path(__FILE__))
@@ -116,8 +118,44 @@ Chingu doesn't change any fundamental concept of Gosu, but it will make the abov
 Roughly 50 lines became 26 more powerful lines. (you can do @player.angle = 100 for example)
 
 If you've worked with Gosu for a while you're probably tired of passing around the window-parameter.
-Chingu solves this (as has many other developers) with a global variable $window. Yes, globals are bad, but in this case it kinda makes sense.
-It's used under the hood in various places.
+Chingu solves this (as has many other developers) with a global variable $window. Yes, globals are bad, but in this case it kinda makes sense. It's used under the hood in various places.
+
+=== Chingu::Actor
+This is our basic "gameunit"-class, meaning most ingame objects (players, enemies, bullets etc) should be inherited from Chingu::Actor. The basic ideas behind it are:
+
+* Encapsulate only the very common basics that Most ingame objects need
+* Keep naming close to Gosu, but add smart convenientmethods / shortcuts and a more rubyish feeling
+* No gamelogic at all allowed in ScreenObject, since that is most likely usefull for others
+
+I've chose to base it around Image#draw_rot. So basicly all the arguments that you pass to draw_rot can be passed to Actor#new when creating a new object, an example using almost all arguments would be:
+  
+  #
+  # You probably recognize the arguments from http://www.libgosu.org/rdoc/classes/Gosu/Image.html#M000023
+  #
+  @player = Player.new(:image => Image["player.png"], :x=>100, :y=>100, :zorder=>100, :angle=>45, :factor_x=>10, :factor_y=>10, :center_x=>0, :center_y=>0)
+  
+  #
+  # A shortcut for the above line would be
+  #
+  @player = Player.new(:image => Image["player.png"], :x=>100, :y=>100, :zorder=>100, :angle=>45, :factor=>10, :center=>0)
+
+  #
+  # I've tried doing sensible defaults:
+  # x/y = [middle of the screen]  for superquick display where it should be easy in sight)
+  # angle = 0                     (no angle by default)
+  # center_x/center_y = 0.5       (basicly the center of the image will be drawn at x/y)
+  # factor_x/factor_y = 1         (no zoom by default)
+  # 
+  @player = Player.new
+  
+  #
+  # By default Chingu::Window calls update & draw on all ScreenObjects in it's own update/draw.
+  # If this is not what you want, use :draw and :update
+  #
+  @player = Player.new(:draw => false, :update => false)
+
+
+=== Assets / Paths
 
 You might wonder why this is nessesary in the straight Gosu example:
   ROOT_PATH = File.dirname(File.expand_path(__FILE__))
@@ -149,7 +187,6 @@ You'll get $window.root (equivalent to ROOT_PATH above) for free though which po
 * class AdvancedActor/MovingActor (?). Would ppl find is useful?
 * Tests
 
-
 == WHY?
 * Plain gosu is very minimalistic
 * Deployment and assethandling should be simple
@@ -160,6 +197,9 @@ You'll get $window.root (equivalent to ROOT_PATH above) for free though which po
 * Hasharguments FTW. And it becomes even better in 1.9.
 * Don't separate too much from Gosus core-naming and functionallity
 * Make it possible for ppl to use the parts of chingu they like
+
+== CREDITS:
+Jacius of Rubygame (For doing cool stuff that's well documented as re-usable). So far rect.rb and named_resource.rb is taken from Rubygame.
 
 == REQUIREMENTS:
 * Gosu latest version
