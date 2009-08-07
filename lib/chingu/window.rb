@@ -19,9 +19,9 @@ module Chingu
 			$window = super(width, height, full_screen)
 			
 			@root = File.dirname(File.expand_path($0))
-			Image.autoload_dirs = [".", File.join(@root, "gfx"), File.join(@root, "media")]
-			Sample.autoload_dirs = [".", File.join(@root, "sound"), File.join(@root, "media")]
-			Tile.autoload_dirs = [".", File.join(@root, "gfx"), File.join(@root, "media")]
+			Gosu::Image.autoload_dirs = [".", File.join(@root, "gfx"), File.join(@root, "media")]
+			Gosu::Sample.autoload_dirs = [".", File.join(@root, "sound"), File.join(@root, "media")]
+			Gosu::Tile.autoload_dirs = [".", File.join(@root, "gfx"), File.join(@root, "media")]
 			
 			@ticks = 0
 			@fps_counter = FPSCounter.new
