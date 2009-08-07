@@ -14,7 +14,7 @@ require 'gosu'
 		rect
 		animation
 		keymap
-    paralaxx
+    parallax
 		}.each do |lib|
       root ||= File.dirname(File.expand_path(__FILE__))
       require File.join(root,"chingu",lib)

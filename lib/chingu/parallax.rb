@@ -1,9 +1,9 @@
 #
-# Class for simple paralaxxscrolling
+# Class for simple parallaxscrolling
 # See: http://en.wikipedia.org/wiki/Parallax_scrolling
 #
 module Chingu
-  class Paralaxx < Chingu::GameObject
+  class Parallax < Chingu::GameObject
     attr_reader :backgrounds
 
     #
@@ -16,10 +16,10 @@ module Chingu
     end
     
     #
-    # Add one background, either an ParalaxxBackground-object or a Hash of options to create one
+    # Add one background, either an ParallaxBackground-object or a Hash of options to create one
     #
     def add_background(arg)
-      @backgrounds << (arg.is_a?(ParalaxxBackground) ? arg : ParalaxxBackground.new(arg))
+      @backgrounds << (arg.is_a?(ParallaxBackground) ? arg : ParallaxBackground.new(arg))
     end
     
     #
@@ -61,12 +61,12 @@ module Chingu
   #
   # One background item
   #
-  class ParalaxxBackground < Chingu::GameObject
+  class ParallaxBackground < Chingu::GameObject
     @@zorder_counter = 0
     attr_reader :damping
     
     def initialize(options)
-      ## No auto update/draw, the parentclass Paralaxx takes care of that!
+      ## No auto update/draw, the parentclass Parallax takes care of that!
       options.merge!(:draw => false, :update => false)
       
       # If no zorder is given, use a global incrementing counter. First added, furthest behind when drawn.
