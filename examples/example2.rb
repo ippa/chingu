@@ -43,7 +43,7 @@ class Game < Chingu::Window
   
 end
 
-class Player < Chingu::Actor
+class Player < Chingu::GameObject
   def move_left;  @x -= 1; end
   def move_right; @x += 1; end
   def move_up;    @y -= 1; end
@@ -57,7 +57,7 @@ class Player < Chingu::Actor
   end
 end
 
-class Bullet < Chingu::Actor
+class Bullet < Chingu::GameObject
   #
   # If we need our own initialize, just call super and Chingu does it's thing.
   # Here we merge in an extra argument, specifying the bullet-image.
