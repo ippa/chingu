@@ -2,30 +2,44 @@
 SOURCE: http://github.com/ippa/chingu/tree/master
 DOCUMENTATION: http://rdoc.info/projects/ippa/chingu
 
-This is a early preview, alot of functionality is still missing!
+This is a early preview, a lot of functionality is still missing!
 
 == DESCRIPTION
-Game framework built on top of the opengl accelerated gamelib Gosu. "Chingu" means "Friend" in korean.
+Game framework built on top of the OpenGL accelerated game lib Gosu. "Chingu" means "Friend" in Korean.
 
 == THE STORY
-The last years I've dabbled around alot with gamedevelopment.
+The last years I've dabbled around a lot with game development.
 I've developed games in both Rubygame and Gosu. I've looked at gamebox.
-Rubygame is a very capable framework with alot of functionallity (collision detection, very good eventsystem etc). Gosu is way more minimalistic but also faster with OpenGL-acceleration. Gosu isn't likely to get much more complex since it does what it should do very well and fast.
+Rubygame is a very capable framework with a lot of functionality (collision detection, very good event system etc). Gosu is way more minimalistic but also faster with OpenGL -acceleration. Gosu isn't likely to get much more complex since it does what it should do very well and fast.
 
-After 10+ gameprototypes and some finished smaller games I started to see patterns each time I started a new game. Making classes with x/y/image/other-parameters that I called updat/draw on in the mainloop. This became the basic Chingu::GameObject which encapsulates Gosus "Image.draw_rot" and enables automatic updating/drawing.
+After 10+ game prototypes and some finished smaller games I started to see patterns each time I started a new game. Making classes with x/y/image/other-parameters that I called update/draw on in the main loop. This became the basic Chingu::GameObject which encapsulates Gosus "Image.draw_rot" and enables automatic updating/drawing.
 
-There was always a huge big chunk of checking keyboard-events in the mainloop.
-Borrowing from ideas in rubygame this has now become @player.keyboard(:left => :move_left, :space => :fire ... etc.
+There was always a huge big chunk of checking keyboard-events in the main loop.
+Borrowing ideas from Rubygame this has now become @player.keyboard(:left => :move_left, :space => :fire ... etc.
 
-With Gosu the mainwindow inherits from Gosu::Window. In Chingu we use Chingu::Window. It's a basic Gosu::Window with extra cheese on top of it. keyboardhandling, automatic update/draw calls to all gameobjects, fps counting etc.
+== OVERVIEW
+Chingu consists of the following core classes:
 
-By no means do I claim Chingu to be a "complete stack" for gamedev. Rather it's a set of extensions to the minimalistic but fast Gosu to make you do more with less code.
+=== Chingu::Window
+The main window, use it at you use Gosu::Window.
 
-While others has gone for very flexible systems with premade includable gamelogic and "behaivor"-modules Chingus core is pretty simple and minimalistic.
+=== Chingu::GameObject
+Use for your in game objects, got everything to put them on the screen.
+Has either Chingu::Window or a Chingu::GameState as "owner".
+
+=== Chingu::Text
+Makes use of Gosu::Font more rubyish and powerful
+
+=== Chingu::GameState
+A "standalone game loop" that can be switched on/off to control game flow.
+
+=== Chingu::GameStateManager
+Keeps track of the game states. The flow of draw/update/button_down is Chingu::Window --> Chingu::GameStateManager --> Chingu::GameState.
 
 == THE BASICS
 
 === Chingu::Window
+With Gosu the main window inherits from Gosu::Window. In Chingu we use Chingu::Window. It's a basic Gosu::Window with extra cheese on top of it. keyboard handling, automatic update/draw calls to all gameobjects, fps counting etc.
 
 You're probably familiar with this very common Gosu pattern:
   
@@ -94,9 +108,9 @@ Chingu doesn't change any fundamental concept of Gosu, but it will make the abov
   #
   # If we create classes from Chingu::GameObject we get stuff for free.
   # The accessors: image,x,y,zorder,angle,factor_x,factor_y,center_x,center_y,mode,update,draw
-  # You might regognize thoose from #draw_rot - http://www.libgosu.org/rdoc/classes/Gosu/Image.html#M000023
+  # You might recognize those from #draw_rot - http://www.libgosu.org/rdoc/classes/Gosu/Image.html#M000023
   # And in it's core, that's what Chingu::GameObject is, an encapsulation of draw_rot with some extra cheese.
-  # For eaxmple, we get automatic calls to draw/update with Chingu::GameObject, which usually is what you want. 
+  # For example, we get automatic calls to draw/update with Chingu::GameObject, which usually is what you want. 
   # You could stop this by doing: @player = Player.new(:draw => false, :update => false)
   #
   class Player < Chingu::GameObject
@@ -121,13 +135,13 @@ If you've worked with Gosu for a while you're probably tired of passing around t
 Chingu solves this (as has many other developers) with a global variable $window. Yes, globals are bad, but in this case it kinda makes sense. It's used under the hood in various places.
 
 === Chingu::GameObject
-This is our basic "gameunit"-class, meaning most ingame objects (players, enemies, bullets etc) should be inherited from Chingu::GameObject. The basic ideas behind it are:
+This is our basic "game unit"-class, meaning most in game objects (players, enemies, bullets etc) should be inherited from Chingu::GameObject. The basic ideas behind it are:
 
-* Encapsulate only the very common basics that Most ingame objects need
-* Keep naming close to Gosu, but add smart convenientmethods / shortcuts and a more rubyish feeling
-* No gamelogic at all allowed in GameObject, since that is most likely usefull for others
+* Encapsulate only the very common basics that Most in game objects need
+* Keep naming close to Gosu, but add smart convenient methods / shortcuts and a more rubyish feeling
+* No game logic at all allowed in GameObject, since that is most likely useful for others
 
-I've chose to base it around Image#draw_rot. So basicly all the arguments that you pass to draw_rot can be passed to GameObject#new when creating a new object, an example using almost all arguments would be:
+I've chose to base it around Image#draw_rot. So basically all the arguments that you pass to draw_rot can be passed to GameObject#new when creating a new object, an example using almost all arguments would be:
   
   #
   # You probably recognize the arguments from http://www.libgosu.org/rdoc/classes/Gosu/Image.html#M000023
@@ -141,9 +155,9 @@ I've chose to base it around Image#draw_rot. So basicly all the arguments that y
 
   #
   # I've tried doing sensible defaults:
-  # x/y = [middle of the screen]  for superquick display where it should be easy in sight)
+  # x/y = [middle of the screen]  for super quick display where it should be easy in sight)
   # angle = 0                     (no angle by default)
-  # center_x/center_y = 0.5       (basicly the center of the image will be drawn at x/y)
+  # center_x/center_y = 0.5       (basically the center of the image will be drawn at x/y)
   # factor_x/factor_y = 1         (no zoom by default)
   # 
   @player = Player.new
@@ -155,16 +169,16 @@ I've chose to base it around Image#draw_rot. So basicly all the arguments that y
   @player = Player.new(:draw => false, :update => false)
 
 === GameState / GameStateManager
-Chingu incorperates a basic push/pop gamestate system (as discuessed here: http://www.gamedev.net/community/forums/topic.asp?topic_id=477320).
+Chingu incorporates a basic push/pop game state system (as discussed here: http://www.gamedev.net/community/forums/topic.asp?topic_id=477320).
 
-Gamestates is a way of organizing your intros, menus, levels.
+Game states is a way of organizing your intros, menus, levels.
 
-Gamestates aren't complicated. In Chingu a GameState is a class that behaves mostly like your default Gosu::Window (or in our case Chingu::Window) gameloop.
+Game states aren't complicated. In Chingu a GameState is a class that behaves mostly like your default Gosu::Window (or in our case Chingu::Window) game loop.
 
   
   class Intro < Chingu::GameState
     def update
-      # gamelogic here
+      # game logic here
     end
     
     def draw
@@ -183,7 +197,7 @@ Gamestates aren't complicated. In Chingu a GameState is a class that behaves mos
   end
 
 Looks familiar ye?
-Active that gamestate/gameloop in your mainwindow (which is always the spider in the net).
+Active that game state/game loop in your main window (which is always the spider in the net).
 
   class Game < Chingu::Window
     def initialize
@@ -191,20 +205,20 @@ Active that gamestate/gameloop in your mainwindow (which is always the spider in
     end
   end
   
-A GameState in Chingu is just a class with the following instancemethods: 
+A GameState in Chingu is just a class with the following instance methods: 
 
-* setup()     - called when gamestate becomes active (switch_gamestate(gamestate) for example)
+* setup()     - called when game state becomes active (switch_gamestate(gamestate) for example)
 * button_down(id) - Called when a button is down
 * button_up(id)   - Called when a button is released
-* update()    - just as in your normal gameloop, put your gamelogic here.
-* draw()      - just as in your normal gameloop, pur your draws here.
-* finalize()  - called when a gamestate is finished
+* update()    - just as in your normal game loop, put your game logic here.
+* draw()      - just as in your normal game loop, put your screen manipulation here.
+* finalize()  - called when a game state is finished
 
-Chingu::Window automaticly creates a @game_state_manager and makes it accessible in our gameloop.
-By default the gameloop calls update() / draw() on the the current gamestate.
+Chingu::Window automatically creates a @game_state_manager and makes it accessible in our game loop.
+By default the game loop calls update() / draw() on the the current game state.
 
-Chingu also has a couple of helpers to easy change between gamestates.
-In a mainloop or in a gamestate:
+Chingu also has a couple of helpers to easy change between game states.
+In a main loop or in a game state:
 * push_gamestate(state)     - adds a new gamestate, which then becomes the active one
 * pop_gamestate             - removes active gamestate and activates the previous one
 * switch_gamestate(state)   - pop all gamestates until given state is found
@@ -233,56 +247,70 @@ You might wonder why this is nessesary in the straight Gosu example:
   @image = Image.new(File.join(ROOT_PATH, "media", "player.png"))
 
 It enables you to start your game from any directory and it will still find your assets (pictures, samples, fonts etc..) correctly.
-For a local developmentversion this might not be important, you're likely to start the game from the games root-dir.
-But as soon as you try to deploy (for example to windows with Ocra - http://github.com/larsch/ocra/tree/master) you'll run into trouble of you dont do it like that.
+For a local development version this might not be important, you're likely to start the game from the games root-dir.
+But as soon as you try to deploy (for example to windows with OCRA - http://github.com/larsch/ocra/tree/master) you'll run into trouble of you dont do it like that.
  
 Chingu solves this problem behind the scenes for the most common assets. The 2 lines above can be replaced with:
 Image["player.png"]
 
 You also have Sound["player.png"]
 
-Tiles and fonts are trickier since they require extra parameters so you'll have to do thoose the ordinary way.
+Tiles and fonts are trickier since they require extra parameters so you'll have to do those the ordinary way.
 You'll get $window.root (equivalent to ROOT_PATH above) for free though which points to the dir containing the game.
+
+=== Text
+Text is a class to give the use of Gosu::Font more rubyish feel and fit it better into Chingu.
+
+# Pure Gosu
+  @font = Gosu::Font.new($window, "verdana", 30)
+  @font.draw("A Text", 200, 50, 55, 2.0)
+  
+# Chingu
+  @text = Chingu::Text.new(:text => "A Text", :x => 200, :y => 50, :zorder => 55, :factor_x => 2.0)
+  @text.draw  # usually not needed as Text is a GameObject and therefore autodrawn
+
+@text comes with a number of changeable properties, x,y,zorder,angle,factor_x,color,mode etc.
 
 
 == TODO:
-* Complete the keymap-definitions with all possible keys
+* (half done) Complete the keymap-definitions with all possible keys
 * Complete keymap-stuff with released-states etc
 * More gfx effects, for example: fade in/out to a specific color (black makes sense between levels).
 * Summon good proven community gosu snippets into Chingu
-* -Generate docs @ ippa.github.com-  http://rdoc.info/projects/ippa/chingu !
-* -A good scene-manager to manage welcomescreens, levels and gameflow- GameStateManager / GameState !
+* (done) Generate docs @ ippa.github.com-  http://rdoc.info/projects/ippa/chingu !
+* (done) A good scene-manager to manage welcome screens, levels and game flow- GameStateManager / GameState !
 * More docs
-* -Make a gem- first gem made on github
+* (done) Make a gem- first gem made on github
 * Automate gemgenning rake-task even more
 * More examples when effects are more complete
 * class ChipmunkObject
 * class Actor/MovingActor with maybe abit more logic then the basic GameObject. Would ppl find is useful?
-* Spellcheck all docs, sloppy spelling turns ppl off.
+* Spell check all docs, sloppy spelling turns ppl off.
 * Tests
 * Streamline fps / tick code
-* Encapsulate Font.new / draw_rot with a "class Text < GameObject"
-* Make it possible for ppl to use the parts of chingu they like
-* A more robust gamestate <-> game_object system to connect them together.
+* (done) Encapsulate Font.new / draw_rot with a "class Text < GameObject"
+* Make it possible for ppl to use the parts of Chingu they like
+* A more robust game state <-> game_object system to connect them together.
+* Get better at styling rdocs
+* all “gamestate” ? “game state” ?
 
 == WHY?
-* Plain gosu is very minimalistic, perfect to build some higherlevel logic on!
-* Deployment and assethandling should be simple
-* Managing gamestates/scenes (intros, menus, levels etc) should be simple
-* There are patterns in gamedevelopment
+* Plain Gosu is very minimalistic, perfect to build some higher level logic on!
+* Deployment and asset handling should be simple
+* Managing game states/scenes (intros, menus, levels etc) should be simple
+* There are patterns in game development
 
 == OPINIONS
 * Less code is usually better
-* Hasharguments FTW. And it becomes even better in 1.9.
+* Hash arguments FTW. And it becomes even better in 1.9.
 * Don't separate too much from Gosus core-naming
 
 == CREDITS:
 Jacius of Rubygame (For doing cool stuff that's well documented as re-usable). So far rect.rb and named_resource.rb is taken from Rubygame.
 
-jlnr,philymore,shawn24 for contructive feedback
-
+jlnr,philymore,shawn24 for constructive feedback
 
 
 == REQUIREMENTS:
 * Gosu latest version
-* Ruby 1.8/1.9
+* Ruby 1.8 (Has not been verified with 1.9 yet)
