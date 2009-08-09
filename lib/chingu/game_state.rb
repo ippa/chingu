@@ -5,12 +5,12 @@ module Chingu
         
     attr_reader :options              # so jac can access his :level-number
     attr_reader :game_objects
-    attr_accessor :keymap
+    attr_accessor :input
     
     def initialize(options = {})
       @options = options
       @game_objects = Array.new
-      @keymap = nil
+      @input = options[:input]
       $window.game_state_manager.inside_state = self
       setup
     end

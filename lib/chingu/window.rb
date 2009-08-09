@@ -4,7 +4,7 @@ module Chingu
     include Chingu::DrawHelpers         # adds fill() etc..
     
 		attr_reader :root, :update_list, :draw_list, :tick, :game_state_manager
-		attr_accessor :key_receivers, :keymap
+		attr_accessor :key_receivers, :input
     attr_reader :game_objects
 		
     #
@@ -16,7 +16,7 @@ module Chingu
     # - Standard #update which updates all Chingu::GameObject's 
     # - Standard #draw which goes through 
     # - Assethandling with Image["picture.png"] and Sample["shot.wav"]
-    # - Default keymap mapping escape to close 
+    # - Default input mapping escape to close 
     #
 		def initialize(width = 640, height = 480)
 			full_screen = ARGV.include?("--fullscreen")
@@ -28,7 +28,7 @@ module Chingu
 			Gosu::Tile.autoload_dirs = [".", File.join(@root, "gfx"), File.join(@root, "media")]
 			
       @game_objects = []
-      @keymap = nil
+      @input = nil
       
 			@ticks = 0
 			@last_tick = Gosu::milliseconds
@@ -39,7 +39,7 @@ module Chingu
 			@update_list = []
 			@draw_list = []
       
-			self.keymap = { :escape => close }
+			self.input = { :escape => close }
 		end
     
     def add_game_object(game_object)
@@ -82,7 +82,7 @@ module Chingu
 			update_tick
 
       #
-      # Process keymaps for:
+      # Process inputs for:
       # - Our main game window (self)
       # - .. and all gameobjects connected to it
       # - the active gamestate
@@ -91,10 +91,10 @@ module Chingu
       [self, @game_state_manager.state].each do |object|
         next if object.nil?
         
-				dispatch_keymap_for(object)
+				dispatch_input_for(object)
         
         object.game_objects.each do |game_object|
-          dispatch_keymap_for(game_object)
+          dispatch_input_for(game_object)
         end
 			end
 
@@ -110,16 +110,15 @@ module Chingu
     private 
     
     #
-    # Dispatches a keymap for any given object
+    # Dispatches a input for any given object
     #
-    def dispatch_keymap_for(object)
-      return if object.nil? || object.keymap.nil?
+    def dispatch_input_for(object)
+      return if object.nil? || object.input.nil?
       
-      object.keymap.each do |symbol, action|
-        if button_down?(Keymap::SYMBOL_TO_CONSTANT[symbol])
-          # puts "#{object.to_s} :#{symbol.to_s} => #{action.to_s}"
-          # puts "[#{action.class.to_s} - #{action.class.superclass.to_s}]"
-          
+      object.input.each do |symbol, action|
+        if button_down?(Input::SYMBOL_TO_CONSTANT[symbol])
+          #puts "#{object.to_s} :#{symbol.to_s} => #{action.to_s}"
+          #puts "[#{action.class.to_s} - #{action.class.superclass.to_s}]"         
           if action.is_a? Symbol
             object.send(action)
           elsif action.is_a? Proc

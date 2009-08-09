@@ -9,7 +9,7 @@ include Gosu
 class Game < Chingu::Window
   def initialize
     super    
-    self.keymap = {:left => :scroll_left, :right => :scroll_right, :escape => :close}
+    self.input = {:left => :scroll_left, :right => :scroll_right, :escape => :close}
     
     @parallax = Chingu::Parallax.new(:x => 0, :y => 0, :center_x => 0, :center_y => 0)
     

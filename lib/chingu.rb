@@ -17,7 +17,7 @@ require 'gosu'
 		data_structures
 		rect
 		animation
-		keymap
+		input
     parallax
 		}.each do |lib|
       root ||= File.dirname(File.expand_path(__FILE__))
@@ -25,5 +25,5 @@ require 'gosu'
     end
 
 module Chingu
-  VERSION = "0.0.2"
+  VERSION = "0.2.0"
 end

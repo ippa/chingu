@@ -1,11 +1,20 @@
 = CHINGU
-SOURCE: http://github.com/ippa/chingu/tree/master
+http://github.com/ippa/chingu/tree/master
+
 DOCUMENTATION: http://rdoc.info/projects/ippa/chingu
 
-This is a early preview, a lot of functionality is still missing!
+This is an early preview, a lot of functionality is still missing!
+It's also in a state of flux while I decide on core-naming etc.
+
+== INSTALL
+  gem sources -a http://gems.github.com
+  sudo gem install ippa-chingu
+
 
 == DESCRIPTION
-Game framework built on top of the OpenGL accelerated game lib Gosu. "Chingu" means "Friend" in Korean.
+Game framework built on top of the OpenGL accelerated game lib Gosu. 
+It adds simple yet powerfull game states, prettier inputhandling, deploymentsafe asset-handling, a basic re-usable game object and automation of common task.
+
 
 == THE STORY
 The last years I've dabbled around a lot with game development.
@@ -16,6 +25,7 @@ After 10+ game prototypes and some finished smaller games I started to see patte
 
 There was always a huge big chunk of checking keyboard-events in the main loop.
 Borrowing ideas from Rubygame this has now become @player.keyboard(:left => :move_left, :space => :fire ... etc.
+
 
 == OVERVIEW
 Chingu consists of the following core classes:
@@ -101,7 +111,7 @@ Chingu doesn't change any fundamental concept of Gosu, but it will make the abov
       # You'll need your own Game#update/#draw after a while, but just put #super there and Chingu can do its thing!
       #
       @player = Player.new
-      @player.keymap = {:left => :move_left, :right => :move_right}
+      @player.input = {:left => :move_left, :right => :move_right}
     end    
   end
     
@@ -139,7 +149,7 @@ This is our basic "game unit"-class, meaning most in game objects (players, enem
 
 * Encapsulate only the very common basics that Most in game objects need
 * Keep naming close to Gosu, but add smart convenient methods / shortcuts and a more rubyish feeling
-* No game logic at all allowed in GameObject, since that is most likely useful for others
+* No game logic allowed in GameObject, since that's not likely to be useful for others.
 
 I've chose to base it around Image#draw_rot. So basically all the arguments that you pass to draw_rot can be passed to GameObject#new when creating a new object, an example using almost all arguments would be:
   
@@ -223,10 +233,10 @@ In a main loop or in a game state:
 * pop_gamestate             - removes active gamestate and activates the previous one
 * switch_gamestate(state)   - pop all gamestates until given state is found
 
-To switch to a certain gamestate with a keypress use Chingus keymapper:
+To switch to a certain gamestate with a keypress use Chingus input handler:
   class Intro < Chingu::GameState
     def setup
-      self.keymap = { :space => lambda{push_gamestate(Menu.new)} }
+      self.input = { :space => lambda{push_gamestate(Menu.new)} }
     end
   end
   
@@ -234,7 +244,7 @@ Or Chingus pretty shortcut:
 
   class Intro < Chingu::GameState
     def setup
-      self.keymap = { :space => Menu }      #  { :space => Menu.new } works as well.
+      self.input = { :space => Menu }      #  { :space => Menu.new } works as well.
     end
   end
 
@@ -267,14 +277,15 @@ Text is a class to give the use of Gosu::Font more rubyish feel and fit it bette
   
 # Chingu
   @text = Chingu::Text.new(:text => "A Text", :x => 200, :y => 50, :zorder => 55, :factor_x => 2.0)
-  @text.draw  # usually not needed as Text is a GameObject and therefore autodrawn
+  @text.draw
 
-@text comes with a number of changeable properties, x,y,zorder,angle,factor_x,color,mode etc.
+@text.draw is usually not needed as Text is a GameObject and therefore autodrawn.
+It's not only that the second example is readable by ppl now even familiar with Gosu, @text comes with a number of changeable properties, x,y,zorder,angle,factor_x,color,mode etc. Set a new x or angle or color and it will instantly update on screen.
 
 
 == TODO:
-* (half done) Complete the keymap-definitions with all possible keys
-* Complete keymap-stuff with released-states etc
+* (done) Complete the input-definitions with all possible inputs (keyboard, gamepad, mouse)!
+* Complete input-stuff with released-states etc
 * More gfx effects, for example: fade in/out to a specific color (black makes sense between levels).
 * Summon good proven community gosu snippets into Chingu
 * (done) Generate docs @ ippa.github.com-  http://rdoc.info/projects/ippa/chingu !
@@ -293,6 +304,8 @@ Text is a class to give the use of Gosu::Font more rubyish feel and fit it bette
 * A more robust game state <-> game_object system to connect them together.
 * Get better at styling rdocs
 * all “gamestate” ? “game state” ?
+* FIX example4: :p => Pause.new  would Change the "inside_game_state" to Pause and make @player belong to Pause.
+* intergrate rubygame_movie_make (maybe after a rename, GameAutomator? GameSequence?
 
 == WHY?
 * Plain Gosu is very minimalistic, perfect to build some higher level logic on!

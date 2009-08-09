@@ -1,5 +1,5 @@
 module Chingu
-	module Keymap
+	module Input
 		include Gosu::Button
     
     #
@@ -28,7 +28,7 @@ module Chingu
       KbInsert      => [:insert, :ins],
       KbLeft        => [:left],
       KbLeftAlt     => [:left_alt, :lalt],
-      KbLeftControl => [:left_controll, :left_ctrl, :lctrl],
+      KbLeftControl => [:left_control, :left_ctrl, :lctrl],
       KbLeftShift   => [:left_shift, :lshift],
       
       
@@ -54,10 +54,10 @@ module Chingu
       MsWheelDown       => [:mouse_wheel_down, :wheel_down],
       MsWheelUp         => [:mouse_wheel_up, :wheel_up],
       
-      GpDown 	          => [:gamepad_down, :gp_down],
-      GpLeft 	          => [:gamepad_left, :gp_left],
-      GpRight 	        => [:gamepad_right, :gp_right],
-      GpUp              => [:gamepad_up, :gp_up]
+      GpDown 	          => [:gamepad_down, :gp_down, :pad_down],
+      GpLeft 	          => [:gamepad_left, :gp_left, :pad_left],
+      GpRight 	        => [:gamepad_right, :gp_right, :pad_right],
+      GpUp              => [:gamepad_up, :gp_up, :pad_up]
 		}
     
     # Letters, A-Z

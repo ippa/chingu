@@ -11,3 +11,9 @@ Hoe.spec "chingu" do
   self.rubyforge_name = "chingu"
   self.version = Chingu::VERSION
 end
+
+desc "Build a working gemspec"
+task :gemspec do
+  system "rake git:manifest"
+  system "rake debug_gem | grep -v \"(in \" > chingu.gemspec"
+end

@@ -1,2 +1,5 @@
+=== 0.0.2 / 2009-08-10
+tons of new stuff and fixes. complete keymap. gamestate system. moreexamples/docs. better game_object.
+
 === 0.0.1 / 2009-08-05
 first release

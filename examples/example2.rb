@@ -15,7 +15,7 @@ class Game < Chingu::Window
     super
     
     @player = Player.new(:x => 200, :y => 200, :image => Image["spaceship.png"])
-    @player.keymap = {:left => :move_left, :right => :move_right, :up => :move_up, :down => :move_down, :space => :fire}
+    @player.input = {:left => :move_left, :right => :move_right, :up => :move_up, :down => :move_down, :space => :fire}
   end
 
   #
@@ -32,7 +32,7 @@ class Game < Chingu::Window
   #
   # Gosus place for gamelogic is #update in the mainwindow
   #
-  # A #super call here would call #update on all Chingu::Actors and check their keymaps, and call the specified method.
+  # A #super call here would call #update on all Chingu::Actors and check their inputs, and call the specified method.
   # 
   def update
     

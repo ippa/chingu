@@ -6,10 +6,8 @@ module Chingu
   # All objects that inherits from this class will automaticly be updated and drawn.
   #
   class GameObject
-    #include Chingu::KeymapHelpers
-    
     attr_accessor :image, :x, :y, :angle, :center_x, :center_y, :factor_x, :factor_y, :mode
-    attr_accessor :update, :draw, :keymap
+    attr_accessor :update, :draw, :input
     attr_reader :options
     
     #
@@ -77,7 +75,7 @@ module Chingu
       # gameloop/framework logic
       @update = options[:update] || true
       @draw = options[:draw] || true
-      @keymap = options[:keymap] || nil
+      @input = options[:input] || nil
       
       #
       # A GameObject can either belong to a GameState or our mainwindow ($window)

@@ -15,7 +15,7 @@ class Game < Chingu::Window
   def initialize
     super 
     @player = Player.new(:x => 200, :y => 200, :image => Image["spaceship.png"])
-    @player.keymap = {:left => :move_left, :right => :move_right, :up => :move_up, :down => :move_down}
+    @player.input = {:left => :move_left, :right => :move_right, :up => :move_up, :down => :move_down}
   end
 end
 

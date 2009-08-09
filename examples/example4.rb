@@ -31,6 +31,9 @@ class Game < Chingu::Window
   def initialize
     super    
     push_gamestate(Intro)
+    
+    # Yes you can do crazy things like this :)
+    self.input = { :left_mouse_button => lambda{Chingu::Text.new(:text => "Woff!")}}    
   end
 end
 
@@ -42,6 +45,7 @@ class Player < Chingu::GameObject
     super
     @image = Image["spaceship.png"]
   end
+  
   def move_left;  @x -= 1; end
   def move_right; @x += 1; end
   def move_up;    @y -= 1; end
@@ -54,7 +58,7 @@ end
 class Intro < Chingu::GameState 
   def setup
     @title = Chingu::Text.new(:text=>"Intro (press space)", :x=>200, :y=>50, :size=>30)
-    self.keymap = { :space => Menu, :escape => :close }
+    self.input = { :space => Menu, :escape => :close }
   end
 end
 
@@ -64,7 +68,7 @@ end
 class Menu < Chingu::GameState
   def setup
     @title = Chingu::Text.new(:text => "GameState Menu (press 'm')", :x => 200, :y => 50, :size=>30)
-    self.keymap = { :m => Level.new(:level => 10) }
+    self.input = { :m => Level.new(:level => 10) }
   end
 end
 
@@ -75,12 +79,12 @@ class Level < Chingu::GameState
   def setup
     @title = Chingu::Text.new(:text=>"Level #{options[:level].to_s}. Pause with 'P'", :x=>200, :y=>10, :size => 30)
     @player = Player.new(:x => 200, :y => 200)    
-    @player.keymap = {:left => :move_left, :right => :move_right, :up => :move_up, :down => :move_down, :left_ctrl => :fire}
+    @player.input = {:left => :move_left, :right => :move_right, :up => :move_up, :down => :move_down, :left_ctrl => :fire}
     
     #
-    # The keymapper understands gamestates, when 'p' is pressed push_gamegate(Pause) will be called.
+    # The input-handler understands gamestates. P is pressed --> push_gamegate(Pause)
     #
-    self.keymap = {:p => Pause, :escape => :close}  
+    self.input = {:p => Pause, :escape => :close}  
   end    
 end
 
@@ -90,7 +94,7 @@ end
 class Pause < Chingu::GameState
   def setup
     @title = Chingu::Text.new(:text=>"PAUSED (press 'u' to un-pause)", :x=>100, :y=>200, :size=>20, :color => Color.new(0xFF00FF00))
-    self.keymap = { :u => :un_pause }
+    self.input = { :u => :un_pause }
   end
 
   def un_pause
