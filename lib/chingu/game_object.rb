@@ -85,11 +85,6 @@ module Chingu
       #
       @parent = $window.game_state_manager.inside_state || $window
       @parent.add_game_object(self)  if @parent
-      
-      #puts "-----------"
-      #puts @parent.class
-      #puts self.class
-      #puts "-----------"
     end
     
     
