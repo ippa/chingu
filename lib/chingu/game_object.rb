@@ -71,7 +71,8 @@ module Chingu
       @center_y = options[:center_y] || options[:center] || @@center_y
       @factor_x = options[:factor_x] || options[:factor] || @@factor_x
       @factor_y = options[:factor_y] || options[:factor] || @@factor_y
-      @mode = options[:mode] || :additive
+      @color = options[:color] || 0xFFFFFFFF
+      @mode = options[:mode] || :default # :additive is also available.
       
       # gameloop/framework logic
       @update = options[:update] || true
@@ -101,7 +102,7 @@ module Chingu
     # Calling #to_i on @x and @y enables thoose to be Float's, for subpixel slow movement in #update
     #
     def draw
-      @image.draw_rot(@x.to_i, @y.to_i, @zorder, @angle, @center_x, @center_y, @factor_x, @factor_y)
+      @image.draw_rot(@x.to_i, @y.to_i, @zorder, @angle, @center_x, @center_y, @factor_x, @factor_y, @color, @mode)
     end
   end
 end
