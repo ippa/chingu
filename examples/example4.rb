@@ -3,7 +3,29 @@ require '../lib/chingu.rb'
 include Gosu
 
 #
-# GameState example.
+# Example demonstrating jumping between 4 different game states.
+#
+# push_gamestate, pop_gamestate and previous_gamestate are 3 helpers that Chingu mixes in
+# into Chingu::Window and Chingu::GameState
+#
+# Behind the scenes they work against @game_state_manager that's autocreated within Chingu::Window.
+#
+# Execution in example4 flows like this:
+#
+# 1) Core Gosu calls instancemethods draw / update in the class based on Gosu::Window
+#    In this example 'Game' since "Game < Chingu::Window" and "Chingu::Window < Gosu::Window"
+# 
+# 2) In its turn Game (Chingu::Window) calls @game_state_manager.draw / update
+#
+# 3) @game_state_manager calls draw / update on the current active game state
+#
+# 4) Each gamestate keeps a collection @game_objects which it calls draw / update on.
+#    Any object based on Chingu::GameObject (In this example Player and Text) automatically
+#    gets added to the correct state or or main window.
+#
+
+#
+# Our standard Chingu::Window that makes all the magic happen.
 #
 class Game < Chingu::Window
   def initialize
@@ -16,6 +38,10 @@ end
 # Our Player
 #
 class Player < Chingu::GameObject
+  def initialize(options)
+    super
+    @image = Image["spaceship.png"]
+  end
   def move_left;  @x -= 1; end
   def move_right; @x += 1; end
   def move_up;    @y -= 1; end
@@ -47,13 +73,14 @@ end
 #
 class Level < Chingu::GameState
   def setup
-    #
-    # FIX: :p => Pause.new  would Change the "inside_game_state" to Pause and make @player belong to Pause.
-    #
     @title = Chingu::Text.new(:text=>"Level #{options[:level].to_s}. Pause with 'P'", :x=>200, :y=>10, :size => 30)
-    @player = Player.new(:x => 200, :y => 200, :image => Image["spaceship.png"])
+    @player = Player.new(:x => 200, :y => 200)    
     @player.keymap = {:left => :move_left, :right => :move_right, :up => :move_up, :down => :move_down, :left_ctrl => :fire}
-    self.keymap = {:p => Pause, :escape => :close}
+    
+    #
+    # The keymapper understands gamestates, when 'p' is pressed push_gamegate(Pause) will be called.
+    #
+    self.keymap = {:p => Pause, :escape => :close}  
   end    
 end
 
@@ -72,7 +99,7 @@ class Pause < Chingu::GameState
   
   def draw
     previous_gamestate.draw   # Draw prev gamestate onto screen
-    super                     # Draw game objects in current game state
+    super                     # Draw game objects in current game state, this includes Chingu::Texts
   end  
 end
 
