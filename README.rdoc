@@ -125,7 +125,7 @@ This is our basic "gameunit"-class, meaning most ingame objects (players, enemie
 
 * Encapsulate only the very common basics that Most ingame objects need
 * Keep naming close to Gosu, but add smart convenientmethods / shortcuts and a more rubyish feeling
-* No gamelogic at all allowed in ScreenObject, since that is most likely usefull for others
+* No gamelogic at all allowed in GameObject, since that is most likely usefull for others
 
 I've chose to base it around Image#draw_rot. So basicly all the arguments that you pass to draw_rot can be passed to GameObject#new when creating a new object, an example using almost all arguments would be:
   
@@ -149,11 +149,82 @@ I've chose to base it around Image#draw_rot. So basicly all the arguments that y
   @player = Player.new
   
   #
-  # By default Chingu::Window calls update & draw on all ScreenObjects in it's own update/draw.
+  # By default Chingu::Window calls update & draw on all GameObjects in it's own update/draw.
   # If this is not what you want, use :draw and :update
   #
   @player = Player.new(:draw => false, :update => false)
 
+=== GameState / GameStateManager
+Chingu incorperates a basic push/pop gamestate system (as discuessed here: http://www.gamedev.net/community/forums/topic.asp?topic_id=477320).
+
+Gamestates is a way of organizing your intros, menus, levels.
+
+Gamestates aren't complicated. In Chingu a GameState is a class that behaves mostly like your default Gosu::Window (or in our case Chingu::Window) gameloop.
+
+  
+  class Intro < Chingu::GameState
+    def update
+      # gamelogic here
+    end
+    
+    def draw
+      # screen manipulation here
+    end
+    
+    def button_down(id)
+      # called when a button is pressed
+    end
+    
+    def finalize
+      push_gamestate(Menu.new)  # Called when Intro dies for whatever reason.
+    end
+    
+    # etc etc
+  end
+
+Looks familiar ye?
+Active that gamestate/gameloop in your mainwindow (which is always the spider in the net).
+
+  class Game < Chingu::Window
+    def initialize
+      push_gamestate(Intro.new)
+    end
+  end
+  
+A GameState in Chingu is just a class with the following instancemethods: 
+
+* setup()     - called when gamestate becomes active (switch_gamestate(gamestate) for example)
+* button_down(id) - Called when a button is down
+* button_up(id)   - Called when a button is released
+* update()    - just as in your normal gameloop, put your gamelogic here.
+* draw()      - just as in your normal gameloop, pur your draws here.
+* finalize()  - called when a gamestate is finished
+
+Chingu::Window automaticly creates a @game_state_manager and makes it accessible in our gameloop.
+By default the gameloop calls update() / draw() on the the current gamestate.
+
+Chingu also has a couple of helpers to easy change between gamestates.
+In a mainloop or in a gamestate:
+* push_gamestate(state)     - adds a new gamestate, which then becomes the active one
+* pop_gamestate             - removes active gamestate and activates the previous one
+* switch_gamestate(state)   - pop all gamestates until given state is found
+
+To switch to a certain gamestate with a keypress use Chingus keymapper:
+  class Intro < Chingu::GameState
+    def setup
+      self.keymap = { :space => lambda{push_gamestate(Menu.new)} }
+    end
+  end
+  
+Or Chingus pretty shortcut:
+
+  class Intro < Chingu::GameState
+    def setup
+      self.keymap = { :space => Menu }      #  { :space => Menu.new } works as well.
+    end
+  end
+
+Chingu will detect that Menu is a gamestate-class and call push_gamestate on it when space is pressed inside Intro.
 
 === Assets / Paths
 
@@ -176,30 +247,41 @@ You'll get $window.root (equivalent to ROOT_PATH above) for free though which po
 
 == TODO:
 * Complete the keymap-definitions with all possible keys
+* Complete keymap-stuff with released-states etc
 * More gfx effects, for example: fade in/out to a specific color (black makes sense between levels).
 * Summon good proven community gosu snippets into Chingu
-* Generate docs @ ippa.github.com
-* A good scene-manager to manage welcomescreens, levels and gameflow
+* -Generate docs @ ippa.github.com-  http://rdoc.info/projects/ippa/chingu !
+* -A good scene-manager to manage welcomescreens, levels and gameflow- GameStateManager / GameState !
 * More docs
-* Make a gem
+* -Make a gem- first gem made on github
+* Automate gemgenning rake-task even more
 * More examples when effects are more complete
 * class ChipmunkObject
-* class Actor/MovingActor (?). Would ppl find is useful?
+* class Actor/MovingActor with maybe abit more logic then the basic GameObject. Would ppl find is useful?
+* Spellcheck all docs, sloppy spelling turns ppl off.
 * Tests
+* Streamline fps / tick code
+* Encapsulate Font.new / draw_rot with a "class Text < GameObject"
+* Make it possible for ppl to use the parts of chingu they like
+* A more robust gamestate <-> game_object system to connect them together.
 
 == WHY?
-* Plain gosu is very minimalistic
+* Plain gosu is very minimalistic, perfect to build some higherlevel logic on!
 * Deployment and assethandling should be simple
+* Managing gamestates/scenes (intros, menus, levels etc) should be simple
 * There are patterns in gamedevelopment
 
 == OPINIONS
 * Less code is usually better
 * Hasharguments FTW. And it becomes even better in 1.9.
-* Don't separate too much from Gosus core-naming and functionallity
-* Make it possible for ppl to use the parts of chingu they like
+* Don't separate too much from Gosus core-naming
 
 == CREDITS:
 Jacius of Rubygame (For doing cool stuff that's well documented as re-usable). So far rect.rb and named_resource.rb is taken from Rubygame.
+
+jlnr,philymore,shawn24 for contructive feedback
+
+
 
 == REQUIREMENTS:
 * Gosu latest version

@@ -5,7 +5,10 @@
 require 'rubygems'
 require 'gosu'
 
-%w{	window
+%w{	helpers
+    game_state_manager
+    game_state
+    window
 		fpscounter
 		named_resource
 		assets
@@ -21,5 +24,5 @@ require 'gosu'
     end
 
 module Chingu
-  VERSION = "0.0.1"
+  VERSION = "0.0.2"
 end

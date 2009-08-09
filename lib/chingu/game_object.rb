@@ -6,6 +6,8 @@ module Chingu
   # All objects that inherits from this class will automaticly be updated and drawn.
   #
   class GameObject
+    #include Chingu::KeymapHelpers
+    
     attr_accessor :image, :x, :y, :angle, :center_x, :center_y, :factor_x, :factor_y, :mode
     attr_accessor :update, :draw, :keymap
     attr_reader :options
@@ -71,39 +73,27 @@ module Chingu
       @factor_y = options[:factor_y] || options[:factor] || @@factor_y
       @mode = options[:mode] || :additive
       
-      # gameloop logic
+      # gameloop/framework logic
       @update = options[:update] || true
       @draw = options[:draw] || true
+      @keymap = options[:keymap] || nil
       
-      automatic_update!	if @update
-      automatic_draw!		if @draw
+      #
+      # A GameObject can either belong to a GameState or our mainwindow ($window)
+      # .. or live in limbo with manual updates
+      #
+      @parent = $window.game_state_manager.inside_state || $window
+      @parent.add_game_object(self)  if @parent
+      
+      #puts "-----------"
+      #puts @parent.class
+      #puts self.class
+      #puts "-----------"
     end
     
-    #
-    # Add self to the list of objects that Chingu calls #update on each update-loop. 
-    # This is done by default except if you create a gameobject with {:update => false}
-    #
-    def automatic_update!
-      $window.automatic_update_for(self)
-    end
-    #
-    # Add self to the list of objects that Chingu calls #draw on each update-loop.
-    # This is done by default except if you create a gameobject with {:draw => false}
-    #		
-    def automatic_draw!
-      $window.automatic_draw_for(self)
-    end
     
-    def keymap=(keymap)
-      @keymap = keymap
-      $window.key_recievers << self		unless $window.key_recievers.include? self
-    end
-    
-    #
-    # Override this with your own game-logic
-    # 
     def update
-			
+      # Objects gamelogic here
 		end
     
     #
@@ -111,7 +101,7 @@ module Chingu
     # Calling #to_i on @x and @y enables thoose to be Float's, for subpixel slow movement in #update
     #
     def draw
-      @image.draw_rot(@x.to_i, @y.to_i, @zorder, @angle, @center_x, @center_y, @factor_x, @factor_y, @mode)
+      @image.draw_rot(@x.to_i, @y.to_i, @zorder, @angle, @center_x, @center_y, @factor_x, @factor_y)
     end
   end
 end

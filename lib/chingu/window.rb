@@ -1,7 +1,11 @@
 module Chingu
 	class Window < Gosu::Window
-		attr_reader :root, :keymap, :update_list, :draw_list, :tick
-		attr_accessor :key_recievers
+    include Chingu::GameStateHelpers    # adds push_gamestate(), pop_gamestate() and previous_gamestate()
+    include Chingu::DrawHelpers         # adds fill() etc..
+    
+		attr_reader :root, :update_list, :draw_list, :tick, :game_state_manager
+		attr_accessor :key_receivers, :keymap
+    attr_reader :game_objects
 		
     #
     # See http://www.libgosu.org/rdoc/classes/Gosu/Window.html
@@ -23,34 +27,25 @@ module Chingu
 			Gosu::Sample.autoload_dirs = [".", File.join(@root, "sound"), File.join(@root, "media")]
 			Gosu::Tile.autoload_dirs = [".", File.join(@root, "gfx"), File.join(@root, "media")]
 			
+      @game_objects = []
+      @keymap = nil
+      
 			@ticks = 0
-			@fps_counter = FPSCounter.new
 			@last_tick = Gosu::milliseconds
-			@key_recievers = []
+      
+      @fps_counter = FPSCounter.new
+			@game_state_manager = GameStateManager.new
+      
 			@update_list = []
 			@draw_list = []
+      
 			self.keymap = { :escape => close }
 		end
     
-    #
-    # Adds object to a list of objects that Chingu calls #update automaticly on
-    #
-		def automatic_update_for(object)
-			@update_list << object	unless @update_list.include?(self)
-		end
+    def add_game_object(game_object)
+      @game_objects.push(game_object) unless @game_objects.include?(game_object)
+    end
 
-    #
-    # Adds object to a list of objects that Chingu calls #draw automaticly on
-    #
-		def automatic_draw_for(object)
-			@draw_list << object		unless @draw_list.include?(self)
-		end
-
-		def keymap=(keymap)
-			@keymap = keymap
-			$window.key_recievers << self		unless $window.key_recievers.include? self
-		end
-		
 		def update_tick
 			@tick = Gosu::milliseconds - @last_tick
 			@last_tick = Gosu::milliseconds
@@ -60,40 +55,84 @@ module Chingu
 		def fps
 			@fps_counter.fps
 		end
+    
+    #
+    # By default button_up sends the keyevent to the GameStateManager
+    # .. Which then is responsible to send it to the right GameState(s)
+    #
+    def button_up(id)
+      @game_state_manager.button_up(id)
+    end
+    
+
+    #
+    # By default button_down sends the keyevent to the GameStateManager
+    # .. Which then is responsible to send it to the right GameState(s)
+    #
+    def button_down(id)
+      @game_state_manager.button_down(id)
+    end
+
 	
     #
     # Standard GOSU main class update
     #
-    #
 		def update
 			@fps_counter.register_tick
 			update_tick
-						
-			key_recievers.each do |key_reciever|	
-				key_reciever.keymap.each do |symbol, action|
-					if button_down?(Keymap::SYMBOL_TO_CONSTANT[symbol])
-						key_reciever.send(action)
-					end
-				end
+
+      #
+      # Process keymaps for:
+      # - Our main game window (self)
+      # - .. and all gameobjects connected to it
+      # - the active gamestate
+      # - ... and all GameObjects connected to it
+      #
+      [self, @game_state_manager.state].each do |object|
+        next if object.nil?
+        
+				dispatch_keymap_for(object)
+        
+        object.game_objects.each do |game_object|
+          dispatch_keymap_for(game_object)
+        end
 			end
-			
-			@update_list.each { |object| object.update }
-		end
-		
-		def draw
-			@draw_list.each { |object| object.draw }
+
+      @game_objects.each { |object| object.update }
+      @game_state_manager.update
 		end
     
-    #
-    # TODO: Move this into it's own file
-    #
-		def fill(color)
-			self.draw_quad(0, 0, color, self.width, 0, color, self.width, self.width, color, 0, self.height, color, 0, :default) 
+ 		def draw
+      @game_objects.each { |object| object.draw }
+      @game_state_manager.draw
 		end
+
+    private 
     
-    def fade(options = {})
+    #
+    # Dispatches a keymap for any given object
+    #
+    def dispatch_keymap_for(object)
+      return if object.nil? || object.keymap.nil?
       
+      object.keymap.each do |symbol, action|
+        if button_down?(Keymap::SYMBOL_TO_CONSTANT[symbol])
+          # puts "#{object.to_s} :#{symbol.to_s} => #{action.to_s}"
+          # puts "[#{action.class.to_s} - #{action.class.superclass.to_s}]"
+          
+          if action.is_a? Symbol
+            object.send(action)
+          elsif action.is_a? Proc
+            action.call
+          elsif action.is_a? Chingu::GameState
+            push_gamestate(action)
+          elsif action.superclass == Chingu::GameState
+            push_gamestate(action)
+          end
+        end
+      end
     end
+    
 	end
 end
 
