@@ -3,7 +3,7 @@ require '../lib/chingu.rb'
 include Gosu
 
 #
-# GameState example
+# GameState example.
 #
 class Game < Chingu::Window
   def initialize
