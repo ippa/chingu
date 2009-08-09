@@ -13,6 +13,7 @@ require 'gosu'
 		named_resource
 		assets
     game_object
+    text
 		data_structures
 		rect
 		animation

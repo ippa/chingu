@@ -7,8 +7,8 @@ include Gosu
 #
 class Game < Chingu::Window
   def initialize
-    super
-    push_gamestate(Intro.new)    
+    super    
+    push_gamestate(Intro)
   end
 end
 
@@ -27,13 +27,9 @@ end
 #
 class Intro < Chingu::GameState 
   def setup
-    @font = Gosu::Font.new($window, "verdana", 30)
+    @title = Chingu::Text.new(:text=>"Intro (press space)", :x=>200, :y=>50, :size=>30)
     self.keymap = { :space => Menu, :escape => :close }
   end
-  
-  def draw
-    @font.draw("Intro... (press space)", 200, 50, 10)
-  end  
 end
 
 #
@@ -41,13 +37,9 @@ end
 #
 class Menu < Chingu::GameState
   def setup
-    @font = Gosu::Font.new($window, "verdana", 30)
+    @title = Chingu::Text.new(:text => "GameState Menu (press 'm')", :x => 200, :y => 50, :size=>30)
     self.keymap = { :m => Level.new(:level => 10) }
   end
-  
-  def draw
-    @font.draw("GameState Menu (press 'm')", 200, 50, 10)
-  end  
 end
 
 #
@@ -58,16 +50,11 @@ class Level < Chingu::GameState
     #
     # FIX: :p => Pause.new  would Change the "inside_game_state" to Pause and make @player belong to Pause.
     #
-    @font = Gosu::Font.new($window, "verdana", 30)
+    @title = Chingu::Text.new(:text=>"Level #{options[:level].to_s}. Pause with 'P'", :x=>200, :y=>10, :size => 30)
     @player = Player.new(:x => 200, :y => 200, :image => Image["spaceship.png"])
     @player.keymap = {:left => :move_left, :right => :move_right, :up => :move_up, :down => :move_down, :left_ctrl => :fire}
     self.keymap = {:p => Pause, :escape => :close}
-  end
-    
-  def draw
-    @font.draw("Level #{options[:level].to_s}. Pause with 'P'", 200, 10, 10)
-    super
-  end
+  end    
 end
 
 #
@@ -75,18 +62,17 @@ end
 #
 class Pause < Chingu::GameState
   def setup
-    @font = Gosu::Font.new($window, "verdana", 40)
+    @title = Chingu::Text.new(:text=>"PAUSED (press 'u' to un-pause)", :x=>100, :y=>200, :size=>20, :color => Color.new(0xFF00FF00))
     self.keymap = { :u => :un_pause }
   end
-  
-  # Return the previous gamestate
+
   def un_pause
-    pop_gamestate
+    pop_gamestate             # Return the previous gamestate
   end
   
   def draw
     previous_gamestate.draw   # Draw prev gamestate onto screen
-    @font.draw("PAUSED (press 'u' to continue)", 10, 200, 10)
+    super                     # Draw game objects in current game state
   end  
 end
 
