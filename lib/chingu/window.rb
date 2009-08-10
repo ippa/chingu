@@ -1,6 +1,6 @@
 module Chingu
 	class Window < Gosu::Window
-    include Chingu::GameStateHelpers    # adds push_gamestate(), pop_gamestate() and previous_gamestate()
+    include Chingu::GameStateHelpers    # adds push_state(), pop_state(), current_state() and previous_state()
     include Chingu::DrawHelpers         # adds fill() etc..
     
 		attr_reader :root, :update_list, :draw_list, :tick, :game_state_manager
@@ -41,6 +41,9 @@ module Chingu
       
 			self.input = { :escape => close }
 		end
+
+    def mapper(block)
+    end
     
     def add_game_object(game_object)
       @game_objects.push(game_object) unless @game_objects.include?(game_object)
@@ -51,7 +54,7 @@ module Chingu
 			@last_tick = Gosu::milliseconds
 			@tick
 		end
-	
+    
 		def fps
 			@fps_counter.fps
 		end
@@ -79,16 +82,45 @@ module Chingu
     #
 		def update
 			@fps_counter.register_tick
-			update_tick
-
-      #
-      # Process inputs for:
-      # - Our main game window (self)
-      # - .. and all gameobjects connected to it
-      # - the active gamestate
-      # - ... and all GameObjects connected to it
-      #
-      [self, @game_state_manager.state].each do |object|
+      update_tick
+      
+      dispatch_input
+      
+      update_game_objects
+      
+      update_game_state_manager
+		end
+    
+ 		def draw
+      @game_objects.each { |object| object.draw }
+      @game_state_manager.draw
+		end
+    
+    #
+    # Call update() on all game objects in main game window.
+    #
+    def update_game_objects
+      @game_objects.each { |object| object.update }
+    end
+    
+    #
+    # Call update() on our game_state_manger
+    # -> call update on active state 
+    # -> call update on all game objects in that state
+    #
+    def update_game_state_manager
+      @game_state_manager.update
+    end
+    
+    #
+    # Process inputs for:
+    # - Our main game window (self)
+    # - .. and all gameobjects connected to it
+    # - the active gamestate
+    # - ... and all GameObjects connected to it
+    #
+    def dispatch_input
+      [self, @game_state_manager.current_state].each do |object|
         next if object.nil?
         
 				dispatch_input_for(object)
@@ -97,15 +129,7 @@ module Chingu
           dispatch_input_for(game_object)
         end
 			end
-
-      @game_objects.each { |object| object.update }
-      @game_state_manager.update
-		end
-    
- 		def draw
-      @game_objects.each { |object| object.draw }
-      @game_state_manager.draw
-		end
+    end
 
     private 
     
@@ -124,9 +148,9 @@ module Chingu
           elsif action.is_a? Proc
             action.call
           elsif action.is_a? Chingu::GameState
-            push_gamestate(action)
+            push_state(action)
           elsif action.superclass == Chingu::GameState
-            push_gamestate(action)
+            push_state(action)
           end
         end
       end

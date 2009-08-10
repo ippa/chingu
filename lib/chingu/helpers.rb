@@ -2,30 +2,29 @@ module Chingu
   module GameStateHelpers
     
     #
-    # push_gamestate accepts either a class inherited from GameState or an object-instance from such a class.
+    # push_state accepts either a class inherited from GameState or an object-instance from such a class.
     #
-    # push_gamestate(Intro) is the same as:
-    # push_gamestate(Intro.new)
+    # push_state(Intro):
+    # game state mananger will create a new Intro-object first time called and cache it.
+    #
+    # push_state(Intro.new):
     # 
-    # The first line ends upp calling "new" to Intro before activating the newlycreated gamestate.
+    # 
+    # The first line ends upp calling "new" to Intro before activating the newlycreated state.
     #
-    def push_gamestate(state)
-      if state.is_a? Chingu::GameState
-        $window.game_state_manager.push_state(state)
-      elsif state.superclass == Chingu::GameState
-        $window.game_state_manager.push_state(state.new)
-      end
+    def push_state(state, options = {})
+      $window.game_state_manager.push_state(state, options)      
     end
   
-    def pop_gamestate
-      $window.game_state_manager.pop_state
+    def pop_state(options)
+      $window.game_state_manager.pop_state(options)
     end
 
-    def current_gamestate
-      $window.game_state_manager.state
+    def current_state
+      $window.game_state_manager.current_state
     end
 
-    def previous_gamestate
+    def previous_state
       $window.game_state_manager.previous_state
     end
   end
