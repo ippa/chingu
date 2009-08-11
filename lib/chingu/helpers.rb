@@ -30,6 +30,7 @@ module Chingu
     def clear_game_states
       $window.game_state_manager.clear_states
     end
+        
   end
 
   #
@@ -53,4 +54,14 @@ module Chingu
     def fade(options = {})
     end
   end
+  
+  module GameObjectHelpers
+    #
+    # Fetch game objects of a certain type/class
+    #
+    def game_objects_of_class(klass)
+      @game_objects.select { |game_object| game_object.is_a? klass }
+    end
+  end
+
 end

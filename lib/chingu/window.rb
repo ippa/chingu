@@ -6,6 +6,9 @@ module Chingu
     # adds fill() etc...
     include Chingu::DrawHelpers
     
+    # adds game_objects_of_class etc ...
+    include Chingu::GameObjectHelpers
+    
 		attr_reader :root, :game_state_manager, :game_objects, :milliseconds_since_last_tick
 		attr_accessor :input
     
