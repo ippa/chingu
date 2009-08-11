@@ -13,7 +13,17 @@ module Chingu
   #
   class Text < Chingu::GameObject
     attr_accessor :text
-    attr_reader :height, :font
+    attr_reader :height, :gosu_font
+
+    @@size = nil
+    @@font = nil
+    def self.font; @@font; end
+    def self.font=(value); @@font = value; end
+
+    def self.size; @@size; end
+    def self.size=(value); @@size = value; end
+    def self.height; @@size; end
+    def self.height=(value); @@size = value; end
     
     #
     # Takes the standard GameObject-hash-arguments but also:
@@ -24,21 +34,21 @@ module Chingu
     def initialize(options)
       super(options)
       @text = options[:text] || "-No text specified-"
-      @font_name = options[:font_name] || options[:font] || "verdana"
-      @height = options[:height] || options[:size] || 15
+      @font =  options[:font] || @@font || "verdana"
+      @height = options[:height] || options[:size] || @@size || default_font_name()
       
-      @font = Gosu::Font.new($window, @font_name, @height)
+      @gosu_font = Gosu::Font.new($window, @font, @height)
     end
     
     def draw
-      @font.draw_rot(@text, @x.to_i, @y.to_i, @zorder, @angle, @factor_x, @factor_y, @color, @mode)
+      @gosu_font.draw_rot(@text, @x.to_i, @y.to_i, @zorder, @angle, @factor_x, @factor_y, @color, @mode)
     end
     
     #
     # Returns the width, in pixels, the given text would occupy if drawn.
     #
     def width
-      @font.text_width(@text, @factor_x)
+      @gosu_font.text_width(@text, @factor_x)
     end
 
   end

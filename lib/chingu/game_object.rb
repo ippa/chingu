@@ -6,7 +6,7 @@ module Chingu
   # All objects that inherits from this class will automaticly be updated and drawn.
   #
   class GameObject
-    attr_accessor :image, :x, :y, :angle, :center_x, :center_y, :factor_x, :factor_y, :mode
+    attr_accessor :image, :x, :y, :angle, :center_x, :center_y, :factor_x, :factor_y, :color, :mode
     attr_accessor :update, :draw, :input
     attr_reader :options
     
@@ -17,11 +17,19 @@ module Chingu
     # 
     # in Gosu::Window#initialize: GameObject.center_x = GameObject.center_y = 0
     #
+    @@x = nil
+    @@y = nil
     @@zorder = 100
     @@center_x = 0.5
     @@center_y = 0.5
     @@factor_x = 1.0
     @@factor_y = 1.0
+
+    def self.x; @@x; end
+    def self.x=(value); @@x = value; end
+
+    def self.y; @@y; end
+    def self.y=(value); @@y = value; end
 
     def self.zorder; @@zorder; end
     def self.zorder=(value); @@zorder = value; end
@@ -61,8 +69,8 @@ module Chingu
       @image = options[:image]          if options[:image].is_a? Gosu::Image
       @image = Image[options[:image]]   if options[:image].is_a? String
       
-      @x = options[:x] || 0
-      @y = options[:y] || 0
+      @x = options[:x] || @@x || 0
+      @y = options[:y] || @@y || 0
       @angle = options[:angle] || 0
       @zorder = options[:zorder] || @@zorder
       @center_x = options[:center_x] || options[:center] || @@center_x
