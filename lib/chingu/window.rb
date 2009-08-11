@@ -1,7 +1,10 @@
 module Chingu
 	class Window < Gosu::Window
-    include Chingu::GameStateHelpers    # adds push_state(), pop_state(), current_state() and previous_state()
-    include Chingu::DrawHelpers         # adds fill() etc..
+    # adds push_game_state, pop_game_state, current_game_state and previous_game_state
+    include Chingu::GameStateHelpers    
+    
+    # adds fill() etc...
+    include Chingu::DrawHelpers
     
 		attr_reader :root, :update_list, :draw_list, :tick, :game_state_manager
 		attr_accessor :key_receivers, :input
@@ -148,9 +151,9 @@ module Chingu
           elsif action.is_a? Proc
             action.call
           elsif action.is_a? Chingu::GameState
-            push_state(action)
+            push_game_state(action)
           elsif action.superclass == Chingu::GameState
-            push_state(action)
+            push_game_state(action)
           end
         end
       end

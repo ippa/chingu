@@ -5,7 +5,7 @@ include Gosu
 #
 # Example demonstrating jumping between 4 different game states.
 #
-# push_state, pop_state, current_state previous_state are 4 helper-methods that Chingu mixes in
+# push_game_state, pop_game_state, current_game_state previous_game_state are 4 helper-methods that Chingu mixes in
 # into Chingu::Window and Chingu::GameState
 #
 # Behind the scenes they work against @game_state_manager that's autocreated within Chingu::Window.
@@ -19,7 +19,7 @@ include Gosu
 #
 # 3) @game_state_manager calls draw / update on the current active game state
 #
-# 4) Each gamestate keeps a collection @game_objects which it calls draw / update on.
+# 4) Each game state keeps a collection @game_objects which it calls draw / update on.
 #    Any object based on Chingu::GameObject (In this example Player and Text) automatically
 #    gets added to the correct state or or main window.
 #
@@ -31,7 +31,7 @@ class Game < Chingu::Window
   def initialize
     super
     
-    push_state(Intro)
+    push_game_state(Intro)
     
     # Yes you can do crazy things like this :)
     self.input = { :left_mouse_button => lambda{Chingu::Text.new(:text => "Woff!")}}    
@@ -91,12 +91,12 @@ class Level < Chingu::GameState
     #
     # The input-handler understands gamestates. P is pressed --> push_gamegate(Pause)
     #
-    self.input = {:p => Pause, :r => lambda{ current_state.setup } , :escape => :close}  
+    self.input = {:p => Pause, :r => lambda{ current_game_state.setup } , :escape => :close}  
   end
   
   #
   # setup() is called each time you switch to the game state (and on creation time).
-  # You can skip setup by switching with push_state(:setup => false) or pop_state(:setup => false)
+  # You can skip setup by switching with push_game_state(:setup => false) or pop_game_state(:setup => false)
   #
   # This can be useful if you want to display some kind of box above the gameplay (pause/options/info/... box)
   #
@@ -118,11 +118,11 @@ class Pause < Chingu::GameState
   end
 
   def un_pause
-    pop_state(:setup => false)    # Return the previous gamestate, dont call setup()
+    pop_game_state(:setup => false)    # Return the previous game state, dont call setup()
   end
   
   def draw
-    previous_state.draw           # Draw prev gamestate onto screen (in this case our level)
+    previous_game_state.draw           # Draw prev game state onto screen (in this case our level)
     super                         # Draw game objects in current game state, this includes Chingu::Texts
   end  
 end

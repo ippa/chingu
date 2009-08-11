@@ -1,7 +1,13 @@
-module Chingu  
+module Chingu
+  #
+  # GameStateManger is responsible for keeping track of game states with a simple pop/push stack.
+  #
+  # Chingu::Window automatically creates a @game_state_manager and makes it accessible in our game loop.
+  # By default the game loop calls update() / draw() on @game_state_manager
+  #
   class GameStateManager
     attr_accessor :inside_state
-    attr_reader :states
+    attr_reader :states, :created_states
     
     def initialize
       @inside_state = nil
@@ -17,7 +23,7 @@ module Chingu
     end
 
     #
-    # Adds a state to the gamestate-stack
+    # Adds a state to the game state-stack and activates it
     #
     def push_state(state, options = {})
       new_state = nil
@@ -56,7 +62,7 @@ module Chingu
     end
     
     #
-    # Pops a state off the gamestate-stack
+    # Pops a state off the game state-stack, activating the previous one.
     #
     def pop_state(options = {})
       #
@@ -74,18 +80,24 @@ module Chingu
     end
     
     #
-    # Returns the previous gamestate
+    # Returns the previous game state
     #
     def previous_state
       @states[@states.index(current_state)-1]
     end
-    
     alias :prev_state previous_state
     
     #
-    # Pops through all gamestates until matching a given gamestate
+    # Remove all game states from stack
     #
-    def switch_state(new_state)
+    def clear_states
+      @states.clear
+    end
+    
+    #
+    # Pops through all game states until matching a given game state
+    #
+    def pop_until_game_state(new_state)
       while (state = @states.pop)
         break if state == new_state
       end
