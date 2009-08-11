@@ -29,7 +29,10 @@ module Chingu
       self.add_background(arg)
     end
     
-    def update
+    #
+    # TODO: make use of time here!
+    #
+    def update(time)
       @backgrounds.each do |background|
         background.x = -@x / background.damping
         background.y =  @y / background.damping

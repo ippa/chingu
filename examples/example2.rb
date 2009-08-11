@@ -51,10 +51,7 @@ class Player < Chingu::GameObject
   
   def fire
     Bullet.new(:x => @x, :y => @y)
-  end
-  
-  def update
-  end
+  end  
 end
 
 class Bullet < Chingu::GameObject
@@ -67,7 +64,7 @@ class Bullet < Chingu::GameObject
   end
 
   # Move the bullet forward
-  def update
+  def update(time)
     @y -= 2
   end
   

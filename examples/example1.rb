@@ -17,6 +17,11 @@ class Game < Chingu::Window
     @player = Player.new(:x => 200, :y => 200, :image => Image["spaceship.png"])
     @player.input = {:left => :move_left, :right => :move_right, :up => :move_up, :down => :move_down}
   end
+  
+  def update
+    super
+    self.caption = "FPS: #{self.fps} milliseconds_since_last_tick: #{self.milliseconds_since_last_tick}"
+  end
 end
 
 class Player < Chingu::GameObject

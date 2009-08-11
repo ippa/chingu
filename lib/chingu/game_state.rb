@@ -74,8 +74,8 @@ module Chingu
     #
     # Calls update on each game object that has current game state as parent (created inside that game state)
     #
-    def update
-      @game_objects.each { |object| object.update }
+    def update(time = 1)
+      @game_objects.each { |object| object.update(time) }
     end
     
     #

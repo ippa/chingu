@@ -6,9 +6,10 @@ module Chingu
     # adds fill() etc...
     include Chingu::DrawHelpers
     
-		attr_reader :root, :update_list, :draw_list, :tick, :game_state_manager
-		attr_accessor :key_receivers, :input
-    attr_reader :game_objects
+		attr_reader :root, :game_state_manager, :game_objects, :milliseconds_since_last_tick
+		attr_accessor :input
+    
+    # attr_reader :update_list, :draw_list
 		
     #
     # See http://www.libgosu.org/rdoc/classes/Gosu/Window.html
@@ -30,33 +31,16 @@ module Chingu
 			Gosu::Sample.autoload_dirs = [".", File.join(@root, "sound"), File.join(@root, "media")]
 			Gosu::Tile.autoload_dirs = [".", File.join(@root, "gfx"), File.join(@root, "media")]
 			
-      @game_objects = []
-      @input = nil
-      
-			@ticks = 0
-			@last_tick = Gosu::milliseconds
-      
+      @game_objects = []                  
       @fps_counter = FPSCounter.new
 			@game_state_manager = GameStateManager.new
       
-			@update_list = []
-			@draw_list = []
-      
 			self.input = { :escape => close }
 		end
-
-    def mapper(block)
-    end
     
     def add_game_object(game_object)
       @game_objects.push(game_object) unless @game_objects.include?(game_object)
     end
-
-		def update_tick
-			@tick = Gosu::milliseconds - @last_tick
-			@last_tick = Gosu::milliseconds
-			@tick
-		end
     
 		def fps
 			@fps_counter.fps
@@ -70,7 +54,6 @@ module Chingu
       @game_state_manager.button_up(id)
     end
     
-
     #
     # By default button_down sends the keyevent to the GameStateManager
     # .. Which then is responsible to send it to the right GameState(s)
@@ -79,13 +62,11 @@ module Chingu
       @game_state_manager.button_down(id)
     end
 
-	
     #
     # Standard GOSU main class update
     #
 		def update
-			@fps_counter.register_tick
-      update_tick
+			@milliseconds_since_last_tick = @fps_counter.tick
       
       dispatch_input
       
@@ -94,6 +75,10 @@ module Chingu
       update_game_state_manager
 		end
     
+    #
+    # Draw all game objects associated with the main window
+    # Then let the game state manager call draw on the active game state (if any)
+    #
  		def draw
       @game_objects.each { |object| object.draw }
       @game_state_manager.draw
@@ -103,7 +88,7 @@ module Chingu
     # Call update() on all game objects in main game window.
     #
     def update_game_objects
-      @game_objects.each { |object| object.update }
+      @game_objects.each { |object| object.update(@milliseconds_since_last_tick) }
     end
     
     #
@@ -112,7 +97,7 @@ module Chingu
     # -> call update on all game objects in that state
     #
     def update_game_state_manager
-      @game_state_manager.update
+      @game_state_manager.update(@milliseconds_since_last_tick)
     end
     
     #

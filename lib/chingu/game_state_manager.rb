@@ -127,8 +127,8 @@ module Chingu
     #
     # Calls #update on the current gamestate, if there is one.
     #
-    def update
-      current_state.update  if current_state
+    def update(time = 1)
+      current_state.update(time)  if current_state
     end
     #
     # Calls draw() on the current gamestate, if there is one.

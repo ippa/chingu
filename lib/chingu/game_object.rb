@@ -86,8 +86,8 @@ module Chingu
     end
     
     
-    def update
-      # Objects gamelogic here
+    def update(time = 1)
+      # Objects gamelogic here, 'time' is the time passed between 2 iterations of the main game loop
 		end
     
     #
