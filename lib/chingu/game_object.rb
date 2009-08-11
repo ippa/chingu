@@ -85,6 +85,12 @@ module Chingu
       @parent.add_game_object(self)  if @parent
     end
     
+    #
+    # Returns true if game object is inside the game window, false if outside
+    #
+    def inside_window?(x = @x, y = @y)
+      x >= 0 && x <= $window.width && y >= 0 && y <= $window.height
+    end
     
     def update(time = 1)
       # Objects gamelogic here, 'time' is the time passed between 2 iterations of the main game loop

@@ -31,8 +31,7 @@ module Chingu
     include Chingu::DrawHelpers         # Adds fill(), fade() etc to each game state
     include Chingu::GameObjectHelpers   # adds game_objects_of_class etc ...
     
-        
-    attr_reader :options              # so jac can access his :level-number
+    attr_reader :options                # so jlnr can access his :level-number
     attr_reader :game_objects, :do_setup
     attr_accessor :input
     
