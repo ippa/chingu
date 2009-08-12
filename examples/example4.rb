@@ -53,14 +53,23 @@ class Player < Chingu::GameObject
   def move_down;  @y += 1; end  
 end
 
+
 #
 # GAMESTATE #1 - INTRO
 #
 class Intro < Chingu::GameState 
   def initialize(options)
     super
-    @title = Chingu::Text.new(:text=>"Intro (press space)", :x=>200, :y=>50, :size=>30)
-    self.input = { :space => Menu, :escape => :close }
+    @title = Chingu::Text.new(:text=>"Press and release F1", :x=>200, :y=>50, :size=>30)
+    self.input = { :pressed_f1 => :pressed, :released_f1 => :released, :esc => Menu}
+  end
+  
+  def pressed
+    @title.text = "F1 pressed (esc to continue)"
+  end
+  
+  def released
+    @title.text = "F1 released (esc to continue)"
   end
 end
 
@@ -70,8 +79,8 @@ end
 class Menu < Chingu::GameState
   def initialize(options)
     super
-    @title = Chingu::Text.new(:text => "GameState Menu (press 'm')", :x=>100, :y=>50, :size=>30)
-    self.input = { :m => Level.new(:level => 10) }
+    @title = Chingu::Text.new(:text => "Press 'S' to Start game", :x=>100, :y=>50, :size=>30)
+    self.input = { :s => Level.new(:level => 10) }
   end
 end
 
@@ -91,7 +100,7 @@ class Level < Chingu::GameState
     #
     # The input-handler understands gamestates. P is pressed --> push_gamegate(Pause)
     #
-    self.input = {:p => Pause, :r => lambda{ current_game_state.setup } , :escape => :close}  
+    self.input = {:p => Pause, :r => lambda{ current_game_state.setup }, :escape => :close_game}  
   end
   
   #

@@ -9,9 +9,6 @@ module Chingu
     # adds game_objects_of_class etc ...
     include Chingu::GameObjectHelpers
     
-    # Input dispatch helpers
-    include Chingu::InputHelpers
-    
 		attr_reader :root, :game_state_manager, :game_objects, :milliseconds_since_last_tick
 		attr_accessor :input
     
@@ -119,8 +116,6 @@ module Chingu
     # .. Which then is responsible to send it to the right GameState(s)
     #
     def button_up(id)
-      dispatch_button_up(id, self)
-      @game_objects.each { |object| dispatch_button_up(id, object) }
       @game_state_manager.button_up(id)
     end
     
@@ -129,9 +124,27 @@ module Chingu
     # .. Which then is responsible to send it to the right GameState(s)
     #
     def button_down(id)
-      dispatch_button_down(id, self)
-      @game_objects.each { |object| dispatch_button_down(id, object) }
       @game_state_manager.button_down(id)
+
+      [self, @game_state_manager.current_state].each do |object|
+        next if object.nil?
+				dispatch_input_for(object)
+        
+        object.game_objects.each do |game_object|
+          dispatch_input_for(game_object)
+        end
+      end
+      
+      self.input.each do |symbol, action|
+        if symbol.to_s.include? "pressed_"
+          symbol = symbol.to_s.sub("pressed_").to_sym
+          
+          if Input::CONSTANT_TO_SYMVOL[id] == symbol
+            dispatch_action(object, action)
+          end
+        end
+      end
+      
     end
 
     #
@@ -141,7 +154,6 @@ module Chingu
     # - the active gamestate
     # - ... and all GameObjects connected to it
     #
-    
     def dispatch_input
       [self, @game_state_manager.current_state].each do |object|
         next if object.nil?
@@ -153,6 +165,69 @@ module Chingu
         end
 			end
     end
+
+    private
+    
+    #
+    # Dispatches input-mapper for any given object
+    #
+    def dispatch_input_for(object)
+      return if object.nil? || object.input.nil?
+      
+      object.input.each do |symbol, action|
+        if button_down?(Input::SYMBOL_TO_CONSTANT[symbol])
+          dispatch_action(object, action)
+        end
+      end
+    end
+  
+    #
+    # For a given object, dispatch "action".
+    # An action can be:
+    #
+    # * Symbol (:p, :space), translates into a method-call
+    # * Proc/Lambda, call() it
+    # * GameState-instance, push it on top of stack
+    # * GameState-inherited class, create a new instance, cache it and push it on top of stack
+    #
+    def dispatch_action(object, action)
+      if action.is_a? Symbol
+        object.send(action)
+      elsif action.is_a? Proc
+        action.call
+      elsif action.is_a? Chingu::GameState
+        push_game_state(action)
+      elsif action.superclass == Chingu::GameState
+        push_game_state(action)
+      end
+    end
     
   end
 end
+
+          #puts "#{object.to_s} :#{symbol.to_s} => #{action.to_s}"
+          #puts "[#{action.class.to_s} - #{action.class.superclass.to_s}]"
+
+
+
+#		def button_down(id)
+#			key_recievers.each do |key_reciever|	
+#				key_reciever.keymap.each do |key, action|
+#					key_reciever.send(:before_keymap_dispatch)	if key_reciever.respond_to? (:before_keymap_dispatch)
+#					if Keymap::constant_to_symbol[id] == key
+#						puts "#{key.to_s} => #{action.to_s}"
+#						key_reciever.send(action)
+#					end
+#				end
+#			end			
+#		end
+		
+		#def button_up(id)
+		#	key_recievers.each do |key_reciever|	
+		#		key_reciever.release_keymap.each do |key, action|
+		#			if Keymap::Keys[id] == key
+		#				key_reciever.send(action)
+		#			end
+		#		end
+		#	end			
+		#end

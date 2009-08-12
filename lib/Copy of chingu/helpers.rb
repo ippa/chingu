@@ -1,40 +1,15 @@
 module Chingu
   
   module InputHelpers
-  
-    def dispatch_button_down(id, object)
-      dispatch_button(id, object, "pressed_")
-    end
-    
-    def dispatch_button_up(id, object)
-      dispatch_button(id, object, "released_")
-    end
-    
     #
-    # Dispatch pressed and released buttons (Gosu's button_up() / button_down())
+    # Dispatches :symbols => actions by readint the hash "input"
     #
-    def dispatch_button(id, object, prefix = "pressed_")
-      return if object.nil? || object.input.nil?
+    def dispatch_input
+      return if input.nil?
       
-      object.input.each do |symbol, action|
-        if symbol.to_s.include? prefix
-          symbol = symbol.to_s.sub(prefix, "").to_sym
-          if Input::SYMBOL_TO_CONSTANT[symbol] == id
-            dispatch_action(action, object)
-          end
-        end
-      end
-    end
-    
-    #
-    # Dispatches input-mapper for any given object
-    #
-    def dispatch_input_for(object)
-      return if object.nil? || object.input.nil?
-      
-      object.input.each do |symbol, action|
+      input.each do |symbol, action|
         if button_down?(Input::SYMBOL_TO_CONSTANT[symbol])
-          dispatch_action(action, object)
+          dispatch_action(object, action)
         end
       end
     end
@@ -48,8 +23,7 @@ module Chingu
     # * GameState-instance, push it on top of stack
     # * GameState-inherited class, create a new instance, cache it and push it on top of stack
     #
-    def dispatch_action(action, object)
-      # puts "Dispatch Action: #{action} - Objects class: #{object.class.to_s}"
+    def dispatch_action(object, action)
       if action.is_a? Symbol
         object.send(action)
       elsif action.is_a? Proc
@@ -78,7 +52,7 @@ module Chingu
       $window.game_state_manager.push_state(state, options)      
     end
   
-    def pop_game_state(options = {})
+    def pop_game_state(options)
       $window.game_state_manager.pop_state(options)
     end
 

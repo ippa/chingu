@@ -30,7 +30,6 @@ module Chingu
     include Chingu::GameStateHelpers    # Easy access to the global game state-queue
     include Chingu::DrawHelpers         # Adds fill(), fade() etc to each game state
     include Chingu::GameObjectHelpers   # adds game_objects_of_class etc ...
-    include Chingu::InputHelpers        # dispatch-helpers
     
     attr_reader :options                # so jlnr can access his :level-number
     attr_reader :game_objects, :do_setup
@@ -65,16 +64,14 @@ module Chingu
     # Called when a button is pressed and a game state is active
     #
     def button_down(id)
-      dispatch_button_down(id, self)
-      @game_objects.each { |object| dispatch_button_down(id, object) }
+      @game_objects.each { |object| object.update(time) }
     end
     
     #
     # Called when a button is released and a game state active
     #
     def button_up(id)
-      dispatch_button_up(id, self)
-      @game_objects.each { |object| dispatch_button_up(id, object) }
+      @game_objects.each { |object| object.update(time) }
     end
     
     #
@@ -89,20 +86,6 @@ module Chingu
     #
     def draw
       @game_objects.each { |object| object.draw }
-    end
-    
-    #
-    # Closes game state by poping it off the stack (and activating the game state below)
-    #
-    def close
-      pop_game_state
-    end
-    
-    #
-    # Closes main window and terminates the application
-    #
-    def close_game
-      $window.close
     end
   end
 end
