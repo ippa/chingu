@@ -48,10 +48,21 @@ module Chingu
       @game_objects.push(game_object) unless @game_objects.include?(game_object)
     end
     
+    #
+    # Frames per second
+    #
 		def fps
 			@fps_counter.fps
 		end
-    
+    alias :framerate :fps 
+
+    #
+    # Total amount of game iterations (ticks)
+    #
+		def ticks
+			@fps_counter.ticks
+		end
+
     #
     # Chingus core-logic / loop. Gosu will call this each game-iteration.
     #
@@ -62,7 +73,7 @@ module Chingu
       # Without this self.fps would return an incorrect value.
       # If you override this in your Chingu::Window class, make sure to call super.
       #
-			@milliseconds_since_last_tick = @fps_counter.tick
+			@milliseconds_since_last_tick = @fps_counter.register_tick
       
       #
       # Dispatch input-maps for main window and current game state.
