@@ -117,6 +117,7 @@ class Level < Chingu::GameState
     
     #
     # The input-handler understands gamestates. P is pressed --> push_gamegate(Pause)
+    # You can also give it Procs/Lambdas which it will execute when key is pressed.
     #
     self.input = {:p => Pause, :r => lambda{ current_game_state.setup } }
   end
