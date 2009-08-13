@@ -15,7 +15,8 @@ class Game < Chingu::Window
   def initialize
     super 
     @player = Player.new(:x => 200, :y => 200, :image => Image["spaceship.png"])
-    @player.input = {:left => :move_left, :right => :move_right, :up => :move_up, :down => :move_down}
+    @player.input = { :holding_left => :move_left, :holding_right => :move_right, 
+                      :holding_up => :move_up, :holding_down => :move_down}
   end
   
   def update

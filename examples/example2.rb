@@ -15,7 +15,11 @@ class Game < Chingu::Window
     super
     
     @player = Player.new(:x => 200, :y => 200, :image => Image["spaceship.png"])
-    @player.input = {:left => :move_left, :right => :move_right, :up => :move_up, :down => :move_down, :space => :fire}
+    @player.input = { :holding_left => :move_left, 
+                      :holding_right => :move_right, 
+                      :holding_up => :move_up, 
+                      :holding_down => :move_down, 
+                      :space => :fire}
   end
 
   #
@@ -43,12 +47,20 @@ class Game < Chingu::Window
   
 end
 
+#
+# Our Player
+#
 class Player < Chingu::GameObject
+  def initialize(options = {})
+    super
+    @image = Image["spaceship.png"]
+  end
+  
   def move_left;  @x -= 1; end
   def move_right; @x += 1; end
   def move_up;    @y -= 1; end
-  def move_down;  @y += 1; end
-  
+  def move_down;  @y += 1; end 
+
   def fire
     Bullet.new(:x => @x, :y => @y)
   end  

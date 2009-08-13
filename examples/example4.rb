@@ -34,13 +34,11 @@ class Game < Chingu::Window
     push_game_state(Intro)
     
     # Yes you can do crazy things like this :)
-    self.input = { :left_mouse_button => lambda{Chingu::Text.new(:text => "Woff!")}}    
+    self.input = { :left_mouse_button => lambda{Chingu::Text.new(:text => "Woff!")}, :esc => :close}    
   end
 end
 
-#
-# Our Player
-#
+# Our Player 
 class Player < Chingu::GameObject
   def initialize(options = {})
     super
@@ -50,7 +48,23 @@ class Player < Chingu::GameObject
   def move_left;  @x -= 1; end
   def move_right; @x += 1; end
   def move_up;    @y -= 1; end
-  def move_down;  @y += 1; end  
+  def move_down;  @y += 1; end 
+
+  def fire
+    Bullet.new(:x => @x, :y => @y)
+  end  
+end
+
+# The bullet the Player fires
+class Bullet < Chingu::GameObject
+  def initialize(options)
+    super
+    @image = Image["fire_bullet.png"]
+  end
+  
+  def update(time)
+    @y -= 2
+  end
 end
 
 
@@ -61,15 +75,15 @@ class Intro < Chingu::GameState
   def initialize(options)
     super
     @title = Chingu::Text.new(:text=>"Press and release F1", :x=>200, :y=>50, :size=>30)
-    self.input = { :pressed_f1 => :pressed, :released_f1 => :released, :esc => Menu}
+    self.input = { :f1 => :pressed, :released_f1 => :released, :f2 => Menu}
   end
   
   def pressed
-    @title.text = "F1 pressed (esc to continue)"
+    @title.text = "F1 pressed (F2 to continue)"
   end
   
   def released
-    @title.text = "F1 released (esc to continue)"
+    @title.text = "F1 released (F2 to continue)"
   end
 end
 
@@ -95,12 +109,16 @@ class Level < Chingu::GameState
     super
     @title = Chingu::Text.new(:text=>"Level #{options[:level].to_s}. P: pause R:restart", :x=>20, :y=>10, :size=>30)
     @player = Player.new
-    @player.input = {:left => :move_left, :right => :move_right, :up => :move_up, :down => :move_down, :left_ctrl => :fire}
+    @player.input = { :holding_left => :move_left, 
+                      :holding_right => :move_right, 
+                      :holding_up => :move_up, 
+                      :holding_down => :move_down, 
+                      :left_ctrl => :fire}
     
     #
     # The input-handler understands gamestates. P is pressed --> push_gamegate(Pause)
     #
-    self.input = {:p => Pause, :r => lambda{ current_game_state.setup }, :escape => :close_game}  
+    self.input = {:p => Pause, :r => lambda{ current_game_state.setup } }
   end
   
   #

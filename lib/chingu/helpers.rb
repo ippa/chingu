@@ -4,7 +4,6 @@ module Chingu
     def input=(input_map)
       @input = input_map
       @parent.add_input_client(self)  if @parent
-      #$window.add_input_client(self)
     end
     
     def input
@@ -13,7 +12,6 @@ module Chingu
   end
     
   module InputDispatcher
-    
     def add_input_client(object)
       @input_clients << object
     end
@@ -23,22 +21,21 @@ module Chingu
     end
 
     def dispatch_button_down(id, object)
-      dispatch_button(id, object, "pressed_")
-    end
-    
-    def dispatch_button_up(id, object)
-      dispatch_button(id, object, "released_")
-    end
-    
-    #
-    # Dispatch pressed and released buttons (Gosu's button_up() / button_down())
-    #
-    def dispatch_button(id, object, prefix = "pressed_")
       return if object.nil? || object.input.nil?
       
       object.input.each do |symbol, action|
-        if symbol.to_s.include? prefix
-          symbol = symbol.to_s.sub(prefix, "").to_sym
+        if Input::SYMBOL_TO_CONSTANT[symbol] == id
+          dispatch_action(action, object)
+        end        
+      end
+    end
+    
+    def dispatch_button_up(id, object)
+      return if object.nil? || object.input.nil?
+      
+      object.input.each do |symbol, action|
+        if symbol.to_s.include? "released_"
+          symbol = symbol.to_s.sub("released_", "").to_sym
           if Input::SYMBOL_TO_CONSTANT[symbol] == id
             dispatch_action(action, object)
           end
@@ -49,12 +46,15 @@ module Chingu
     #
     # Dispatches input-mapper for any given object
     #
-    def dispatch_input_for(object)
+    def dispatch_input_for(object, prefix = "holding_")
       return if object.nil? || object.input.nil?
       
       object.input.each do |symbol, action|
-        if $window.button_down?(Input::SYMBOL_TO_CONSTANT[symbol])
-          dispatch_action(action, object)
+        if symbol.to_s.include? prefix
+          symbol = symbol.to_s.sub(prefix, "").to_sym
+          if $window.button_down?(Input::SYMBOL_TO_CONSTANT[symbol])
+            dispatch_action(action, object)
+          end
         end
       end
     end

@@ -79,10 +79,13 @@ module Chingu
 			@milliseconds_since_last_tick = @fps_counter.register_tick
       
       #
-      # Dispatch input-maps for main window and current game state.
+      # Dispatch inputmap for main window
       #
-      #dispatch_input
       dispatch_input_for(self)
+      
+      #
+      # Dispatch input for all input-clients handled by to main window (game objects with input created in main win)
+      #
       @input_clients.each { |game_object| dispatch_input_for(game_object) }
       
       
@@ -150,26 +153,5 @@ module Chingu
       @input_clients.each { |object| dispatch_button_down(id, object) }
       @game_state_manager.button_down(id)
     end
-
-    #
-    # Process inputs for:
-    # - Our main game window (self)
-    # - .. and all gameobjects connected to it
-    # - the active gamestate
-    # - ... and all GameObjects connected to it
-    #
-    
-    def dispatch_input
-      [self, @game_state_manager.current_state].each do |object|
-        next if object.nil?
-        
-				dispatch_input_for(object)
-        
-        object.input_clients.each do |game_object|
-          dispatch_input_for(game_object)
-        end
-			end
-    end
-    
   end
 end
