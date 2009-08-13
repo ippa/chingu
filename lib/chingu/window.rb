@@ -10,12 +10,13 @@ module Chingu
     include Chingu::GameObjectHelpers
     
     # Input dispatch helpers
-    include Chingu::InputHelpers
+    include Chingu::InputDispatcher
+    
+    # input= and input
+    include Chingu::InputClient
     
 		attr_reader :root, :game_state_manager, :game_objects, :milliseconds_since_last_tick
-		attr_accessor :input
-    
-    # attr_reader :update_list, :draw_list
+  
 		
     #
     # See http://www.libgosu.org/rdoc/classes/Gosu/Window.html
@@ -38,6 +39,8 @@ module Chingu
 			Gosu::Tile.autoload_dirs = [".", File.join(@root, "gfx"), File.join(@root, "media")]
 			
       @game_objects = []                  
+      @input_clients = Set.new  # Set is like a unique Array with Hash lookupspeed
+      
       @fps_counter = FPSCounter.new
 			@game_state_manager = GameStateManager.new
       
@@ -47,7 +50,7 @@ module Chingu
     def add_game_object(game_object)
       @game_objects.push(game_object) unless @game_objects.include?(game_object)
     end
-    
+        
     #
     # Frames per second
     #
@@ -78,7 +81,10 @@ module Chingu
       #
       # Dispatch input-maps for main window and current game state.
       #
-      dispatch_input
+      #dispatch_input
+      dispatch_input_for(self)
+      @input_clients.each { |game_object| dispatch_input_for(game_object) }
+      
       
       #
       # Call update(milliseconds_since_last_tick) on all game objects belonging to the main window.
@@ -131,7 +137,7 @@ module Chingu
     #
     def button_up(id)
       dispatch_button_up(id, self)
-      @game_objects.each { |object| dispatch_button_up(id, object) }
+      @input_clients.each { |object| dispatch_button_up(id, object) }
       @game_state_manager.button_up(id)
     end
     
@@ -141,7 +147,7 @@ module Chingu
     #
     def button_down(id)
       dispatch_button_down(id, self)
-      @game_objects.each { |object| dispatch_button_down(id, object) }
+      @input_clients.each { |object| dispatch_button_down(id, object) }
       @game_state_manager.button_down(id)
     end
 
@@ -159,7 +165,7 @@ module Chingu
         
 				dispatch_input_for(object)
         
-        object.game_objects.each do |game_object|
+        object.input_clients.each do |game_object|
           dispatch_input_for(game_object)
         end
 			end

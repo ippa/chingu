@@ -30,18 +30,19 @@ module Chingu
     include Chingu::GameStateHelpers    # Easy access to the global game state-queue
     include Chingu::DrawHelpers         # Adds fill(), fade() etc to each game state
     include Chingu::GameObjectHelpers   # adds game_objects_of_class etc ...
-    include Chingu::InputHelpers        # dispatch-helpers
+    include Chingu::InputDispatcher     # dispatch-helpers
+    include Chingu::InputClient
     
     attr_reader :options                # so jlnr can access his :level-number
     attr_reader :game_objects, :do_setup
-    attr_accessor :input
     
     def initialize(options = {})
       @options = options
-      @input = options[:input]
       @do_setup = options[:setup] || true
       
-      @game_objects = Array.new
+      @game_objects = []
+      @input_clients = Set.new  # Set is like a unique Array with Hash lookupspeed
+      
       $window.game_state_manager.inside_state = self
     end
     
@@ -66,7 +67,7 @@ module Chingu
     #
     def button_down(id)
       dispatch_button_down(id, self)
-      @game_objects.each { |object| dispatch_button_down(id, object) }
+      @input_clients.each { |object| dispatch_button_down(id, object) }
     end
     
     #
@@ -74,13 +75,16 @@ module Chingu
     #
     def button_up(id)
       dispatch_button_up(id, self)
-      @game_objects.each { |object| dispatch_button_up(id, object) }
+      @input_clients.each { |object| dispatch_button_up(id, object) }
     end
     
     #
     # Calls update on each game object that has current game state as parent (created inside that game state)
     #
     def update(time = 1)
+      dispatch_input_for(self)
+      @input_clients.each { |game_object| dispatch_input_for(game_object) }      
+      
       @game_objects.each { |object| object.update(time) }
     end
     

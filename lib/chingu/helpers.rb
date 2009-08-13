@@ -1,7 +1,27 @@
 module Chingu
   
-  module InputHelpers
-  
+  module InputClient
+    def input=(input_map)
+      @input = input_map
+      @parent.add_input_client(self)  if @parent
+      #$window.add_input_client(self)
+    end
+    
+    def input
+      @input
+    end
+  end
+    
+  module InputDispatcher
+    
+    def add_input_client(object)
+      @input_clients << object
+    end
+    
+    def remove_input_client(object)
+      @input_clients.delete(object)
+    end
+
     def dispatch_button_down(id, object)
       dispatch_button(id, object, "pressed_")
     end
@@ -33,7 +53,7 @@ module Chingu
       return if object.nil? || object.input.nil?
       
       object.input.each do |symbol, action|
-        if button_down?(Input::SYMBOL_TO_CONSTANT[symbol])
+        if $window.button_down?(Input::SYMBOL_TO_CONSTANT[symbol])
           dispatch_action(action, object)
         end
       end

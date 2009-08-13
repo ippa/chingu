@@ -7,8 +7,10 @@ module Chingu
   #
   class GameObject
     attr_accessor :image, :x, :y, :angle, :center_x, :center_y, :factor_x, :factor_y, :color, :mode
-    attr_accessor :update, :draw, :input
+    attr_accessor :update, :draw
     attr_reader :options
+    
+    include Chingu::InputClient
     
     #
     # Class-level default values. 
@@ -99,7 +101,14 @@ module Chingu
     def inside_window?(x = @x, y = @y)
       x >= 0 && x <= $window.width && y >= 0 && y <= $window.height
     end
-    
+
+    #
+    # 
+    #
+    def outside_window?(x = @x, y = @y)
+      not inside_window?(x,y)
+    end
+
     def update(time = 1)
       # Objects gamelogic here, 'time' is the time passed between 2 iterations of the main game loop
 		end
