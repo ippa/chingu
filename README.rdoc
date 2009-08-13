@@ -105,10 +105,10 @@ Chingu doesn't change any fundamental concept of Gosu, but it will make the abov
   #
   class Game < Chingu:Window
     def initialize
-      super # This is always needed
+      super       # This is always needed if you want to take advantage of what chingu offers
       #
       # Player will automaticly be updated and drawn since it's a Chingu::GameObject
-      # You'll need your own Game#update/#draw after a while, but just put #super there and Chingu can do its thing!
+      # You'll need your own Game#update/#draw after a while, but just put #super there and Chingu can do its thing.
       #
       @player = Player.new
       @player.input = {:left => :move_left, :right => :move_right}
@@ -177,6 +177,65 @@ I've chose to base it around Image#draw_rot. So basically all the arguments that
   # If this is not what you want, use :draw and :update
   #
   @player = Player.new(:draw => false, :update => false)
+
+=== Input
+One of the core things I wanted a more natural way of inputhandling.
+You can define input -> actions on Chingu::Window, Chingu::GameState and Chingu::GameObject.
+Like this:
+
+  #
+  # When left arrow is pressed, call @player.turn_left ... and so on.
+  #
+  @player.input = { :left => :turn_left, :right => :turn_right, :left => :halt_left, :right => :halt_right }
+
+  
+  #
+  # In Gosu the equivalent would be:
+  #
+  def button_down(id)
+    @player.turn_left		if id == Button::KbLeft
+    @player.turn_right	if id == Button::KbRight
+  end
+  
+  def button_up(id)
+    @player.halt_left		if id == Button::KbLeft
+    @player.halt_right	if id == Button::KbRight
+  end
+
+
+Another more complex example:
+
+  #
+  # So what happens here?
+  #
+  # Pressing P would create an game state out of class Pause, cache it and activate it.
+  # Pressing ESC would call Play#close
+  # Holding down LEFT would call Play#move_left on every game iteration
+  # Holding down RIGHT would call Play#move_right on every game iteration
+  # Relasing SPACE would call Play#fire
+  #
+  
+  class Play < Chingu::GameState
+    def initialize
+      self.input = { :p => Pause, :escape => :close, :holding_left => :move_left, :holding_right => :move_right, :released_space => :fire }
+    end
+  end
+  class Pause < Chingu::GameState
+    # pause logic here
+  end
+
+In Gosu the above code would include code in button_up(), button_down() and a check for button_down?() in update().
+
+Every symbol can be prefixed by either "released_" or "holding_" while no prefix at all defaults to pressed once.
+So, why not :up_space or :relase_space instead of :released_space?
+Or :hold_left or :down_left instead of :holding_left?
+
+:up_space doesn't sound like english, :release_space sounds more like a command then an event.
+
+:holding_left sounds like something that's happening over a period of time, not a single trigger, which corresponds good to what's happening when using it.
+
+And with the default :space => :something youd imagine that :something is called once. You press :space once, :something get's executed once.
+
 
 === GameState / GameStateManager
 Chingu incorporates a basic push/pop game state system (as discussed here: http://www.gamedev.net/community/forums/topic.asp?topic_id=477320).
