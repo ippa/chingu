@@ -38,7 +38,7 @@ module Chingu
 			Gosu::Sample.autoload_dirs = [".", File.join(@root, "sound"), File.join(@root, "media")]
 			Gosu::Tile.autoload_dirs = [".", File.join(@root, "gfx"), File.join(@root, "media")]
 			
-      @game_objects = []                  
+      @game_objects = Set.new
       @input_clients = Set.new  # Set is like a unique Array with Hash lookupspeed
       
       @fps_counter = FPSCounter.new
@@ -47,8 +47,11 @@ module Chingu
 			self.input = { :escape => close }
 		end
     
-    def add_game_object(game_object)
-      @game_objects.push(game_object) unless @game_objects.include?(game_object)
+    def add_game_object(object)
+      @game_objects << object
+    end
+    def remove_game_object(object)
+      @input_clients.delete(object)
     end
         
     #

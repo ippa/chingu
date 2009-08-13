@@ -40,7 +40,7 @@ module Chingu
       @options = options
       @do_setup = options[:setup] || true
       
-      @game_objects = []
+      @game_objects = Set.new
       @input_clients = Set.new  # Set is like a unique Array with Hash lookupspeed
       
       $window.game_state_manager.inside_state = self
@@ -54,8 +54,11 @@ module Chingu
       self.class.to_s.to_sym
     end
     
-    def add_game_object(game_object)
-      @game_objects.push(game_object) unless @game_objects.include?(game_object)
+    def add_game_object(object)
+      @game_objects << object
+    end
+    def remove_game_object(object)
+      @input_clients.delete(object)
     end
     
     def setup
