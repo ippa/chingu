@@ -37,6 +37,7 @@ module Chingu
 			Gosu::Image.autoload_dirs = [".", File.join(@root, "gfx"), File.join(@root, "media")]
 			Gosu::Sample.autoload_dirs = [".", File.join(@root, "sound"), File.join(@root, "media")]
 			Gosu::Tile.autoload_dirs = [".", File.join(@root, "gfx"), File.join(@root, "media")]
+      Gosu::Song.autoload_dirs = [".", File.join(@root, "sfx"), File.join(@root, "media")]
 			
       @game_objects = Set.new
       @input_clients = Set.new  # Set is like a unique Array with Hash lookupspeed
@@ -60,7 +61,7 @@ module Chingu
 		def fps
 			@fps_counter.fps
 		end
-    alias :framerate :fps 
+    alias :framerate :fps
 
     #
     # Total amount of game iterations (ticks)

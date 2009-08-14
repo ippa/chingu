@@ -30,7 +30,15 @@ module Gosu
 			(path = find_file(name)) ? Gosu::Image.new($window, path, true) : nil
 		end
 	end
+
+	class Song
+		include Chingu::NamedResource
 	
+		def self.autoload(name)
+			(path = find_file(name)) ? Gosu::Song.new($window, path) : nil
+		end
+	end
+
 	class Sample
 		include Chingu::NamedResource
 	

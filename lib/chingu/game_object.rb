@@ -51,18 +51,18 @@ module Chingu
     #
     # Create a new GameObject. Arguments are given in hash-format:
     # 
-    # :x        screen x-coordinate (default 0, to the left)
-    # :y        screen y-coordinate (default 0, top of screen)
-    # :angle    angle of object, used in draw_rot, (default 0, no rotation)
-    # :zorder   a gameclass "foo" with higher zorder then gameclass "bar" is drawn on top of "foo".
-    # :center_x relative horizontal position of the rotation center on the image. 
-    #           0 is the left border, 1 is the right border, 0.5 is the center (default 0.5)
-    # :center_y see center_x. (default 0.5)
-    # :factor_x horizontal zoom-factor, use >1.0 to zoom in. (default 1.0, no zoom).
-    # :factor_y vertical zoom-factor, use >1.0 to zoom in. (default 1.0, no zoom).
+    #   :x        screen x-coordinate (default 0, to the left)
+    #   :y        screen y-coordinate (default 0, top of screen)
+    #   :angle    angle of object, used in draw_rot, (default 0, no rotation)
+    #   :zorder   a gameclass "foo" with higher zorder then gameclass "bar" is drawn on top of "foo".
+    #   :center_x relative horizontal position of the rotation center on the image. 
+    #               0 is the left border, 1 is the right border, 0.5 is the center (default 0.5)
+    #   :center_y see center_x. (default 0.5)
+    #   :factor_x horizontal zoom-factor, use >1.0 to zoom in. (default 1.0, no zoom).
+    #   :factor_y vertical zoom-factor, use >1.0 to zoom in. (default 1.0, no zoom).
     #
-    # :update [true|false] Automaticly call #update on object each gameloop. Default +true+.
-    # :draw   [true|false] Automaticly call #update on object each gameloop. Default +true+.
+    #   :update [true|false] Automaticly call #update on object each gameloop. Default +true+.
+    #   :draw   [true|false] Automaticly call #update on object each gameloop. Default +true+.
     #
     def initialize(options = {})
       @options = options
@@ -82,6 +82,9 @@ module Chingu
       @color = options[:color] || 0xFFFFFFFF
       @mode = options[:mode] || :default # :additive is also available.
       
+      # Shortcuts for draw_rot arguments
+      @factor = 1
+      
       # gameloop/framework logic
       @update = options[:update] || true
       @draw = options[:draw] || true
@@ -94,6 +97,16 @@ module Chingu
       @parent = $window.game_state_manager.inside_state || $window
       @parent.add_game_object(self)  if @parent
     end
+    
+    def factor=(factor)
+      @factor = factor
+      @factor_x = @factor_y = @factor
+    end
+    alias :zoom= :factor=
+    def factor
+      @factor
+    end
+    alias :zoom :factor
     
     #
     # Returns true if game object is inside the game window, false if outside
