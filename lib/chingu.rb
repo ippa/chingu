@@ -4,6 +4,7 @@
 #
 require 'rubygems'
 require 'gosu'
+require 'set'
 
 %w{	helpers
     game_state_manager
@@ -25,5 +26,5 @@ require 'gosu'
     end
 
 module Chingu
-  VERSION = "0.2.0"
+  VERSION = "0.3.1"
 end
