@@ -2,11 +2,12 @@
 
 Gem::Specification.new do |s|
   s.name = %q{chingu}
-  s.version = "0.2.0"
+  s.version = "0.3.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ippa"]
-  s.date = %q{2009-08-10}
+  s.cert_chain = ["/Documents and Settings/erik/.gem/gem-public_cert.pem"]
+  s.date = %q{2009-08-14}
   s.description = %q{Game framework built on top of the OpenGL accelerated game lib Gosu.  It adds simple yet powerfull game states, prettier inputhandling, deploymentsafe asset-handling, a basic re-usable game object and automation of common task.}
   s.email = ["ippa@rubylicio.us"]
   s.extra_rdoc_files = ["History.txt", "Manifest.txt"]
@@ -17,6 +18,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{chingu}
   s.rubygems_version = %q{1.3.1}
+  s.signing_key = %q{/Documents and Settings/erik/.gem/gem-private_key.pem}
   s.summary = %q{Game framework built on top of the OpenGL accelerated game lib Gosu}
 
   if s.respond_to? :specification_version then
@@ -24,11 +26,11 @@ Gem::Specification.new do |s|
     s.specification_version = 2
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
-      s.add_development_dependency(%q<hoe>, [">= 2.3.2"])
+      s.add_development_dependency(%q<hoe>, [">= 2.3.3"])
     else
-      s.add_dependency(%q<hoe>, [">= 2.3.2"])
+      s.add_dependency(%q<hoe>, [">= 2.3.3"])
     end
   else
-    s.add_dependency(%q<hoe>, [">= 2.3.2"])
+    s.add_dependency(%q<hoe>, [">= 2.3.3"])
   end
 end

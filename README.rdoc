@@ -34,17 +34,27 @@ Chingu consists of the following core classes:
 The main window, use it at you use Gosu::Window.
 
 === Chingu::GameObject
-Use for your in game objects, got everything to put them on the screen.
+Use for all your in game objects. The player, the enemies, the bullets, the powerups, the loot laying around.
+It's very reusable and doesn't contain any game-logic (that's up to you!). Only stuff to put it on screen a certain way.
+It also gives you a couple of bonuses with chingu, as automatic updates/draws and easier input-mapping.
 Has either Chingu::Window or a Chingu::GameState as "owner".
 
 === Chingu::Text
-Makes use of Gosu::Font more rubyish and powerful
-
-=== Chingu::GameState
-A "standalone game loop" that can be switched on/off to control game flow.
+Makes use of Gosu::Font more rubyish and powerful.
+In it's core, another Chingu::GameObject + Gosu::Font.
 
 === Chingu::GameStateManager
-Keeps track of the game states. The flow of draw/update/button_down is Chingu::Window --> Chingu::GameStateManager --> Chingu::GameState.
+Keeps track of the game states. Implements a stack-based system with push_game_state and pop_game_state.
+
+=== Chingu::GameState
+A "standalone game loop" that can be activated and deactivated to control game flow.
+A game state is very much like a main gosu window. You define update() and draw() in a gamestate.
+It comes with 2 extras that main window doesn't have. #setup (called when activated) and #finalize (called when deactivated)
+
+If using game states, the flow of draw/update/button_up/button_down is:
+Chingu::Window --> Chingu::GameStateManager --> Chingu::GameState.
+For example, inside game state Menu you call push_game_state(Level). When Level exists, it will go back to Menu.
+
 
 == THE BASICS
 
@@ -364,7 +374,7 @@ It's not only that the second example is readable by ppl now even familiar with 
 
 == TODO:
 * (done) Complete the input-definitions with all possible inputs (keyboard, gamepad, mouse)!
-* Complete input-stuff with released-states etc
+* (done) Complete input-stuff with released-states etc
 * More gfx effects, for example: fade in/out to a specific color (black makes sense between levels).
 * (posted request on forums) Summon good proven community gosu snippets into Chingu
 * (done) Generate docs @ ippa.github.com-  http://rdoc.info/projects/ippa/chingu !
@@ -378,14 +388,14 @@ It's not only that the second example is readable by ppl now even familiar with 
 * class Actor/MovingActor with maybe abit more logic then the basic GameObject. Would ppl find is useful?
 * Spell check all docs, sloppy spelling turns ppl off.
 * Tests
-* Streamline fps / tick code
+* (done) Streamline fps / tick code
 * (done) Encapsulate Font.new / draw_rot with a "class Text < GameObject"
-* Make it possible for ppl to use the parts of Chingu they like
+* (10% done) Make it possible for ppl to use the parts of Chingu they like
 * A more robust game state <-> game_object system to connect them together.
 * Get better at styling rdocs
-* all “gamestate” ? “game state” ?
-* FIX example4: :p => Pause.new  would Change the "inside_game_state" to Pause and make @player belong to Pause.
+* (done) all “gamestate” ? “game state” ?   it's "game state"
 * intergrate rubygame_movie_make (maybe after a rename, GameAutomator? GameSequence?
+* FIX example4: :p => Pause.new  would Change the "inside_game_state" to Pause and make @player belong to Pause.
 
 == WHY?
 * Plain Gosu is very minimalistic, perfect to build some higher level logic on!
