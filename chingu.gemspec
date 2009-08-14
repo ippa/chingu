@@ -6,7 +6,6 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ippa"]
-  s.cert_chain = ["/Documents and Settings/erik/.gem/gem-public_cert.pem"]
   s.date = %q{2009-08-14}
   s.description = %q{Game framework built on top of the OpenGL accelerated game lib Gosu.  It adds simple yet powerfull game states, prettier inputhandling, deploymentsafe asset-handling, a basic re-usable game object and automation of common task.}
   s.email = ["ippa@rubylicio.us"]
@@ -18,7 +17,6 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{chingu}
   s.rubygems_version = %q{1.3.1}
-  s.signing_key = %q{/Documents and Settings/erik/.gem/gem-private_key.pem}
   s.summary = %q{Game framework built on top of the OpenGL accelerated game lib Gosu}
 
   if s.respond_to? :specification_version then
