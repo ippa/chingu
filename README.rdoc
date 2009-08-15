@@ -242,12 +242,12 @@ In Gosu the above code would include code in button_up(), button_down() and a ch
 
 Every symbol can be prefixed by either "released_" or "holding_" while no prefix at all defaults to pressed once.
 
-So, why not +:up_space+ or +:relase_space+ instead of +:released_space+?
+So, why not :up_space or :relase_space instead of :released_space?
 +:up_space+ doesn't sound like english, :release_space sounds more like a command then an event.
 
 
-Or +:hold_left+ or +:down_left+ instead of +:holding_left+?
-+:holding_left+ sounds like something that's happening over a period of time, not a single trigger, which corresponds well to how it works.
+Or +:hold_left+ or :down_left instead of :holding_left?
+:holding_left sounds like something that's happening over a period of time, not a single trigger, which corresponds well to how it works.
 
 And with the default :space => :something youd imagine that :something is called once. You press :space once, :something get's executed once.
 
@@ -361,12 +361,12 @@ You also have:
   Sound["shot.png"]
   Song["intromusic.ogg"]
 
-By default Image, Sound and Sound searches the current directory and directory +media+.
+By default Image, Sound and Sound searches the current directory and directory "media".
 Add your own searchpaths like this:
   Gosu::Image.autoload_dirs << File.join($window.root, "gfx")
   Gosu::Sound.autoload_dirs << File.join($window.root, "samples")
 
-This will add +\path\to\your\game\gfx+ and +\path\to\your\game\samples+  to Image and Sound.
+This will add \path\to\your\game\gfx and \path\to\your\game\samples  to Image and Sound.
   
 Thanks to Jacious of rubygame-fame (http://rubygame.org/) for his named resource code powering this.
 
@@ -389,8 +389,9 @@ It's not only that the second example is readable by ppl now even familiar with 
 
 
 == MISC / FAQ
-*How do I access my main-window easily?*
-Gosu keeps a global variable, $window, which contains the Chingu::Window instance. 
+How do I access my main-window easily?
+
+Chingu keeps a global variable, $window, which contains the Chingu::Window instance. 
 Since Chingu::Window is just Gosu::Window + some cheese you can do your $window.button_down?, $window.draw_line() etc from anywhere.
 See http://www.libgosu.org/rdoc/classes/Gosu/Window.html for a full set of methods.
 
