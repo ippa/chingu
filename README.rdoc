@@ -227,7 +227,11 @@ Another more complex example:
   
   class Play < Chingu::GameState
     def initialize
-      self.input = { :p => Pause, :escape => :close, :holding_left => :move_left, :holding_right => :move_right, :released_space => :fire }
+      self.input = { :p => Pause, 
+                     :escape => :close, 
+                     :holding_left => :move_left, 
+                     :holding_right => :move_right, 
+                     :released_space => :fire }
     end
   end
   class Pause < Chingu::GameState
@@ -237,12 +241,13 @@ Another more complex example:
 In Gosu the above code would include code in button_up(), button_down() and a check for button_down?() in update().
 
 Every symbol can be prefixed by either "released_" or "holding_" while no prefix at all defaults to pressed once.
-So, why not :up_space or :relase_space instead of :released_space?
-Or :hold_left or :down_left instead of :holding_left?
 
-:up_space doesn't sound like english, :release_space sounds more like a command then an event.
+So, why not +:up_space+ or +:relase_space+ instead of +:released_space+?
++:up_space+ doesn't sound like english, :release_space sounds more like a command then an event.
 
-:holding_left sounds like something that's happening over a period of time, not a single trigger, which corresponds good to what's happening when using it.
+
+Or +:hold_left+ or +:down_left+ instead of +:holding_left+?
++:holding_left+ sounds like something that's happening over a period of time, not a single trigger, which corresponds well to how it works.
 
 And with the default :space => :something youd imagine that :something is called once. You press :space once, :something get's executed once.
 
@@ -271,7 +276,7 @@ Game states aren't complicated. In Chingu a GameState is a class that behaves mo
       @player.angle = 0   # point player upwards
     end
     
-    # Called when we leave the current game state
+    # Called when we leave the game state
     def finalize
       push_game_state(Menu)   # switch to game state "Menu"
     end
@@ -350,12 +355,23 @@ For a local development version this might not be important, you're likely to st
 But as soon as you try to deploy (for example to windows with OCRA - http://github.com/larsch/ocra/tree/master) you'll run into trouble of you dont do it like that.
  
 Chingu solves this problem behind the scenes for the most common assets. The 2 lines above can be replaced with:
-Image["player.png"]
+  Image["player.png"]
 
-You also have Sound["player.png"]
+You also have:
+  Sound["shot.png"]
+  Song["intromusic.ogg"]
+
+By default Image, Sound and Sound searches the current directory and directory +media+.
+Add your own searchpaths like this:
+  Gosu::Image.autoload_dirs << File.join($window.root, "gfx")
+  Gosu::Sound.autoload_dirs << File.join($window.root, "samples")
+
+This will add +\path\to\your\game\gfx+ and +\path\to\your\game\samples+  to Image and Sound.
+  
+Thanks to Jacious of rubygame-fame (http://rubygame.org/) for his named resource code powering this.
 
 Tiles and fonts are trickier since they require extra parameters so you'll have to do those the ordinary way.
-You'll get $window.root (equivalent to ROOT_PATH above) for free though which points to the dir containing the game.
+You have $window.root (equivalent to ROOT_PATH above) for free though which points to the dir containing the game.
 
 === Text
 Text is a class to give the use of Gosu::Font more rubyish feel and fit it better into Chingu.
@@ -371,6 +387,12 @@ Text is a class to give the use of Gosu::Font more rubyish feel and fit it bette
 @text.draw is usually not needed as Text is a GameObject and therefore autodrawn.
 It's not only that the second example is readable by ppl now even familiar with Gosu, @text comes with a number of changeable properties, x,y,zorder,angle,factor_x,color,mode etc. Set a new x or angle or color and it will instantly update on screen.
 
+
+== MISC / FAQ
+*How do I access my main-window easily?*
+Gosu keeps a global variable, $window, which contains the Chingu::Window instance. 
+Since Chingu::Window is just Gosu::Window + some cheese you can do your $window.button_down?, $window.draw_line() etc from anywhere.
+See http://www.libgosu.org/rdoc/classes/Gosu/Window.html for a full set of methods.
 
 == TODO:
 * (done) Complete the input-definitions with all possible inputs (keyboard, gamepad, mouse)!
