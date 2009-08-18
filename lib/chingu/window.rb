@@ -44,19 +44,17 @@ module Chingu
       
       @fps_counter = FPSCounter.new
 			@game_state_manager = GameStateManager.new
-      
-			## self.input = { :escape => :close }
 		end
     
     def add_game_object(object)
       @game_objects << object
     end
     def remove_game_object(object)
-      @input_clients.delete(object)
+      @game_objects.delete(object)
     end
         
     #
-    # Frames per second
+    # Frames per second, access with $window.fps or $window.framerate
     #
 		def fps
 			@fps_counter.fps
