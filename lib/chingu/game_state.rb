@@ -34,14 +34,12 @@ module Chingu
     include Chingu::InputClient
     
     attr_reader :options                # so jlnr can access his :level-number
-    attr_reader :game_objects, :do_setup
+    attr_reader :game_objects
     
     def initialize(options = {})
       @options = options
-      @do_setup = options[:setup] || true
-      
       @game_objects = Set.new
-      @input_clients = Set.new  # Set is like a unique Array with Hash lookupspeed
+      @input_clients = Set.new          # Set is like a unique Array with Hash lookupspeed
       
       $window.game_state_manager.inside_state = self
     end
@@ -58,7 +56,7 @@ module Chingu
       @game_objects << object
     end
     def remove_game_object(object)
-      @input_clients.delete(object)
+      @game_objects.delete(object)
     end
     
     def setup

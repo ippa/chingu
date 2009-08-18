@@ -2,6 +2,8 @@ module Chingu
   #
   # GameStateManger is responsible for keeping track of game states with a simple pop/push stack.
   #
+  # Related blogpost: http://gamedevgeek.com/tutorials/managing-game-states-in-c/
+  #
   # Chingu::Window automatically creates a @game_state_manager and makes it accessible in our game loop.
   # By default the game loop calls update() / draw() on @game_state_manager
   #
@@ -23,11 +25,70 @@ module Chingu
     end
 
     #
+    # Switch to a given game state, _replacing_ the current active one.
+    #
+    def switch_state(state, options = {})
+      options = {:setup => true, :finalize => true}.merge(options)
+
+      new_state = object_to_state(state)
+      
+      if new_state
+        # Give the soon-to-be-disabled state a chance to clean up by calling finalize() on it.
+        current_state.finalize  if current_state.respond_to?(:finalize) && options[:finalize]
+        
+        # Call setup
+        new_state.setup         if current_state.respond_to?(:setup) && options[:setup]
+        
+        # Replace last (active) state with new one
+        @states[-1] = new_state
+      end
+    end
+
+    #
     # Adds a state to the game state-stack and activates it
     #
     def push_state(state, options = {})
-      new_state = nil
+      options = {:setup => true, :finalize => true}.merge(options)
 
+      new_state = object_to_state(state)
+      
+      if new_state
+        # Give the soon-to-be-disabled state a chance to clean up by calling finalize() on it.
+        current_state.finalize  if current_state.respond_to?(:finalize) && options[:finalize]
+        
+        # Call setup
+        new_state.setup         if current_state.respond_to?(:setup) && options[:setup]
+        
+        # Push new state on top of stack and therefore making it active
+        @states.push(new_state)
+      end
+    end
+    
+    #
+    # Pops a state off the game state-stack, activating the previous one.
+    #
+    def pop_state(options = {})
+      options = {:setup => true, :finalize => true}.merge(options)
+      
+      #
+      # Give the soon-to-be-disabled state a chance to clean up by calling finalize() on it.
+      #
+      current_state.finalize    if current_state.respond_to?(:finalize) && options[:finalize]
+      
+      #
+      # Activate the game state "bellow" current one with a simple Array.pop
+      #
+      @states.pop
+
+      # Call setup on the new current state
+      current_state.setup       if current_state.respond_to?(:setup) && options[:setup]
+    end
+
+    #
+    # Returns a GameState-instance from either a class or object
+    #
+    def object_to_state(state)
+      new_state = nil
       #
       # If state is a GameState-instance, just queue it
       #
@@ -41,44 +102,15 @@ module Chingu
         if @created_states[state.to_s]
           new_state = @created_states[state.to_s]
         else
-          new_state = state.new(options)
+          new_state = state.new({})
           @created_states[state.class.to_s] = new_state
         end
       end
-
-      #
-      # If the new state is all good
-      #
-      if new_state
-        # Give the soon-to-be-disabled state a chance to clean up by calling finalize() on it.
-        current_state.finalize  if current_state.respond_to? :finalize
-        
-        # Call setup
-        new_state.setup         if new_state.do_setup
-        
-        # Push new state on top of stack and therefore making it active
-        @states.push(new_state)
-      end
-    end
-    
-    #
-    # Pops a state off the game state-stack, activating the previous one.
-    #
-    def pop_state(options = {})
-      #
-      # Give the soon-to-be-disabled state a chance to clean up by calling finalize() on it.
-      #
-      current_state.finalize  if current_state.respond_to? :finalize
       
-      #
-      # Activate the game state "bellow" current one with a simple Array.pop
-      #
-      @states.pop
-
-      # Call setup on the new current state
-      current_state.setup       unless options[:setup] == false
+      return new_state
     end
-    
+
+
     #
     # Returns the previous game state
     #

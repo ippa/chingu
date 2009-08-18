@@ -102,6 +102,10 @@ module Chingu
       $window.game_state_manager.pop_state(options)
     end
 
+    def switch_game_state(state, options = {})
+      $window.game_state_manager.switch_state(state, options)
+    end
+
     def current_game_state
       $window.game_state_manager.current_state
     end
@@ -109,7 +113,7 @@ module Chingu
     def previous_game_state
       $window.game_state_manager.previous_state
     end
-
+    
     def clear_game_states
       $window.game_state_manager.clear_states
     end
