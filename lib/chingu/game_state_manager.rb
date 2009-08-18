@@ -37,7 +37,7 @@ module Chingu
         current_state.finalize  if current_state.respond_to?(:finalize) && options[:finalize]
         
         # Call setup
-        new_state.setup         if current_state.respond_to?(:setup) && options[:setup]
+        new_state.setup         if new_state.respond_to?(:setup) && options[:setup]
         
         # Replace last (active) state with new one
         @states[-1] = new_state
@@ -57,7 +57,7 @@ module Chingu
         current_state.finalize  if current_state.respond_to?(:finalize) && options[:finalize]
         
         # Call setup
-        new_state.setup         if current_state.respond_to?(:setup) && options[:setup]
+        new_state.setup         if new_state.respond_to?(:setup) && options[:setup]
         
         # Push new state on top of stack and therefore making it active
         @states.push(new_state)
