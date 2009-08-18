@@ -34,8 +34,8 @@ module Chingu
     def initialize(options)
       super(options)
       @text = options[:text] || "-No text specified-"
-      @font =  options[:font] || @@font || "verdana"
-      @height = options[:height] || options[:size] || @@size || default_font_name()
+      @font =  options[:font] || @@font || default_font_name()
+      @height = options[:height] || options[:size] || @@size || 15
       
       @gosu_font = Gosu::Font.new($window, @font, @height)
     end
