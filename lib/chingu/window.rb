@@ -45,7 +45,7 @@ module Chingu
       @fps_counter = FPSCounter.new
 			@game_state_manager = GameStateManager.new
       
-			self.input = { :escape => close }
+			## self.input = { :escape => :close }
 		end
     
     def add_game_object(object)
@@ -136,7 +136,6 @@ module Chingu
     def update_game_state_manager
       @game_state_manager.update(@milliseconds_since_last_tick)
     end
-
 
     #
     # By default button_up sends the keyevent to the GameStateManager

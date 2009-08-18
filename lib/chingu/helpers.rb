@@ -21,7 +21,7 @@ module Chingu
     end
 
     def dispatch_button_down(id, object)
-      return if object.nil? || object.input.nil?
+      return if(object.nil? || object.input.nil?)
       
       object.input.each do |symbol, action|
         if Input::SYMBOL_TO_CONSTANT[symbol] == id

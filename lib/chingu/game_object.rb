@@ -8,7 +8,7 @@ module Chingu
   class GameObject
     attr_accessor :image, :x, :y, :angle, :center_x, :center_y, :factor_x, :factor_y, :color, :mode
     attr_accessor :update, :draw
-    attr_reader :options
+    attr_reader :options, :parent
     
     include Chingu::InputClient
     
@@ -98,15 +98,42 @@ module Chingu
       @parent.add_game_object(self)  if @parent
     end
     
+    #
+    # Quick way of setting both factor_x and factor_y
+    #
     def factor=(factor)
-      @factor = factor
-      @factor_x = @factor_y = @factor
+      @factor_x = @factor_y = factor
     end
-    alias :zoom= :factor=
-    def factor
-      @factor
+
+    #
+    # Quick way of setting both center_x and center_y
+    #
+    def center=(factor)
+      @center_x = @center_y = factor
     end
-    alias :zoom :factor
+
+    #
+    # Zoom - increase @factor_x and @factor_y at the same time.
+    #
+    def zoom(amount)
+      @factor_x += amount
+      @factor_y += amount
+    end
+
+    #
+    # Zoom Out - decrease @factor_x and @factor_y at the same time.
+    #
+    def zoom_out(amount)
+      @factor_x -= amount
+      @factor_y -= amount
+    end
+
+    #
+    # Rotate object 'amount' degrees
+    #
+    def rotate(amount)
+      @angle += amount
+    end
     
     #
     # Returns true if game object is inside the game window, false if outside
