@@ -2,10 +2,22 @@ module Chingu
   #
   # GameStateManger is responsible for keeping track of game states with a simple pop/push stack.
   #
-  # Related blogpost: http://gamedevgeek.com/tutorials/managing-game-states-in-c/
+  # More about the concept of states in games:
+  # http://gamedevgeek.com/tutorials/managing-game-states-in-c/
+  # http://www.gamedev.net/community/forums/topic.asp?topic_id=477320
   #
   # Chingu::Window automatically creates a @game_state_manager and makes it accessible in our game loop.
-  # By default the game loop calls update() / draw() on @game_state_manager
+  # By default the game loop calls update(dt), draw, button_up(id) and button_down(id) on the active state.
+  #
+  # ==== Chingu Examples
+  #
+  # Enter a new game state, Level, don't call finalize() on the game state we're leaving.
+  # push_game_state(Level, :finalize => false)
+  #
+  # Return to the previous game state, don't call setup() on it when it becomes active.
+  # pop_game_state(:setup => false)
+  #
+  # If you want to use Chingus GameStateManager _without_ Chingu::Windoe, see example5.rb
   #
   class GameStateManager
     attr_accessor :inside_state
@@ -14,7 +26,7 @@ module Chingu
       @inside_state = nil
       @game_states = []
     end
-
+    
     #
     # Gets the currently active gamestate (top of stack)
     #
@@ -24,7 +36,7 @@ module Chingu
     alias :current current_game_state
 
     #
-    # Returns all gamestates with top of stack first
+    # Returns all gamestates with currenlty active game state on top.
     #
     def game_states
       @game_states.reverse
@@ -32,6 +44,8 @@ module Chingu
     
     #
     # Switch to a given game state, _replacing_ the current active one.
+    # By default setup() is called on the game state  we're switching _to_.
+    # .. and finalize() is called on the game state we're switching _from_.
     #
     def switch_game_state(state, options = {})
       options = {:setup => true, :finalize => true}.merge(options)
@@ -57,7 +71,9 @@ module Chingu
     alias :switch :switch_game_state
     
     #
-    # Adds a state to the game state-stack and activates it
+    # Adds a state to the game state-stack and activates it.
+    # By default setup() is called on the new game state 
+    # .. and finalize() is called on the game state we're leaving.
     #
     def push_game_state(state, options = {})
       options = {:setup => true, :finalize => true}.merge(options)
@@ -79,6 +95,8 @@ module Chingu
     
     #
     # Pops a state off the game state-stack, activating the previous one.
+    # By default setup() is called on the game state that becomes active.
+    # .. and finalize() is called on the game state we're leaving.
     #
     def pop_game_state(options = {})
       options = {:setup => true, :finalize => true}.merge(options)
@@ -99,7 +117,74 @@ module Chingu
     alias :pop :pop_game_state
 
     #
-    # Returns a GameState-instance from either a class or object
+    # Returns the previous game state. Shortcut: "previous"
+    #
+    def previous_game_state
+      @game_states[@game_states.index(current_game_state)-1]
+    end
+    alias :previous previous_game_state
+    
+    #
+    # Remove all game states from stack. Shortcut: "clear"
+    #
+    def clear_game_states
+      @game_states.clear
+    end
+    alias :clear :clear_game_states
+    
+    #
+    # Pops through all game states until matching a given game state
+    #
+    def pop_until_game_state(new_state)
+      while (state = @game_states.pop)
+        break if state == new_state
+      end
+    end
+        
+    #
+    # This method should be called from button_down(id) inside your main loop.
+    # Enables the game state manager to call button_down(id) on active game state.
+    #
+    # If you're using Chingu::Window instead of Gosu::Window this will automaticly be called.
+    #
+    def button_down(id)
+      current_game_state.button_down(id) if current_game_state
+    end
+    
+    #
+    # This method should be called from button_up(id) inside your main loop.
+    # Enables the game state manager to call button_up(id) on active game state.
+    #
+    # If you're using Chingu::Window instead of Gosu::Window this will automaticly be called.
+    #
+    def button_up(id)
+      current_game_state.button_up(id)  if current_game_state
+    end
+    
+    #
+    # This method should be called from update() inside your main loop.
+    # Enables the game state manager to call update() on active game state.
+    #
+    # If you're using Chingu::Window instead of Gosu::Window this will automaticly be called.
+    #
+    def update(time = nil)
+      current_game_state.update(time)   if current_game_state
+    end
+
+    #
+    # This method should be called from draw() inside your main loop.
+    # Enables the game state manager to call update() on active game state.
+    #
+    # If you're using Chingu::Window instead of Gosu::Window this will automaticly be called.
+    #
+    def draw
+      current_game_state.draw           if current_game_state
+    end
+    
+    private
+    
+    #
+    # Returns a GameState-instance from either a GameState class or GameState-object
     #
     def game_state_instance(state)
       new_state = nil
@@ -117,65 +202,6 @@ module Chingu
       
       return new_state
     end
-
-
-    #
-    # Returns the previous game state
-    #
-    def previous_game_state
-      @game_states[@game_states.index(current_game_state)-1]
-    end
-    alias :previous previous_game_state
     
-    #
-    # Remove all game states from stack
-    #
-    def clear_game_states
-      @game_states.clear
-    end
-    alias :clear :clear_game_states
-    
-    #
-    # Pops through all game states until matching a given game state
-    #
-    def pop_until_game_state(new_state)
-      while (state = @game_states.pop)
-        break if state == new_state
-      end
-    end
-    
-    #
-    # Bellow follows a set of auto-called Gosu::Window methods.
-    # We define them game_state_manager so Gosu::Window can call them here.
-    # Then the game_state_manager is responsible to resend them to the active state. 
-    # Or in the future many states.
-    #
-    
-    #
-    # Called before #update when the user pressed a button while the window had the focus. 
-    #
-    def button_down(id)
-      current_game_state.button_down(id) if current_game_state
-    end
-    
-    #
-    # Called when the user released a button. 
-    #
-    def button_up(id)
-      current_game_state.button_up(id)  if current_game_state
-    end
-    
-    #
-    # Calls #update on the current gamestate, if there is one.
-    #
-    def update(time = nil)
-      current_game_state.update(time)   if current_game_state
-    end
-    #
-    # Calls draw() on the current gamestate, if there is one.
-    #
-    def draw
-      current_game_state.draw           if current_game_state
-    end
   end
 end
