@@ -304,16 +304,51 @@ You can activate the above game state in 2 ways
       push_game_state(Intro)
     end
   end
+
+Another example:
+
+  class Game < Chingu::Window
+    def initialize
+      #
+      # We start by pushing Menu to the game state stack, making it active as the only state on stack.
+      # :setup => :false which will skip setup() from beeing called (standard when switching to a new state)
+      #
+      push_game_state(Menu, :setup => false)
+      
+      #
+      # We push another game state to the stack, Play. We now have 2 states, which active beeing first / active.
+      #
+      # :finalize => false will skip setup() from beeing called on game state 
+      # that's beeing pushed down the stack, in this case Intro.setup().
+      #
+      push_game_state(Play, :finalize => false)
+    
+      #
+      # This would remove Play state from the stack, going back to the Menu-state. But also:
+      # .. skipping the standard call to Menu#setup     (the new game state)
+      # .. skipping the standard call to Play#finalize  (the current game state)
+      #
+      # :setup => false can for example be useful when pop'ing a Pause game state. (see example4.rb)
+      #
+      pop_game_state(:setup => false, :finalize => :false)
+      
+      #
+      # Replace the current game state with a new one.
+      # :setup and :finalize options are available here as well.
+      #
+      switch_game_state(Credits)
+    end
+  end
   
 A GameState in Chingu is just a class with the following instance methods: 
 
-* initialize()  - called only once with push_game_state(Intro) but everytime with push_game_state(Intro.new)
-* setup()       - called each time the game state becomes active. 
+* initialize()    - called only once with push_game_state(Intro) but everytime with push_game_state(Intro.new)
+* setup()         - called each time the game state becomes active. 
 * button_down(id) - Called when a button is down
 * button_up(id)   - Called when a button is released
-* update()    - just as in your normal game loop, put your game logic here.
-* draw()      - just as in your normal game loop, put your screen manipulation here.
-* finalize()  - called when a game state de-activated (for example by pushing a new one on top with push_game_state)
+* update()        - just as in your normal game loop, put your game logic here.
+* draw()          - just as in your normal game loop, put your screen manipulation here.
+* finalize()      - called when a game state de-activated (for example by pushing a new one on top with push_game_state)
 
 Chingu::Window automatically creates a @game_state_manager and makes it accessible in our game loop.
 By default the game loop calls update() / draw() on the the current game state.
@@ -322,6 +357,7 @@ Chingu also has a couple of helpers-methods for handling the game states:
 In a main loop or in a game state:
 * push_game_state(state)        - adds a new gamestate on top of the stack, which then becomes the active one
 * pop_game_state                - removes active gamestate and activates the previous one
+* switch_game_state(state)      - replaces current game state with a new one
 * current_game_state            - returns the current game state
 * previous_game_state           - returns the previous game state (useful for pausing and dialog boxes, see example4.rb)
 * pop_until_game_state(state)   - pop game states until given state is found
@@ -338,10 +374,10 @@ Or Chingus shortcut:
 
   class Intro < Chingu::GameState
     def setup
-      self.input = { :space => Menu }      #  or { :space => Menu.new } if you want to create a new object each time.
+      self.input = { :space => Menu }
     end
   end
-
+  
 Chingus inputhandler will detect that Menu is a gamestate-class, create a new instance, cache it and activate it with push_game_state().
 
 === Assets / Paths
@@ -403,21 +439,22 @@ See http://www.libgosu.org/rdoc/classes/Gosu/Window.html for a full set of metho
 * (done) Generate docs @ ippa.github.com-  http://rdoc.info/projects/ippa/chingu !
 * (done) A good scene-manager to manage welcome screens, levels and game flow- GameStateManager / GameState !
 * More docs
-* make a playable simple game in examples\ that really depends on game states
+* (20% done) make a playable simple game in examples\ that really depends on game states
 * (done) Make a gem- first gem made on github
-* Automate gemgenning rake-task even more
+* (done) Automate gemgenning rake-task even more
 * More examples when effects are more complete
 * class ChipmunkObject
 * class Actor/MovingActor with maybe abit more logic then the basic GameObject. Would ppl find is useful?
-* Spell check all docs, sloppy spelling turns ppl off.
+* (40% done) Spell check all docs, sloppy spelling turns ppl off.
 * Tests
 * (done) Streamline fps / tick code
 * (done) Encapsulate Font.new / draw_rot with a "class Text < GameObject"
 * (10% done) Make it possible for ppl to use the parts of Chingu they like
+* At least make GameStateManager really easy to use with pure Gosu / Document it!
 * A more robust game state <-> game_object system to connect them together.
-* Get better at styling rdocs
+* (50% done) Get better at styling rdocs
 * (done) all “gamestate” ? “game state” ?   it's "game state"
-* intergrate rubygame_movie_make (maybe after a rename, GameAutomator? GameSequence?
+* intergrate MovieMaker
 * FIX example4: :p => Pause.new  would Change the "inside_game_state" to Pause and make @player belong to Pause.
 
 == WHY?
