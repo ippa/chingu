@@ -9,21 +9,27 @@ module Chingu
   #
   class GameStateManager
     attr_accessor :inside_state
-    attr_reader :states
     
     def initialize
       @inside_state = nil
-      @states = []
+      @game_states = []
     end
 
     #
     # Gets the currently active gamestate (top of stack)
     #
     def current_game_state
-      @states.last
+      @game_states.last
     end
     alias :current current_game_state
 
+    #
+    # Returns all gamestates with top of stack first
+    #
+    def game_states
+      @game_states.reverse
+    end
+    
     #
     # Switch to a given game state, _replacing_ the current active one.
     #
@@ -39,11 +45,17 @@ module Chingu
         # Call setup
         new_state.setup               if new_state.respond_to?(:setup) && options[:setup]
         
-        # Replace last (active) state with new one
-        @states[-1] = new_state
+        
+        if current_game_state.nil?
+          @game_states << new_state
+        else
+          # Replace last (active) state with new one
+          @game_states[-1] = new_state
+        end
       end
     end
-
+    alias :switch :switch_game_state
+    
     #
     # Adds a state to the game state-stack and activates it
     #
@@ -60,9 +72,10 @@ module Chingu
         new_state.setup               if new_state.respond_to?(:setup) && options[:setup]
         
         # Push new state on top of stack and therefore making it active
-        @states.push(new_state)
+        @game_states.push(new_state)
       end
     end
+    alias :push :push_game_state
     
     #
     # Pops a state off the game state-stack, activating the previous one.
@@ -78,11 +91,12 @@ module Chingu
       #
       # Activate the game state "bellow" current one with a simple Array.pop
       #
-      @states.pop
+      @game_states.pop
 
       # Call setup on the new current state
       current_game_state.setup       if current_game_state.respond_to?(:setup) && options[:setup]
     end
+    alias :pop :pop_game_state
 
     #
     # Returns a GameState-instance from either a class or object
@@ -109,7 +123,7 @@ module Chingu
     # Returns the previous game state
     #
     def previous_game_state
-      @states[@states.index(current_game_state)-1]
+      @game_states[@game_states.index(current_game_state)-1]
     end
     alias :previous previous_game_state
     
@@ -117,14 +131,15 @@ module Chingu
     # Remove all game states from stack
     #
     def clear_game_states
-      @states.clear
+      @game_states.clear
     end
+    alias :clear :clear_game_states
     
     #
     # Pops through all game states until matching a given game state
     #
     def pop_until_game_state(new_state)
-      while (state = @states.pop)
+      while (state = @game_states.pop)
         break if state == new_state
       end
     end
@@ -153,7 +168,7 @@ module Chingu
     #
     # Calls #update on the current gamestate, if there is one.
     #
-    def update(time = 1)
+    def update(time = nil)
       current_game_state.update(time)   if current_game_state
     end
     #

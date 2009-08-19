@@ -41,7 +41,10 @@ module Chingu
       @game_objects = Set.new
       @input_clients = Set.new          # Set is like a unique Array with Hash lookupspeed
       
-      $window.game_state_manager.inside_state = self
+      # Game state mamanger can be run alone
+      if defined?($window) && $window.respond_to?(:game_state_manager)
+        $window.game_state_manager.inside_state = self
+      end
     end
     
     #
@@ -51,7 +54,11 @@ module Chingu
     def to_sym
       self.class.to_s.to_sym
     end
-    
+
+    def to_s
+      self.class.to_s
+    end
+
     def add_game_object(object)
       @game_objects << object
     end
