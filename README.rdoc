@@ -297,9 +297,7 @@ You can activate the above game state in 2 ways
       
       #
       # 2) This leaves the actual object-creation to the game state manager.
-      # This results in only 1 object is ever created of class 'Intro'.
-      # The second time 'push_game_state(Intro)' is called, it will re-use the last one.
-      # This means code in Intro#initialize() is only  called once, Intro#setup() is called everytime Intro is activated though.
+      # Intro#initialize() is called, then Intro#setup()
       #
       push_game_state(Intro)
     end

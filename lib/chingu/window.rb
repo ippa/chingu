@@ -1,5 +1,5 @@
 module Chingu
-	class Window < Gosu::Window
+  class Window < Gosu::Window
     # adds push_game_state, pop_game_state, current_game_state and previous_game_state
     include Chingu::GameStateHelpers    
     
