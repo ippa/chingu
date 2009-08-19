@@ -15,9 +15,8 @@ module Chingu
     # input= and input
     include Chingu::InputClient
     
-		attr_reader :root, :game_state_manager, :game_objects, :milliseconds_since_last_tick
-  
-		
+    attr_reader :root, :game_state_manager, :game_objects, :milliseconds_since_last_tick
+    
     #
     # See http://www.libgosu.org/rdoc/classes/Gosu/Window.html
     #
@@ -29,22 +28,22 @@ module Chingu
     # - Assethandling with Image["picture.png"] and Sample["shot.wav"]
     # - Default input mapping escape to close 
     #
-		def initialize(width = 640, height = 480)
-			full_screen = ARGV.include?("--fullscreen")
-			$window = super(width, height, full_screen)
+    def initialize(width = 640, height = 480)
+      full_screen = ARGV.include?("--fullscreen")
+      $window = super(width, height, full_screen)
 			
-			@root = File.dirname(File.expand_path($0))
-			Gosu::Image.autoload_dirs = [".", File.join(@root, "gfx"), File.join(@root, "media")]
-			Gosu::Sample.autoload_dirs = [".", File.join(@root, "sound"), File.join(@root, "media")]
-			Gosu::Tile.autoload_dirs = [".", File.join(@root, "gfx"), File.join(@root, "media")]
+      @root = File.dirname(File.expand_path($0))
+      Gosu::Image.autoload_dirs = [".", File.join(@root, "gfx"), File.join(@root, "media")]
+      Gosu::Sample.autoload_dirs = [".", File.join(@root, "sound"), File.join(@root, "media")]
+      Gosu::Tile.autoload_dirs = [".", File.join(@root, "gfx"), File.join(@root, "media")]
       Gosu::Song.autoload_dirs = [".", File.join(@root, "sfx"), File.join(@root, "media")]
 			
       @game_objects = Set.new
       @input_clients = Set.new  # Set is like a unique Array with Hash lookupspeed
       
       @fps_counter = FPSCounter.new
-			@game_state_manager = GameStateManager.new
-		end
+      @game_state_manager = GameStateManager.new
+    end
     
     def add_game_object(object)
       @game_objects << object
@@ -56,29 +55,29 @@ module Chingu
     #
     # Frames per second, access with $window.fps or $window.framerate
     #
-		def fps
-			@fps_counter.fps
-		end
+    def fps
+      @fps_counter.fps
+    end
     alias :framerate :fps
 
     #
     # Total amount of game iterations (ticks)
     #
-		def ticks
-			@fps_counter.ticks
-		end
+    def ticks
+      @fps_counter.ticks
+    end
 
     #
     # Chingus core-logic / loop. Gosu will call this each game-iteration.
     #
-		def update
+    def update
       #
       # Register a tick with our rather standard tick/framerate counter. 
       # Returns the amount of milliseconds since last tick. This number is used in all update()-calls.
       # Without this self.fps would return an incorrect value.
       # If you override this in your Chingu::Window class, make sure to call super.
       #
-			@milliseconds_since_last_tick = @fps_counter.register_tick
+      @milliseconds_since_last_tick = @fps_counter.register_tick
       
       #
       # Dispatch inputmap for main window
@@ -100,14 +99,14 @@ module Chingu
       # Call update(milliseconds_since_last_tick) on all game objects belonging to the current game state.
       #
       update_game_state_manager
-		end
+    end
     
     # 
     # Chingus main screen manupulation method.
     # If you override this in your Chingu::Window class, make sure to call super.
     # Gosu will call this each game-iteration just after #update
     #
- 		def draw
+    def draw
       #
       # Draw all game objects associated with the main window.      
       #
@@ -117,7 +116,7 @@ module Chingu
       # Let the game state manager call draw on the active game state (if any)
       #
       @game_state_manager.draw
-		end
+    end
     
     #
     # Call update() on all game objects in main game window.
