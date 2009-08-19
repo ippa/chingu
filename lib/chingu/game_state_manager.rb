@@ -12,10 +12,10 @@ module Chingu
   # ==== Chingu Examples
   #
   # Enter a new game state, Level, don't call finalize() on the game state we're leaving.
-  # push_game_state(Level, :finalize => false)
+  #   push_game_state(Level, :finalize => false)
   #
   # Return to the previous game state, don't call setup() on it when it becomes active.
-  # pop_game_state(:setup => false)
+  #   pop_game_state(:setup => false)
   #
   # If you want to use Chingus GameStateManager _without_ Chingu::Windoe, see example5.rb
   #
