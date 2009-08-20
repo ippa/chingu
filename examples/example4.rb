@@ -1,5 +1,5 @@
 require 'rubygems'
-require '../lib/chingu.rb'
+require File.join(File.dirname($0), "..", "lib", "chingu")
 include Gosu
 
 #
@@ -34,7 +34,7 @@ class Game < Chingu::Window
     push_game_state(Intro)
     
     # Yes you can do crazy things like this :)
-    self.input = { :left_mouse_button => lambda{Chingu::Text.new(:text => "Woff!")}, :esc => :close}    
+    self.input = { :left_mouse_button => lambda{Chingu::Text.new(:text => "Woff!")}, :esc => :exit}    
   end
 end
 

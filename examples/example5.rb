@@ -1,5 +1,5 @@
 require 'rubygems'
-require '../lib/chingu.rb'
+require File.join(File.dirname($0), "..", "lib", "chingu")
 include Gosu
 
 #
@@ -28,7 +28,7 @@ class Game < Gosu::Window
     # Enables input-handling in game states, you might wanna do the same with button_up()
     @manager.button_down(id)
   end      
-    
+  
   def update
     # This makes sure update() is called on the active game state
     @manager.update

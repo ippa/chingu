@@ -1,12 +1,12 @@
 require 'rubygems'
-require '../lib/chingu.rb'
+require File.join(File.dirname($0), "..", "lib", "chingu")
 include Gosu
 
 #
 # A minimalistic Chingu example.
 # Chingu::Window provides #update and #draw which calls corresponding methods for all objects based on Chingu::Actors
 #
-# Image["picture.png"] is a deploymentsafe shortcut to Gosu's Image.new and supports multiple locations for "picture.png"
+# Image["picture.png"] is a deployment safe shortcut to Gosu's Image.new and supports multiple locations for "picture.png"
 # By default current dir, media\ and gfx\ is searched. To add own directories:
 #
 # Image.autoload_dirs << File.join(self.root, "data", "my_image_dir")  
@@ -16,7 +16,7 @@ class Game < Chingu::Window
     super 
     @player = Player.new(:x => 200, :y => 200, :image => Image["spaceship.png"])
     @player.input = { :holding_left => :move_left, :holding_right => :move_right, 
-                      :holding_up => :move_up, :holding_down => :move_down}
+                      :holding_up => :move_up, :holding_down => :move_down, :escape => :exit}
   end
   
   def update

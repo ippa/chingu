@@ -1,5 +1,5 @@
 require 'rubygems'
-require '../lib/chingu.rb'
+require File.join(File.dirname($0), "..", "lib", "chingu")
 include Gosu
 
 #
@@ -19,7 +19,9 @@ class Game < Chingu::Window
                       :holding_right => :move_right, 
                       :holding_up => :move_up, 
                       :holding_down => :move_down, 
-                      :space => :fire}
+                      :space => :fire,
+                      :escape => :exit
+                      }
   end
 
   #

@@ -1,5 +1,5 @@
 require 'rubygems'
-require '../lib/chingu.rb'
+require File.join(File.dirname($0), "..", "lib", "chingu")
 include Gosu
 
 #
@@ -9,7 +9,7 @@ include Gosu
 class Game < Chingu::Window
   def initialize
     super    
-    self.input = {:holding_left => :scroll_left, :holding_right => :scroll_right, :escape => :close}
+    self.input = {:holding_left => :scroll_left, :holding_right => :scroll_right, :escape => :exit}
     
     @parallax = Chingu::Parallax.new(:x => 0, :y => 0, :center_x => 0, :center_y => 0)
     
