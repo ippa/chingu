@@ -75,7 +75,7 @@ module Chingu
     #
     def button_down(id)
       dispatch_button_down(id, self)
-      @input_clients.each { |object| dispatch_button_down(id, object) }
+      @input_clients.each { |object| dispatch_button_down(id, object) } if @input_clients
     end
     
     #
@@ -83,7 +83,7 @@ module Chingu
     #
     def button_up(id)
       dispatch_button_up(id, self)
-      @input_clients.each { |object| dispatch_button_up(id, object) }
+      @input_clients.each { |object| dispatch_button_up(id, object) }   if @input_clients
     end
     
     #

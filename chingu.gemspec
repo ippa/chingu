@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{chingu}
-  s.version = "0.4.0"
+  s.version = "0.4.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ippa"]
-  s.date = %q{2009-08-19}
+  s.date = %q{2009-08-20}
   s.description = %q{Game framework built on top of the OpenGL accelerated game lib Gosu.  It adds simple yet powerfull game states, prettier inputhandling, deploymentsafe asset-handling, a basic re-usable game object and automation of common task.}
   s.email = ["ippa@rubylicio.us"]
   s.extra_rdoc_files = ["History.txt", "Manifest.txt"]
