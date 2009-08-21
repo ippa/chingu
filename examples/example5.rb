@@ -15,6 +15,9 @@ class Game < Gosu::Window
     # Create our game state manager and start out with State1
     @manager = Chingu::GameStateManager.new
     @manager.switch_game_state(State1)
+    
+    # Insert FadeTo state between every push, pop and switch.
+    @manager.transitional_game_state(Chingu::GameStates::FadeTo, :speed => 10)
   end
 
   def button_down(id)
@@ -61,7 +64,7 @@ class State1 < Chingu::GameState
   end
 end
 
-class State2 < Chingu::GameState 
+class State2 < Chingu::GameState
   def setup
     @factor = 0.0
     @ticks = 0.0
@@ -69,7 +72,7 @@ class State2 < Chingu::GameState
   
   def update(dt)
     @ticks += 0.01
-    @factor = 1.5 + Math.sin(@ticks)
+    @factor = 1.5 + Math.sin(@ticks).to_f
   end
   
   def draw
@@ -86,7 +89,7 @@ class State3 < Chingu::GameState
   
   def update(dt)
     @ticks += 0.01
-    @factor = 1.5 + Math.sin(@ticks)
+    @factor = 1.5 + Math.sin(@ticks).to_f
   end  
   def draw
     $window.font.draw("Inside State3 - factor_x: #{@factor.to_s}", 100, 100, 0, @factor, 1.0)

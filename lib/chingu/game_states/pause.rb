@@ -13,12 +13,12 @@ module Chingu
       end
     
       def un_pause
-        pop_game_state(:setup => false)    # Return the previous game state, dont call setup()
+        game_state_manager.pop_game_state(:setup => false)    # Return the previous game state, dont call setup()
       end
       
       def draw
-        previous_game_state.draw      # Draw prev game state onto screen (in this case our level)
-        super                         # Draw game objects in current game state, this includes Chingu::Texts
+        game_state_manager.previous_game_state.draw    # Draw prev game state onto screen (in this case our level)
+        super                                           # Draw game objects in current game state, this includes Chingu::Texts
       end  
     end
   end

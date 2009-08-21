@@ -85,13 +85,7 @@ module Chingu
   #
   # push_game_state accepts either a class inherited from GameState or an object-instance from such a class.
   #
-  # push_game_state(Intro):
-  # game state mananger will create a new Intro-object first time called and cache it.
-  #
-  # push_game_state(Intro.new):
-  # The first line ends up calling "new" to Intro before activating the newly created game state.
-  # Each time 'push_game_state(Intro.new)' is called a new Intro-object will be created.
-  # Usefull for stuff like: push_game_state(Level.new(:level_nr => 11))
+  # It will make call new() on a class, and just push an object.
   #
   module GameStateHelpers
     def push_game_state(state, options = {})
@@ -104,6 +98,10 @@ module Chingu
 
     def switch_game_state(state, options = {})
       $window.game_state_manager.switch_game_state(state, options)
+    end
+
+    def transitional_game_state(state, options = {})
+      $window.game_state_manager.transitional_game_state(state, options)      
     end
 
     def current_game_state

@@ -12,15 +12,25 @@ class Game < Chingu::Window
     super(640,800)
     switch_game_state(State1)
     self.input = {:space => :next_game_state, :esc => :exit}
-    self.caption = "Example of fading game state to switch between two other game states"
+    self.caption = "Example of transitional game state FadeTo when switchin between two game states"
+    transitional_game_state(Chingu::GameStates::FadeTo, :speed => 10)
   end
   
   def next_game_state
+    #
+    # Since we have a transitional game state set, the bellow code in practice become:
+    #
+    # if current_game_state.is_a?(State1)
+    #   push_game_state(Chingu::GameStates::FadeTo.new(State2.new, :speed => 10))
+    # elsif current_game_state.is_a?(State2)
+    #   push_game_state(Chingu::GameStates::FadeTo.new(State1.new, :speed => 10))
+    # end    
+    #
     if current_game_state.is_a?(State1)
-      push_game_state(Chingu::GameStates::FadeTo.new(State2.new, :speed => 10))
+      push_game_state(State2.new)
     elsif current_game_state.is_a?(State2)
-      push_game_state(Chingu::GameStates::FadeTo.new(State1.new, :speed => 10))
-    end
+      push_game_state(State1.new)
+    end    
   end
 end
 

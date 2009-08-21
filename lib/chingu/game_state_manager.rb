@@ -25,6 +25,8 @@ module Chingu
     def initialize
       @inside_state = nil
       @game_states = []
+      @transitional_game_state = nil
+      @transitional_game_state_options = {}
     end
     
     #
@@ -43,16 +45,46 @@ module Chingu
     end
     
     #
+    # Sets a game state to be called between the old and the new game state 
+    # whenever a game state is switched,pushed or popped.
+    #
+    # The transitional game state is responsible for switching to the "new game state".
+    # It should do so with ":transitional => false" not to create an infinite loop.
+    # 
+    # The new game state is the first argument to the transitional game states initialize().
+    #
+    # Example:
+    #   transitional_game_state(FadeIn)
+    #   push_game_state(Level2)
+    #
+    # would in practice become:
+    # 
+    #   push_game_state(FadeIn.new(Level2))
+    #
+    # This would be the case for every game state change until the transitional game state is removed:
+    #   transitional_game_state(nil)  # or false
+    #
+    # Very useful for fading effect between scenes.
+    #
+    def transitional_game_state(game_state, options = {})
+      @transitional_game_state = game_state
+      @transitional_game_state_options = options
+    end
+    
+    #
     # Switch to a given game state, _replacing_ the current active one.
     # By default setup() is called on the game state  we're switching _to_.
     # .. and finalize() is called on the game state we're switching _from_.
     #
     def switch_game_state(state, options = {})
-      options = {:setup => true, :finalize => true}.merge(options)
+      options = {:setup => true, :finalize => true, :transitional => true}.merge(options)
 
       new_state = game_state_instance(state)
       
       if new_state
+        # Make sure the game state knows about the manager
+        new_state.game_state_manager = self
+                
         # Give the soon-to-be-disabled state a chance to clean up by calling finalize() on it.
         current_game_state.finalize   if current_game_state.respond_to?(:finalize) && options[:finalize]
         
@@ -76,19 +108,28 @@ module Chingu
     # .. and finalize() is called on the game state we're leaving.
     #
     def push_game_state(state, options = {})
-      options = {:setup => true, :finalize => true}.merge(options)
+      options = {:setup => true, :finalize => true, :transitional => true}.merge(options)
 
       new_state = game_state_instance(state)
-      
+            
       if new_state
-        # Give the soon-to-be-disabled state a chance to clean up by calling finalize() on it.
-        current_game_state.finalize   if current_game_state.respond_to?(:finalize) && options[:finalize]
-        
         # Call setup
         new_state.setup               if new_state.respond_to?(:setup) && options[:setup]
         
-        # Push new state on top of stack and therefore making it active
-        @game_states.push(new_state)
+        # Make sure the game state knows about the manager
+        new_state.game_state_manager = self
+        
+        # Give the soon-to-be-disabled state a chance to clean up by calling finalize() on it.
+        current_game_state.finalize   if current_game_state.respond_to?(:finalize) && options[:finalize]
+        
+        if @transitional_game_state && options[:transitional]
+          # If we have a transitional, push that instead, with new_state as first argument
+          transitional_game_state = @transitional_game_state.new(new_state, @transitional_game_state_options)
+          self.push_game_state(transitional_game_state, :transitional => false)
+        else          
+          # Push new state on top of stack and therefore making it active
+          @game_states.push(new_state)
+        end
       end
     end
     alias :push :push_game_state
@@ -99,7 +140,7 @@ module Chingu
     # .. and finalize() is called on the game state we're leaving.
     #
     def pop_game_state(options = {})
-      options = {:setup => true, :finalize => true}.merge(options)
+      options = {:setup => true, :finalize => true, :transitional => true}.merge(options)
       
       #
       # Give the soon-to-be-disabled state a chance to clean up by calling finalize() on it.
