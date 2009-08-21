@@ -30,19 +30,24 @@ module Chingu
         else
           @color.alpha = @alpha.to_i
         end
+        @drawn = false
       end
       
-    def draw
-        @game_state_manager.previous_game_state.draw  if @fading_in == false
-        @new_game_state.draw                          if @fading_in == true
+      def draw
+        # Stop endless loops
+        if @drawn == false
+          @drawn = true
+          @game_state_manager.previous_game_state.draw  if @fading_in == false
+          @new_game_state.draw                          if @fading_in == true
       
-        $window.draw_quad( 0,0,@color,
-                            $window.width,0,@color,
-                            $window.width,$window.height,@color,
-                            0,$window.height,@color,999)
-                        
-        if @fading_in == true && @alpha == 0
-          @game_state_manager.switch_game_state(@new_game_state, :transitional => false)
+          $window.draw_quad( 0,0,@color,
+                              $window.width,0,@color,
+                              $window.width,$window.height,@color,
+                              0,$window.height,@color,999)
+                          
+          if @fading_in == true && @alpha == 0
+            @game_state_manager.switch_game_state(@new_game_state, :transitional => false)
+          end
         end
       end
     end

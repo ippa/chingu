@@ -17,20 +17,21 @@ class Game < Gosu::Window
     @manager.switch_game_state(State1)
     
     # Insert FadeTo state between every push, pop and switch
-    @manager.transitional_game_state(Chingu::GameStates::FadeTo, :speed => 10)
+    # @manager.transitional_game_state(Chingu::GameStates::FadeTo, :speed => 10)
   end
 
   def button_down(id)
-    @manager.push_game_state(State1)  if(id==Button::Kb1)
-    @manager.push_game_state(State2)  if(id==Button::Kb2)
-    @manager.push_game_state(State3)  if(id==Button::Kb3)
-    @manager.pop_game_state           if(id==Button::KbBackspace)
-    close                             if(id==Button::KbEscape)
-    
     # This makes sure button_down(id) is called on the active game state
     # Enables input-handling in game states, you might wanna do the same with button_up()
     @manager.button_down(id)
-  end      
+
+    @manager.push_game_state(State1)  if(id==Button::Kb1)
+    @manager.push_game_state(State2)  if(id==Button::Kb2)
+    @manager.push_game_state(State3)  if(id==Button::Kb3)
+    @manager.push_game_state(Chingu::GameStates::Pause)  if(id==Button::KbP)
+    @manager.pop_game_state           if(id==Button::KbBackspace)
+    exit                             if(id==Button::KbEscape)
+  end
   
   def update
     # This makes sure update() is called on the active game state

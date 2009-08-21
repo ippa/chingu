@@ -94,8 +94,10 @@ module Chingu
       # A GameObject can either belong to a GameState or our mainwindow ($window)
       # .. or live in limbo with manual updates
       #
-      @parent = $window.game_state_manager.inside_state || $window
-      @parent.add_game_object(self)  if @parent
+      if $window && $window.respond_to?(:game_state_manager)
+        @parent = $window.game_state_manager.inside_state || $window
+        @parent.add_game_object(self) if @parent
+      end
     end
     
     #
