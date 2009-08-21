@@ -31,7 +31,7 @@ class Game < Chingu::Window
   #
   def draw
     # Raw Gosu Image.draw(x,y,zorder)-call
-    Image["background1.png"].draw(0, 0, 0)
+    Image["background1.png"].draw(0, 0, 0)    
     super
   end
 
@@ -43,8 +43,8 @@ class Game < Chingu::Window
   def update
     
     ### Your own gamelogic here
-    
     super
+    self.caption = "FPS: #{self.fps} milliseconds_since_last_tick: #{self.milliseconds_since_last_tick}"
   end
   
 end

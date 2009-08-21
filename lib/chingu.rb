@@ -25,6 +25,13 @@ require 'set'
       require File.join(root,"chingu",lib)
     end
 
+%w{ pause
+    fade_to
+		}.each do |lib|
+      root ||= File.dirname(File.expand_path(__FILE__))
+      require File.join(root,"chingu","game_states",lib)
+    end
+
 module Chingu
-  VERSION = "0.4.1"
+  VERSION = "0.4.2"
 end
