@@ -27,6 +27,7 @@ module Chingu
       @game_states = []
       @transitional_game_state = nil
       @transitional_game_state_options = {}
+      @previous_game_state = nil
     end
     
     #
@@ -84,19 +85,26 @@ module Chingu
       if new_state
         # Make sure the game state knows about the manager
         new_state.game_state_manager = self
-                
+        
+        
         # Give the soon-to-be-disabled state a chance to clean up by calling finalize() on it.
+        @previous_game_state = current_game_state
         current_game_state.finalize   if current_game_state.respond_to?(:finalize) && options[:finalize]
         
         # Call setup
         new_state.setup               if new_state.respond_to?(:setup) && options[:setup]
         
-        
-        if current_game_state.nil?
-          @game_states << new_state
+        if @transitional_game_state && options[:transitional]
+          # If we have a transitional, switch to that instead, with new_state as first argument
+          transitional_game_state = @transitional_game_state.new(new_state, @transitional_game_state_options)
+          self.switch_game_state(transitional_game_state, :transitional => false)
         else
-          # Replace last (active) state with new one
-          @game_states[-1] = new_state
+          if current_game_state.nil?
+            @game_states << new_state
+          else
+            # Replace last (active) state with new one
+            @game_states[-1] = new_state
+          end
         end
       end
     end
@@ -120,13 +128,14 @@ module Chingu
         new_state.game_state_manager = self
         
         # Give the soon-to-be-disabled state a chance to clean up by calling finalize() on it.
+        @previous_game_state = current_game_state
         current_game_state.finalize   if current_game_state.respond_to?(:finalize) && options[:finalize]
         
         if @transitional_game_state && options[:transitional]
           # If we have a transitional, push that instead, with new_state as first argument
           transitional_game_state = @transitional_game_state.new(new_state, @transitional_game_state_options)
           self.push_game_state(transitional_game_state, :transitional => false)
-        else          
+        else
           # Push new state on top of stack and therefore making it active
           @game_states.push(new_state)
         end
@@ -145,15 +154,22 @@ module Chingu
       #
       # Give the soon-to-be-disabled state a chance to clean up by calling finalize() on it.
       #
+      @previous_game_state = current_game_state
       current_game_state.finalize    if current_game_state.respond_to?(:finalize) && options[:finalize]
-      
+
       #
       # Activate the game state "bellow" current one with a simple Array.pop
       #
       @game_states.pop
-
+        
       # Call setup on the new current state
       current_game_state.setup       if current_game_state.respond_to?(:setup) && options[:setup]
+      
+      if @transitional_game_state && options[:transitional]
+        # If we have a transitional, push that instead, with new_state as first argument
+        transitional_game_state = @transitional_game_state.new(current_game_state, @transitional_game_state_options)
+        self.switch_game_state(transitional_game_state, :transitional => false)
+      end
     end
     alias :pop :pop_game_state
 
@@ -161,7 +177,8 @@ module Chingu
     # Returns the previous game state. Shortcut: "previous"
     #
     def previous_game_state
-      @game_states[@game_states.index(current_game_state)-1]
+      ##@game_states[@game_states.index(current_game_state)-1]
+      @previous_game_state
     end
     alias :previous previous_game_state
     

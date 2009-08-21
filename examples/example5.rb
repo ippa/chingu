@@ -16,7 +16,7 @@ class Game < Gosu::Window
     @manager = Chingu::GameStateManager.new
     @manager.switch_game_state(State1)
     
-    # Insert FadeTo state between every push, pop and switch.
+    # Insert FadeTo state between every push, pop and switch
     @manager.transitional_game_state(Chingu::GameStates::FadeTo, :speed => 10)
   end
 
