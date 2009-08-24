@@ -13,7 +13,7 @@ It's also in a state of flux while I decide on core-naming etc.
 
 == DESCRIPTION
 Game framework built on top of the OpenGL accelerated game lib Gosu. 
-It adds simple yet powerfull game states, prettier inputhandling, deploymentsafe asset-handling, a basic re-usable game object and automation of common task.
+It adds simple yet powerful game states, prettier input handling, deployment safe asset-handling, a basic re-usable game object and automation of common task.
 
 
 == THE STORY
@@ -113,7 +113,7 @@ Chingu doesn't change any fundamental concept of Gosu, but it will make the abov
   #
   # We use Chingu::Window instead of Gosu::Window
   #
-  class Game < Chingu:Window
+  class Game < Chingu::Window
     def initialize
       super       # This is always needed if you want to take advantage of what chingu offers
       #
@@ -222,7 +222,7 @@ Another more complex example:
   # Pressing ESC would call Play#close
   # Holding down LEFT would call Play#move_left on every game iteration
   # Holding down RIGHT would call Play#move_right on every game iteration
-  # Relasing SPACE would call Play#fire
+  # Releasing SPACE would call Play#fire
   #
   
   class Play < Chingu::GameState
@@ -242,14 +242,14 @@ In Gosu the above code would include code in button_up(), button_down() and a ch
 
 Every symbol can be prefixed by either "released_" or "holding_" while no prefix at all defaults to pressed once.
 
-So, why not :up_space or :relase_space instead of :released_space?
+So, why not :up_space or :release_space instead of :released_space?
 +:up_space+ doesn't sound like english, :release_space sounds more like a command then an event.
 
 
 Or +:hold_left+ or :down_left instead of :holding_left?
 :holding_left sounds like something that's happening over a period of time, not a single trigger, which corresponds well to how it works.
 
-And with the default :space => :something youd imagine that :something is called once. You press :space once, :something get's executed once.
+And with the default :space => :something you would imagine that :something is called once. You press :space once, :something is executed once.
 
 
 === GameState / GameStateManager
@@ -283,7 +283,7 @@ Game states aren't complicated. In Chingu a GameState is a class that behaves mo
 
   end
 
-Looks familiar ye?
+Looks familiar yet?
 You can activate the above game state in 2 ways
 
   class Game < Chingu::Window
@@ -309,15 +309,15 @@ Another example:
     def initialize
       #
       # We start by pushing Menu to the game state stack, making it active as the only state on stack.
-      # :setup => :false which will skip setup() from beeing called (standard when switching to a new state)
+      # :setup => :false which will skip setup() from being called (standard when switching to a new state)
       #
       push_game_state(Menu, :setup => false)
       
       #
-      # We push another game state to the stack, Play. We now have 2 states, which active beeing first / active.
+      # We push another game state to the stack, Play. We now have 2 states, which active being first / active.
       #
-      # :finalize => false will skip setup() from beeing called on game state 
-      # that's beeing pushed down the stack, in this case Intro.setup().
+      # :finalize => false will skip setup() from being called on game state 
+      # that's being pushed down the stack, in this case Intro.setup().
       #
       push_game_state(Play, :finalize => false)
     
@@ -340,7 +340,7 @@ Another example:
   
 A GameState in Chingu is just a class with the following instance methods: 
 
-* initialize()    - called only once with push_game_state(Intro) but everytime with push_game_state(Intro.new)
+* initialize()    - called only once with push_game_state(Intro) but every time with push_game_state(Intro.new)
 * setup()         - called each time the game state becomes active. 
 * button_down(id) - Called when a button is down
 * button_up(id)   - Called when a button is released
@@ -380,13 +380,13 @@ Chingus inputhandler will detect that Menu is a gamestate-class, create a new in
 
 === Assets / Paths
 
-You might wonder why this is nessesary in the straight Gosu example:
+You might wonder why this is necessary in the straight Gosu example:
   ROOT_PATH = File.dirname(File.expand_path(__FILE__))
   @image = Image.new(File.join(ROOT_PATH, "media", "player.png"))
 
 It enables you to start your game from any directory and it will still find your assets (pictures, samples, fonts etc..) correctly.
 For a local development version this might not be important, you're likely to start the game from the games root-dir.
-But as soon as you try to deploy (for example to windows with OCRA - http://github.com/larsch/ocra/tree/master) you'll run into trouble of you dont do it like that.
+But as soon as you try to deploy (for example to windows with OCRA - http://github.com/larsch/ocra/tree/master) you'll run into trouble of you don't do it like that.
  
 Chingu solves this problem behind the scenes for the most common assets. The 2 lines above can be replaced with:
   Image["player.png"]
@@ -442,7 +442,7 @@ See http://www.libgosu.org/rdoc/classes/Gosu/Window.html for a full set of metho
 * (done) Automate gemgenning rake-task even more
 * More examples when effects are more complete
 * class ChipmunkObject
-* class Actor/MovingActor with maybe abit more logic then the basic GameObject. Would ppl find is useful?
+* class Actor/MovingActor with maybe a bit more logic then the basic GameObject. Would ppl find is useful?
 * (40% done) Spell check all docs, sloppy spelling turns ppl off.
 * Tests
 * (done) Streamline fps / tick code
