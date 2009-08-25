@@ -432,7 +432,7 @@ See http://www.libgosu.org/rdoc/classes/Gosu/Window.html for a full set of metho
 == TODO:
 * (done) Complete the input-definitions with all possible inputs (keyboard, gamepad, mouse)!
 * (done) Complete input-stuff with released-states etc
-* More gfx effects, for example: fade in/out to a specific color (black makes sense between levels).
+* (done) More gfx effects, for example: fade in/out to a specific color (black makes sense between levels).
 * (posted request on forums) Summon good proven community gosu snippets into Chingu
 * (done) Generate docs @ ippa.github.com-  http://rdoc.info/projects/ippa/chingu !
 * (done) A good scene-manager to manage welcome screens, levels and game flow- GameStateManager / GameState !
@@ -448,7 +448,7 @@ See http://www.libgosu.org/rdoc/classes/Gosu/Window.html for a full set of metho
 * (done) Streamline fps / tick code
 * (done) Encapsulate Font.new / draw_rot with a "class Text < GameObject"
 * (10% done) Make it possible for ppl to use the parts of Chingu they like
-* At least make GameStateManager really easy to use with pure Gosu / Document it!
+* (done) At least make GameStateManager really easy to use with pure Gosu / Document it!
 * A more robust game state <-> game_object system to connect them together.
 * (50% done) Get better at styling rdocs
 * (done) all “gamestate” ? “game state” ?   it's "game state"
