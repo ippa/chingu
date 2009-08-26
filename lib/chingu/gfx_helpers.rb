@@ -43,7 +43,7 @@ module Chingu
                           :thickness => 10, 
                           :orientation => :vertical,
                           :rect => Rect.new([0, 0, $window.width, $window.height])
-												}
+                        }
 			options = default_options.merge(options)
       
       rect = Rect.new(options[:rect])
