@@ -79,7 +79,10 @@ module Chingu
       @center_y = options[:center_y] || options[:center] || @@center_y
       @factor_x = options[:factor_x] || options[:factor] || @@factor_x
       @factor_y = options[:factor_y] || options[:factor] || @@factor_y
-      @color = options[:color] || 0xFFFFFFFF
+      @color = Gosu::Color.new(options[:color]) if options[:color].is_a? Bignum
+      @color = options[:color]                  if options[:color].respond_to?(:alpha)
+      @color = Gosu::Color.new(0xFFFFFFFF)      if @color.nil?
+      
       @mode = options[:mode] || :default # :additive is also available.
       
       # Shortcuts for draw_rot arguments
@@ -138,12 +141,15 @@ module Chingu
     end
 
     #
-    # Fade out objects color by decreasing color.alpha
+    # Fade object by decreasing/increasing color.alpha
     #
     def fade(amount = 1)
       new_alpha = @color.alpha + amount
-      @color.alpha =  (new_alpha < 0) ? 0 : new_alpha
-      @color.alpha =  (new_alpha > 255) ? 255 : new_alpha
+      if amount < 0
+        @color.alpha =  [0, new_alpha].max
+      else
+        @color.alpha =  [0, new_alpha].min
+      end
     end
 
     #

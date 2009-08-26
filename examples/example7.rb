@@ -15,6 +15,7 @@ class Game < Chingu::Window
     push_game_state(FillRect)
     push_game_state(FillGradient)
     push_game_state(FillGradientRect)
+    push_game_state(Particles1)
   end
   
   def next_effect
@@ -67,5 +68,25 @@ class FillGradientRect < Chingu::GameState
   end
 end
 
+class Particles1 < Chingu::GameState
+  def setup
+    @color1 = Color.new(0xFFFFEA02)
+    @color2 = Color.new(0xFF078B20)
+  end
+  
+  def update(time)
+    Chingu::Particle.new(:x => 200, :y => $window.height, :animation => "fireball.png", :zoom => +0.05, :fade => -5, :rotation => +1)
+    game_objects_of_class(Particle).each { |particle| particle.y -= 5; particle.x += 3 - rand(6) }
+    self.game_objects.reject! { |object| object.outside_window? || object.color.alpha == 0 }
+    super
+  end
+  
+  def draw
+    $window.caption = "particle example (space to continue) [particles#: #{game_objects.size} - framerate: #{$window.fps}]"
+    fill_gradient(:from => Color.new(255,0,0,0), :to => Color.new(255,50,50,50), :rect => [0,0,$window.width,$window.height*0.95])
+    fill_gradient(:from => Color.new(255,50,50,50), :to => Color.new(255,150,50,50), :rect => [0,$window.height*0.95,$window.width,$window.height*0.05])
+    super
+  end
+end
 
 Game.new.show

@@ -26,7 +26,7 @@ module Chingu
       @width = options[:width] || 32
       @index = options[:index] || 0
       @delay = options[:delay] || 100
-      @ticks = 0
+      @dt = 0
 			
       @frame_actions = []
       @frames = Gosu::Image.load_tiles($window, @file, @width, @height, true)
@@ -72,8 +72,8 @@ module Chingu
     # #next! will look at bounce and loop flags to always return a correct frame (a Gosu#Image)
     #
     def next!
-      if (@ticks += $window.tick) > @delay
-        @ticks = 0
+      if (@dt += $window.milliseconds_since_last_tick) > @delay
+        @dt = 0
         @index += @step
         
         # Has the animation hit end or beginning... time for bounce or loop?
