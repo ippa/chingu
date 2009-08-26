@@ -7,6 +7,7 @@ require 'gosu'
 require 'set'
 
 %w{	helpers
+    gfx_helpers
     game_state_manager
     game_state
     window
@@ -15,7 +16,6 @@ require 'set'
 		assets
     game_object
     text
-		data_structures
 		rect
 		animation
 		input
@@ -33,5 +33,5 @@ require 'set'
     end
 
 module Chingu
-  VERSION = "0.4.3"
+  VERSION = "0.4.4"
 end

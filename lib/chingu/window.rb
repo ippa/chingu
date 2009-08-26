@@ -4,7 +4,7 @@ module Chingu
     include Chingu::GameStateHelpers    
     
     # adds fill() etc...
-    include Chingu::DrawHelpers
+    include Chingu::GFXHelpers
     
     # adds game_objects_of_class etc ...
     include Chingu::GameObjectHelpers
