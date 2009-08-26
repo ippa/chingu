@@ -117,7 +117,7 @@ module Chingu
     #
     # Zoom - increase @factor_x and @factor_y at the same time.
     #
-    def zoom(amount)
+    def zoom(amount = 0.1)
       @factor_x += amount
       @factor_y += amount
     end
@@ -125,7 +125,7 @@ module Chingu
     #
     # Zoom Out - decrease @factor_x and @factor_y at the same time.
     #
-    def zoom_out(amount)
+    def zoom_out(amount = 0.1)
       @factor_x -= amount
       @factor_y -= amount
     end
@@ -133,25 +133,41 @@ module Chingu
     #
     # Rotate object 'amount' degrees
     #
-    def rotate(amount)
+    def rotate(amount = 1)
       @angle += amount
     end
-    
+
     #
-    # Returns true if game object is inside the game window, false if outside
+    # Fade out objects color by decreasing color.alpha
+    #
+    def fade_out(amount = 1)
+      new_alpha = @color.alpha - amount
+      @color.alpha = [new_alpha, 0].max
+    end
+
+    #
+    # Fade in objects color by increasing color.alpha
+    #
+    def fade_in(amount = 1)
+      new_alpha = @color.alpha + amount
+      @color.alpha = [new_alpha, 255].min
+    end
+
+    #
+    # Returns true if object is inside the game window, false if outside
     #
     def inside_window?(x = @x, y = @y)
       x >= 0 && x <= $window.width && y >= 0 && y <= $window.height
     end
 
     #
-    # 
+    # Returns true object is outside the game window 
     #
     def outside_window?(x = @x, y = @y)
       not inside_window?(x,y)
     end
 
-    def update(time = 1)
+    def update(time = 0)
       # Objects gamelogic here, 'time' is the time passed between 2 iterations of the main game loop
 		end
     
