@@ -14,6 +14,7 @@ class Game < Chingu::Window
     push_game_state(Fill)
     push_game_state(FillRect)
     push_game_state(FillGradient)
+    push_game_state(FillGradientRect)
   end
   
   def next_effect
@@ -44,7 +45,7 @@ end
 
 class FillGradient < Chingu::GameState 
   def setup
-    @pinkish = Color.new(0xFFF289FF)
+    @pinkish = Color.new(0xFFCE17B6)
     @blueish = Color.new(0xFF6DA9FF)
   end
   
@@ -53,5 +54,18 @@ class FillGradient < Chingu::GameState
     fill_gradient(:from => @pinkish, :to => @blueish, :orientation => :vertical)
   end
 end
+
+class FillGradientRect < Chingu::GameState 
+  def setup
+    @color1 = Color.new(0xFFFFEA02)
+    @color2 = Color.new(0xFF078B20)
+  end
+  
+  def draw
+    $window.caption = "fill_gradient with :rect-option (space to continue)"
+    fill_gradient(:from => @color1, :to => @color2, :rect => [100,100,200,200], :orientation => :horizontal)
+  end
+end
+
 
 Game.new.show
