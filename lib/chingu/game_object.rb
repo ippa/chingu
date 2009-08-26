@@ -140,17 +140,24 @@ module Chingu
     #
     # Fade out objects color by decreasing color.alpha
     #
+    def fade(amount = 1)
+      new_alpha = @color.alpha + amount
+      @color.alpha =  (new_alpha < 0) ? 0 : new_alpha
+      @color.alpha =  (new_alpha > 255) ? 255 : new_alpha
+    end
+
+    #
+    # Fade out objects color by decreasing color.alpha
+    #
     def fade_out(amount = 1)
-      new_alpha = @color.alpha - amount
-      @color.alpha = [new_alpha, 0].max
+      fade(-amount)
     end
 
     #
     # Fade in objects color by increasing color.alpha
     #
     def fade_in(amount = 1)
-      new_alpha = @color.alpha + amount
-      @color.alpha = [new_alpha, 255].min
+      fade(amount)
     end
 
     #
