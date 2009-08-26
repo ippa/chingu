@@ -33,7 +33,6 @@ module Chingu
     #
     #   :from         - Start with this color
     #   :to           - End with this color
-    #   :thickness    - Each color between :from and :to gets drawn with a :thickness pixel wide/high rectangle.
     #   :rect         - Only fill rectangle :rect with the gradient, either a Rect-instance or [x,y,width,height] Array.
     #   :orientation  - Either :vertical (top to bottom) or :horizontal (left to right)
     #
@@ -42,40 +41,27 @@ module Chingu
                           :to => Gosu::Color.new(255,255,255,255), 
                           :thickness => 10, 
                           :orientation => :vertical,
-                          :rect => Rect.new([0, 0, $window.width, $window.height])
+                          :rect => Rect.new([0, 0, $window.width, $window.height]),
+                          :zorder => 0,
+                          :mode => :default
                         }
 			options = default_options.merge(options)
-      
-      rect = Rect.new(options[:rect])
-      
+      rect = Rect.new(options[:rect])      
       if options[:orientation] == :vertical
-        step = rect.height / options[:thickness]
-        rect.height = step
+        $window.draw_quad(  rect.x, rect.y, options[:from],
+                            rect.right, rect.y, options[:from],
+                            rect.right, rect.bottom, options[:to],
+                            rect.x, rect.bottom, options[:to],
+                            options[:zorder], options[:mode]
+                          )
       else
-        step = rect.width / options[:thickness]
-        rect.width = step
+        $window.draw_quad(  rect.x, rect.y, options[:from],
+                            rect.x, rect.bottom, options[:from],
+                            rect.right, rect.bottom, options[:to],
+                            rect.right, rect.y, options[:to],
+                            options[:zorder], options[:mode]
+                          )        
       end
-      
-      color = Color.new(options[:from].alpha, options[:from].red, options[:from].green, options[:from].blue)
-      red_step = (options[:to].red - options[:from].red) / options[:thickness]
-      green_step = (options[:to].green - options[:from].green) / options[:thickness]
-      blue_step = (options[:to].blue - options[:from].blue) / options[:thickness]
-      counter = 0
-      
-      while counter < options[:thickness]
-        if options[:orientation] == :vertical
-          fill_rect(rect, color)
-          rect.y += step
-        else
-          fill_rect(rect, color)
-          rect.x += step
-        end
-				
-        counter += 1
-        color.red   = color.red + red_step
-        color.blue  = color.blue + blue_step
-        color.green = color.green + green_step
-      end      
     end
   end
 end
