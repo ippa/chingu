@@ -15,5 +15,5 @@ end
 desc "Build a working gemspec"
 task :gemspec do
   system "rake git:manifest"
-  system "rake debug_gem | grep -v \"(in \" > chingu.gemspec"
+  system "rake debug_gem | grep -v \"(in \" | grep -v \"erik\" > chingu.gemspec"
 end
