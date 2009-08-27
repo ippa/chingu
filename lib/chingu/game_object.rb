@@ -144,6 +144,8 @@ module Chingu
     # Fade object by decreasing/increasing color.alpha
     #
     def fade(amount = 1)
+      return if amount == 0
+      
       new_alpha = @color.alpha + amount
       if amount < 0
         @color.alpha =  [0, new_alpha].max

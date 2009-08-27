@@ -8,16 +8,18 @@ require 'set'
 
 %w{	helpers
     gfx_helpers
+    game_object
+    effects
     game_state_manager
     game_state
     window
 		fpscounter
 		named_resource
 		assets
-    game_object
     text
 		rect
 		animation
+    particle    
 		input
     parallax
 		}.each do |lib|

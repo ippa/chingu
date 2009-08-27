@@ -15,7 +15,7 @@ class Game < Chingu::Window
     push_game_state(FillRect)
     push_game_state(FillGradient)
     push_game_state(FillGradientRect)
-    push_game_state(Particles1)
+    push_game_state(Particles)
   end
   
   def next_effect
@@ -68,23 +68,63 @@ class FillGradientRect < Chingu::GameState
   end
 end
 
-class Particles1 < Chingu::GameState
+class Particles < Chingu::GameState
   def setup
     @color1 = Color.new(0xFFFFEA02)
     @color2 = Color.new(0xFF078B20)
+    @blue_laserish = Color.new(0xFF86EFFF)
+    @red = Color.new(0xFFFF0000)
+    @white = Color.new(0xFFFFFFFF)
+    @yellow = Color.new(0xFFF9F120)
+    
+    # Thanks jsb in #gosu of Encave-fame for fireball.png :)
+    @fireball_animation = Animation.new(:file => media_path("fireball.png"), :width => 32, :height => 32)
+    @ground_y = $window.height * 0.95
   end
   
   def update(time)
-    Chingu::Particle.new(:x => 200, :y => $window.height, :animation => "fireball.png", :zoom => +0.05, :fade => -5, :rotation => +1)
-    game_objects_of_class(Particle).each { |particle| particle.y -= 5; particle.x += 3 - rand(6) }
+    #
+    # Fire 1. Dies quickly (big :fade). Small in size (small :zoom)
+    #
+    Chingu::Particle.new( :x => 100, 
+                          :y => @ground_y, 
+                          :animation => @fireball_animation,
+                          :zoom => +0.05, 
+                          :fade => -10, 
+                          :rotation => +1,
+                          :mode => :default
+                        )
+
+    #
+    # Fire 2. Higher flame, :fade only -4. Wide Flame with bigger :zoom.
+    #
+    Chingu::Particle.new( :x => 300, 
+                          :y => @ground_y, 
+                          :animation => @fireball_animation, 
+                          :zoom => +0.2, 
+                          :fade => -4, 
+                          :rotation => +3,
+                          :mode => :default
+                        )
+    #
+    # Fire 3. Blue plasma with smooth particle.png and color-overlay.
+    #
+    Chingu::Particle.new( :x => 500, 
+                          :y => @ground_y,
+                          :image => "particle.png", 
+                          :color => @blue_laserish,
+                          :mode => :additive
+                        )
+
+    game_objects_of_class(Particle).each { |particle| particle.y -= 5; particle.x += 2 - rand(4) }
     self.game_objects.reject! { |object| object.outside_window? || object.color.alpha == 0 }
     super
   end
   
   def draw
     $window.caption = "particle example (space to continue) [particles#: #{game_objects.size} - framerate: #{$window.fps}]"
-    fill_gradient(:from => Color.new(255,0,0,0), :to => Color.new(255,50,50,50), :rect => [0,0,$window.width,$window.height*0.95])
-    fill_gradient(:from => Color.new(255,50,50,50), :to => Color.new(255,150,50,50), :rect => [0,$window.height*0.95,$window.width,$window.height*0.05])
+    fill_gradient(:from => Color.new(255,0,0,0), :to => Color.new(255,60,60,80), :rect => [0,0,$window.width,@ground_y])
+    fill_gradient(:from => Color.new(255,100,100,100), :to => Color.new(255,50,50,50), :rect => [0,@ground_y,$window.width,$window.height-@ground_y])
     super
   end
 end

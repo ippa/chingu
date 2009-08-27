@@ -3,23 +3,13 @@
 #
 include Chingu
 module Chingu
-  class Particle < Chingu::GameObject
-    
+  class Particle < Chingu::GameObject      
     def initialize(options)
       super({:mode => :additive}.merge(options))
-        
       @rotation = options[:rotation] || 0
       @zoom = options[:zoom] || 0
-      @fade = options[:fade] || 0
-      
-      @width = options[:width]
-      @height = options[:width]
-  
-      if options[:animation].is_a? String
-        @animation = Animation.new(:file => media_path(options[:animation]), :width => @width, :height => @height)
-      elsif options[:animation].is_a? Animation
-        @animation = options[:animation]
-      end
+      @fade = options[:fade] || 0      
+      @animation = options[:animation] || nil      
     end
       
     def update(time)
