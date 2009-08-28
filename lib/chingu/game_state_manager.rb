@@ -106,6 +106,7 @@ module Chingu
             @game_states[-1] = new_state
           end
         end
+        self.inside_state = current_game_state
       end
     end
     alias :switch :switch_game_state
@@ -139,6 +140,7 @@ module Chingu
           # Push new state on top of stack and therefore making it active
           @game_states.push(new_state)
         end
+        self.inside_state = current_game_state
       end
     end
     alias :push :push_game_state
@@ -170,6 +172,7 @@ module Chingu
         transitional_game_state = @transitional_game_state.new(current_game_state, @transitional_game_state_options)
         self.switch_game_state(transitional_game_state, :transitional => false)
       end
+      self.inside_state = current_game_state
     end
     alias :pop :pop_game_state
 
@@ -187,6 +190,7 @@ module Chingu
     #
     def clear_game_states
       @game_states.clear
+      self.inside_state = nil
     end
     alias :clear :clear_game_states
     
