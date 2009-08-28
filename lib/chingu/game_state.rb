@@ -28,7 +28,7 @@ module Chingu
 
   class GameState
     include Chingu::GameStateHelpers    # Easy access to the global game state-queue
-    include Chingu::DrawHelpers         # Adds fill(), fade() etc to each game state
+    include Chingu::GFXHelpers          # Adds fill(), fade() etc to each game state
     include Chingu::GameObjectHelpers   # adds game_objects_of_class etc ...
     include Chingu::InputDispatcher     # dispatch-helpers
     include Chingu::InputClient

@@ -116,28 +116,6 @@ module Chingu
       $window.game_state_manager.clear_game_states
     end
   end
-
-  #
-  # Various helper-methods to manipulate the screen
-  #
-  module DrawHelpers
-    #
-    # Fills whole window with color 'c'
-    #
-    def fill(c)
-      $window.draw_quad(0,0,c,$window.width,0,c,$window.width,$window.width,c,0,$window.height,c,0,:default)
-    end
-     
-    #
-    # Fills a given Rect 'r' with color 'c'
-    #
-    def fill_rect(r, c)
-      $window.draw_quad(r.x,r.y,c, r.right,r.y,c, r.right,r.bottom,c, r.x,r.bottom,c,0,:default)
-    end
-     
-    def fade(options = {})
-    end
-  end
   
   module GameObjectHelpers
     #

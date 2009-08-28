@@ -1,7 +1,15 @@
-=== 0.0.3 / 2009-08-14
+=== 0.4.5 / 2009-08-27
+Tons of small fixes across the board. 
+Started on GFX Helpers (fill, fill_rect, fill_gradient so far).
+A basic particle system (see example7.rb)
+
+=== 0.4.0 / 2009-08-19
+Alot of game state love. Now also works stand alone with pure gosu.
+
+=== 0.3.0 / 2009-08-14
 Too much to list. remade inputsystem. gamestates are better. window.rb is cleaner. lots of small bugfixes. Bigger readme.
 
-=== 0.0.2 / 2009-08-10
+=== 0.2.0 / 2009-08-10
 tons of new stuff and fixes. complete keymap. gamestate system. moreexamples/docs. better game_object.
 
 === 0.0.1 / 2009-08-05

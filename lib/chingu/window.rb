@@ -1,10 +1,11 @@
 module Chingu
+  CHINGU_ROOT = File.dirname(File.expand_path($0))
   class Window < Gosu::Window
     # adds push_game_state, pop_game_state, current_game_state and previous_game_state
     include Chingu::GameStateHelpers    
     
     # adds fill() etc...
-    include Chingu::DrawHelpers
+    include Chingu::GFXHelpers
     
     # adds game_objects_of_class etc ...
     include Chingu::GameObjectHelpers

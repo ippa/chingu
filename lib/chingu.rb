@@ -1,23 +1,24 @@
 #
 #
 #
-#
 require 'rubygems'
 require 'gosu'
 require 'set'
 
 %w{	helpers
+    gfx_helpers
+    game_object
+    effects
     game_state_manager
     game_state
     window
 		fpscounter
 		named_resource
 		assets
-    game_object
     text
-		data_structures
 		rect
 		animation
+    particle    
 		input
     parallax
 		}.each do |lib|
@@ -33,5 +34,5 @@ require 'set'
     end
 
 module Chingu
-  VERSION = "0.4.3"
+  VERSION = "0.4.6"
 end

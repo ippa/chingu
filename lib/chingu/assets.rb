@@ -54,4 +54,11 @@ module Gosu
       (path = find_file(name)) ? Gosu::Image.load_tiles($window, path, 32, 32, true) : nil
     end
   end
+  
+  class CutTiles
+    def self.[](name, width, height)
+      @@tiles = Hash.new unless defined?(@@tiles)
+      @@tiles[name] ||= Gosu::Image.load_tiles($window, name, width, height, true)
+    end
+  end
 end
