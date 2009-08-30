@@ -19,15 +19,17 @@ module Chingu
     #
     #
     def initialize(options)
-      @loop = options[:loop] || true
-      @bounce = options[:bounce] || false
+      options = {:loop => true, :bounce => false, :width => 32, :height => 32, :index => 0, :delay => 100}.merge(options)
+      
+      @loop = options[:loop]
+      @bounce = options[:bounce]
       @file = options[:file]
-      @height = options[:height] || 32
-      @width = options[:width] || 32
-      @index = options[:index] || 0
-      @delay = options[:delay] || 100
+      @height = options[:height]
+      @width = options[:width]
+      @index = options[:index]
+      @delay = options[:delay]
       @dt = 0
-			
+      
       @frame_actions = []
       @frames = Gosu::Image.load_tiles($window, @file, @width, @height, true)
       @step = 1
@@ -74,19 +76,18 @@ module Chingu
     def next!
       if (@dt += $window.milliseconds_since_last_tick) > @delay
         @dt = 0
+        @previous_index = @index
         @index += @step
         
         # Has the animation hit end or beginning... time for bounce or loop?
         if (@index >= @frames.size || @index < 0)
           if @bounce
-            if @step == 1
-              @step = -1
-            else
-              @step = 1
-            end
+            @step *= -1   # invert number
             @index += @step
           elsif @loop
             @index = 0	
+          else
+            @index = @previous_index # no bounce or loop, use previous frame
           end
         end
         @frame_actions[@index].call	if	@frame_actions[@index]

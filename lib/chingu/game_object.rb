@@ -6,7 +6,7 @@ module Chingu
   # All objects that inherits from this class will automaticly be updated and drawn.
   #
   class GameObject
-    attr_accessor :image, :x, :y, :angle, :center_x, :center_y, :factor_x, :factor_y, :color, :mode
+    attr_accessor :image, :x, :y, :angle, :center_x, :center_y, :factor_x, :factor_y, :color, :mode, :zorder
     attr_accessor :update, :draw
     attr_reader :options, :parent
     
