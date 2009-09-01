@@ -182,7 +182,7 @@ module Chingu
       not inside_window?(x,y)
     end
 
-    def update(time = 0)
+    def update
       # Objects gamelogic here, 'time' is the time passed between 2 iterations of the main game loop
 		end
 		

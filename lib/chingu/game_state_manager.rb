@@ -7,7 +7,7 @@ module Chingu
   # http://www.gamedev.net/community/forums/topic.asp?topic_id=477320
   #
   # Chingu::Window automatically creates a @game_state_manager and makes it accessible in our game loop.
-  # By default the game loop calls update(dt), draw, button_up(id) and button_down(id) on the active state.
+  # By default the game loop calls update, draw, button_up(id) and button_down(id) on the active state.
   #
   # ==== Chingu Examples
   #
@@ -180,7 +180,6 @@ module Chingu
     # Returns the previous game state. Shortcut: "previous"
     #
     def previous_game_state
-      ##@game_states[@game_states.index(current_game_state)-1]
       @previous_game_state
     end
     alias :previous previous_game_state
@@ -229,8 +228,8 @@ module Chingu
     #
     # If you're using Chingu::Window instead of Gosu::Window this will automaticly be called.
     #
-    def update(time = nil)
-      current_game_state.update(time)   if current_game_state
+    def update
+      current_game_state.update         if current_game_state
     end
 
     #

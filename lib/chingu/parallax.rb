@@ -30,9 +30,9 @@ module Chingu
     end
     
     #
-    # TODO: make use of time here!
+    # TODO: make use of $window.milliseconds_since_last_update here!
     #
-    def update(time)
+    def update
       @backgrounds.each do |background|
         background.x = -@x / background.damping
         background.y =  @y / background.damping

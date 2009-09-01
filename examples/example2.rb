@@ -6,6 +6,8 @@ include Gosu
 # A little more complicated example where we do our own #update and #draw code.
 # We also add another Actor - a bullet fired with space.
 #
+# Also tests out the Debug game state.
+#
 class Game < Chingu::Window
   def initialize
     #
@@ -14,39 +16,8 @@ class Game < Chingu::Window
     #
     super
     
-    @player = Player.new(:x => 200, :y => 200, :image => Image["spaceship.png"])
-    @player.input = { :holding_left => :move_left, 
-                      :holding_right => :move_right, 
-                      :holding_up => :move_up, 
-                      :holding_down => :move_down, 
-                      :space => :fire,
-                      :escape => :exit
-                      }
+    push_game_state(Play.new)
   end
-
-  #
-  # If we want to add extra graphics drawn just define your own draw.
-  # Be sure to call #super for enabling Chingus autodrawing of Actors.
-  # Putting #super before or after the background-draw-call really doesn't matter since Gosu work with "zorder".
-  #
-  def draw
-    # Raw Gosu Image.draw(x,y,zorder)-call
-    Image["background1.png"].draw(0, 0, 0)    
-    super
-  end
-
-  #
-  # Gosus place for gamelogic is #update in the mainwindow
-  #
-  # A #super call here would call #update on all Chingu::Actors and check their inputs, and call the specified method.
-  # 
-  def update
-    
-    ### Your own gamelogic here
-    super
-    self.caption = "FPS: #{self.fps} milliseconds_since_last_tick: #{self.milliseconds_since_last_tick}"
-  end
-  
 end
 
 #
@@ -78,10 +49,53 @@ class Bullet < Chingu::GameObject
   end
 
   # Move the bullet forward
-  def update(time)
+  def update
     @y -= 2
   end
   
+end
+
+class Play < Chingu::GameState
+  def initialize
+    super
+    
+    @player = Player.new(:x => 200, :y => 200, :image => Image["spaceship.png"])
+    @player.input = { :holding_left => :move_left, 
+                      :holding_right => :move_right, 
+                      :holding_up => :move_up, 
+                      :holding_down => :move_down, 
+                      :space => :fire,
+                      :escape => :exit,
+                      }
+    self.input = { :f1 => :debug }
+  end
+
+  def debug
+    push_game_state(Chingu::GameStates::Debug)
+  end
+    
+  #
+  # If we want to add extra graphics drawn just define your own draw.
+  # Be sure to call #super for enabling Chingus autodrawing of Actors.
+  # Putting #super before or after the background-draw-call really doesn't matter since Gosu work with "zorder".
+  #
+  def draw
+    # Raw Gosu Image.draw(x,y,zorder)-call
+    Image["background1.png"].draw(0, 0, 0)    
+    super
+  end
+
+  #
+  # Gosus place for gamelogic is #update in the mainwindow
+  #
+  # A #super call here would call #update on all Chingu::Actors and check their inputs, and call the specified method.
+  # 
+  def update
+    
+    ### Your own gamelogic here
+    super
+    $window.caption = "FPS: #{$window.fps} milliseconds_since_last_tick: #{$window.milliseconds_since_last_tick}"
+  end  
 end
 
 Game.new.show

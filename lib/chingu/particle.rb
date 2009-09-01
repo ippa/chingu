@@ -12,7 +12,7 @@ module Chingu
       @animation = options[:animation] || nil      
     end
       
-    def update(time)
+    def update
       self.image = @animation.next!   if @animation
       self.rotate(@rotation)
       self.zoom(@zoom)

@@ -82,7 +82,7 @@ class Particles < Chingu::GameState
     @ground_y = $window.height * 0.95
   end
   
-  def update(time)
+  def update
     #
     # Fire 1. Dies quickly (big :fade). Small in size (small :zoom)
     #

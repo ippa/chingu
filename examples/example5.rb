@@ -55,7 +55,7 @@ class State1 < Chingu::GameState
     @spinner_index = 0.0
   end
   
-  def update(dt)
+  def update
     @spinner_index += 0.1
     @spinner_index = 0    if @spinner_index >= @spinner.size
   end
@@ -71,7 +71,7 @@ class State2 < Chingu::GameState
     @ticks = 0.0
   end
   
-  def update(dt)
+  def update
     @ticks += 0.01
     @factor = 1.5 + Math.sin(@ticks).to_f
   end
@@ -88,7 +88,7 @@ class State3 < Chingu::GameState
     @ticks = 0.0
   end
   
-  def update(dt)
+  def update
     @ticks += 0.01
     @factor = 1.5 + Math.sin(@ticks).to_f
   end  

@@ -1,7 +1,9 @@
 #
 #
 #
-require 'rubygems'
+unless RUBY_VERSION =~ /1\.9/
+  require 'rubygems'
+end
 require 'gosu'
 require 'set'
 
@@ -28,11 +30,12 @@ require 'set'
 
 %w{ pause
     fade_to
+    debug
 		}.each do |lib|
       root ||= File.dirname(File.expand_path(__FILE__))
       require File.join(root,"chingu","game_states",lib)
     end
 
 module Chingu
-  VERSION = "0.4.8"
+  VERSION = "0.4.9"
 end

@@ -23,7 +23,7 @@ module Chingu
         @new_game_state.update(0)      # Make sure states game logic is run Once (for a correct draw())
       end
     
-      def update(dt)
+      def update
         @alpha += (@fading_in ? -@options[:speed] : @options[:speed])
         if @alpha >= 255
           @fading_in = true

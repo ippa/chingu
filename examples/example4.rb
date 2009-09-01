@@ -62,7 +62,7 @@ class Bullet < Chingu::GameObject
     @image = Image["fire_bullet.png"]
   end
   
-  def update(time)
+  def update
     @y -= 2
   end
 end

@@ -67,6 +67,13 @@ module Chingu
     def ticks
       @fps_counter.ticks
     end
+    
+    #
+    # Mathematical short name for "milliseconds since last tick"
+    #
+    def dt
+      @milliseconds_since_last_tick
+    end
 
     #
     # Chingus core-logic / loop. Gosu will call this each game-iteration.
@@ -78,8 +85,15 @@ module Chingu
       # Without this self.fps would return an incorrect value.
       # If you override this in your Chingu::Window class, make sure to call super.
       #
-      @milliseconds_since_last_tick = @fps_counter.register_tick
+      @milliseconds_since_last_tick = @fps_counter.register_tick      
       
+      intermediate_update
+    end
+    
+    #
+    # "game logic" update that is safe to call even between Gosus update-calls
+    #
+    def intermediate_update
       #
       # Dispatch inputmap for main window
       #
@@ -123,7 +137,7 @@ module Chingu
     # Call update() on all game objects in main game window.
     #
     def update_game_objects
-      @game_objects.each { |object| object.update(@milliseconds_since_last_tick) }
+      @game_objects.each { |object| object.update }
     end
     
     #
@@ -132,7 +146,7 @@ module Chingu
     # -> call update on all game objects in that state
     #
     def update_game_state_manager
-      @game_state_manager.update(@milliseconds_since_last_tick)
+      @game_state_manager.update
     end
 
     #

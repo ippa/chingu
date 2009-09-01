@@ -31,7 +31,6 @@ module Chingu
 
       #
       # Calculate how many milliseconds passed since last game loop iteration.
-      # useful in update()-calls
       #
 			@milliseconds_since_last_tick = Gosu::milliseconds - @last_value
 			@last_value = Gosu::milliseconds

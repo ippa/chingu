@@ -8,7 +8,7 @@ module Chingu
       @trail = options[:trail] || 10
     end
       
-    def update(time)
+    def update
     end    
   end
 end

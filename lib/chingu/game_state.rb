@@ -95,11 +95,12 @@ module Chingu
     #
     # Calls update on each game object that has current game state as parent (created inside that game state)
     #
-    def update(time = 1)
+    def update
       dispatch_input_for(self)
+      
       @input_clients.each { |game_object| dispatch_input_for(game_object) }      
       
-      @game_objects.each { |object| object.update(time) }
+      @game_objects.each { |object| object.update }
     end
     
     #
@@ -108,7 +109,7 @@ module Chingu
     def draw
       @game_objects.each { |object| object.draw }
     end
-    
+        
     #
     # Closes game state by poping it off the stack (and activating the game state below)
     #
