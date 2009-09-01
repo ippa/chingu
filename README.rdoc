@@ -430,6 +430,12 @@ Since Chingu::Window is just Gosu::Window + some cheese you can do your $window.
 See http://www.libgosu.org/rdoc/classes/Gosu/Window.html for a full set of methods.
 
 == TODO:
+* rename Chingu::Window so 'include Chingu' and 'include Gosu' wont make Window collide
+* BasicObject vs GameObject vs ScreenObject
+* scale <--> growth parameter
+* Enemy.all ... instead of game_objects_of_type(Enemy) ? could this be cool / understandable?
+* (done) Don't call .update(time) with timeparameter, make time available thru other means when needed.
+* (10% done) debug screen / game state.. check out shawn24's elite irb sollution :)
 * (done) Complete the input-definitions with all possible inputs (keyboard, gamepad, mouse)!
 * (done) Complete input-stuff with released-states etc
 * (done) More gfx effects, for example: fade in/out to a specific color (black makes sense between levels).
@@ -443,7 +449,7 @@ See http://www.libgosu.org/rdoc/classes/Gosu/Window.html for a full set of metho
 * More examples when effects are more complete
 * class ChipmunkObject
 * class Actor/MovingActor with maybe a bit more logic then the basic GameObject. Would ppl find is useful?
-* (40% done) Spell check all docs, sloppy spelling turns ppl off.
+* (60% done) Spell check all docs, sloppy spelling turns ppl off. tnx jduff ;).
 * Tests
 * (done) Streamline fps / tick code
 * (done) Encapsulate Font.new / draw_rot with a "class Text < GameObject"
