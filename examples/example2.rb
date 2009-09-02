@@ -69,8 +69,14 @@ class Play < Chingu::GameState
                       }
     self.input = { :f1 => :debug }
   end
-
+  
   def debug
+    puts "--------"
+    GameObject.all.each do |game_object|
+      puts game_object.class
+    end
+    return 
+    
     push_game_state(Chingu::GameStates::Debug)
   end
     
@@ -91,10 +97,17 @@ class Play < Chingu::GameState
   # A #super call here would call #update on all Chingu::Actors and check their inputs, and call the specified method.
   # 
   def update
+    Bullet.destroy_if { |bullet| bullet.outside_window? }
     
-    ### Your own gamelogic here
+    #
+    # Bullet.each_collision(Enemy) do |bullet, enemy|
+    #   enemy.collision_with(bullet)
+    #   bullet.destroy!
+    # end
+    #
+      
     super
-    $window.caption = "FPS: #{$window.fps} milliseconds_since_last_tick: #{$window.milliseconds_since_last_tick}"
+    $window.caption = "FPS: #{$window.fps} - milliseconds_since_last_tick: #{$window.milliseconds_since_last_tick} - game objects# #{current_game_state.game_objects.size}"
   end  
 end
 

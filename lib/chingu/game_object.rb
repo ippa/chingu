@@ -104,6 +104,32 @@ module Chingu
     end
     
     #
+    # Fetch all objects of a current class.
+    #   Bullet.all   # => Enumerator of all objects of class Bullet
+    #
+    def self.all
+      ObjectSpace.each_object(self)
+    end
+    
+    #
+    # Desotroy all objects that fills a certain condition
+    #
+    def self.destroy_if(&block)
+      all.each do |object|
+        object.destroy! if yield(object)
+      end
+    end
+
+    #
+    # Removes object from the update cycle and freezes the object to prevent further modifications.
+    # If the object isn't being managed by Chingu (ie. you're doing manual update/draw calls) the object is only frozen, not removed from any updae cycle (because you are controlling that).
+    #
+    def destroy!
+      @parent.remove_game_object(self) if @parent
+      self.freeze
+    end
+        
+    #
     # Quick way of setting both factor_x and factor_y
     #
     def factor=(factor)
@@ -186,14 +212,6 @@ module Chingu
       # Objects gamelogic here, 'time' is the time passed between 2 iterations of the main game loop
 		end
 		
-    #
-    # Removes object from the update cycle and freezes the object to prevent further modifications.
-    # If the object isn't being managed by Chingu (ie. you're doing manual update/draw calls) the object is only frozen, not removed from any updae cycle (because you are controlling that).
-    #
-    def destroy!
-      @parent.remove_game_object(self) if @parent
-      self.freeze
-    end
     
     #
     # The core of the gameclass, the draw_rot encapsulation. Draws the sprite on screen.
