@@ -2,6 +2,8 @@ module Chingu
   module Components
     #
     # TODO: everything. convert to class?
+    # 
+    # Use QuadTrees: http://lab.polygonal.de/2007/09/09/quadtree-demonstration/
     #
     module CollisionDetection
     

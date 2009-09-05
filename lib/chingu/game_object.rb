@@ -51,6 +51,10 @@ module Chingu
       not inside_window?(x,y)
     end
     
+    def distance_to(object)
+      distance(self.x, self.y, object.x, object.y)
+    end
+    
     def draw
       super
       @image.draw_rot(@x.to_i, @y.to_i, @zorder, @angle, @center_x, @center_y, @factor_x, @factor_y, @color, @mode) if @image

@@ -11,18 +11,13 @@ include Gosu
 #
 # Image.autoload_dirs << File.join(self.root, "data", "my_image_dir")  
 # 
-
 class Game < Chingu::Window
   def initialize
     super 
     @player = Player.new(:x => 200, :y => 200, :image => Image["spaceship.png"])
     @player.input = { :holding_left => :move_left, :holding_right => :move_right, 
                       :holding_up => :move_up, :holding_down => :move_down, :escape => :exit}
-
-    #p RUBY_VERSION
-    #p @player.x
-    #p @player.outside_window?
-    #p self.input_clients
+    p RUBY_VERSION
   end
   
   def update
