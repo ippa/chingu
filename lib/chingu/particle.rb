@@ -1,14 +1,15 @@
 #
 # Our basic particle class
 #
-include Chingu
 module Chingu
-  class Particle < Chingu::GameObject      
+  class Particle < Chingu::GameObject
+    add_component :effect
+    
     def initialize(options)
       super({:mode => :additive}.merge(options))
       @rotation = options[:rotation] || 0
       @zoom = options[:zoom] || 0
-      @fade = options[:fade] || 0      
+      @fade = options[:fade] || 0
       @animation = options[:animation] || nil      
     end
       

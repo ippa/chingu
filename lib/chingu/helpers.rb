@@ -12,6 +12,8 @@ module Chingu
   end
     
   module InputDispatcher
+    attr_reader :input_clients
+    
     def add_input_client(object)
       @input_clients << object
     end

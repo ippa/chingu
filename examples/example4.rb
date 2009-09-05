@@ -40,6 +40,8 @@ end
 
 # Our Player 
 class Player < Chingu::GameObject
+  add_component :input
+  
   def initialize(options = {})
     super
     @image = Image["spaceship.png"]
@@ -51,7 +53,9 @@ class Player < Chingu::GameObject
   def move_down;  @y += 1; end 
 
   def fire
-    Bullet.new(:x => @x, :y => @y)
+    Bullet.new(:x => @x - 20, :y => @y)
+    Bullet.new(:x => @x, :y => @y) 
+    Bullet.new(:x => @x + 20, :y => @y)
   end  
 end
 
@@ -113,13 +117,19 @@ class Level < Chingu::GameState
                       :holding_right => :move_right, 
                       :holding_up => :move_up, 
                       :holding_down => :move_down, 
-                      :left_ctrl => :fire}
+                      :space => :fire}
     
     #
     # The input-handler understands gamestates. P is pressed --> push_gamegate(Pause)
     # You can also give it Procs/Lambdas which it will execute when key is pressed.
     #
     self.input = {:p => Pause, :r => lambda{ current_game_state.setup } }
+  end
+  
+  def update
+    super
+    Bullet.destroy_if(&:outside_window?)
+    $window.caption = "FPS: #{$window.fps} - GameObjects: #{game_objects.size}"
   end
   
   #
@@ -130,6 +140,7 @@ class Level < Chingu::GameState
   #
   def setup
     # Place player in a good starting position
+    Bullet.clear
     @player.x = $window.width/2
     @player.y = $window.height - @player.image.height
   end

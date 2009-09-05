@@ -7,9 +7,20 @@ end
 require 'gosu'
 require 'set'
 
+%w{ collision_detection
+    effect
+    velocity
+    input
+		}.each do |lib|
+      root ||= File.dirname(File.expand_path(__FILE__))
+      require File.join(root,"chingu","components",lib)
+    end
+
 %w{	helpers
     gfx_helpers
+    basic_game_object
     game_object
+    actor
     effects
     game_state_manager
     game_state

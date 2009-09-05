@@ -20,7 +20,7 @@ module Chingu
         @color = Gosu::Color.new(0,0,0,0)
         @alpha = 0.0
         @fading_in = false
-        @new_game_state.update(0)      # Make sure states game logic is run Once (for a correct draw())
+        @new_game_state.update      # Make sure states game logic is run Once (for a correct draw())
       end
     
       def update

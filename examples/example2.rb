@@ -24,6 +24,8 @@ end
 # Our Player
 #
 class Player < Chingu::GameObject
+  add_component :input
+
   def initialize(options = {})
     super
     @image = Image["spaceship.png"]
@@ -56,10 +58,10 @@ class Bullet < Chingu::GameObject
 end
 
 class Play < Chingu::GameState
+  
   def initialize
     super
-    
-    @player = Player.new(:x => 200, :y => 200, :image => Image["spaceship.png"])
+    @player = Player.new(:x => 200, :y => 200)
     @player.input = { :holding_left => :move_left, 
                       :holding_right => :move_right, 
                       :holding_up => :move_up, 
@@ -71,11 +73,11 @@ class Play < Chingu::GameState
   end
   
   def debug
-    puts "--------"
-    GameObject.all.each do |game_object|
-      puts game_object.class
-    end
-    return 
+    #puts "--------"
+    #GameObject.all.each do |game_object|
+    #  puts game_object.class
+    #end
+    #return 
     
     push_game_state(Chingu::GameStates::Debug)
   end
@@ -97,7 +99,8 @@ class Play < Chingu::GameState
   # A #super call here would call #update on all Chingu::Actors and check their inputs, and call the specified method.
   # 
   def update
-    Bullet.destroy_if { |bullet| bullet.outside_window? }
+    #Bullet.destroy_if { |bullet| bullet.outside_window? }
+    Bullet.destroy_if(&:outside_window?)
     
     #
     # Bullet.each_collision(Enemy) do |bullet, enemy|
