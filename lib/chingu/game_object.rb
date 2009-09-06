@@ -57,7 +57,7 @@ module Chingu
     
     def draw
       super
-      @image.draw_rot(@x.to_i, @y.to_i, @zorder, @angle, @center_x, @center_y, @factor_x, @factor_y, @color, @mode) if @image
+      @image.draw_rot(@x, @y, @zorder, @angle, @center_x, @center_y, @factor_x, @factor_y, @color, @mode)
     end
   end  
 end

@@ -45,7 +45,7 @@ module Chingu
     
     def initialize(options = {})
       @options = options
-      components.each { |c| c.setup(self, options)  if c.respond_to?(:setup) }
+      setupable_components.each { |c| c.setup(self, options) }
       
       #
       # A GameObject can either belong to a GameState or our mainwindow ($window)
@@ -61,12 +61,22 @@ module Chingu
     # Get all components added to the instance class
     def components; self.class.components || [];  end
     
+    def setupable_components
+      @setupable_components ||= components.select { |c| c.respond_to?(:setup) }
+    end
+    def updateable_components
+      @updateable_components ||= components.select { |c| c.respond_to?(:update) }
+    end
+    def drawable_components
+      @drawable_components ||= components.select { |c| c.respond_to?(:draw) }
+    end
+      
     def update
-      components.each { |c| c.update(self)  if c.respond_to?(:update) }
+      updateable_components.each { |c| c.update(self) }
 		end
     
     def draw
-      components.each { |c| c.draw(self)    if c.respond_to?(:draw) }
+      drawable_components.each { |c| c.draw(self) }
     end
     
         
