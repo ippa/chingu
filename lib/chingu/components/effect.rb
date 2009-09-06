@@ -67,7 +67,6 @@ module Chingu
           @rotating = options[:rotating] || nil
           @zooming = options[:zooming] || nil
           @fading = options[:fading] || nil
-          @rotating = 1
         end
       end
       
