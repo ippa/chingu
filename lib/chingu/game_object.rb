@@ -20,11 +20,20 @@ module Chingu
       @x = options[:x] || 0
       @y = options[:y] || 0
       @angle = options[:angle] || 0
+      
       @center_x = options[:center_x] || options[:center] || 0.5
       @center_y = options[:center_y] || options[:center] || 0.5
       @factor_x = options[:factor_x] || options[:factor] || 1.0
       @factor_y = options[:factor_y] || options[:factor] || 1.0
-      
+
+      # faster?
+      #self.center = options[:center] || 0.5
+      #self.factor = options[:factor] || 1.0
+      #@center_x = options[:center_x] || 0.5
+      #@center_y = options[:center_y] || 0.5
+      #@factor_x = options[:factor_x] || 1.0
+      #@factor_y = options[:factor_y] || 1.0
+
       if options[:color].is_a?(Gosu::Color)
         @color = options[:color]
       elsif options[:color].is_a? Bignum

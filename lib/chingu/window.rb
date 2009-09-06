@@ -44,6 +44,7 @@ module Chingu
       
       @fps_counter = FPSCounter.new
       @game_state_manager = GameStateManager.new
+      @milliseconds_since_last_tick = 0
     end
     
     def add_game_object(object)

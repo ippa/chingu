@@ -30,6 +30,11 @@ module Chingu
       @delay = options[:delay]
       @dt = 0
       
+      if options[:size]
+        @width = options[:size][0]
+        @height = options[:size][0]
+      end
+      
       @frame_actions = []
       @frames = Gosu::Image.load_tiles($window, @file, @width, @height, true)
       @step = 1
