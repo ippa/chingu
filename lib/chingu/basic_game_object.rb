@@ -45,7 +45,11 @@ module Chingu
     
     def initialize(options = {})
       @options = options
-      setupable_components.each { |c| c.setup(self, options) }
+      setupable_components
+      updateable_components
+      drawable_components
+      
+      @setupable_components.each { |c| c.setup(self, options) }
       
       #
       # A GameObject can either belong to a GameState or our mainwindow ($window)
@@ -70,13 +74,19 @@ module Chingu
     def drawable_components
       @drawable_components ||= components.select { |c| c.respond_to?(:draw) }
     end
-      
+    
+    #
+    # Call .update on all components that implements it
+    #
     def update
-      updateable_components.each { |c| c.update(self) }
+      @updateable_components.each { |c| c.update(self) }
 		end
     
+    #
+    # Call .draw on all components that implements it
+    #    
     def draw
-      drawable_components.each { |c| c.draw(self) }
+      @drawable_components.each { |c| c.draw(self) }
     end
     
         

@@ -11,8 +11,12 @@ module Chingu
       super
 
       # All encapsulated draw_rot arguments can be set with hash-options at creation time
-      @image = options[:image]          if options[:image].is_a? Gosu::Image
-      @image = Image[options[:image]]   if options[:image].is_a? String
+      if options[:image].is_a?(Gosu::Image)
+        @image = options[:image]
+      elsif options[:image].is_a? String
+        @image = Image[options[:image]]
+      end
+      
       @x = options[:x] || 0
       @y = options[:y] || 0
       @angle = options[:angle] || 0
@@ -20,9 +24,15 @@ module Chingu
       @center_y = options[:center_y] || options[:center] || 0.5
       @factor_x = options[:factor_x] || options[:factor] || 1.0
       @factor_y = options[:factor_y] || options[:factor] || 1.0
-      @color = Gosu::Color.new(options[:color]) if options[:color].is_a? Bignum
-      @color = options[:color]                  if options[:color].respond_to?(:alpha)
-      @color = Gosu::Color.new(0xFFFFFFFF)      if @color.nil?
+      
+      if options[:color].is_a?(Gosu::Color)
+        @color = options[:color]
+      elsif options[:color].is_a? Bignum
+        @color = Gosu::Color.new(options[:color])
+      else
+        @color = Gosu::Color.new(0xFFFFFFFF)
+      end
+      
       @mode = options[:mode] || :default # :additive is also available.
       @zorder = options[:zorder] || 100
                         

@@ -34,6 +34,9 @@ module Chingu
       # Modifies X & Y of parent
       #
       def update(parent)
+        #
+        # This is slower oddly enough?
+        #
         #parent.velocity_y += parent.acceleration_y		if	(parent.velocity_y + parent.acceleration_y).abs < parent.max_velocity
         #parent.velocity_x += parent.acceleration_x		if	(parent.velocity_x + parent.acceleration_x).abs < parent.max_velocity
         #parent.y += parent.velocity_y
@@ -42,6 +45,11 @@ module Chingu
         parent.instance_eval do
           @velocity_y += @acceleration_y		if	(@velocity_y + @acceleration_y).abs < @max_velocity
           @velocity_x += @acceleration_x		if	(@velocity_x + @acceleration_x).abs < @max_velocity
+          #vel_y = (@velocity_y + @acceleration_y).abs
+          #@velocity_y = vel_y		if vel_y  < @max_velocity
+          #vel_x = (@velocity_x + @acceleration_x).abs
+          #@velocity_x  = vel_x  if vel_x  < @max_velocity
+          
           @y += @velocity_y
           @x += @velocity_x
         end
