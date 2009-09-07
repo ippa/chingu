@@ -55,10 +55,14 @@ module Chingu
     end
     
     #
-    # Fetch a certain frame (a Gosu#Image), starts at 0.
+    # Fetch a frame or frames:
+    #
+    #   @animation[0]       # returns first frame
+    #   @animation[0..2]    # returns a new Animation-instance with first, second and third frame
     #
     def [](index)
-      @frames[index]
+      return @frames[index]               if  index.is_a? (Fixnum)
+      return self.new_from_frames(index)  if  index.is_a? (Range)
     end
 		
     #
@@ -70,9 +74,11 @@ module Chingu
 		
     #
     # Resets the animation, re-starts it at frame 0
+    # returns itself.
     #
     def reset!
       @index = 0
+      self
     end
 		
     #
