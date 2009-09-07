@@ -1,5 +1,5 @@
 module Chingu
-  module Components
+  module Traits
     module Visual
       attr_accessor :image, :x, :y, :angle, :center_x, :center_y, :factor_x, :factor_y, :color, :mode, :zorder
 

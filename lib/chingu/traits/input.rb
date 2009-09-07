@@ -1,5 +1,5 @@
 module Chingu
-  module Components
+  module Traits
     module Input
     
       def input=(input_map)

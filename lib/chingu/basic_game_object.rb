@@ -3,38 +3,45 @@ module Chingu
   # BasicGameObject. Resonating with 1.9.1, this is our most basic class that all game objects ultimate should build on.
   #
   # All objects that inherits from this class will by default be automaticly be updated and drawn.
-  # It will also acts as a container for the component-system of chingu.
+  # It will also acts as a container for the trait-system of chingu.
   #
   class BasicGameObject
     attr_reader :options, :parent
     
     #
-    # Create class variable @components in every new class derived from GameObject
+    # Create class variable @traits in every new class derived from GameObject
     #
     def self.inherited(subclass)
-      subclass.instance_variable_set("@components", Set.new)
+      subclass.instance_variable_set("@traits", Set.new)
     end
    
     class << self
-      attr_accessor :components
+      attr_accessor :traits
     end
     
     #
-    # adds a component to a certain game class
+    # adds a trait or traits to a certain game class
     # 
     # Executes a ruby "include" the specified module
     # and sets up update and draw hooks.
     #
-    def self.add_component(*components)
-      Array(components).each do |component|
+    def self.has_trait(*traits)
+      has_traits(*traits)
+    end
+    
+    #
+    # See #has_trait
+    #
+    def self.has_traits(*traits)
+      Array(traits).each do |trait|
         
-        if component.is_a?(::Symbol) || component.is_a?(::String)
-          string = "Chingu::Components::#{component.to_s.downcase.capitalize}"
+        if trait.is_a?(::Symbol) || trait.is_a?(::String)
+          string = "Chingu::Traits::#{trait.to_s.downcase.capitalize}"
           klass_or_module = eval(string)
           
           if klass_or_module.is_a?(Class)
-            component = klass_or_module.new(self, {})
-            @components << component
+            trait = klass_or_module.new(self, {})
+            @traits << trait
           elsif klass_or_module.is_a?(Module)
             include klass_or_module
           end
@@ -46,17 +53,17 @@ module Chingu
     #
     # BasicGameUnit initialize
     #
-    # - caches component methods for fast calls later on
-    # - call .setup() on components that implements it
+    # - caches all trait methods for fast calls later on
+    # - call .setup() on all traits that implements it
     # - adds game object to correct game state or $window if no game state exists
     #
     def initialize(options = {})
       @options = options
-      setupable_components
-      updateable_components
-      drawable_components
+      setupable_traits
+      updateable_traits
+      drawable_traits
       
-      @setupable_components.each { |c| c.setup(self, options) }
+      @setupable_traits.each { |c| c.setup(self, options) }
       
       #
       # A GameObject can either belong to a GameState or our mainwindow ($window)
@@ -70,32 +77,32 @@ module Chingu
     end
     
     #
-    # Get all components
+    # Get all traits
     #
-    def components; self.class.components || [];  end
+    def traits; self.class.traits || [];  end
     
-    def setupable_components
-      @setupable_components ||= components.select { |c| c.respond_to?(:setup) }
+    def setupable_traits
+      @setupable_traits ||= traits.select { |c| c.respond_to?(:setup) }
     end
-    def updateable_components
-      @updateable_components ||= components.select { |c| c.respond_to?(:update) }
+    def updateable_traits
+      @updateable_traits ||= traits.select { |c| c.respond_to?(:update) }
     end
-    def drawable_components
-      @drawable_components ||= components.select { |c| c.respond_to?(:draw) }
+    def drawable_traits
+      @drawable_traits ||= traits.select { |c| c.respond_to?(:draw) }
     end
     
     #
-    # Call .update on all components that implements it
+    # Call .update on all traits that implements it
     #
     def update
-      @updateable_components.each { |c| c.update(self) }
+      @updateable_traits.each { |c| c.update(self) }
 		end
     
     #
-    # Call .draw on all components that implements it
+    # Call .draw on all traits that implements it
     #    
     def draw
-      @drawable_components.each { |c| c.draw(self) }
+      @drawable_traits.each { |c| c.draw(self) }
     end
     
         

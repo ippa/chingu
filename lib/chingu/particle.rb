@@ -1,23 +1,20 @@
 #
-# Our basic particle class
+# Our basic particle class, basicly just a GameObject with trait "effect"
+# 
+# TODO: expand on this further, as it is now it doesn't add much.
 #
 module Chingu
   class Particle < Chingu::GameObject
-    add_component :effect
+    has_trait :effect
     
     def initialize(options)
       super({:mode => :additive}.merge(options))
-      @rotation = options[:rotation] || 0
-      @zoom = options[:zoom] || 0
-      @fade = options[:fade] || 0
       @animation = options[:animation] || nil      
     end
       
     def update
+      super
       self.image = @animation.next!   if @animation
-      self.rotate(@rotation)
-      self.zoom(@zoom)
-      self.fade(@fade)
     end
     
   end

@@ -3,13 +3,13 @@ module Chingu
   # A game object class with most components included, nice for quick prototypes
   #
   class Actor < Chingu::GameObject
-    #add_component :visual, :effect, :input
-  
-    #def initialize(options = {})
-    #  super
-    #  visual_setup(options)
-    #  effect_setup(options)
-    #  input_setup(options)
-    #end
+    has_traits :effect, :velocity, :input
+
+    def update
+      # needed for traits to work
+      super     
+      
+      # your game logic Here
+    end    
   end
 end

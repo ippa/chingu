@@ -1,5 +1,5 @@
 module Chingu
-  module Components
+  module Traits
     class Effect
       #
       # Adds .rotating .fading and .zooming to any GameObject.

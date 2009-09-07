@@ -61,8 +61,8 @@ module Chingu
     #   @animation[0..2]    # returns a new Animation-instance with first, second and third frame
     #
     def [](index)
-      return @frames[index]               if  index.is_a? (Fixnum)
-      return self.new_from_frames(index)  if  index.is_a? (Range)
+      return @frames[index]               if  index.is_a?(Fixnum)
+      return self.new_from_frames(index)  if  index.is_a?(Range)
     end
 		
     #

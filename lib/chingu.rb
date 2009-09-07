@@ -13,7 +13,7 @@ require 'set'
     input
 		}.each do |lib|
       root ||= File.dirname(File.expand_path(__FILE__))
-      require File.join(root,"chingu","components",lib)
+      require File.join(root,"chingu","traits",lib)
     end
 
 %w{	helpers
@@ -49,5 +49,5 @@ require 'set'
     end
 
 module Chingu
-  VERSION = "0.4.9"
+  VERSION = "0.5.1"
 end

@@ -1,5 +1,5 @@
 module Chingu
-  module Components
+  module Traits
     class Visual
       
       def initialize(parent_class, options)

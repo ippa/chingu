@@ -1,5 +1,5 @@
 module Chingu
-  module Components
+  module Traits
     #
     # A chingu component providing velocity and acceleration logic. 
     #

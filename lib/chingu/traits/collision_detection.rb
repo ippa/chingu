@@ -1,5 +1,5 @@
 module Chingu
-  module Components
+  module Traits
     #
     # TODO: everything. convert to class?
     # 
