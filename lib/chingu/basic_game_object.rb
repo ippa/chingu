@@ -43,6 +43,13 @@ module Chingu
     end
 
     
+    #
+    # BasicGameUnit initialize
+    #
+    # - caches component methods for fast calls later on
+    # - call .setup() on components that implements it
+    # - adds game object to correct game state or $window if no game state exists
+    #
     def initialize(options = {})
       @options = options
       setupable_components
@@ -62,7 +69,9 @@ module Chingu
       
     end
     
-    # Get all components added to the instance class
+    #
+    # Get all components
+    #
     def components; self.class.components || [];  end
     
     def setupable_components
@@ -94,12 +103,16 @@ module Chingu
     # Fetch all objects of a current class.
     #   Bullet.all   # => Enumerator of all objects of class Bullet
     #
+    # NOTE: ObjectSpace doesn't play nice with jruby.
+    #
     def self.all
       ObjectSpace.each_object(self)
     end
     
     #
     # Destroy all instances of current class that fills a certain condition
+    #   Enemy.destroy_if(&:dead?)   # Assumes Enemy.dead? returns true/false depending on aliveness :)
+    #
     #
     def self.destroy_if(&block)
       all.each do |object|
@@ -108,7 +121,8 @@ module Chingu
     end
     
     #
-    # Clear all intances of objects class
+    # Clear all intances of objects class:
+    #   Bullet.clear    # Removes all Bullet objects from the game
     #
     def self.clear
       all.each { |object| object.destroy! }

@@ -4,8 +4,42 @@ module Chingu
   #
   # On top of that, it encapsulates GOSUs Image#draw_rot and all its parameters.
   #
-  attr_accessor :image, :x, :y, :angle, :center_x, :center_y, :factor_x, :factor_y, :color, :mode, :zorder
-  class GameObject < BasicGameObject
+
+  class GameObject < Chingu::BasicGameObject
+    attr_accessor :image, :x, :y, :angle, :center_x, :center_y, :factor_x, :factor_y, :color, :mode, :zorder
+    
+    #
+    # returns [center_x, center_y]
+    #
+    @@rotation_centers = {
+      top_left: [0,0],
+      left_top: [0,0],
+      
+      center_left: [0,0.5],
+      left_center: [0,0.5],
+      
+      bottom_left: [0,1],
+      left_bottom: [0,1],
+      
+      top_center: [0.5,0],
+      center_top: [0.5,0],
+      
+      center_center: [0.5,0.5],
+      center: [0.5,0.5],
+      
+      bottom_center: [0.5,0],
+      center_bottom: [0.5,0],
+      
+      top_right: [1,0],
+      right_top: [1,0],
+      
+      center_right: [1,0.5],
+      right_center: [1,0.5],
+      
+      bottom_right: [1,1],
+      right_bottom: [1,1]
+    }
+    
     
     def initialize(options = {})
       super
