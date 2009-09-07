@@ -18,6 +18,7 @@ require 'set'
 
 %w{	helpers
     gfx_helpers
+    core_extensions
     basic_game_object
     game_object
     actor

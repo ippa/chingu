@@ -8,6 +8,7 @@ module Chingu
   class GameObject < Chingu::BasicGameObject
     attr_accessor :image, :x, :y, :angle, :center_x, :center_y, :factor_x, :factor_y, :color, :mode, :zorder
     
+    
     #
     # returns [center_x, center_y]
     #

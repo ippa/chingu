@@ -41,6 +41,20 @@ module Chingu
     end
     
     #
+    # Returns first frame (GOSU::Image) from animation
+    #
+    def first
+      @frames.first
+    end
+
+    #
+    # Returns last frame (GOSU::Image) from animation
+    #
+    def last
+      @frames.first
+    end
+    
+    #
     # Fetch a certain frame (a Gosu#Image), starts at 0.
     #
     def [](index)
