@@ -27,7 +27,7 @@ class Game < Chingu::Window
 end
 
 class Player < Chingu::GameObject
-  add_component :input
+  has_trait :input
   
   def move_left;  @x -= 1; end
   def move_right; @x += 1; end

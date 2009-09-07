@@ -3,10 +3,6 @@ require File.join(File.dirname($0), "..", "lib", "chingu")
 include Gosu
 include Chingu
 
-#require 'randomr'
-#require 'random/mersenne_twister'
-#mt = Random::MersenneTwister.new 1234
-
 #
 # Demonstrating domponents "velocity" and "effect"
 #
@@ -14,28 +10,29 @@ class Game < Chingu::Window
   def initialize
     super(640,400)
     self.input = {:esc => :exit}
-    self.caption = "Example of game object components 'velocity' and 'effect'"
+    self.caption = "Example of game object traits 'velocity' and 'effect'"
     push_game_state(Particles)
+    puts RUBY_VERSION
   end
   
   def next_effect; pop_game_state; end
 end
 
 class Plasma < Chingu::GameObject
-  add_component :velocity, :effect
-
+  has_traits :velocity, :effect
+  
   def initialize(options)
     super    
     @image = Image["particle.png"]
     @mode = :additive
     
     # initialize with a rightwards velocity with some damping to look more realistic
-    @velocity_x = 10
+    @velocity_x = options[:velocity_x] || 10
     @acceleration_x = -0.1
     
     # Simulate gravity
     @acceleration_y = 0.4
-  end
+  end  
 end
 
 class Particles < Chingu::GameState
@@ -53,12 +50,15 @@ class Particles < Chingu::GameState
   def update
     
     #
-    # old velocity.rb 350 particles = 49 fps
+    # old velocity.rb 350 particles, 49 fps
+    # first optimization: 490 particles, 47 fps (350 @ 60)
+    # optimized GameObject if/elsif: 490 particles, 50 fps
     #
-    Plasma.new(:x => 0, :y => 50 + rand(5), :color => Color.new(0xFF86EFFF))
-    Plasma.new(:x => 0, :y => 150 + rand(5), :color => Color.new(0xFF86EFFF))
-    Plasma.new(:x => 0, :y => 250 + rand(5), :color => Color.new(0xFF86EFFF))
-    
+    Plasma.new(:x => 0, :y => 0 + rand(5), :color => Color.new(0xFF86EFFF), :velocity_x => 10)
+    Plasma.new(:x => 0, :y => 50 + rand(5), :color => Color.new(0xFF86EFFF), :velocity_x => 14)
+    Plasma.new(:x => 0, :y => 100 + rand(5), :color => Color.new(0xFF86EFFF), :velocity_x => 7)
+    Plasma.new(:x => 0, :y => 200 + rand(5), :color => Color.new(0xFF86EFFF), :velocity_x => 6)
+        
     Plasma.all.each do |particle|
       #
       # +1 fps
@@ -77,10 +77,10 @@ class Particles < Chingu::GameState
         
         # 2) "Bounce" it randomly to left and right
         if rand(2) == 0
-          particle.velocity_x = particle.velocity_y/2 + rand(2)     #Randomr.randomr / 50
+          particle.velocity_x = particle.velocity_y/2 + rand(2)     # Randomr.randomr / 50
           particle.acceleration_x = -0.02
         else
-          particle.velocity_x = -particle.velocity_y/2 - rand(2)  #Randomr.randomr / 50
+          particle.velocity_x = -particle.velocity_y/2 - rand(2)    # Randomr.randomr / 50
           particle.acceleration_x = 0.02
         end
         

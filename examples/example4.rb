@@ -40,7 +40,7 @@ end
 
 # Our Player 
 class Player < Chingu::GameObject
-  add_component :input
+  has_trait :input
   
   def initialize(options = {})
     super
@@ -128,7 +128,7 @@ class Level < Chingu::GameState
   
   def update
     super
-    Bullet.destroy_if(&:outside_window?)
+    Bullet.destroy_if {|bullet| bullet.outside_window? }
     $window.caption = "FPS: #{$window.fps} - GameObjects: #{game_objects.size}"
   end
   
@@ -148,6 +148,8 @@ end
 
 #
 # SPECIAL GAMESTATE - Pause
+#
+# NOTICE: Chingu now comes with a predefined Chingu::GameStates::Pause that works simular to this!
 #
 class Pause < Chingu::GameState
   def initialize(options)

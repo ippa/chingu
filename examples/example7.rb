@@ -90,9 +90,9 @@ class Particles < Chingu::GameState
     Chingu::Particle.new( :x => 100, 
                           :y => @ground_y, 
                           :animation => @fireball_animation,
-                          :zoom => +0.05, 
-                          :fade => -10, 
-                          :rotation => +1,
+                          :zooming => +0.05, 
+                          :fading => -10, 
+                          :rotating => +1,
                           :mode => :default
                         )
 
@@ -102,9 +102,9 @@ class Particles < Chingu::GameState
     Chingu::Particle.new( :x => 300, 
                           :y => @ground_y, 
                           :animation => @fireball_animation, 
-                          :zoom => +0.2, 
-                          :fade => -4, 
-                          :rotation => +3,
+                          :zooming => +0.2, 
+                          :fading => -4, 
+                          :rotating => +3,
                           :mode => :default
                         )
     #

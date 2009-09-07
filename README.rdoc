@@ -3,6 +3,8 @@ http://github.com/ippa/chingu/tree/master
 
 DOCUMENTATION: http://rdoc.info/projects/ippa/chingu
 
+Ruby 1.9.1 is recommended. Also works with 1.8.7+.
+
 This is an early preview, a lot of functionality is still missing!
 It's also in a state of flux while I decide on core-naming etc.
 
@@ -34,10 +36,15 @@ Chingu consists of the following core classes:
 The main window, use it at you use Gosu::Window.
 
 === Chingu::GameObject
-Use for all your in game objects. The player, the enemies, the bullets, the powerups, the loot laying around.
+Use this for all your in game objects. The player, the enemies, the bullets, the powerups, the loot laying around.
 It's very reusable and doesn't contain any game-logic (that's up to you!). Only stuff to put it on screen a certain way.
 It also gives you a couple of bonuses with chingu, as automatic updates/draws and easier input-mapping.
 Has either Chingu::Window or a Chingu::GameState as "owner".
+
+=== Chingu::BasicGameObject
+For those who think GameObject is a too little fat, there's BasicGameObject (GameObject inherits from BasicGameObject).
+BasicGameObject is just an empty frame (no x,y,image accessors or draw-logic) for you to build on.
+It _can_ be extended with Chingus trait-system though. and it belong to either $window or a game state as BasicObject.
 
 === Chingu::Text
 Makes use of Gosu::Font more rubyish and powerful.
@@ -55,6 +62,12 @@ If using game states, the flow of draw/update/button_up/button_down is:
 Chingu::Window --> Chingu::GameStateManager --> Chingu::GameState.
 For example, inside game state Menu you call push_game_state(Level). When Level exists, it will go back to Menu.
 
+=== Chingu::Animation
+Load and interact with tile-based animations. loop, bounce and access invidual frame(s) easily.
+An "@image = @animation.next!" in your Player#update is usually enough to get you started!
+
+== Chingu::Parallax
+A class for easy paralaxxscrolling. See example3.rb for more.
 
 == THE BASICS
 
@@ -430,10 +443,12 @@ Since Chingu::Window is just Gosu::Window + some cheese you can do your $window.
 See http://www.libgosu.org/rdoc/classes/Gosu/Window.html for a full set of methods.
 
 == TODO:
+* add :padding and :align => :topleft etc to class Text
 * rename Chingu::Window so 'include Chingu' and 'include Gosu' wont make Window collide
-* BasicObject vs GameObject vs ScreenObject
-* scale <--> growth parameter
-* Enemy.all ... instead of game_objects_of_type(Enemy) ? could this be cool / understandable?
+* (done) BasicObject vs GameObject vs ScreenObject => Became BasicGameObject and GameObject
+* (50%) some kind of componentsystem for GameObject (which should be cleaned up)
+* (done) scale <--> growth parameter. See trait "effect"
+* (done) Enemy.all ... instead of game_objects_of_type(Enemy) ? could this be cool / understandable?
 * (done) Don't call .update(time) with timeparameter, make time available thru other means when needed.
 * (10% done) debug screen / game state.. check out shawn24's elite irb sollution :)
 * (done) Complete the input-definitions with all possible inputs (keyboard, gamepad, mouse)!
@@ -442,7 +457,6 @@ See http://www.libgosu.org/rdoc/classes/Gosu/Window.html for a full set of metho
 * (posted request on forums) Summon good proven community gosu snippets into Chingu
 * (done) Generate docs @ ippa.github.com-  http://rdoc.info/projects/ippa/chingu !
 * (done) A good scene-manager to manage welcome screens, levels and game flow- GameStateManager / GameState !
-* More docs
 * (20% done) make a playable simple game in examples\ that really depends on game states
 * (done) Make a gem- first gem made on github
 * (done) Automate gemgenning rake-task even more
@@ -458,7 +472,7 @@ See http://www.libgosu.org/rdoc/classes/Gosu/Window.html for a full set of metho
 * A more robust game state <-> game_object system to connect them together.
 * (50% done) Get better at styling rdocs
 * (done) all “gamestate” ? “game state” ?   it's "game state"
-* intergrate MovieMaker
+* (skipping) intergrate MovieMaker - solve this with traits instead.
 * FIX example4: :p => Pause.new  would Change the "inside_game_state" to Pause and make @player belong to Pause.
 
 == WHY?
@@ -473,11 +487,11 @@ See http://www.libgosu.org/rdoc/classes/Gosu/Window.html for a full set of metho
 * Don't separate too much from Gosus core-naming
 
 == CREDITS:
-Jacius of Rubygame (For doing cool stuff that's well documented as re-usable). So far rect.rb and named_resource.rb is taken from Rubygame.
-
-jlnr,philymore,shawn24 for constructive feedback
-
+* Jacius of Rubygame (For doing cool stuff that's well documented as re-usable). So far rect.rb and named_resource.rb is taken from Rubygame.
+* Jduff for input / commits.
+* Jlnr,Philymore,Shawn24,JamesKilton for constructive feedback/discussions.
 
 == REQUIREMENTS:
 * Gosu latest version
-* Ruby 1.8 (Has not been verified with 1.9 yet)
+* Ruby 1.8.7+ (Works with 1.9+ as well!)
+

@@ -1,3 +1,8 @@
+=== 0.5 / 2009-10-7
+Big refactor of GameObject. Now has BasicGameObject as base.
+A first basic "trait"-system where GameObject "has_traits :visual, :velocity" etc.
+Tons of enhancements and fixes. Speed optimization. More examples.
+
 === 0.4.5 / 2009-08-27
 Tons of small fixes across the board. 
 Started on GFX Helpers (fill, fill_rect, fill_gradient so far).

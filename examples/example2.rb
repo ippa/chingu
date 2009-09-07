@@ -24,7 +24,7 @@ end
 # Our Player
 #
 class Player < Chingu::GameObject
-  add_component :input
+  has_trait :input
 
   def initialize(options = {})
     super
@@ -99,8 +99,8 @@ class Play < Chingu::GameState
   # A #super call here would call #update on all Chingu::Actors and check their inputs, and call the specified method.
   # 
   def update
-    #Bullet.destroy_if { |bullet| bullet.outside_window? }
-    Bullet.destroy_if(&:outside_window?)
+    Bullet.destroy_if { |bullet| bullet.outside_window? }
+    #Bullet.destroy_if(&:outside_window?)
     
     #
     # Bullet.each_collision(Enemy) do |bullet, enemy|
