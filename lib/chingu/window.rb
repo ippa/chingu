@@ -29,9 +29,9 @@ module Chingu
     # - Assethandling with Image["picture.png"] and Sample["shot.wav"]
     # - Default input mapping escape to close 
     #
-    def initialize(width = 640, height = 480)
-      full_screen = ARGV.include?("--fullscreen")
-      $window = super(width, height, full_screen)
+    def initialize(width = 800, height = 600, fullscreen = false, update_interval = 16.666666)
+      fullscreen ||= ARGV.include?("--fullscreen")
+      $window = super(width, height, fullscreen, update_interval)
 			
       @root = File.dirname(File.expand_path($0))
       Gosu::Image.autoload_dirs = [".", File.join(@root, "gfx"), File.join(@root, "media")]
