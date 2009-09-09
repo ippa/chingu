@@ -83,14 +83,14 @@ A class for easy paralaxxscrolling. See example3.rb for more.
 === Various Helpers
 Both $window and game states gets some new graphical helpers, currently only 3, but quite useful:
 
-fill()          # Fills whole window with color 'color'.
-fill_rect()     # Fills a given Rect 'rect' with Color 'color'
-fill_gradient() # Fills window or a given rect with a gradient between two colors.
+  fill()          # Fills whole window with color 'color'.
+  fill_rect()     # Fills a given Rect 'rect' with Color 'color'
+  fill_gradient() # Fills window or a given rect with a gradient between two colors.
 
 If you base your models on GameObject (or BasicGameObject) you get:
-Enemy.all                 # Returns all object based on this class
-Enemy.each                # Iterates through all objects of class Enemt.
-Enemy.destroy_if(&block)  # destroy all objects for which &block returns true
+  Enemy.all                 # Returns all object based on this class
+  Enemy.each                # Iterates through all objects of class Enemt.
+  Enemy.destroy_if(&block)  # destroy all objects for which &block returns true
 
 
 == BASICS / EXAMPLES
