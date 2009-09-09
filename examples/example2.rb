@@ -24,8 +24,6 @@ end
 # Our Player
 #
 class Player < Chingu::GameObject
-  has_trait :input
-
   def initialize(options = {})
     super
     @image = Image["spaceship.png"]

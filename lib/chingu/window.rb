@@ -107,12 +107,12 @@ module Chingu
       
       
       #
-      # Call update(milliseconds_since_last_tick) on all game objects belonging to the main window.
+      # Call update() on all game objects belonging to the main window.
       #
       update_game_objects
       
       #
-      # Call update(milliseconds_since_last_tick) on all game objects belonging to the current game state.
+      # Call update() on all game objects belonging to the current game state.
       #
       update_game_state_manager
     end

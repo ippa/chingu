@@ -6,7 +6,7 @@ module Chingu
   # An easy to use program to create tileanimations is http://tilestudio.sourceforge.net/
   #
   class Animation
-    attr_accessor :frames
+    attr_accessor :frames, :delay
     
     #
     # Create a new Animation. 

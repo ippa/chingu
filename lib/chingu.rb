@@ -11,12 +11,14 @@ require 'set'
     effect
     velocity
     input
+    rotation_center
 		}.each do |lib|
       root ||= File.dirname(File.expand_path(__FILE__))
       require File.join(root,"chingu","traits",lib)
     end
 
 %w{	helpers
+    inflector
     gfx_helpers
     core_extensions
     basic_game_object
@@ -49,5 +51,5 @@ require 'set'
     end
 
 module Chingu
-  VERSION = "0.5.2.1"
+  VERSION = "0.5.3"
 end

@@ -5,8 +5,7 @@ DOCUMENTATION: http://rdoc.info/projects/ippa/chingu
 
 Ruby 1.9.1 is recommended. Also works with 1.8.7+.
 
-This is an early preview, a lot of functionality is still missing!
-It's also in a state of flux while I decide on core-naming etc.
+This is still a rather young project, core classes and naming can still change.
 
 == INSTALL
   gem sources -a http://gems.github.com
@@ -29,11 +28,13 @@ There was always a huge big chunk of checking keyboard-events in the main loop.
 Borrowing ideas from Rubygame this has now become @player.keyboard(:left => :move_left, :space => :fire ... etc.
 
 
-== OVERVIEW
-Chingu consists of the following core classes:
+== CORE OVERVIEW
+Chingu consists of the following core classes / concepts:
 
 === Chingu::Window
-The main window, use it at you use Gosu::Window.
+The main window, use it at you use Gosu::Window now. Calcs the framerate, takes care of states, 
+handles chingu-formated input, updates and draws BasicGameObject / GameObjects automaticly.
+Available thoughout your source as $window (Yes, that's the only global Chingu has).
 
 === Chingu::GameObject
 Use this for all your in game objects. The player, the enemies, the bullets, the powerups, the loot laying around.
@@ -44,11 +45,8 @@ Has either Chingu::Window or a Chingu::GameState as "owner".
 === Chingu::BasicGameObject
 For those who think GameObject is a too little fat, there's BasicGameObject (GameObject inherits from BasicGameObject).
 BasicGameObject is just an empty frame (no x,y,image accessors or draw-logic) for you to build on.
-It _can_ be extended with Chingus trait-system though. and it belong to either $window or a game state as BasicObject.
-
-=== Chingu::Text
-Makes use of Gosu::Font more rubyish and powerful.
-In it's core, another Chingu::GameObject + Gosu::Font.
+It _can_ be extended with Chingus trait-system though.
+BasicGameObject#parent points to either $window or a game state and is automaticly set on creation time.
 
 === Chingu::GameStateManager
 Keeps track of the game states. Implements a stack-based system with push_game_state and pop_game_state.
@@ -62,14 +60,40 @@ If using game states, the flow of draw/update/button_up/button_down is:
 Chingu::Window --> Chingu::GameStateManager --> Chingu::GameState.
 For example, inside game state Menu you call push_game_state(Level). When Level exists, it will go back to Menu.
 
+=== Traits
+Traits are extensions (or plugins if you so will) to BasicGameObjects. 
+The aim is so encapsulate common behaivor into stand alone classes and modules for easy inclusion in your game classes.
+In it's most basic form it's just a class which answers to setup() (called on your game objects creation), update() and draw().
+Traits are a fairly new addition to Chingu and will probably morph some more before stabilizing. 
+
+
+== OTHER CLASSES / HELPERS
+
+=== Chingu::Text
+Makes use of Gosu::Font more rubyish and powerful.
+In it's core, another Chingu::GameObject + Gosu::Font.
+
 === Chingu::Animation
 Load and interact with tile-based animations. loop, bounce and access invidual frame(s) easily.
 An "@image = @animation.next!" in your Player#update is usually enough to get you started!
 
-== Chingu::Parallax
+=== Chingu::Parallax
 A class for easy paralaxxscrolling. See example3.rb for more.
 
-== THE BASICS
+=== Various Helpers
+Both $window and game states gets some new graphical helpers, currently only 3, but quite useful:
+
+fill()          # Fills whole window with color 'color'.
+fill_rect()     # Fills a given Rect 'rect' with Color 'color'
+fill_gradient() # Fills window or a given rect with a gradient between two colors.
+
+If you base your models on GameObject (or BasicGameObject) you get:
+Enemy.all                 # Returns all object based on this class
+Enemy.each                # Iterates through all objects of class Enemt.
+Enemy.destroy_if(&block)  # destroy all objects for which &block returns true
+
+
+== BASICS / EXAMPLES
 
 === Chingu::Window
 With Gosu the main window inherits from Gosu::Window. In Chingu we use Chingu::Window. It's a basic Gosu::Window with extra cheese on top of it. keyboard handling, automatic update/draw calls to all gameobjects, fps counting etc.
@@ -444,7 +468,7 @@ See http://www.libgosu.org/rdoc/classes/Gosu/Window.html for a full set of metho
 
 == TODO:
 * add :padding and :align => :topleft etc to class Text
-* rename Chingu::Window so 'include Chingu' and 'include Gosu' wont make Window collide
+* (skip) rename Chingu::Window so 'include Chingu' and 'include Gosu' wont make Window collide
 * (done) BasicObject vs GameObject vs ScreenObject => Became BasicGameObject and GameObject
 * (50%) some kind of componentsystem for GameObject (which should be cleaned up)
 * (done) scale <--> growth parameter. See trait "effect"
@@ -460,19 +484,19 @@ See http://www.libgosu.org/rdoc/classes/Gosu/Window.html for a full set of metho
 * (20% done) make a playable simple game in examples\ that really depends on game states
 * (done) Make a gem- first gem made on github
 * (done) Automate gemgenning rake-task even more
-* More examples when effects are more complete
+* (done) More examples when effects are more complete
 * class ChipmunkObject
-* class Actor/MovingActor with maybe a bit more logic then the basic GameObject. Would ppl find is useful?
+* (has_trait :velocity :p..) class Actor/MovingActor with maybe a bit more logic then the basic GameObject. Would ppl find is useful?
 * (60% done) Spell check all docs, sloppy spelling turns ppl off. tnx jduff ;).
 * Tests
 * (done) Streamline fps / tick code
 * (done) Encapsulate Font.new / draw_rot with a "class Text < GameObject"
 * (10% done) Make it possible for ppl to use the parts of Chingu they like
 * (done) At least make GameStateManager really easy to use with pure Gosu / Document it!
-* A more robust game state <-> game_object system to connect them together.
 * (50% done) Get better at styling rdocs
 * (done) all “gamestate” ? “game state” ?   it's "game state"
 * (skipping) intergrate MovieMaker - solve this with traits instead.
+* A more robust game state <-> game_object system to connect them together.
 * FIX example4: :p => Pause.new  would Change the "inside_game_state" to Pause and make @player belong to Pause.
 
 == WHY?

@@ -7,51 +7,8 @@ module Chingu
 
   class GameObject < Chingu::BasicGameObject
     attr_accessor :image, :x, :y, :angle, :center_x, :center_y, :factor_x, :factor_y, :color, :mode, :zorder
-    
-    #
-    # returns [center_x, center_y]
-    #
-    @@rotation_centers = {
-      :top_left => [0,0],
-      :left_top => [0,0],
-      
-      :center_left => [0,0.5],
-      :left_center => [0,0.5],
-      
-      :bottom_left => [0,1],
-      :left_bottom => [0,1],
-      
-      :top_center => [0.5,0],
-      :center_top => [0.5,0],
-      
-      :center_center => [0.5,0.5],
-      :center => [0.5,0.5],
-      
-      :bottom_center => [0.5,1],
-      :center_bottom => [0.5,1],
-      
-      :top_right => [1,0],
-      :right_top => [1,0],
-      
-      :center_right => [1,0.5],
-      :right_center => [1,0.5],
-      
-      :bottom_right => [1,1],
-      :right_bottom => [1,1]
-    }
-    
-    #
-    # Sets @center_x and @center_y according to given alignment. Available alignments are:
-    #
-    #   :top_left, :center_left, :bottom_left, :top_center, 
-    #   :center_center, :bottom_center, :top_right, :center_right and :bottom_right
-    #
-    # They're also available in the opposite order with the same meaning.
-    #
-    def rotation_center(alignment)
-      @center_x, @center_y = @@rotation_centers[alignment.to_sym]
-    end
-    
+    has_trait :input, :rotation_center
+        
     def initialize(options = {})
       super
 
@@ -115,6 +72,7 @@ module Chingu
       not inside_window?(x,y)
     end
     
+    # Calculates the distance from self to a given objevt
     def distance_to(object)
       distance(self.x, self.y, object.x, object.y)
     end

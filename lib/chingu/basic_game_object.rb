@@ -36,7 +36,7 @@ module Chingu
       Array(traits).each do |trait|
         
         if trait.is_a?(::Symbol) || trait.is_a?(::String)
-          string = "Chingu::Traits::#{trait.to_s.downcase.capitalize}"
+          string = "Chingu::Traits::#{Chingu::Inflector.camelize(trait)}"
           klass_or_module = eval(string)
           
           if klass_or_module.is_a?(Class)
@@ -48,8 +48,7 @@ module Chingu
         end
       end
     end
-
-    
+        
     #
     # BasicGameUnit initialize
     #

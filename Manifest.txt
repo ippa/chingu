@@ -47,6 +47,7 @@ lib/chingu/game_states/fade_to.rb
 lib/chingu/game_states/pause.rb
 lib/chingu/gfx_helpers.rb
 lib/chingu/helpers.rb
+lib/chingu/inflector.rb
 lib/chingu/input.rb
 lib/chingu/named_resource.rb
 lib/chingu/parallax.rb
@@ -58,5 +59,6 @@ lib/chingu/traits/deprecated_module_visual.rb
 lib/chingu/traits/deprecated_visual.rb
 lib/chingu/traits/effect.rb
 lib/chingu/traits/input.rb
+lib/chingu/traits/rotation_center.rb
 lib/chingu/traits/velocity.rb
 lib/chingu/window.rb
