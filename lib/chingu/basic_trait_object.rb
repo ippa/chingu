@@ -5,7 +5,7 @@ module Chingu
   # All objects that inherits from this class will by default be automaticly be updated and drawn.
   # It will also acts as a container for the trait-system of chingu.
   #
-  class BasicGameObject
+  class BasicTraitObject
     attr_reader :options, :parent
     
     #
@@ -58,11 +58,7 @@ module Chingu
     #
     def initialize(options = {})
       @options = options
-      setupable_traits
-      updateable_traits
-      drawable_traits
-      
-      @setupable_traits.each { |c| c.setup(self, options) }
+
       
       #
       # A GameObject can either belong to a GameState or our mainwindow ($window)
@@ -73,35 +69,28 @@ module Chingu
         @parent.add_game_object(self) if @parent
       end
       
+      setup(options)
     end
-    
-    #
-    # Get all traits
-    #
-    def traits; self.class.traits || [];  end
-    
-    def setupable_traits
-      @setupable_traits ||= traits.select { |c| c.respond_to?(:setup) }
-    end
-    def updateable_traits
-      @updateable_traits ||= traits.select { |c| c.respond_to?(:update) }
-    end
-    def drawable_traits
-      @drawable_traits ||= traits.select { |c| c.respond_to?(:draw) }
+        
+    def setup(options)
+      puts "BasicTraitObject#setup"
+      #super if respond_to?('super')
     end
     
     #
     # Call .update on all traits that implements it
     #
     def update
-      @updateable_traits.each { |c| c.update(self) }
+      puts "BasicTraitObject#update"
+      #super if respond_to?('super')
 		end
     
     #
     # Call .draw on all traits that implements it
     #    
     def draw
-      @drawable_traits.each { |c| c.draw(self) }
+      puts "BasicTraitObject#draw"
+      #super if respond_to?('super')
     end
     
         

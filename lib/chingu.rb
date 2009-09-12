@@ -8,8 +8,8 @@ require 'gosu'
 require 'set'
 
 %w{ collision_detection
-    effect
-    velocity
+    effect_module
+    velocity_module
     input
     rotation_center
 		}.each do |lib|
@@ -21,7 +21,9 @@ require 'set'
     inflector
     gfx_helpers
     core_extensions
+    basic_trait_object
     basic_game_object
+    trait_object
     game_object
     actor
     effects
@@ -51,5 +53,5 @@ require 'set'
     end
 
 module Chingu
-  VERSION = "0.5.3"
+  VERSION = "0.5.3.1"
 end
