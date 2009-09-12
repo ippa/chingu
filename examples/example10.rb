@@ -52,7 +52,11 @@ class Thing < Chingu::GameObject
   
   def update
     puts "Thing#update"
-    @velocity_x = -@velocity_x if outside_window?
+    if outside_window?
+      @velocity_x = -@velocity_x
+      @rotating = -@rotating
+    end
+    
     super
   end
   

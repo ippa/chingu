@@ -21,9 +21,7 @@ require 'set'
     inflector
     gfx_helpers
     core_extensions
-    basic_trait_object
     basic_game_object
-    trait_object
     game_object
     actor
     effects
