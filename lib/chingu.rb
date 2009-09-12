@@ -8,8 +8,8 @@ require 'gosu'
 require 'set'
 
 %w{ collision_detection
-    effect_module
-    velocity_module
+    effect
+    velocity
     input
     rotation_center
 		}.each do |lib|

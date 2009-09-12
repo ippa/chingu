@@ -5,7 +5,7 @@ module Chingu
   # On top of that, it encapsulates GOSUs Image#draw_rot and all its parameters.
   #
 
-  class TraitObject < Chingu::BasicTraitObject
+  class GameObject < Chingu::BasicGameObject
     attr_accessor :image, :x, :y, :angle, :center_x, :center_y, :factor_x, :factor_y, :color, :mode, :zorder
     has_trait :input, :rotation_center
         
@@ -27,7 +27,15 @@ module Chingu
       @center_y = options[:center_y] || options[:center] || 0.5
       @factor_x = options[:factor_x] || options[:factor] || 1.0
       @factor_y = options[:factor_y] || options[:factor] || 1.0
-      
+
+      # faster?
+      #self.center = options[:center] || 0.5
+      #self.factor = options[:factor] || 1.0
+      #@center_x = options[:center_x] || 0.5
+      #@center_y = options[:center_y] || 0.5
+      #@factor_x = options[:factor_x] || 1.0
+      #@factor_y = options[:factor_y] || 1.0
+
       if options[:color].is_a?(Gosu::Color)
         @color = options[:color]
       elsif options[:color].is_a? Bignum
@@ -42,6 +50,8 @@ module Chingu
       # gameloop/framework logic (TODO: use or get rid of)
       @update = options[:update] || true
       @draw = options[:draw] || true
+      
+      setup(options)  if respond_to?(:setup)
     end
     
     # Quick way of setting both factor_x and factor_y
@@ -67,9 +77,6 @@ module Chingu
     # Calculates the distance from self to a given objevt
     def distance_to(object)
       distance(self.x, self.y, object.x, object.y)
-    end
-    
-    def update
     end
     
     def draw

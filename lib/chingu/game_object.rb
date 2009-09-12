@@ -4,7 +4,6 @@ module Chingu
   #
   # On top of that, it encapsulates GOSUs Image#draw_rot and all its parameters.
   #
-
   class GameObject < Chingu::BasicGameObject
     attr_accessor :image, :x, :y, :angle, :center_x, :center_y, :factor_x, :factor_y, :color, :mode, :zorder
     has_trait :input, :rotation_center
@@ -50,6 +49,8 @@ module Chingu
       # gameloop/framework logic (TODO: use or get rid of)
       @update = options[:update] || true
       @draw = options[:draw] || true
+      
+      setup(options)  if respond_to?(:setup)
     end
     
     # Quick way of setting both factor_x and factor_y

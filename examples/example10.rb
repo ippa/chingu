@@ -11,7 +11,7 @@ $stderr.sync = $stdout.sync = true
 class Game < Chingu::Window
   def initialize
     super(400,400)
-    self.caption = "Testing out new module-based traits"
+    self.caption = "Testing out new module-based traits (SPACE for more spaceships)"
     self.input = { :space => :new_thing, :esc => :exit }
     new_thing(200,200)
   end
@@ -27,36 +27,37 @@ class Game < Chingu::Window
   end
   
   def new_thing(x=nil, y=nil)
-    Thing.new(:x => x||rand($window.width), :y => y||rand($window.height))
+    Thing.new(:x => x||rand($window.width), :y => y||rand($window.height), :debug => true)
   end
 end
 
-class Thing < Chingu::TraitObject
+class Thing < Chingu::GameObject
   has_trait :effect
   has_trait :velocity
   
   def initialize(options)
     super
     @image = Image["spaceship.png"]
+    self.rotation_center(:center)
 
     # Julians ninjahack to get that sweet pixely feeling when zooming :)
     glBindTexture(GL_TEXTURE_2D, @image.gl_tex_info.tex_name)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-    
+
     self.factor = 8
     self.rotating = 2
     self.velocity_x = 2
   end
   
   def update
-    puts "Cube#update"
+    puts "Thing#update"
     @velocity_x = -@velocity_x if outside_window?
     super
   end
   
   def draw
-    puts "Cube#draw"
+    puts "Thing#draw"
     super
   end
   

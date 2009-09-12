@@ -9,9 +9,21 @@ module Chingu
     attr_reader :options, :parent
     
     #
+    # Create class variable @traits in every new class derived from GameObject
+    #
+    def self.inherited(subclass)
+      subclass.instance_variable_set("@traits", Set.new)
+    end
+   
+    class << self
+      attr_accessor :traits
+    end
+    
+    #
     # adds a trait or traits to a certain game class
     # 
     # Executes a ruby "include" the specified module
+    # and sets up update and draw hooks.
     #
     def self.has_trait(*traits)
       has_traits(*traits)
@@ -22,8 +34,17 @@ module Chingu
     #
     def self.has_traits(*traits)
       Array(traits).each do |trait|
+        
         if trait.is_a?(::Symbol) || trait.is_a?(::String)
-          include Chingu::Traits.const_get(Chingu::Inflector.camelize(trait))
+          string = "Chingu::Traits::#{Chingu::Inflector.camelize(trait)}"
+          klass_or_module = Chingu::Traits.const_get(Chingu::Inflector.camelize(trait))
+          
+          if klass_or_module.is_a?(Class)
+            trait = klass_or_module.new(self, {})
+            @traits << trait
+          elsif klass_or_module.is_a?(Module)
+            include klass_or_module
+          end
         end
       end
     end
@@ -37,6 +58,11 @@ module Chingu
     #
     def initialize(options = {})
       @options = options
+      setupable_traits
+      updateable_traits
+      drawable_traits
+      
+      @setupable_traits.each { |c| c.setup(self, options) }
       
       #
       # A GameObject can either belong to a GameState or our mainwindow ($window)
@@ -47,19 +73,37 @@ module Chingu
         @parent.add_game_object(self) if @parent
       end
       
-      # This will call #setup on the latest trait mixed in, which then will pass it on with super.
-      setup(options)  
     end
     
-
-    def setup(options)
+    #
+    # Get all traits
+    #
+    def traits; self.class.traits || [];  end
+    
+    def setupable_traits
+      @setupable_traits ||= traits.select { |c| c.respond_to?(:setup) }
+    end
+    def updateable_traits
+      @updateable_traits ||= traits.select { |c| c.respond_to?(:update) }
+    end
+    def drawable_traits
+      @drawable_traits ||= traits.select { |c| c.respond_to?(:draw) }
     end
     
+    #
+    # Call .update on all traits that implements it
+    #
     def update
+      @updateable_traits.each { |c| c.update(self) }
 		end
     
+    #
+    # Call .draw on all traits that implements it
+    #    
     def draw
-    end    
+      @drawable_traits.each { |c| c.draw(self) }
+    end
+    
         
     #
     # Fetch all objects of a current class.

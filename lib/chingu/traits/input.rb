@@ -10,6 +10,7 @@ module Chingu
       def input
         @input
       end
+      
     end
   end
 end
