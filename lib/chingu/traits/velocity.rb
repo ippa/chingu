@@ -12,7 +12,7 @@ module Chingu
       #  super
       #end
             
-      def setup(options)
+      def setup_trait(options)
         @velocity_options = {:debug => false}.merge(options)        
         puts "Velocity#setup"   if @velocity_options[:debug]
         

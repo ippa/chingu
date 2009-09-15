@@ -50,7 +50,7 @@ module Chingu
       @update = options[:update] || true
       @draw = options[:draw] || true
       
-      setup(options)  if respond_to?(:setup)
+      setup_trait(options)  if respond_to?(:setup_trait)
     end
     
     # Quick way of setting both factor_x and factor_y

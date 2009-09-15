@@ -23,7 +23,7 @@ module Chingu
       #
       # Setup
       #
-      def setup(options)
+      def setup_trait(options)
         @effect_options = {:debug => false}.merge(options)
         puts "Effect#setup"     if @effect_options[:debug]
         

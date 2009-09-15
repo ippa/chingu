@@ -48,11 +48,11 @@ module Chingu
       end
       
       # This will call #setup on the latest trait mixed in, which then will pass it on with super.
-      setup(options)  
+      setup_trait(options) 
     end
     
 
-    def setup(options)
+    def setup_trait(options)
     end
     
     def update
