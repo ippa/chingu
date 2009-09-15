@@ -19,6 +19,14 @@ end
 
 class FireCube < Chingu::GameObject
   has_traits :velocity, :effect
+  has_trait :collision_detection
+  #
+  # TODO:
+  # has_trait :collision_detection, :type => :bounding_box
+  # has_trait :collision_detection, :type => :radius
+  #
+  
+  attr_accessor :color
   
   def initialize(options)
     super    
@@ -27,17 +35,18 @@ class FireCube < Chingu::GameObject
     # initialize with a rightwards velocity with some damping to look more realistic
     @velocity_x = options[:velocity_x] || 3 - rand(6)
     @velocity_y = options[:velocity_y] || 3 - rand(6)
-    @rect = Rect.new([@x, @y, 20, 20])    
-  end
-  
-  def update
-    super
-    @rect.x = @x
-    @rect.y = @y    
+    @bounding_box = Rect.new([@x, @y, 20, 20])    
+    @color = Color.new(255,100,255,255)
   end
   
   def draw
-    $window.fill_rect(@rect, Color.new(@color.alpha,100,255,255))
+    $window.fill_rect(@bounding_box, @color)
+  end
+  
+  def die!
+    @color = Color.new(255,255,255,255)
+    self.fading = -20
+    self.detect_collisions = false
   end
   
 end
@@ -45,7 +54,7 @@ end
 class Particles < Chingu::GameState
   def setup    
     self.input = { :space => :new_fire_cube }
-    100.times { new_fire_cube }
+    20.times { new_fire_cube }
   end
   
   def new_fire_cube
@@ -62,12 +71,14 @@ class Particles < Chingu::GameState
         particle.velocity_y = -particle.velocity_y
       end
     end
-    #FireCube.all.each do |particle|
-    #  FireCube.all.each do |particle2|
-    #    if particle.rect.collides_with
-    #    
-    #  end
-    #end
+    
+    #
+    # GameObject.each_collsion wont collide an object with itself
+    #
+    FireCube.each_collision(FireCube) do |cube1, cube2|
+      cube1.die!
+      cube2.die!
+    end
       
     self.game_objects.reject! { |object| object.color.alpha == 0 }
     

@@ -514,6 +514,7 @@ See http://www.libgosu.org/rdoc/classes/Gosu/Window.html for a full set of metho
 * Jacius of Rubygame (For doing cool stuff that's well documented as re-usable). So far rect.rb and named_resource.rb is taken from Rubygame.
 * Jduff for input / commits.
 * Jlnr,Philymore,Shawn24,JamesKilton for constructive feedback/discussions.
+* Thanks to http://github.com/tarcieri for require_all code, good stuff
 
 == REQUIREMENTS:
 * Gosu latest version
