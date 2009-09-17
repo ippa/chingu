@@ -60,7 +60,8 @@ module Chingu
       # two objects "bounding_box" attributs (a Chingu::Rect instance)
       #
       def collision?(object2)
-        bounding_box_collision?(object2)
+        #bounding_box_collision?(object2)
+        radius_collision?(object2)
       end
       
       #

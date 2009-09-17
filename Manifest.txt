@@ -1,4 +1,5 @@
 History.txt
+LICENSE
 Manifest.txt
 README.rdoc
 Rakefile
@@ -6,6 +7,7 @@ benchmarks/README.txt
 benchmarks/benchmark.rb
 benchmarks/benchmark3.rb
 benchmarks/benchmark4.rb
+benchmarks/benchmark5.rb
 benchmarks/meta_benchmark.rb
 benchmarks/meta_benchmark2.rb
 chingu.gemspec
@@ -37,7 +39,6 @@ lib/chingu/actor.rb
 lib/chingu/animation.rb
 lib/chingu/assets.rb
 lib/chingu/basic_game_object.rb
-lib/chingu/basic_trait_object.rb
 lib/chingu/core_extensions.rb
 lib/chingu/effects.rb
 lib/chingu/fpscounter.rb
@@ -55,11 +56,9 @@ lib/chingu/named_resource.rb
 lib/chingu/parallax.rb
 lib/chingu/particle.rb
 lib/chingu/rect.rb
+lib/chingu/require_all.rb
 lib/chingu/text.rb
-lib/chingu/trait_object.rb
 lib/chingu/traits/collision_detection.rb
-lib/chingu/traits/deprecated_module_visual.rb
-lib/chingu/traits/deprecated_visual.rb
 lib/chingu/traits/effect.rb
 lib/chingu/traits/effect_module.rb
 lib/chingu/traits/input.rb
