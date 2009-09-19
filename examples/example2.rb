@@ -70,13 +70,7 @@ class Play < Chingu::GameState
     self.input = { :f1 => :debug }
   end
   
-  def debug
-    #puts "--------"
-    #GameObject.all.each do |game_object|
-    #  puts game_object.class
-    #end
-    #return 
-    
+  def debug    
     push_game_state(Chingu::GameStates::Debug)
   end
     
@@ -108,7 +102,7 @@ class Play < Chingu::GameState
     #
       
     super
-    $window.caption = "FPS: #{$window.fps} - milliseconds_since_last_tick: #{$window.milliseconds_since_last_tick} - game objects# #{current_game_state.game_objects.size}"
+    $window.caption = "FPS: #{$window.fps} - milliseconds_since_last_tick: #{$window.milliseconds_since_last_tick} - game objects# #{current_game_state.game_objects.size} Bullets# #{Bullet.size}"
   end  
 end
 

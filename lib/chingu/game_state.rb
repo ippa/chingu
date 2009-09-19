@@ -56,12 +56,12 @@ module Chingu
     include Chingu::InputClient
     
     attr_reader :options                # so jlnr can access his :level-number
-    attr_accessor :game_state_manager
+    attr_accessor :game_state_manager, :game_objects
     
     def initialize(options = {})
       @options = options
       ## @game_state_manager = options[:game_state_manager] || $window.game_state_manager
-      @game_objects = Set.new
+      @game_objects = GameObjectList.new
       @input_clients = Set.new          # Set is like a unique Array with Hash lookupspeed
       
       # Game state mamanger can be run alone
@@ -69,12 +69,7 @@ module Chingu
         $window.game_state_manager.inside_state = self
       end
     end
-    
-    def game_objects
-      return [] unless defined?(@game_objects)
-      return @game_objects
-    end
-    
+        
     #
     # An unique identifier for the GameState-class, 
     # Used in game state manager to keep track of created states.
@@ -85,13 +80,6 @@ module Chingu
 
     def to_s
       self.class.to_s
-    end
-
-    def add_game_object(object)
-      @game_objects << object
-    end
-    def remove_game_object(object)
-      @game_objects.delete(object)
     end
     
     def setup
@@ -122,14 +110,14 @@ module Chingu
       
       @input_clients.each { |game_object| dispatch_input_for(game_object) }      
       
-      @game_objects.each { |object| object.update }
+      @game_objects.update
     end
     
     #
     # Calls Draw on each game object that has current game state as parent (created inside that game state)
     #
     def draw
-      @game_objects.each { |object| object.draw }
+      @game_objects.draw
     end
         
     #

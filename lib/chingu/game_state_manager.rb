@@ -280,7 +280,7 @@ module Chingu
       # If state is a GameState-class, create it.
       #        
       elsif state.superclass == Chingu::GameState
-        new_state = state.new({})
+        new_state = state.new
       end
       
       return new_state

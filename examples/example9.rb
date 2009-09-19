@@ -26,16 +26,19 @@ class FireCube < Chingu::GameObject
   # has_trait :collision_detection, :type => :radius
   #
   
-  attr_accessor :color
+  attr_accessor :color, :radius
   
   def initialize(options)
     super    
     @mode = :additive
     
     # initialize with a rightwards velocity with some damping to look more realistic
-    @velocity_x = options[:velocity_x] || 3 - rand(6)
-    @velocity_y = options[:velocity_y] || 3 - rand(6)
-    @bounding_box = Rect.new([@x, @y, 20, 20])    
+    @velocity_x = options[:velocity_x] || 1 + rand(3)
+    @velocity_y = options[:velocity_y] || 1 + rand(3)
+    
+    @bounding_box = Rect.new([@x, @y, 5, 5])
+    @radius = 20
+    
     @color = Color.new(255,100,255,255)
   end
   
@@ -54,7 +57,7 @@ end
 class Particles < Chingu::GameState
   def setup    
     self.input = { :space => :new_fire_cube }
-    20.times { new_fire_cube }
+    100.times { new_fire_cube }
   end
   
   def new_fire_cube
@@ -76,11 +79,11 @@ class Particles < Chingu::GameState
     # GameObject.each_collsion wont collide an object with itself
     #
     FireCube.each_collision(FireCube) do |cube1, cube2|
-      cube1.die!
-      cube2.die!
+      #cube1.die!
+      #cube2.die!
     end
       
-    self.game_objects.reject! { |object| object.color.alpha == 0 }
+    game_objects.destroy_if { |object| object.color.alpha == 0 }
     
     super
   end

@@ -142,6 +142,19 @@ module Chingu
   end
   
   module GameObjectHelpers
+  
+    def add_game_object(object)
+      @game_objects.add_game_object(object)
+    end
+    
+    def remove_game_object(object)
+      @game_objects.remove_game_object(object)
+    end
+    
+    def game_objects
+      @game_objects
+    end
+    
     #
     # Fetch game objects of a certain type/class
     #

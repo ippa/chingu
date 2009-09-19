@@ -39,7 +39,7 @@ module Chingu
       Gosu::Tile.autoload_dirs = [".", File.join(@root, "gfx"), File.join(@root, "media")]
       Gosu::Song.autoload_dirs = [".", File.join(@root, "sfx"), File.join(@root, "media")]
 			
-      @game_objects = Set.new
+      @game_objects = GameObjectList.new
       @input_clients = Set.new  # Set is like a unique Array with Hash lookupspeed
       
       @fps_counter = FPSCounter.new
@@ -47,13 +47,10 @@ module Chingu
       @milliseconds_since_last_tick = 0
     end
     
-    def add_game_object(object)
-      @game_objects << object
+    def current_parent
+      game_state_manager.current_game_state || self
     end
-    def remove_game_object(object)
-      @game_objects.delete(object)
-    end
-        
+    
     #
     # Frames per second, access with $window.fps or $window.framerate
     #
@@ -126,7 +123,7 @@ module Chingu
       #
       # Draw all game objects associated with the main window.      
       #
-      @game_objects.each { |object| object.draw }
+      @game_objects.draw
       
       #
       # Let the game state manager call draw on the active game state (if any)
@@ -138,7 +135,7 @@ module Chingu
     # Call update() on all game objects in main game window.
     #
     def update_game_objects
-      @game_objects.each { |object| object.update }
+      @game_objects.update
     end
     
     #

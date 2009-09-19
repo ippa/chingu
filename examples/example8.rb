@@ -93,7 +93,7 @@ class Particles < Chingu::GameState
     # +4 fps
     #
     #self.game_objects.reject! { |object| object.outside_window? || object.color.alpha == 0 }
-    self.game_objects.reject! { |object| object.color.alpha == 0 }
+    self.game_objects.destroy_if { |object| object.color.alpha == 0 }
     
     super
   end

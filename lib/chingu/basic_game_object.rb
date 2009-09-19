@@ -7,7 +7,7 @@ module Chingu
   #
   class BasicGameObject
     attr_reader :options, :parent
-    
+        
     #
     # adds a trait or traits to a certain game class
     # 
@@ -48,9 +48,20 @@ module Chingu
       end
       
       # This will call #setup on the latest trait mixed in, which then will pass it on with super.
-      setup_trait(options) 
+      setup_trait(options)
+      
+      #self.class.add_game_object_instance(self)
     end
-    
+      
+    #def self.add_game_object_instance(object)
+    #  @list ||= []
+    #  @list << object
+    #end
+
+    #def self.remove_game_object_instance(object)
+    #  @list.delete(object)
+    #end
+
 
     def setup_trait(options)
     end
@@ -68,7 +79,14 @@ module Chingu
     # NOTE: ObjectSpace doesn't play nice with jruby.
     #
     def self.all
-      ObjectSpace.each_object(self)
+      # @all ||= ObjectSpace.each_object(self)
+      # ObjectSpace.each_object(self)
+      #@list ||= Array.new
+      $window.current_parent.game_objects.of_class(self)
+    end
+    
+    def self.size
+      all.size
     end
     
     #
@@ -83,10 +101,10 @@ module Chingu
     end
     
     #
-    # Clear all intances of objects class:
-    #   Bullet.clear    # Removes all Bullet objects from the game
+    # Destroys all intances of objects class:
+    #   Bullet.destroy_all    # Removes all Bullet objects from the game
     #
-    def self.clear
+    def self.destroy_all
       all.each { |object| object.destroy! }
     end
 

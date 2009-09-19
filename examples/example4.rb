@@ -51,6 +51,8 @@ class Player < Chingu::GameObject
   def move_down;  @y += 1; end 
 
   def fire
+    #puts $window.current_parent.to_s
+    #puts $window.game_state_manager.inside_state
     Bullet.new(:x => @x - 20, :y => @y)
     Bullet.new(:x => @x, :y => @y) 
     Bullet.new(:x => @x + 20, :y => @y)
@@ -74,7 +76,7 @@ end
 # GAMESTATE #1 - INTRO
 #
 class Intro < Chingu::GameState 
-  def initialize(options)
+  def initialize(options = {})
     super
     @title = Chingu::Text.new(:text=>"Press and release F1", :x=>200, :y=>50, :size=>30)
     self.input = { :f1 => :pressed, :released_f1 => :released, :f2 => Menu}
@@ -93,7 +95,7 @@ end
 # GAMESTATE #2 - MENU
 #
 class Menu < Chingu::GameState
-  def initialize(options)
+  def initialize(options = {})
     super
     @title = Chingu::Text.new(:text => "Press 'S' to Start game", :x=>100, :y=>50, :size=>30)
     self.input = { :s => Level.new(:level => 10) }
@@ -107,7 +109,7 @@ class Level < Chingu::GameState
   #
   # initialize() is called when you create the game state
   #
-  def initialize(options)
+  def initialize(options = {})
     super
     @title = Chingu::Text.new(:text=>"Level #{options[:level].to_s}. P: pause R:restart", :x=>20, :y=>10, :size=>30)
     @player = Player.new
@@ -138,7 +140,7 @@ class Level < Chingu::GameState
   #
   def setup
     # Place player in a good starting position
-    Bullet.clear
+    Bullet.destroy_all
     @player.x = $window.width/2
     @player.y = $window.height - @player.image.height
   end
@@ -150,7 +152,7 @@ end
 # NOTICE: Chingu now comes with a predefined Chingu::GameStates::Pause that works simular to this!
 #
 class Pause < Chingu::GameState
-  def initialize(options)
+  def initialize(options = {})
     super
     @title = Chingu::Text.new(:text=>"PAUSED (press 'u' to un-pause)", :x=>100, :y=>200, :size=>20, :color => Color.new(0xFF00FF00))
     self.input = { :u => :un_pause }

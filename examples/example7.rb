@@ -117,8 +117,8 @@ class Particles < Chingu::GameState
                           :mode => :additive
                         )
 
-    game_objects_of_class(Particle).each { |particle| particle.y -= 5; particle.x += 2 - rand(4) }
-    self.game_objects.reject! { |object| object.outside_window? || object.color.alpha == 0 }
+    Particle.all.each { |particle| particle.y -= 5; particle.x += 2 - rand(4) }
+    self.game_objects.destroy_if { |object| object.outside_window? || object.color.alpha == 0 }
     super
   end
   

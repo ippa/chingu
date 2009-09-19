@@ -60,8 +60,8 @@ module Chingu
       # two objects "bounding_box" attributs (a Chingu::Rect instance)
       #
       def collision?(object2)
-        #bounding_box_collision?(object2)
-        radius_collision?(object2)
+        bounding_box_collision?(object2)
+        #radius_collision?(object2)
       end
       
       #
@@ -108,6 +108,7 @@ module Chingu
         def each_collision(klasses = [])
           # Make sure klasses is always an array.
           Array(klasses).each do |klass|
+            klass = klasses
             self.all.each do |object1|
               klass.all.each do |object2|
                 next  if object1 == object2  # Don't collide objects with themselves
@@ -119,6 +120,7 @@ module Chingu
             end
           end
         end
+        
       end
       
     end
