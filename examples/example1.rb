@@ -14,7 +14,7 @@ include Gosu
 class Game < Chingu::Window
   def initialize
     super(640,480,false)  # leave it blank and it will be 800,600,non fullscreen
-    @player = Player.new(:x => 200, :y => 200, :image => Image["spaceship.png"])
+    @player = Player.create(:x => 200, :y => 200, :image => Image["spaceship.png"])
     @player.input = { :holding_left => :move_left, :holding_right => :move_right, 
                       :holding_up => :move_up, :holding_down => :move_down, :escape => :exit}
     p RUBY_VERSION

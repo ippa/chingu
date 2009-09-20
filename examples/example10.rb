@@ -10,10 +10,10 @@ $stderr.sync = $stdout.sync = true
 #
 class Game < Chingu::Window
   def initialize
-    super(400,400)
+    super(600,400)
     self.caption = "Testing out new module-based traits (SPACE for more spaceships)"
-    self.input = { :space => :new_thing, :esc => :exit }
-    new_thing(200,200)
+    self.input = { :space => :create_thing, :esc => :exit }
+    create_thing(200,200)
   end
 
   def update
@@ -26,8 +26,8 @@ class Game < Chingu::Window
     super
   end
   
-  def new_thing(x=nil, y=nil)
-    Thing.new(:x => x||rand($window.width), :y => y||rand($window.height), :debug => true)
+  def create_thing(x=nil, y=nil)
+    Thing.create(:x => x||rand($window.width), :y => y||rand($window.height), :debug => true)
   end
 end
 

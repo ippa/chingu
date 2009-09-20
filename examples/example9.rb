@@ -61,7 +61,7 @@ class Particles < Chingu::GameState
   end
   
   def new_fire_cube
-    FireCube.new(:x => rand($window.width), :y => rand($window.height))
+    FireCube.create(:x => rand($window.width), :y => rand($window.height))
   end
   
   def update        

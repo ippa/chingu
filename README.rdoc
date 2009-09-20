@@ -22,7 +22,8 @@ The last years I've dabbled around a lot with game development.
 I've developed games in both Rubygame and Gosu. I've looked at gamebox.
 Rubygame is a very capable framework with a lot of functionality (collision detection, very good event system etc). Gosu is way more minimalistic but also faster with OpenGL -acceleration. Gosu isn't likely to get much more complex since it does what it should do very well and fast.
 
-After 10+ game prototypes and some finished smaller games I started to see patterns each time I started a new game. Making classes with x/y/image/other-parameters that I called update/draw on in the main loop. This became the basic Chingu::GameObject which encapsulates Gosus "Image.draw_rot" and enables automatic updating/drawing.
+After 10+ game prototypes and some finished smaller games I started to see patterns each time I started a new game. Making classes with x/y/image/other-parameters that I called update/draw on in the main loop. 
+This became the basic Chingu::GameObject which encapsulates Gosus "Image.draw_rot" and enables automatic updating/drawing through "game_objects".
 
 There was always a huge big chunk of checking keyboard-events in the main loop.
 Borrowing ideas from Rubygame this has now become @player.keyboard(:left => :move_left, :space => :fire ... etc.
@@ -39,13 +40,14 @@ Available thoughout your source as $window (Yes, that's the only global Chingu h
 === Chingu::GameObject
 Use this for all your in game objects. The player, the enemies, the bullets, the powerups, the loot laying around.
 It's very reusable and doesn't contain any game-logic (that's up to you!). Only stuff to put it on screen a certain way.
-It also gives you a couple of bonuses with chingu, as automatic updates/draws and easier input-mapping.
-Has either Chingu::Window or a Chingu::GameState as "owner".
+If you do GameObject.create() instead of new() Chingu will keep save the object in the "game_object"-list for automatic updates/draws.
+GameObjects also have the nicer Chingu input-mapping: @player.input = { :left => :move_left, :right => :move_right, :space => :fire}
+Has either Chingu::Window or a Chingu::GameState as "parent".
 
 === Chingu::BasicGameObject
 For those who think GameObject is a too little fat, there's BasicGameObject (GameObject inherits from BasicGameObject).
 BasicGameObject is just an empty frame (no x,y,image accessors or draw-logic) for you to build on.
-It _can_ be extended with Chingus trait-system though.
+It _can_ be extended with Chingus trait-system though. The new() vs create() behaivor of GameObject comes from BasicGameObject.
 BasicGameObject#parent points to either $window or a game state and is automaticly set on creation time.
 
 === Chingu::GameStateManager
@@ -62,10 +64,9 @@ For example, inside game state Menu you call push_game_state(Level). When Level 
 
 === Traits
 Traits are extensions (or plugins if you so will) to BasicGameObjects. 
-The aim is so encapsulate common behaivor into stand alone classes and modules for easy inclusion in your game classes.
-In it's most basic form it's just a class which answers to setup() (called on your game objects creation), update() and draw().
-Traits are a fairly new addition to Chingu and will probably morph some more before stabilizing. 
-
+The aim is so encapsulate common behaivor into modules for easy inclusion in your game classes.
+Making a trait is easy, just an ordinary module with the methods setup_trait(), update() and/or draw().
+It currently has to be namespaced to Chingu::Traits for "has_trait" to work inside GameObject-classes.
 
 == OTHER CLASSES / HELPERS
 
@@ -157,7 +158,7 @@ Chingu doesn't change any fundamental concept of Gosu, but it will make the abov
       # Player will automaticly be updated and drawn since it's a Chingu::GameObject
       # You'll need your own Game#update/#draw after a while, but just put #super there and Chingu can do its thing.
       #
-      @player = Player.new
+      @player = Player.create
       @player.input = {:left => :move_left, :right => :move_right}
     end    
   end
@@ -192,7 +193,8 @@ If you've worked with Gosu for a while you're probably tired of passing around t
 Chingu solves this (as has many other developers) with a global variable $window. Yes, globals are bad, but in this case it kinda makes sense. It's used under the hood in various places.
 
 === Chingu::GameObject
-This is our basic "game unit"-class, meaning most in game objects (players, enemies, bullets etc) should be inherited from Chingu::GameObject. The basic ideas behind it are:
+This is our basic "game unit"-class, meaning most in game objects (players, enemies, bullets etc) should be inherited from Chingu::GameObject.
+The basic ideas behind it are:
 
 * Encapsulate only the very common basics that Most in game objects need
 * Keep naming close to Gosu, but add smart convenient methods / shortcuts and a more rubyish feeling
@@ -452,19 +454,24 @@ Text is a class to give the use of Gosu::Font more rubyish feel and fit it bette
   @font.draw("A Text", 200, 50, 55, 2.0)
   
 # Chingu
-  @text = Chingu::Text.new(:text => "A Text", :x => 200, :y => 50, :zorder => 55, :factor_x => 2.0)
+  @text = Chingu::Text.create(:text => "A Text", :x => 200, :y => 50, :zorder => 55, :factor_x => 2.0)
   @text.draw
 
-@text.draw is usually not needed as Text is a GameObject and therefore autodrawn.
-It's not only that the second example is readable by ppl now even familiar with Gosu, @text comes with a number of changeable properties, x,y,zorder,angle,factor_x,color,mode etc. Set a new x or angle or color and it will instantly update on screen.
+@text.draw is usually not needed as Text is a GameObject and therefore automaticly updated/drawn (it #create is used instead of #new)
+It's not only that the second example is readable by ppl now even familiar with Gosu, @text comes with a number of changeable properties, x,y,zorder,angle,factor_x,color,mode etc. 
+Set a new x or angle or color and it will instantly update on screen.
 
 
 == MISC / FAQ
-How do I access my main-window easily?
-
+=== How do I access my main-window easily?
 Chingu keeps a global variable, $window, which contains the Chingu::Window instance. 
 Since Chingu::Window is just Gosu::Window + some cheese you can do your $window.button_down?, $window.draw_line() etc from anywhere.
 See http://www.libgosu.org/rdoc/classes/Gosu/Window.html for a full set of methods.
+
+=== How did you decide on naming of methods / classes?
+There's 1 zillion ways of naming stuff. As a general guideline I've tried to follow Gosus naming.
+If Gosu didn't have a good name for a certain thing/method I've checked Ruby itself and then Rails since alot
+ of Ruby-devs are familiar with Rails.
 
 == TODO:
 * add :padding and :align => :topleft etc to class Text
@@ -486,7 +493,7 @@ See http://www.libgosu.org/rdoc/classes/Gosu/Window.html for a full set of metho
 * (done) Automate gemgenning rake-task even more
 * (done) More examples when effects are more complete
 * class ChipmunkObject
-* (has_trait :velocity :p..) class Actor/MovingActor with maybe a bit more logic then the basic GameObject. Would ppl find is useful?
+* (done) class Actor/MovingActor with maybe a bit more logic then the basic GameObject.
 * (60% done) Spell check all docs, sloppy spelling turns ppl off. tnx jduff ;).
 * Tests
 * (done) Streamline fps / tick code

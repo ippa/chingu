@@ -54,10 +54,10 @@ class Particles < Chingu::GameState
     # first optimization: 490 particles, 47 fps (350 @ 60)
     # optimized GameObject if/elsif: 490 particles, 50 fps
     #
-    Plasma.new(:x => 0, :y => 0 + rand(5), :color => Color.new(0xFF86EFFF), :velocity_x => 10)
-    Plasma.new(:x => 0, :y => 50 + rand(5), :color => Color.new(0xFF86EFFF), :velocity_x => 14)
-    Plasma.new(:x => 0, :y => 100 + rand(5), :color => Color.new(0xFF86EFFF), :velocity_x => 7)
-    Plasma.new(:x => 0, :y => 200 + rand(5), :color => Color.new(0xFF86EFFF), :velocity_x => 6)
+    Plasma.create(:x => 0, :y => 0 + rand(5), :color => Color.new(0xFF86EFFF), :velocity_x => 10)
+    Plasma.create(:x => 0, :y => 50 + rand(5), :color => Color.new(0xFF86EFFF), :velocity_x => 14)
+    Plasma.create(:x => 0, :y => 100 + rand(5), :color => Color.new(0xFF86EFFF), :velocity_x => 7)
+    Plasma.create(:x => 0, :y => 200 + rand(5), :color => Color.new(0xFF86EFFF), :velocity_x => 6)
         
     Plasma.all.each do |particle|
       #

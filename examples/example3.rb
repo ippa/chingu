@@ -11,7 +11,7 @@ class Game < Chingu::Window
     super    
     self.input = {:holding_left => :scroll_left, :holding_right => :scroll_right, :escape => :exit}
     
-    @parallax = Chingu::Parallax.new(:x => 0, :y => 0, :center_x => 0, :center_y => 0)
+    @parallax = Chingu::Parallax.create(:x => 0, :y => 0, :center_x => 0, :center_y => 0)
     
     #
     # If no :zorder is given to @parallax.add_background it defaults to first added -> lowest zorder

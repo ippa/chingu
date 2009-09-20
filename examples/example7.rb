@@ -87,7 +87,7 @@ class Particles < Chingu::GameState
     #
     # Fire 1. Dies quickly (big :fade). Small in size (small :zoom)
     #
-    Chingu::Particle.new( :x => 100, 
+    Chingu::Particle.create( :x => 100, 
                           :y => @ground_y, 
                           :animation => @fireball_animation,
                           :zooming => +0.05, 
@@ -99,7 +99,7 @@ class Particles < Chingu::GameState
     #
     # Fire 2. Higher flame, :fade only -4. Wide Flame with bigger :zoom.
     #
-    Chingu::Particle.new( :x => 300, 
+    Chingu::Particle.create( :x => 300, 
                           :y => @ground_y, 
                           :animation => @fireball_animation, 
                           :zooming => +0.2, 
@@ -110,7 +110,7 @@ class Particles < Chingu::GameState
     #
     # Fire 3. Blue plasma with smooth particle.png and color-overlay.
     #
-    Chingu::Particle.new( :x => 500, 
+    Chingu::Particle.create( :x => 500, 
                           :y => @ground_y,
                           :image => "particle.png", 
                           :color => @blue_laserish,
@@ -118,7 +118,7 @@ class Particles < Chingu::GameState
                         )
 
     Particle.all.each { |particle| particle.y -= 5; particle.x += 2 - rand(4) }
-    self.game_objects.destroy_if { |object| object.outside_window? || object.color.alpha == 0 }
+    game_objects.destroy_if { |object| object.outside_window? || object.color.alpha == 0 }
     super
   end
   

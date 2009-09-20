@@ -16,7 +16,7 @@ class Game < Chingu::Window
     #
     super
     
-    push_game_state(Play.new)
+    push_game_state(Play)
   end
 end
 
@@ -35,7 +35,7 @@ class Player < Chingu::GameObject
   def move_down;  @y += 1; end 
 
   def fire
-    Bullet.new(:x => @x, :y => @y)
+    Bullet.create(:x => @x, :y => @y)
   end  
 end
 
@@ -59,7 +59,7 @@ class Play < Chingu::GameState
   
   def initialize
     super
-    @player = Player.new(:x => 200, :y => 200)
+    @player = Player.create(:x => 200, :y => 200)
     @player.input = { :holding_left => :move_left, 
                       :holding_right => :move_right, 
                       :holding_up => :move_up, 
@@ -70,7 +70,13 @@ class Play < Chingu::GameState
     self.input = { :f1 => :debug }
   end
   
-  def debug    
+  def debug
+    #puts "--------"
+    #GameObject.all.each do |game_object|
+    #  puts game_object.class
+    #end
+    #return 
+    
     push_game_state(Chingu::GameStates::Debug)
   end
     

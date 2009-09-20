@@ -34,7 +34,7 @@ class Game < Chingu::Window
     push_game_state(Intro)
     
     # Yes you can do crazy things like this :)
-    self.input = { :left_mouse_button => lambda{Chingu::Text.new(:text => "Woff!")}, :esc => :exit}    
+    self.input = { :left_mouse_button => lambda{Chingu::Text.create(:text => "Woff!")}, :esc => :exit}    
   end
 end
 
@@ -53,9 +53,9 @@ class Player < Chingu::GameObject
   def fire
     #puts $window.current_parent.to_s
     #puts $window.game_state_manager.inside_state
-    Bullet.new(:x => @x - 20, :y => @y)
-    Bullet.new(:x => @x, :y => @y) 
-    Bullet.new(:x => @x + 20, :y => @y)
+    Bullet.create(:x => @x - 20, :y => @y)
+    Bullet.create(:x => @x, :y => @y) 
+    Bullet.create(:x => @x + 20, :y => @y)
   end  
 end
 
@@ -78,7 +78,7 @@ end
 class Intro < Chingu::GameState 
   def initialize(options = {})
     super
-    @title = Chingu::Text.new(:text=>"Press and release F1", :x=>200, :y=>50, :size=>30)
+    @title = Chingu::Text.create(:text=>"Press and release F1", :x=>200, :y=>50, :size=>30)
     self.input = { :f1 => :pressed, :released_f1 => :released, :f2 => Menu}
   end
   
@@ -97,7 +97,7 @@ end
 class Menu < Chingu::GameState
   def initialize(options = {})
     super
-    @title = Chingu::Text.new(:text => "Press 'S' to Start game", :x=>100, :y=>50, :size=>30)
+    @title = Chingu::Text.create(:text => "Press 'S' to Start game", :x=>100, :y=>50, :size=>30)
     self.input = { :s => Level.new(:level => 10) }
   end
 end
@@ -111,8 +111,8 @@ class Level < Chingu::GameState
   #
   def initialize(options = {})
     super
-    @title = Chingu::Text.new(:text=>"Level #{options[:level].to_s}. P: pause R:restart", :x=>20, :y=>10, :size=>30)
-    @player = Player.new
+    @title = Chingu::Text.create(:text=>"Level #{options[:level].to_s}. P: pause R:restart", :x=>20, :y=>10, :size=>30)
+    @player = Player.create
     @player.input = { :holding_left => :move_left, 
                       :holding_right => :move_right, 
                       :holding_up => :move_up, 
@@ -158,7 +158,7 @@ end
 class Pause < Chingu::GameState
   def initialize(options = {})
     super
-    @title = Chingu::Text.new(:text=>"PAUSED (press 'u' to un-pause)", :x=>100, :y=>200, :size=>20, :color => Color.new(0xFF00FF00))
+    @title = Chingu::Text.create(:text=>"PAUSED (press 'u' to un-pause)", :x=>100, :y=>200, :size=>20, :color => Color.new(0xFF00FF00))
     self.input = { :u => :un_pause }
   end
 

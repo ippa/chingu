@@ -6,7 +6,8 @@ module Chingu
   # It will also acts as a container for the trait-system of chingu.
   #
   class BasicGameObject
-    attr_reader :options, :parent
+    attr_reader :options
+    attr_accessor :parent
         
     #
     # adds a trait or traits to a certain game class
@@ -29,26 +30,38 @@ module Chingu
     end
         
     #
-    # BasicGameUnit initialize
-    #
-    # - caches all trait methods for fast calls later on
-    # - call .setup() on all traits that implements it
-    # - adds game object to correct game state or $window if no game state exists
+    # BasicGameObject initialize
+    # - call .setup_trait() on all traits that implements it
     #
     def initialize(options = {})
       @options = options
       
+      # This will call #setup_trait on the latest trait mixed in
+      # which then will pass it on to the next setup_trait() with a super-call.
+      setup_trait(options)
+    end
+    
+    #
+    # Creates a new object from class just as new() but also:
+    # - adds game object to current game state
+    # - or $window if no game state exists
+    #
+    # Use create() instead of new() if you want to keep track of your objects through
+    # Chingus "game_objects" which is available in all game states and the main window.
+    #
+    def self.create(options = {})
+      instance = self.new(options)
+      
       #
-      # A GameObject can either belong to a GameState or our mainwindow ($window)
-      # .. or live in limbo with manual updates
+      # A GameObject either belong to a GameState or our mainwindow ($window)
       #
       if $window && $window.respond_to?(:game_state_manager)
-        @parent = $window.game_state_manager.inside_state || $window
-        @parent.add_game_object(self) if @parent
+        if (instance.parent = $window.game_state_manager.inside_state || $window)
+          instance.parent.add_game_object(instance)
+        end
       end
       
-      # This will call #setup on the latest trait mixed in, which then will pass it on with super.
-      setup_trait(options)
+      return instance
     end
     
     def setup_trait(options)
@@ -61,20 +74,25 @@ module Chingu
     end    
         
     #
-    # Returns an array of all objects of a current class.
+    # Returns an array with all objects of current class.
+    # BasicGameObject#all is state aware so only objects belonging to the current state will be returned.
+    #
+    #   Bullet.all.each do {}  # Iterate through all bullets in current game state
     #
     def self.all
       $window.current_parent.game_objects.of_class(self).dup
     end
     
+    #
+    # Returns
+    #
     def self.size
-      all.size
+      $window.current_parent.game_objects.of_class(self).size
     end
     
     #
     # Destroy all instances of current class that fills a certain condition
     #   Enemy.destroy_if(&:dead?)   # Assumes Enemy.dead? returns true/false depending on aliveness :)
-    #
     #
     def self.destroy_if(&block)
       all.each do |object|
@@ -87,7 +105,7 @@ module Chingu
     #   Bullet.destroy_all    # Removes all Bullet objects from the game
     #
     def self.destroy_all
-      self.all.each { |object| object.destroy!  }
+      self.all.each { |object| object.destroy! }
     end
 
     #
