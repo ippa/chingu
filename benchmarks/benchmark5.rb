@@ -28,10 +28,11 @@ foo = Foo.new
 
 s = Set.new
 a = Array.new
+h = Hash.new
+h[:a] = Array.new
 
 n = 1000000
 Benchmark.bm(22) do |x|
-  
   x.report('Array << ') do
     n.times do
       a << n
@@ -43,7 +44,12 @@ Benchmark.bm(22) do |x|
       s << n
     end
   end
-  
+
+  x.report('Hash[:a] << ') do
+    n.times do
+      h[:a] << n
+    end
+  end
 end
 
 

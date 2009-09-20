@@ -29,29 +29,37 @@ module Chingu
         
     def initialize
       @game_objects = Array.new
-      @game_objects_by_class = Hash.new
+      #@game_objects_by_class = Hash.new
+    end
+    
+    def to_s
+      "#{@game_objects.size} game objects."
     end
     
     def of_class(klass)
-      @game_objects_by_class[klass] || []
+      @game_objects.select { |game_object| game_object.is_a? klass }
+      #@game_objects_by_class[klass] || []
     end
     
-    #def [](klass)
-    #  @game_objects_by_class[klass]
-    #end
+    def remove_all
+      @game_objects.clear
+      #@game_objects_of_class.clear
+    end
+    alias :clear :remove_all
     
     def add_game_object(object)
       @game_objects.push(object)
-      (@game_objects_by_class[object.class] ||= []).push(object)
+      #(@game_objects_by_class[object.class] ||= []).push(object)
     end
     
     def remove_game_object(object)
       @game_objects.delete(object)
-      @game_objects_by_class[object.class].delete(object)
+      #@game_objects_by_class[object.class].delete(object)
     end
     
     def destroy_if
-      @game_objects.each { |object| object.destroy! if yield(object) }
+      @game_objects.reject! { |object| yield(object) }
+      #@game_objects_by_class.delete_if { |klass, object| yield(object) }
     end
     
     def size

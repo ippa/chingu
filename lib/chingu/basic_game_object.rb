@@ -49,20 +49,8 @@ module Chingu
       
       # This will call #setup on the latest trait mixed in, which then will pass it on with super.
       setup_trait(options)
-      
-      #self.class.add_game_object_instance(self)
     end
-      
-    #def self.add_game_object_instance(object)
-    #  @list ||= []
-    #  @list << object
-    #end
-
-    #def self.remove_game_object_instance(object)
-    #  @list.delete(object)
-    #end
-
-
+    
     def setup_trait(options)
     end
     
@@ -73,16 +61,10 @@ module Chingu
     end    
         
     #
-    # Fetch all objects of a current class.
-    #   Bullet.all   # => Enumerator of all objects of class Bullet
-    #
-    # NOTE: ObjectSpace doesn't play nice with jruby.
+    # Returns an array of all objects of a current class.
     #
     def self.all
-      # @all ||= ObjectSpace.each_object(self)
-      # ObjectSpace.each_object(self)
-      #@list ||= Array.new
-      $window.current_parent.game_objects.of_class(self)
+      $window.current_parent.game_objects.of_class(self).dup
     end
     
     def self.size
@@ -105,7 +87,7 @@ module Chingu
     #   Bullet.destroy_all    # Removes all Bullet objects from the game
     #
     def self.destroy_all
-      all.each { |object| object.destroy! }
+      self.all.each { |object| object.destroy!  }
     end
 
     #

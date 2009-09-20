@@ -129,7 +129,7 @@ class Level < Chingu::GameState
   def update
     super
     Bullet.destroy_if {|bullet| bullet.outside_window? }
-    $window.caption = "FPS: #{$window.fps} - GameObjects: #{game_objects.size}"
+    $window.caption = "FPS: #{$window.fps} - GameObjects: #{game_objects.size} - Bullets: #{Bullet.size}"
   end
   
   #
@@ -139,8 +139,12 @@ class Level < Chingu::GameState
   # This can be useful if you want to display some kind of box above the gameplay (pause/options/info/... box)
   #
   def setup
-    # Place player in a good starting position
+    # Destroy all created objects of class Bullet
+    #p Bullet.size
+    #puts Bullet.all
     Bullet.destroy_all
+    
+    # Place player in a good starting position
     @player.x = $window.width/2
     @player.y = $window.height - @player.image.height
   end
@@ -163,8 +167,8 @@ class Pause < Chingu::GameState
   end
   
   def draw
-    previous_game_state.draw           # Draw prev game state onto screen (in this case our level)
-    super                         # Draw game objects in current game state, this includes Chingu::Texts
+    previous_game_state.draw    # Draw prev game state onto screen (in this case our level)
+    super                       # Draw game objects in current game state, this includes Chingu::Texts
   end  
 end
 
