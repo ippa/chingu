@@ -8,11 +8,13 @@ benchmarks/benchmark.rb
 benchmarks/benchmark3.rb
 benchmarks/benchmark4.rb
 benchmarks/benchmark5.rb
+benchmarks/benchmark6.rb
 benchmarks/meta_benchmark.rb
 benchmarks/meta_benchmark2.rb
 chingu.gemspec
 examples/example1.rb
 examples/example10.rb
+examples/example11.rb
 examples/example2.rb
 examples/example3.rb
 examples/example4.rb
@@ -43,6 +45,7 @@ lib/chingu/core_extensions.rb
 lib/chingu/effects.rb
 lib/chingu/fpscounter.rb
 lib/chingu/game_object.rb
+lib/chingu/game_object_list.rb
 lib/chingu/game_state.rb
 lib/chingu/game_state_manager.rb
 lib/chingu/game_states/debug.rb
@@ -60,9 +63,7 @@ lib/chingu/require_all.rb
 lib/chingu/text.rb
 lib/chingu/traits/collision_detection.rb
 lib/chingu/traits/effect.rb
-lib/chingu/traits/effect_module.rb
 lib/chingu/traits/input.rb
 lib/chingu/traits/rotation_center.rb
 lib/chingu/traits/velocity.rb
-lib/chingu/traits/velocity_module.rb
 lib/chingu/window.rb

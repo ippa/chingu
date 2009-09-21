@@ -18,7 +18,8 @@ class Game < Chingu::Window
 end
 
 class FireCube < Chingu::GameObject
-  has_traits :velocity, :effect
+  has_trait :velocity
+  has_trait :effect
   has_trait :collision_detection
   #
   # TODO:
@@ -33,23 +34,32 @@ class FireCube < Chingu::GameObject
     @mode = :additive
     
     # initialize with a rightwards velocity with some damping to look more realistic
-    @velocity_x = options[:velocity_x] || 1 + rand(3)
-    @velocity_y = options[:velocity_y] || 1 + rand(3)
+    @velocity_x = options[:velocity_x] || 1 + rand(2)
+    @velocity_y = options[:velocity_y] || 1 + rand(2)
     
-    @bounding_box = Rect.new([@x, @y, 5, 5])
-    @radius = 20
+    @bounding_box = Rect.new([@x, @y, 10, 10])
+    @radius = 12
     
-    @color = Color.new(255,100,255,255)
+    @blue = Color.new(255,100,255,255)
+    @red = Color.new(255,255,10,10)
+    @color = @blue
   end
   
   def draw
     $window.fill_rect(@bounding_box, @color)
   end
   
+  def update
+    @color = @blue
+    super
+  end
+  
+  def collides?(object2)
+    radius_collision?(object2)
+  end
+    
   def die!
-    @color = Color.new(255,255,255,255)
-    self.fading = -20
-    self.detect_collisions = false
+    @color = @red
   end
   
 end
@@ -64,7 +74,9 @@ class Particles < Chingu::GameState
     FireCube.create(:x => rand($window.width), :y => rand($window.height))
   end
   
-  def update        
+  def update
+    super
+    
     FireCube.all.each do |particle|
       if particle.x < 0 || particle.x > $window.width
         particle.velocity_x = -particle.velocity_x
@@ -76,20 +88,18 @@ class Particles < Chingu::GameState
     end
     
     #
-    # GameObject.each_collsion wont collide an object with itself
+    # GameObject.each_collsion / each_radius_collision wont collide an object with itself
     #
-    FireCube.each_collision(FireCube) do |cube1, cube2|
-      #cube1.die!
-      #cube2.die!
+    FireCube.each_radius_collision(FireCube) do |cube1, cube2|
+      cube1.die!
+      cube2.die!
     end
       
     game_objects.destroy_if { |object| object.color.alpha == 0 }
-    
-    super
   end
   
   def draw
-    $window.caption = "particle example (esc to quit) [particles#: #{game_objects.size} - framerate: #{$window.fps}]"
+    $window.caption = "Radius based collision Detection between all particles. Particles#: #{game_objects.size} - FPS: #{$window.fps}"
     super
   end
 end

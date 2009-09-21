@@ -27,13 +27,16 @@ module Chingu
     # 1) QuadTrees: http://lab.polygonal.de/2007/09/09/quadtree-demonstration/
     # 2) Sweep and Prune
     #
+    # SEE: http://www.shmup-dev.com/forum/index.php?board=65.0
+    #
     # Makes use of 3 attributes
     #   @bounding_box      - a Rect-instance, uses in bounding_box collisions
     #   @radius            -
     #   @detect_collisions - [true|false], should object be checked for collisions with Object.each_collision
     #
     module CollisionDetection
-      attr_accessor :bounding_box, :radius, :detect_collisions
+      attr_accessor :bounding_box, :radius
+      ## attr_accessor :detect_collisions # slowed down example9 with 3 fps
       
       def self.included(base)
         base.extend(ClassMethods)
@@ -51,7 +54,7 @@ module Chingu
           @radius ||= (@image.height + @image.width) / 2 * 0.80
         end
         
-        @detect_collisions = true
+        ## @detect_collisions = true
         super
       end
       
@@ -109,6 +112,23 @@ module Chingu
 
       
       module ClassMethods
+      
+        #
+        # Works like each_collsion but with inline-code for speedups
+        #
+        def each_radius_collision(klasses = [])
+          Array(klasses).each do |klass|
+            object2_list = klass.all
+            
+            self.all.each do |object1|
+              object2_list.each do |object2|
+                next  if object1 == object2  # Don't collide objects with themselves
+                yield object1, object2  if distance(object1.x, object1.y, object2.x, object2.y) < object1.radius
+              end
+            end
+          end          
+        end
+        
         #
         # Class method that will check for collisions between all instances of two classes
         # and yield the 2 colliding game object instances.
@@ -123,14 +143,12 @@ module Chingu
         def each_collision(klasses = [])
           # Make sure klasses is always an array.
           Array(klasses).each do |klass|
-            #klass = klasses
+            object2_list = klass.all
+            
             self.all.each do |object1|
-              klass.all.each do |object2|
+              object2_list.all.each do |object2|
                 next  if object1 == object2  # Don't collide objects with themselves
-                
-                if object1.detect_collisions && object2.detect_collisions
-                  yield object1, object2  if object1.collides?(object2)
-                end
+                yield object1, object2  if object1.collides?(object2)
               end
             end
           end
