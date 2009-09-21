@@ -23,8 +23,9 @@
 module Chingu
   module Traits
     #
-    #
-    # Use QuadTrees: http://lab.polygonal.de/2007/09/09/quadtree-demonstration/
+    # Research:
+    # 1) QuadTrees: http://lab.polygonal.de/2007/09/09/quadtree-demonstration/
+    # 2) Sweep and Prune
     #
     # Makes use of 3 attributes
     #   @bounding_box      - a Rect-instance, uses in bounding_box collisions
@@ -47,7 +48,7 @@ module Chingu
         end
         
         if @image
-          @radius ||= @image.width / 2
+          @radius ||= (@image.height + @image.width) / 2 * 0.80
         end
         
         @detect_collisions = true
@@ -59,7 +60,7 @@ module Chingu
       # By default it calls bounding_box_collision? which will check for intersectons between the 
       # two objects "bounding_box" attributs (a Chingu::Rect instance)
       #
-      def collision?(object2)
+      def collides?(object2)
         bounding_box_collision?(object2)
         #radius_collision?(object2)
       end
@@ -77,7 +78,7 @@ module Chingu
       # Returns true if colliding.
       #
       def radius_collision?(object2)
-        distance(self.x, self.y, object2.x, object2.y) < self.radius + object2.radius
+        distance(self.x, self.y, object2.x, object2.y) < self.radius# + object2.radius
       end
       
       #
@@ -90,6 +91,20 @@ module Chingu
         end
         
         super
+      end
+
+      #
+      # Collides self with all objects of given classes
+      # Yields self and the objects it collides with
+      #
+      def each_collision(klasses = [])
+        Array(klasses).each do |klass|        
+          klass.all.each do |object|
+            if object.detect_collisions
+              yield(self, object)   if collides?(object)
+            end
+          end
+        end
       end
 
       
@@ -108,13 +123,13 @@ module Chingu
         def each_collision(klasses = [])
           # Make sure klasses is always an array.
           Array(klasses).each do |klass|
-            klass = klasses
+            #klass = klasses
             self.all.each do |object1|
               klass.all.each do |object2|
                 next  if object1 == object2  # Don't collide objects with themselves
                 
                 if object1.detect_collisions && object2.detect_collisions
-                  yield object1, object2  if object1.collision?(object2)
+                  yield object1, object2  if object1.collides?(object2)
                 end
               end
             end
