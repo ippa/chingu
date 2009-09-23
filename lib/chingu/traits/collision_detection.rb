@@ -87,7 +87,7 @@ module Chingu
       #
       # Have bounding box follow game objects x/y
       #
-      def update
+      def update_trait
         if defined?(@bounding_box) && @bounding_box.is_a?(Rect)
           @bounding_box.x = self.x
           @bounding_box.y = self.y
@@ -103,12 +103,22 @@ module Chingu
       def each_collision(klasses = [])
         Array(klasses).each do |klass|        
           klass.all.each do |object|
-            if object.detect_collisions
-              yield(self, object)   if collides?(object)
-            end
+            yield(self, object)   if collides?(object)
           end
         end
       end
+      
+      #
+      # Works like each_collsion but with inline-code for speedups
+      #
+      def each_radius_collision(klasses = [])
+        Array(klasses).each do |klass|
+          klass.all.each do |object|
+            yield(self, object) if distance(@x, @y, object.x, object.y) < @radius
+          end
+        end
+      end
+
 
       
       module ClassMethods
@@ -126,7 +136,7 @@ module Chingu
                 yield object1, object2  if distance(object1.x, object1.y, object2.x, object2.y) < object1.radius
               end
             end
-          end          
+          end
         end
         
         #

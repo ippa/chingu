@@ -67,11 +67,18 @@ module Chingu
     def setup_trait(options)
     end
     
-    def update
+    def update_trait
 		end
     
-    def draw
+    def draw_trait
     end    
+        
+    def update
+    end
+
+    def draw
+    end
+    
         
     #
     # Returns an array with all objects of current class.

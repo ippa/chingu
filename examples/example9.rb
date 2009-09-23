@@ -11,7 +11,7 @@ class Game < Chingu::Window
     super(800,800)
     self.input = {:esc => :exit}
     self.caption = "Example of game object traits 'velocity' and 'effect'"
-    push_game_state(Particles)
+    push_game_state(ParticleState)
   end
   
   def next_effect; pop_game_state; end
@@ -30,7 +30,7 @@ class FireCube < Chingu::GameObject
   attr_accessor :color, :radius
   
   def initialize(options)
-    super    
+    super
     @mode = :additive
     
     # initialize with a rightwards velocity with some damping to look more realistic
@@ -51,7 +51,6 @@ class FireCube < Chingu::GameObject
   
   def update
     @color = @blue
-    super
   end
   
   def collides?(object2)
@@ -64,7 +63,7 @@ class FireCube < Chingu::GameObject
   
 end
 
-class Particles < Chingu::GameState
+class ParticleState < Chingu::GameState
   def setup    
     self.input = { :space => :new_fire_cube }
     100.times { new_fire_cube }

@@ -56,8 +56,6 @@ class Thing < Chingu::GameObject
       @velocity_x = -@velocity_x
       @rotating = -@rotating
     end
-    
-    super
   end
   
   def draw

@@ -55,12 +55,12 @@ module Chingu
         super
       end
       
-      def draw
+      def draw_trait
         puts "Effect#draw"      if @effect_options[:debug]
         super
       end
       
-      def update
+      def update_trait
         puts "Effect#update"    if @effect_options[:debug]
         
         rotate(@rotating)    if @rotating

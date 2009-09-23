@@ -49,7 +49,7 @@ module Chingu
       #
       # Modifies X & Y of parent
       #
-      def update
+      def update_trait
         puts "Velocity#update"    if @velocity_options[:debug]
         
         @velocity_y += @acceleration_y		if	(@velocity_y + @acceleration_y).abs < @max_velocity

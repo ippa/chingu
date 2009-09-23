@@ -67,10 +67,12 @@ module Chingu
     end
     
     def draw
+      @game_objects.each { |object| object.draw_trait }
       @game_objects.each { |object| object.draw }
     end
     
     def update
+      @game_objects.each { |object| object.update_trait }
       @game_objects.each { |object| object.update }
     end
     

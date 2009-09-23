@@ -65,7 +65,7 @@ For example, inside game state Menu you call push_game_state(Level). When Level 
 === Traits
 Traits are extensions (or plugins if you so will) to BasicGameObjects. 
 The aim is so encapsulate common behaivor into modules for easy inclusion in your game classes.
-Making a trait is easy, just an ordinary module with the methods setup_trait(), update() and/or draw().
+Making a trait is easy, just an ordinary module with the methods setup_trait(), update_trait() and/or draw_trait().
 It currently has to be namespaced to Chingu::Traits for "has_trait" to work inside GameObject-classes.
 
 == OTHER CLASSES / HELPERS
