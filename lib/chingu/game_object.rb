@@ -81,8 +81,8 @@ module Chingu
     end
           
     # Quick way of setting both center_x and center_y
-    def center=(factor)
-      @center_x = @center_y = factor
+    def center=(center)
+      @center_x = @center_y = center
     end
 
     # Returns true if object is inside the game window, false if outside

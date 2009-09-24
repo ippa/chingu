@@ -32,7 +32,7 @@ module Chingu
       
       if options[:size]
         @width = options[:size][0]
-        @height = options[:size][0]
+        @height = options[:size][1]
       end
       
       @frame_actions = []

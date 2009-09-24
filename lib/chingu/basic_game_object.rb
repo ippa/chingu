@@ -36,6 +36,13 @@ module Chingu
     def initialize(options = {})
       @options = options
       
+      #
+      # A GameObject either belong to a GameState or our mainwindow ($window)
+      #
+      if $window && $window.respond_to?(:game_state_manager)
+        @parent = $window.game_state_manager.inside_state || $window
+      end
+      
       # This will call #setup_trait on the latest trait mixed in
       # which then will pass it on to the next setup_trait() with a super-call.
       setup_trait(options)
@@ -53,13 +60,9 @@ module Chingu
       instance = self.new(options)
       
       #
-      # A GameObject either belong to a GameState or our mainwindow ($window)
+      # Add to parents list of game objects
       #
-      if $window && $window.respond_to?(:game_state_manager)
-        if (instance.parent = $window.game_state_manager.inside_state || $window)
-          instance.parent.add_game_object(instance)
-        end
-      end
+      instance.parent.add_game_object(instance) if instance.parent
       
       return instance
     end
