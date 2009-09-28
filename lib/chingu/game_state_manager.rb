@@ -270,20 +270,14 @@ module Chingu
     # Returns a GameState-instance from either a GameState class or GameState-object
     #
     def game_state_instance(state)
-      new_state = nil
+      new_state = state
       #
-      # If state is a GameState-instance, just queue it
+      # If state is a GameState-instance, just queue it.
+      # If state is a GameState-class, instance it.
       #
-      if state.is_a? Chingu::GameState
-        new_state = state
-      #
-      # If state is a GameState-class, create it.
-      #        
-      elsif state.superclass == Chingu::GameState
-        new_state = state.new
-      end
+      new_state = state.new if state.is_a? Class
       
-      return new_state
+      return new_state  # if new_state.kind_of? Chingu::GameState # useless check.
     end
     
   end
