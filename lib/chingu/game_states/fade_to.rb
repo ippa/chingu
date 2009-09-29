@@ -33,20 +33,29 @@
 module Chingu
   module GameStates
     class FadeTo < Chingu::GameState
+      
       def initialize(new_game_state, options = {})
         @options = {:speed => 3}.merge(options)
-        @new_game_state = new_game_state        
+        @new_game_state = new_game_state
+        @manager = options[:game_state_manager] || self
+        #@manager = game_state_manager
       end
     
       def setup
         @color = Gosu::Color.new(0,0,0,0)
-        @alpha = 0.0
-        @fading_in = false
+        if @manager.previous_game_state
+          @fading_in = false
+          @alpha = 0.0
+        else
+          @fading_in = true 
+          @alpha = 255.0
+        end
         @new_game_state.update      # Make sure states game logic is run Once (for a correct draw())
       end
     
       def update
         @alpha += (@fading_in ? -@options[:speed] : @options[:speed])
+        @alpha = 0  if @alpha < 0
         if @alpha >= 255
           @fading_in = true
         else
@@ -59,18 +68,18 @@ module Chingu
         # Stop endless loops
         if @drawn == false
           @drawn = true
-          @game_state_manager.previous_game_state.draw  if @fading_in == false
-          @new_game_state.draw                          if @fading_in == true
+          @manager.previous_game_state.draw   if @fading_in == false
+          @new_game_state.draw                if @fading_in == true
       
           $window.draw_quad( 0,0,@color,
                               $window.width,0,@color,
                               $window.width,$window.height,@color,
-                              0,$window.height,@color,999)
-                          
-          if @fading_in == true && @alpha == 0
-            @game_state_manager.switch_game_state(@new_game_state, :transitional => false)
+                              0,$window.height,@color,999)                          
           end
-        end
+          
+          if @fading_in == true && @alpha == 0
+            @manager.switch_game_state(@new_game_state, :transitional => false)
+          end
       end
     end
   end

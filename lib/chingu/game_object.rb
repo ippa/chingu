@@ -27,7 +27,7 @@ module Chingu
   # On top of that, it encapsulates GOSUs Image#draw_rot and all its parameters.
   #
   class GameObject < Chingu::BasicGameObject
-    attr_accessor :image, :x, :y, :angle, :center_x, :center_y, :factor_x, :factor_y, :color, :mode, :zorder
+    attr_accessor :image, :x, :y, :angle, :center_x, :center_y, :factor_x, :factor_y, :color, :mode, :zorder, :paus
     has_trait :input, :rotation_center
         
     def initialize(options = {})
@@ -69,8 +69,9 @@ module Chingu
       @zorder = options[:zorder] || 100
                         
       # gameloop/framework logic (TODO: use or get rid of)
-      @update = options[:update] || true
-      @draw = options[:draw] || true
+      #@update = options[:update] || true
+      #@draw = options[:draw] || true
+      @paus = options[:paus] || false
       
       setup_trait(options)  if respond_to?(:setup_trait)
     end

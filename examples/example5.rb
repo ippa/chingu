@@ -12,12 +12,14 @@ class Game < Gosu::Window
     
     @font = Font.new($window, default_font_name(), 20)
     
-    # Create our game state manager and start out with State1
+    # Create our game state manager
     @manager = Chingu::GameStateManager.new
+
+    # Switch to first state
     @manager.switch_game_state(State1)
-    
+
     # Insert FadeTo state between every push, pop and switch
-    # @manager.transitional_game_state(Chingu::GameStates::FadeTo, :speed => 10)
+    @manager.transitional_game_state(Chingu::GameStates::FadeTo, :speed => 10, :game_state_manager => @manager)    
   end
 
   def button_down(id)
