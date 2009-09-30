@@ -112,10 +112,7 @@ module Chingu
         # Give the soon-to-be-disabled state a chance to clean up by calling finalize() on it.
         @previous_game_state = current_game_state
         current_game_state.finalize   if current_game_state.respond_to?(:finalize) && options[:finalize]
-        
-        # Call setup
-        new_state.setup               if new_state.respond_to?(:setup) && options[:setup]
-        
+                
         if @transitional_game_state && options[:transitional]
           # If we have a transitional, switch to that instead, with new_state as first argument
           transitional_game_state = @transitional_game_state.new(new_state, @transitional_game_state_options)
@@ -127,6 +124,9 @@ module Chingu
             # Replace last (active) state with new one
             @game_states[-1] = new_state
           end
+          
+          # Call setup
+          new_state.setup               if new_state.respond_to?(:setup) && options[:setup]
         end
         self.inside_state = current_game_state
       end
@@ -143,10 +143,7 @@ module Chingu
 
       new_state = game_state_instance(state)
             
-      if new_state
-        # Call setup
-        new_state.setup               if new_state.respond_to?(:setup) && options[:setup]
-        
+      if new_state        
         # Make sure the game state knows about the manager
         new_state.game_state_manager = self
         
@@ -161,6 +158,9 @@ module Chingu
         else
           # Push new state on top of stack and therefore making it active
           @game_states.push(new_state)
+          
+          # Call setup
+          new_state.setup               if new_state.respond_to?(:setup) && options[:setup]
         end
         self.inside_state = current_game_state
       end

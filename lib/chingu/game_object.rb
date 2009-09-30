@@ -79,7 +79,7 @@ module Chingu
     #
     # Disable auto-updating of traits 
     #
-    def paus!
+    def pause!
       @paused = true
     end
     #
