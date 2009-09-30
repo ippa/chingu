@@ -27,7 +27,8 @@ module Chingu
   # On top of that, it encapsulates GOSUs Image#draw_rot and all its parameters.
   #
   class GameObject < Chingu::BasicGameObject
-    attr_accessor :image, :x, :y, :angle, :center_x, :center_y, :factor_x, :factor_y, :color, :mode, :zorder, :paus
+    attr_accessor :image, :x, :y, :angle, :center_x, :center_y, :factor_x, :factor_y, :color, :mode, :zorder
+    attr_reader :paused, :visible
     has_trait :input, :rotation_center
         
     def initialize(options = {})
@@ -69,11 +70,35 @@ module Chingu
       @zorder = options[:zorder] || 100
                         
       # gameloop/framework logic (TODO: use or get rid of)
-      #@update = options[:update] || true
-      #@draw = options[:draw] || true
-      @paus = options[:paus] || false
+      @paused = options[:paused] || false
+      @visible = options[:visible] || true
       
       setup_trait(options)  if respond_to?(:setup_trait)
+    end
+    
+    #
+    # Disable auto-updating of traits 
+    #
+    def paus!
+      @paused = true
+    end
+    #
+    # Enable auto-update of traits
+    #
+    def unpause!
+      @paused = false
+    end
+    #
+    # Disable auto-drawing of object
+    #
+    def hide!
+      @visible = false
+    end
+    #
+    # Enable auto-drawing of object
+    #
+    def show!
+      @visible = true
     end
     
     # Quick way of setting both factor_x and factor_y
@@ -102,7 +127,7 @@ module Chingu
     end
     
     def draw
-      @image.draw_rot(@x, @y, @zorder, @angle, @center_x, @center_y, @factor_x, @factor_y, @color, @mode)
+      @image.draw_rot(@x, @y, @zorder, @angle, @center_x, @center_y, @factor_x, @factor_y, @color, @mode) if @visible
     end
   end  
 end
