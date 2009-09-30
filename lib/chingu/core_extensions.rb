@@ -39,5 +39,15 @@ module Gosu
       end
     end
     
+    #
+    # Retrofy should be called just after the image is loaded.
+    # When retrofied an image will use a non-blurry zoom.
+    # This could be used to make each pixel a sharp 4 pixelblock => retrofeeling.
+    #
+    def retrofy
+      glBindTexture(GL_TEXTURE_2D, self.gl_tex_info.tex_name)
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+    end
   end
 end

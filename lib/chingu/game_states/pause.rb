@@ -31,7 +31,7 @@
 module Chingu
   module GameStates
     class Pause < Chingu::GameState
-      def initialize(options)
+      def initialize(options = {})
         super
         @white = Color.new(255,255,255,255)
         @color = Gosu::Color.new(200,0,0,0)

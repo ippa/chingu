@@ -50,17 +50,17 @@ module Chingu
           @fading_in = true 
           @alpha = 255.0
         end
-        @new_game_state.update      # Make sure states game logic is run Once (for a correct draw())
+        # @new_game_state.update      # Make sure states game logic is run Once (for a correct draw())
+        update                      # Since draw is called before update
       end
     
       def update
         @alpha += (@fading_in ? -@options[:speed] : @options[:speed])
-        @alpha = 0  if @alpha < 0
-        if @alpha >= 255
-          @fading_in = true
-        else
-          @color.alpha = @alpha.to_i
-        end
+        @alpha = 0    if @alpha < 0
+        @alpha = 255  if @alpha > 255
+        
+        @fading_in = true   if @alpha == 255
+        @color.alpha = @alpha.to_i
         @drawn = false
       end
       
@@ -74,12 +74,13 @@ module Chingu
           $window.draw_quad( 0,0,@color,
                               $window.width,0,@color,
                               $window.width,$window.height,@color,
-                              0,$window.height,@color,999)                          
-          end
-          
-          if @fading_in == true && @alpha == 0
-            @manager.switch_game_state(@new_game_state, :transitional => false)
-          end
+                              0,$window.height,@color,999)
+        end
+        
+        if @fading_in == true && @alpha == 0
+          @manager.switch_game_state(@new_game_state, :transitional => false)
+        end
+                            
       end
     end
   end

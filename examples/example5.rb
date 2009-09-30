@@ -26,12 +26,16 @@ class Game < Gosu::Window
     # This makes sure button_down(id) is called on the active game state
     # Enables input-handling in game states, you might wanna do the same with button_up()
     @manager.button_down(id)
-
-    @manager.push_game_state(State1)  if(id==Button::Kb1)
-    @manager.push_game_state(State2)  if(id==Button::Kb2)
-    @manager.push_game_state(State3)  if(id==Button::Kb3)
-    @manager.push_game_state(Chingu::GameStates::Pause)  if(id==Button::KbP)
-    @manager.pop_game_state           if(id==Button::KbBackspace)
+    
+    if @manager.current_game_state.class != Chingu::GameStates::FadeTo
+    
+      @manager.push_game_state(State1)  if(id==Button::Kb1)
+      @manager.push_game_state(State2)  if(id==Button::Kb2)
+      @manager.push_game_state(State3)  if(id==Button::Kb3)
+      @manager.push_game_state(Chingu::GameStates::Pause)  if(id==Button::KbP)
+      @manager.pop_game_state           if(id==Button::KbBackspace)
+    end
+    
     exit                             if(id==Button::KbEscape)
   end
   
