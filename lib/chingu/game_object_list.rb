@@ -83,5 +83,9 @@ module Chingu
     def each
       @game_objects.each { |object| yield object }
     end
+    
+    def select
+      @game_objects.select { |object| yield object }
+    end
   end  
 end

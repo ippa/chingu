@@ -59,6 +59,7 @@ module Chingu
     def self.create(options = {})
       instance = self.new(options)
       
+      
       #
       # Add to parents list of game objects
       #

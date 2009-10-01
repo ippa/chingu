@@ -51,7 +51,7 @@ module Chingu
           @alpha = 255.0
         end
         # @new_game_state.update      # Make sure states game logic is run Once (for a correct draw())
-        update                      # Since draw is called before update
+        update                        # Since draw is called before update
       end
     
       def update
