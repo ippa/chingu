@@ -81,7 +81,7 @@ module Chingu
       # Returns true if colliding.
       #
       def radius_collision?(object2)
-        distance(self.x, self.y, object2.x, object2.y) < self.radius# + object2.radius
+        distance(self.x, self.y, object2.x, object2.y) < self.radius + object2.radius
       end
       
       #
@@ -114,7 +114,7 @@ module Chingu
       def each_radius_collision(klasses = [])
         Array(klasses).each do |klass|
           klass.all.each do |object|
-            yield(self, object) if distance(@x, @y, object.x, object.y) < @radius
+            yield(self, object) if distance(@x, @y, object.x, object.y) < @radius + object.radius
           end
         end
       end
@@ -129,11 +129,12 @@ module Chingu
         def each_radius_collision(klasses = [])
           Array(klasses).each do |klass|
             object2_list = klass.all
+            #total_radius = object1.radius + object2.radius  # possible optimization?
             
             self.all.each do |object1|
               object2_list.each do |object2|
                 next  if object1 == object2  # Don't collide objects with themselves
-                yield object1, object2  if distance(object1.x, object1.y, object2.x, object2.y) < object1.radius
+                yield object1, object2  if distance(object1.x, object1.y, object2.x, object2.y) < object1.radius + object2.radius
               end
             end
           end

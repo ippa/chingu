@@ -28,7 +28,7 @@ module Chingu
   #
   class GameObject < Chingu::BasicGameObject
     attr_accessor :image, :x, :y, :angle, :center_x, :center_y, :factor_x, :factor_y, :color, :mode, :zorder
-    attr_reader :paused, :visible
+    attr_reader :paused, :visible, :factor, :center
     has_trait :input, :rotation_center
         
     def initialize(options = {})
@@ -103,11 +103,13 @@ module Chingu
     
     # Quick way of setting both factor_x and factor_y
     def factor=(factor)
+      @factor = factor
       @factor_x = @factor_y = factor
     end
           
     # Quick way of setting both center_x and center_y
     def center=(center)
+      @center = center
       @center_x = @center_y = center
     end
 

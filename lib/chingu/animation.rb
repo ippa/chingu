@@ -121,6 +121,13 @@ module Chingu
     end
 		
     #
+    # Initialize non-blurry zoom on frames in animation
+    #
+    def retrofy
+      frames.each { |frame| frame.retrofy }
+    end
+    
+    #
     # Execute a certain block of code when a certain frame in the animation is active.
     # This could be used for pixel perfect animation/movement.
     #
