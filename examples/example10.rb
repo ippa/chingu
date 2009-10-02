@@ -38,12 +38,18 @@ class Thing < Chingu::GameObject
   def initialize(options)
     super
     @image = Image["spaceship.png"]
+    
     self.rotation_center(:center)
 
     # Julians ninjahack to get that sweet pixely feeling when zooming :)
-    glBindTexture(GL_TEXTURE_2D, @image.gl_tex_info.tex_name)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+    # glBindTexture(GL_TEXTURE_2D, @image.gl_tex_info.tex_name)
+    # glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+    # glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+    #
+    # The above code has been merged into chingu as @image.retrofy
+    #
+    @image.retrofy
+
 
     self.factor = 8
     self.rotating = 2

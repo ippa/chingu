@@ -65,12 +65,10 @@ module Chingu
       end
       
       def then(&block)
-        # Is last timer a one-shot?
-        if @_last_timer[1] == nil
-          @_timers << [@_last_timer[0], nil, block] # use one-shots start_time for our trailing "then".
-        else        
-          @_timers << [@_last_timer[1], nil, block] # use durable timers end_time for our trailing "then".
-        end
+        # ...use one-shots start_time for our trailing "then".
+        # ...use durable timers end_time for our trailing "then".
+        start_time = @_last_timer[1].nil? ? @_last_timer[0] : @_last_timer[1]
+        @_timers << [start_time, nil, block]
       end
       
       def update_trait

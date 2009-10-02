@@ -68,8 +68,12 @@ module Chingu
         # Stop endless loops
         if @drawn == false
           @drawn = true
-          @manager.previous_game_state.draw   if @fading_in == false
-          @new_game_state.draw                if @fading_in == true
+          
+          if @fading_in
+            @new_game_state.draw
+          else
+            @manager.previous_game_state.draw
+          end
       
           $window.draw_quad( 0,0,@color,
                               $window.width,0,@color,
@@ -77,7 +81,7 @@ module Chingu
                               0,$window.height,@color,999)
         end
         
-        if @fading_in == true && @alpha == 0
+        if @fading_in && @alpha == 0
           @manager.switch_game_state(@new_game_state, :transitional => false)
         end
                             
