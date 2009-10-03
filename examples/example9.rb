@@ -38,7 +38,7 @@ class FireCube < Chingu::GameObject
     @velocity_y = options[:velocity_y] || 1 + rand(2)
     
     @bounding_box = Rect.new([@x, @y, 10, 10])
-    @radius = 12
+    @radius = 6
     
     @blue = Color.new(255,100,255,255)
     @red = Color.new(255,255,10,10)
@@ -98,7 +98,7 @@ class ParticleState < Chingu::GameState
   end
   
   def draw
-    $window.caption = "Radius based collision Detection between all particles. Particles#: #{game_objects.size} - FPS: #{$window.fps}"
+    $window.caption = "radius based iterative collision detection. Particles#: #{game_objects.size}, Collisionchecks each gameloop: ~#{game_objects.size**2} - FPS: #{$window.fps}"
     super
   end
 end

@@ -89,9 +89,10 @@ Both $window and game states gets some new graphical helpers, currently only 3, 
   fill_gradient() # Fills window or a given rect with a gradient between two colors.
 
 If you base your models on GameObject (or BasicGameObject) you get:
-  Enemy.all                 # Returns all object based on this class
-  Enemy.each                # Iterates through all objects of class Enemt.
-  Enemy.destroy_if(&block)  # destroy all objects for which &block returns true
+  Enemy.all                 # Returns an Array of all Enemy-instances
+  Enemy.size                # Returns the amount of Enemy-instances
+  Enemy.destroy_all         # Destroys all Enemy-instances
+  Enemy.destroy_if(&block)  # Destroy all objects for which &block returns true
 
 
 == BASICS / EXAMPLES
@@ -416,6 +417,65 @@ Or Chingus shortcut:
   end
   
 Chingus inputhandler will detect that Menu is a gamestate-class, create a new instance, cache it and activate it with push_game_state().
+
+=== Traits
+Traits (often called behaivors) is a way of adding logic to any class inheriting from BasicGameObject / GameObject.
+Chingus trait-implementation is just ordinary ruby modules with 3 special methods: 
+ - setup_trait 
+ - update_trait 
+ - draw_trait
+Each of those 3 methods must call "super" to continue the trait-chain.
+
+The flow for a game object then becomes:
+
+-- creating the object
+1) GameObject#initialize(options)
+2) GameObject#setup_trait(options)
+-- each game iteration
+3) GameObject#draw_trait
+4) GameObject#draw
+5) GameObject#update_trait
+6) GameObject#update
+
+
+There's a couple of traits included as default in Chingu:
+
+==== Trait "timer"
+Adds timer functionallity to your game object
+  during(300) { @color = Color.new(0xFFFFFFFF) }   # forces @color to white ever update for 300 ms
+  after(400) { self.destroy }                     # destroy object after 400 ms
+  between(1000,2000) { self.rotate(10) }           # starting after 1 second, call rotate(10) every update during 1 second
+  
+==== Trait "velocity"
+Adds variables velocity_x, velocity_y, acceleration_x, acceleration_y, max_velocity to game object.
+They modify x, y as you would expect. *speed / angle will come*
+
+
+== (IN DEVELOPMENT) Trait "effect"
+Adds ability to automaticly fade, rotate and scale game objects.
+* API isn't stabilized yet! * 
+  
+== (IN DEVELOPMENT) Trait "collision_detection"
+Adds class and instance methods for basic collision detection.
+  
+  # Class method example
+  # This will collide all Enemy-instances with all Bullet-instances using the attribute #radius from each object.
+  Enemy.each_radius_collision(Bullet) do |enemy, bullet|
+  end
+  
+  # You can also use the instance methods. This will use the Rect bounding_box from @player and each EnemyRocket-object.
+  @player.each_bounding_box_collision(EnemyRocket) do |player, enemyrocket|
+    player.die!
+  end
+  
+* API isn't stabilized yet! *
+
+== (IN DEVELOPMENT) Trait "retrofy"
+Providing easier handling of the "retrofy" effect (non-blurry zoom)
+Aims to help out when using zoom-factor to create a retrofeeling with big pixels.
+Provides screen_x and screen_y which takes the zoom into account
+Also provides new code for draw() which uses screen_x / screen_y instead of x / y
+
 
 === Assets / Paths
 

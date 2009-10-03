@@ -1,51 +1,51 @@
 require 'rubygems'
-require 'opengl'
-require 'gosu'
-#include Gosu
+require File.join(File.dirname($0), "..", "lib", "chingu")
+include Gosu
 
-class Game < Gosu::Window
+#
+# Parallax-example
+# Images from http://en.wikipedia.org/wiki/Parallax_scrolling
+#
+class Game < Chingu::Window
   def initialize
-    super(400,400,false)
+    super    
+    self.input = {  :holding_left => :scroll_left,
+                    :holding_right => :scroll_right,
+                    :holding_up => :scroll_up,
+                    :holding_down => :scroll_down, 
+                    :escape => :exit }
+          
+    self.caption = "Chingu::Parallax example. Scroll with left/right arrows."
+    
+    @parallax = Chingu::Parallax.create(:x => 0, :y => 0, :center_x => 0, :center_y => 0)
+    
+    #
+    # If no :zorder is given to @parallax.add_background it defaults to first added -> lowest zorder
+    # Everywhere the :image argument is used, theese 2 values are the Same:
+    # 1) Image["foo.png"]  2) "foo.png"
+    #
+    # TODO: scrolling to left borks outm, fix. + get rid of center_x / center_y args in a clean way.
+    @parallax << {:image => "paralaxx2", :damping => 100, :center => 0)
+    @parallax << {:image => "parallax-scroll-example-layer-1.png", :damping => 10, :center => 0)
+    @parallax << {:image => "paralaxx2.png", :damping => 5, :center => 0)
   end
   
-  def update
+  def scroll_left
+    @parallax.x -= 2
   end
   
-  def draw
-    gl do
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)  
-
-      # Reset the view
-      glLoadIdentity
-
-      # Move to the left 1.5 units and into the screen 6.0 units
-      glTranslate(-1.5, 0.0, -6.0)
-
-      # -- Draw a triangle --
-      glColor(1.0,1.0,1.0)
-      
-      # Begin drawing a polygon
-      glBegin(GL_POLYGON)
-         glVertex3f( 0.0, 1.0, 0.0)    # Top vertex
-         glVertex3f( 1.0, -1.0, 0.0)    # Bottom right vertex
-         glVertex3f(-1.0, -1.0, 0.0)    # Bottom left vertex
-      # Done with the polygon
-      glEnd
-
-      # Move 3 units to the right
-      glTranslate(3.0, 0.0, 0.0)
-
-      # -- Draw a square (quadrilateral) --
-      # Begin drawing a polygon (4 sided)
-      glBegin(GL_QUADS)
-        glVertex3f(-1.0, 1.0, 0.0)       # Top Left vertex
-        glVertex3f( 1.0, 1.0, 0.0)       # Top Right vertex
-        glVertex3f( 1.0, -1.0, 0.0)      # Bottom Right vertex
-         glVertex3f(-1.0, -1.0, 0.0)      # Bottom Left  
-      glEnd                
-      glFlush
-    end
+  def scroll_right
+    @parallax.x += 2
   end  
+  
+  def scroll_up
+    @parallax.y -= 2
+  end
+  
+  def scroll_down
+    @parallax.y += 2
+  end  
+  
 end
 
 Game.new.show

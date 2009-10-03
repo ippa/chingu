@@ -9,7 +9,9 @@ include Gosu
 class Game < Chingu::Window
   def initialize
     super    
-    self.input = {:holding_left => :scroll_left, :holding_right => :scroll_right, :escape => :exit}
+    self.input = {  :holding_left => :scroll_left, :holding_right => :scroll_right, :escape => :exit }
+          
+    self.caption = "Chingu::Parallax example. Scroll with left/right arrows."
     
     @parallax = Chingu::Parallax.create(:x => 0, :y => 0, :center_x => 0, :center_y => 0)
     
@@ -19,10 +21,10 @@ class Game < Chingu::Window
     # 1) Image["foo.png"]  2) "foo.png"
     #
     # TODO: scrolling to left borks outm, fix. + get rid of center_x / center_y args in a clean way.
-    @parallax.add_background(:image => "Parallax-scroll-example-layer-0.png", :damping => 100, :center_x => 0, :center_y => 0)
-    @parallax.add_background(:image => "Parallax-scroll-example-layer-1.png", :damping => 10, :center_x => 0, :center_y => 0)
-    @parallax.add_background(:image => "Parallax-scroll-example-layer-2.png", :damping => 5, :center_x => 0, :center_y => 0)
-    @parallax.add_background(:image => "Parallax-scroll-example-layer-3.png", :damping => 1, :center_x => 0, :center_y => 0)
+    @parallax.add_background(:image => "Parallax-scroll-example-layer-0.png", :damping => 100, :center => 0)
+    @parallax.add_background(:image => "Parallax-scroll-example-layer-1.png", :damping => 10, :center => 0)
+    @parallax.add_background(:image => "Parallax-scroll-example-layer-2.png", :damping => 5, :center => 0)
+    @parallax << {:image => "Parallax-scroll-example-layer-3.png", :damping => 1, :center => 0} # you can also add like this
   end
   
   def scroll_left
@@ -32,6 +34,7 @@ class Game < Chingu::Window
   def scroll_right
     @parallax.x += 2
   end  
+  
 end
 
 Game.new.show
