@@ -428,15 +428,14 @@ Each of those 3 methods must call "super" to continue the trait-chain.
 
 The flow for a game object then becomes:
 
--- creating the object
-1) GameObject#initialize(options)
-2) GameObject#setup_trait(options)
--- each game iteration
-3) GameObject#draw_trait
-4) GameObject#draw
-5) GameObject#update_trait
-6) GameObject#update
-
+  -- creating the object
+  1) GameObject#initialize(options)
+  2) GameObject#setup_trait(options)
+  -- each game iteration
+  3) GameObject#draw_trait
+  4) GameObject#draw
+  5) GameObject#update_trait
+  6) GameObject#update
 
 There's a couple of traits included as default in Chingu:
 
@@ -451,11 +450,11 @@ Adds variables velocity_x, velocity_y, acceleration_x, acceleration_y, max_veloc
 They modify x, y as you would expect. *speed / angle will come*
 
 
-== (IN DEVELOPMENT) Trait "effect"
+==== (IN DEVELOPMENT) Trait "effect"
 Adds ability to automaticly fade, rotate and scale game objects.
 * API isn't stabilized yet! * 
   
-== (IN DEVELOPMENT) Trait "collision_detection"
+==== (IN DEVELOPMENT) Trait "collision_detection"
 Adds class and instance methods for basic collision detection.
   
   # Class method example
@@ -470,7 +469,7 @@ Adds class and instance methods for basic collision detection.
   
 * API isn't stabilized yet! *
 
-== (IN DEVELOPMENT) Trait "retrofy"
+==== (IN DEVELOPMENT) Trait "retrofy"
 Providing easier handling of the "retrofy" effect (non-blurry zoom)
 Aims to help out when using zoom-factor to create a retrofeeling with big pixels.
 Provides screen_x and screen_y which takes the zoom into account
