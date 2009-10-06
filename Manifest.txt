@@ -15,6 +15,7 @@ chingu.gemspec
 examples/example1.rb
 examples/example10.rb
 examples/example11.rb
+examples/example12.rb
 examples/example2.rb
 examples/example3.rb
 examples/example4.rb
@@ -64,6 +65,8 @@ lib/chingu/text.rb
 lib/chingu/traits/collision_detection.rb
 lib/chingu/traits/effect.rb
 lib/chingu/traits/input.rb
+lib/chingu/traits/retrofy.rb
 lib/chingu/traits/rotation_center.rb
+lib/chingu/traits/timer.rb
 lib/chingu/traits/velocity.rb
 lib/chingu/window.rb
