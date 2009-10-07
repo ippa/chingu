@@ -558,8 +558,8 @@ See http://www.libgosu.org/rdoc/classes/Gosu/Window.html for a full set of metho
 
 === How did you decide on naming of methods / classes?
 There's 1 zillion ways of naming stuff. As a general guideline I've tried to follow Gosus naming.
-If Gosu didn't have a good name for a certain thing/method I've checked Ruby itself and then Rails since alot
- of Ruby-devs are familiar with Rails.
+If Gosu didn't have a good name for a certain thing/method I've checked Ruby itself and then Rails since alot of Ruby-devs are familiar with Rails.
+GameObject.all is naming straight from rails for example. Most stuff in GameObject follow the naming from Gosus Image#draw_rot.
 
 == TODO:
 * add :padding and :align => :topleft etc to class Text
