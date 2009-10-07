@@ -3,13 +3,12 @@ http://github.com/ippa/chingu/tree/master
 
 DOCUMENTATION: http://rdoc.info/projects/ippa/chingu
 
-Ruby 1.9.1 is recommended. Also works with 1.8.7+.
+Ruby 1.9.1 is recommended. Should also work with 1.8.7+.
 
-This is still a rather young project, core classes and naming can still change.
+Chingu has started to settle down, thouch core classes and naming can still change for good reasons.
 
 == INSTALL
-  gem sources -a http://gems.github.com
-  sudo gem install ippa-chingu
+  gem install chingu
 
 
 == DESCRIPTION
@@ -426,6 +425,34 @@ Chingus trait-implementation is just ordinary ruby modules with 3 special method
  - draw_trait
 Each of those 3 methods must call "super" to continue the trait-chain.
 
+Example:
+
+  class Ogre < Chingu::GameObject
+    has_trait :velocity, :timer
+    
+    def initialize(options)
+      super
+      @red = Gosu::Color.new(0xFFFF0000)
+      @white = Gosu::Color.new(0xFFFFFFFF)
+      
+      #
+      # some basic physics provided by the velocity-trait
+      # These 2 parameters will affect @x and @y every game-iteration
+      # So if your ogre is standing on the ground, make sure you cancel out the effect of @acceleration_y
+      #
+      @velocity_x = 1       # move constantly to the right
+      @acceleration_y = 0.4 # gravity is basicly a downwards acceleration
+    end
+    
+    def hit_by(object)
+      #
+      # during() and then() is provided by the timer-trait
+      # flash red for 300 millisec when hit, then go back to normal
+      #
+      during(100) { @color = @red; @mode = :additive }.then { @color = @white; @mode = :default }
+    end
+  end
+  
 The flow for a game object then becomes:
 
   -- creating the object
@@ -441,8 +468,8 @@ There's a couple of traits included as default in Chingu:
 
 ==== Trait "timer"
 Adds timer functionallity to your game object
-  during(300) { @color = Color.new(0xFFFFFFFF) }   # forces @color to white ever update for 300 ms
-  after(400) { self.destroy }                     # destroy object after 400 ms
+  during(300) { @color = Color.new(0xFFFFFFFF) }   # forces @color to white every update for 300 ms
+  after(400) { self.destroy }                      # destroy object after 400 ms
   between(1000,2000) { self.rotate(10) }           # starting after 1 second, call rotate(10) every update during 1 second
   
 ==== Trait "velocity"
@@ -474,6 +501,8 @@ Providing easier handling of the "retrofy" effect (non-blurry zoom)
 Aims to help out when using zoom-factor to create a retrofeeling with big pixels.
 Provides screen_x and screen_y which takes the zoom into account
 Also provides new code for draw() which uses screen_x / screen_y instead of x / y
+
+
 
 
 === Assets / Paths
@@ -580,9 +609,13 @@ If Gosu didn't have a good name for a certain thing/method I've checked Ruby its
 * Jacius of Rubygame (For doing cool stuff that's well documented as re-usable). So far rect.rb and named_resource.rb is taken from Rubygame.
 * Jduff for input / commits.
 * Jlnr,Philymore,Shawn24,JamesKilton for constructive feedback/discussions.
+* Apillet for codesuggestions and cleanups
 * Thanks to http://github.com/tarcieri for require_all code, good stuff
 
 == REQUIREMENTS:
 * Gosu latest version
-* Ruby 1.8.7+ (Works with 1.9+ as well!)
+* Ruby 1.9.1+ or 1.8.7+
+* gem 'opengl' if you want to use Image#retrofy, not needed otherwise
+* gem 'texplay' for some bonus Image-pixel operations, not needed otherwise
+
 
