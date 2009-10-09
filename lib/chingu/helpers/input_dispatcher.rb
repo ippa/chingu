@@ -21,23 +21,17 @@
 
 
 module Chingu
+  module Helpers
   
-  module InputClient
-    def input=(input_map)
-      @input = input_map
-      @parent.add_input_client(self)  if @parent
-    end
-    
-    def input
-      @input
-    end
-  end
-    
+  #
+  # Methods for parsing and dispatching Chingus input-maps
+  # Mixed into Chingu::Window and Chingu::GameState
+  #
   module InputDispatcher
     attr_reader :input_clients
     
     def add_input_client(object)
-      @input_clients << object
+      @input_clients << object    unless @input_clients.include?(object)
     end
     
     def remove_input_client(object)
@@ -105,62 +99,6 @@ module Chingu
       end
     end
   end
-
-  #
-  # push_game_state accepts either a class inherited from GameState or an object-instance from such a class.
-  #
-  # It will make call new() on a class, and just push an object.
-  #
-  module GameStateHelpers
-    def push_game_state(state, options = {})
-      $window.game_state_manager.push_game_state(state, options)      
-    end
   
-    def pop_game_state(options = {})
-      $window.game_state_manager.pop_game_state(options)
-    end
-
-    def switch_game_state(state, options = {})
-      $window.game_state_manager.switch_game_state(state, options)
-    end
-
-    def transitional_game_state(state, options = {})
-      $window.game_state_manager.transitional_game_state(state, options)      
-    end
-
-    def current_game_state
-      $window.game_state_manager.current_game_state
-    end
-
-    def previous_game_state
-      $window.game_state_manager.previous_game_state
-    end
-    
-    def clear_game_states
-      $window.game_state_manager.clear_game_states
-    end
   end
-  
-  module GameObjectHelpers
-  
-    def add_game_object(object)
-      @game_objects.add_game_object(object)
-    end
-    
-    def remove_game_object(object)
-      @game_objects.remove_game_object(object)
-    end
-    
-    def game_objects
-      @game_objects
-    end
-    
-    #
-    # Fetch game objects of a certain type/class
-    #
-    def game_objects_of_class(klass)
-      @game_objects.select { |game_object| game_object.is_a? klass }
-    end
-  end
-
 end

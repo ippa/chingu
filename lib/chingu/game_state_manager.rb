@@ -39,7 +39,7 @@ module Chingu
   # Return to the previous game state, don't call setup() on it when it becomes active.
   #   pop_game_state(:setup => false)
   #
-  # If you want to use Chingus GameStateManager _without_ Chingu::Windoe, see example5.rb
+  # If you want to use Chingus GameStateManager _without_ Chingu::Window, see example5.rb
   #
   class GameStateManager
     attr_accessor :inside_state

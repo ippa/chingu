@@ -49,20 +49,19 @@ module Chingu
   #
 
   class GameState
-    include Chingu::GameStateHelpers    # Easy access to the global game state-queue
-    include Chingu::GFXHelpers          # Adds fill(), fade() etc to each game state
-    include Chingu::GameObjectHelpers   # adds game_objects_of_class etc ...
-    include Chingu::InputDispatcher     # dispatch-helpers
-    include Chingu::InputClient
+    include Chingu::Helpers::GFX                # Adds fill(), fade() etc to each game state
+    include Chingu::Helpers::GameState          # Easy access to the global game state-queue
+    include Chingu::Helpers::GameObject         # Adds game_objects_of_class etc ...
+    include Chingu::Helpers::InputDispatcher    # Input dispatch-helpers
+    include Chingu::Helpers::InputClient        # GameState can have it's own inputmap
     
-    attr_reader :options                # so jlnr can access his :level-number
+    attr_reader :options
     attr_accessor :game_state_manager, :game_objects
     
     def initialize(options = {})
       @options = options
-      ## @game_state_manager = options[:game_state_manager] || $window.game_state_manager
       @game_objects = GameObjectList.new
-      @input_clients = Set.new          # Set is like a unique Array with Hash lookupspeed
+      @input_clients = Array.new
       
       # Game state mamanger can be run alone
       if defined?($window) && $window.respond_to?(:game_state_manager)

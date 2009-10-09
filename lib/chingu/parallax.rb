@@ -11,7 +11,7 @@ module Chingu
     #
     # repeat: [true|false]  When one background ends within the screen, repeat/loop it
     #
-    def initialize(options)
+    def initialize(options = {})
       super(options)
       @repeat = options[:repeat] || true
       @backgrounds = Array.new

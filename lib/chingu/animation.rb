@@ -125,6 +125,7 @@ module Chingu
     #
     def retrofy
       frames.each { |frame| frame.retrofy }
+      self
     end
     
     #

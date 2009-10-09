@@ -21,11 +21,13 @@
 
 
 module Chingu
+  module Helpers
+    
   #
   # Various helper-methods to manipulate the screen.
   # All drawings depend on the global variable $window which should be an instance of Gosu::Window or Chingu::Window
   #
-  module GFXHelpers
+  module GFX
   
     #
     # Fills whole window with color 'color'.
@@ -85,5 +87,7 @@ module Chingu
                           )        
       end
     end
+  end
+  
   end
 end

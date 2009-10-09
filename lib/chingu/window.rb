@@ -1,20 +1,11 @@
 module Chingu
 
   class Window < Gosu::Window
-    # adds push_game_state, pop_game_state, current_game_state and previous_game_state
-    include Chingu::GameStateHelpers    
-    
-    # adds fill() etc...
-    include Chingu::GFXHelpers
-    
-    # adds game_objects_of_class etc ...
-    include Chingu::GameObjectHelpers
-    
-    # Input dispatch helpers
-    include Chingu::InputDispatcher
-    
-    # input= and input
-    include Chingu::InputClient
+    include Chingu::Helpers::GFX                # Adds fill(), fade() etc to each game state
+    include Chingu::Helpers::GameState          # Easy access to the global game state-queue
+    include Chingu::Helpers::GameObject         # Adds game_objects_of_class etc ...
+    include Chingu::Helpers::InputDispatcher    # Input dispatch-helpers
+    include Chingu::Helpers::InputClient        # WIndow has its own inputmap
     
     attr_reader :root, :game_state_manager, :game_objects, :milliseconds_since_last_tick
     
@@ -27,7 +18,6 @@ module Chingu
     # - Standard #update which updates all Chingu::GameObject's 
     # - Standard #draw which goes through 
     # - Assethandling with Image["picture.png"] and Sample["shot.wav"]
-    # - Default input mapping escape to close 
     #
     def initialize(width = 800, height = 600, fullscreen = false, update_interval = 16.666666)
       fullscreen ||= ARGV.include?("--fullscreen")
@@ -40,7 +30,7 @@ module Chingu
       Gosu::Song.autoload_dirs = [".", File.join(@root, "sfx"), File.join(@root, "media")]
 			
       @game_objects = GameObjectList.new
-      @input_clients = Set.new  # Set is like a unique Array with Hash lookupspeed
+      @input_clients = Array.new
       
       @fps_counter = FPSCounter.new
       @game_state_manager = GameStateManager.new
@@ -106,12 +96,18 @@ module Chingu
       #
       # Call update() on all game objects belonging to the main window.
       #
-      update_game_objects
+      @game_objects.update
       
       #
       # Call update() on all game objects belonging to the current game state.
       #
-      update_game_state_manager
+
+      #
+      # Call update() on our game_state_manger
+      # -> call update on active states
+      # -> call update on all game objects in that state
+      #
+      @game_state_manager.update
     end
     
     # 
@@ -131,22 +127,6 @@ module Chingu
       @game_state_manager.draw
     end
     
-    #
-    # Call update() on all game objects in main game window.
-    #
-    def update_game_objects
-      @game_objects.update
-    end
-    
-    #
-    # Call update() on our game_state_manger
-    # -> call update on active state 
-    # -> call update on all game objects in that state
-    #
-    def update_game_state_manager
-      @game_state_manager.update
-    end
-
     #
     # By default button_up sends the keyevent to the GameStateManager
     # .. Which then is responsible to send it to the right GameState(s)

@@ -20,17 +20,34 @@
 #++
 
 
-#
-# Effect-class
-#
 module Chingu
-  class Effect
-    def initialize(options)
-      super({:mode => :additive}.merge(options))
-      @trail = options[:trail] || 10
+  module Helpers
+  
+  #
+  # Convenience-methods for classes that hold game objects
+  # Mixed into Chingu::Window and Chingu::GameState
+  #
+  module GameObject
+  
+    def add_game_object(object)
+      @game_objects.add_game_object(object)
     end
-      
-    def update
-    end    
+    
+    def remove_game_object(object)
+      @game_objects.remove_game_object(object)
+    end
+    
+    def game_objects
+      @game_objects
+    end
+    
+    #
+    # Fetch game objects of a certain type/class
+    #
+    def game_objects_of_class(klass)
+      @game_objects.select { |game_object| game_object.is_a? klass }
+    end
+  end
+
   end
 end

@@ -21,7 +21,7 @@
 
 
 module Chingu
-  module Traits
+  module Helpers
     module RotationCenter
       #
       # returns [center_x, center_y] (see Gosu::Image#draw_rot)

@@ -65,19 +65,12 @@ class Play < Chingu::GameState
                       :holding_up => :move_up, 
                       :holding_down => :move_down, 
                       :space => :fire,
-                      :escape => :exit,
                       }
-    self.input = { :f1 => :debug }
+    self.input = { :f1 => :debug, :escape => :exit }
   end
   
-  def debug
-    #puts "--------"
-    #GameObject.all.each do |game_object|
-    #  puts game_object.class
-    #end
-    #return 
-    
-    push_game_state(Chingu::GameStates::Debug)
+  def debug   
+    push_game_state(Chingu::GameStates::Debug.new)
   end
     
   #
@@ -97,17 +90,9 @@ class Play < Chingu::GameState
   # A #super call here would call #update on all Chingu::Actors and check their inputs, and call the specified method.
   # 
   def update
-    Bullet.destroy_if { |bullet| bullet.outside_window? }
-    #Bullet.destroy_if(&:outside_window?)
-    
-    #
-    # Bullet.each_collision(Enemy) do |bullet, enemy|
-    #   enemy.collision_with(bullet)
-    #   bullet.destroy!
-    # end
-    #
-      
     super
+    
+    Bullet.destroy_if { |bullet| bullet.outside_window? }
     $window.caption = "FPS: #{$window.fps} - milliseconds_since_last_tick: #{$window.milliseconds_since_last_tick} - game objects# #{current_game_state.game_objects.size} Bullets# #{Bullet.size}"
   end  
 end

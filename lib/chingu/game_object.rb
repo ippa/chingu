@@ -29,7 +29,9 @@ module Chingu
   class GameObject < Chingu::BasicGameObject
     attr_accessor :image, :x, :y, :angle, :center_x, :center_y, :factor_x, :factor_y, :color, :mode, :zorder
     attr_reader :paused, :visible, :factor, :center
-    has_trait :input, :rotation_center
+    
+    include Chingu::Helpers::InputClient        # Adds input and input=
+    include Chingu::Helpers::RotationCenter     # Adds easy and verbose modification of @center_x and @center_y
         
     def initialize(options = {})
       super

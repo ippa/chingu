@@ -21,18 +21,33 @@
 
 
 module Chingu
-  module Traits
-    module Input
-    
+  module Helpers
+  
+    #
+    # Input-handler mixin that adds #input= and #input
+    # 
+    # #input= does 2 things:
+    # 1) Initialized an inputmap
+    # 2) notifies the parent (could be main Window or a GameState) that the object wants input
+    #
+    # In Chingu this is mixed into Window, GameState and GameObject
+    #
+    module InputClient
       def input=(input_map)
         @input = input_map
-        @parent.add_input_client(self)  if @parent
+        
+        if @parent 
+          if (@input == nil || @input == {})
+            @parent.remove_input_client(self)
+          else
+            @parent.add_input_client(self)
+          end
+        end
       end
       
       def input
         @input
       end
-      
     end
   end
 end
