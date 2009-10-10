@@ -35,6 +35,14 @@ module Chingu
 
         super
       end
+      
+      def screen_width
+        (@image.width * self.factor).to_i
+      end
+
+      def screen_height
+        (@image.heigt * self.factor).to_i
+      end
 
       def screen_x
         (@x * self.factor).to_i

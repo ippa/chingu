@@ -8,7 +8,7 @@ include Gosu
 #
 class Game < Chingu::Window
   def initialize
-    super    
+    super(600,200)
     self.input = {  :holding_left => :scroll_left, :holding_right => :scroll_right, :escape => :exit }
           
     self.caption = "Chingu::Parallax example. Scroll with left/right arrows."

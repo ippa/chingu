@@ -606,10 +606,10 @@ GameObject.all is naming straight from rails for example. Most stuff in GameObje
 * Don't separate too much from Gosus core-naming
 
 == CREDITS:
-* Jacius of Rubygame (For doing cool stuff that's well documented as re-usable). So far rect.rb and named_resource.rb is taken from Rubygame.
-* Jduff for input / commits.
-* Jlnr,Philymore,Shawn24,JamesKilton for constructive feedback/discussions.
-* Apillet for codesuggestions and cleanups
+* Jacius of Rubygame (For doing cool stuff that's well documented as re-usable). So far rect.rb and named_resource.rb is straight outta Rubygame.
+* Jduff for input / commits
+* Jlnr,Philymore,Shawn24,JamesKilton for constructive feedback/discussions
+* Ariel Pillet for codesuggestions and cleanups
 * Thanks to http://github.com/tarcieri for require_all code, good stuff
 
 == REQUIREMENTS:

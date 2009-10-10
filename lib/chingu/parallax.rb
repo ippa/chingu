@@ -58,13 +58,13 @@ module Chingu
         background.x = save_x
       end
       self
-    end	 
+    end
   end
   
   #
   # One background item
   #
-  class ParallaxBackground < Chingu::GameObject
+  class ParallaxBackground < Chingu::GameObject    
     @@zorder_counter = 0
     attr_reader :damping
     
@@ -78,6 +78,6 @@ module Chingu
       super(options)
 
       @damping = options[:damping] || 10
-    end    
+    end
   end
 end

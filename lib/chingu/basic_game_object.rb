@@ -6,7 +6,7 @@ module Chingu
   # It will also acts as a container for the trait-system of chingu.
   #
   class BasicGameObject
-    attr_reader :options
+    attr_reader :options, :paused, :visible
     attr_accessor :parent
         
     #
@@ -43,6 +43,12 @@ module Chingu
         @parent = $window.game_state_manager.inside_state || $window
       end
       
+      # if true, BasicGameObject#update will be called
+      @paused = options[:paused] || false
+      
+      # if true, BasicGameObject#draw will be called
+      @visible = options[:visible] || true
+
       # This will call #setup_trait on the latest trait mixed in
       # which then will pass it on to the next setup_trait() with a super-call.
       setup_trait(options)
@@ -67,7 +73,32 @@ module Chingu
       
       return instance
     end
-    
+
+    #
+    # Disable auto-updating of traits 
+    #
+    def pause!
+      @paused = true
+    end
+    #
+    # Enable auto-update of traits
+    #
+    def unpause!
+      @paused = false
+    end
+    #
+    # Disable auto-drawing of object
+    #
+    def hide!
+      @visible = false
+    end
+    #
+    # Enable auto-drawing of object
+    #
+    def show!
+      @visible = true
+    end
+
     def setup_trait(options)
     end
     

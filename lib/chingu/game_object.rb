@@ -28,7 +28,7 @@ module Chingu
   #
   class GameObject < Chingu::BasicGameObject
     attr_accessor :image, :x, :y, :angle, :center_x, :center_y, :factor_x, :factor_y, :color, :mode, :zorder
-    attr_reader :paused, :visible, :factor, :center
+    attr_reader :factor, :center
     
     include Chingu::Helpers::InputClient        # Adds input and input=
     include Chingu::Helpers::RotationCenter     # Adds easy and verbose modification of @center_x and @center_y
@@ -62,37 +62,8 @@ module Chingu
       
       @mode = options[:mode] || :default # :additive is also available.
       @zorder = options[:zorder] || 100
-                        
-      # gameloop/framework logic (TODO: use or get rid of)
-      @paused = options[:paused] || false
-      @visible = options[:visible] || true
-      
+                              
       setup_trait(options)  if respond_to?(:setup_trait)
-    end
-    
-    #
-    # Disable auto-updating of traits 
-    #
-    def pause!
-      @paused = true
-    end
-    #
-    # Enable auto-update of traits
-    #
-    def unpause!
-      @paused = false
-    end
-    #
-    # Disable auto-drawing of object
-    #
-    def hide!
-      @visible = false
-    end
-    #
-    # Enable auto-drawing of object
-    #
-    def show!
-      @visible = true
     end
     
     # Quick way of setting both factor_x and factor_y
