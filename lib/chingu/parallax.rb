@@ -1,42 +1,72 @@
 #
 # Class for simple parallaxscrolling
+#
 # See: http://en.wikipedia.org/wiki/Parallax_scrolling
 #
 module Chingu
   class Parallax < Chingu::GameObject
-    attr_reader :backgrounds
+    attr_reader :layers
 
     #
     # Options (in hash-format):
     #
-    # repeat: [true|false]  When one background ends within the screen, repeat/loop it
+    # repeat: [true|false]  When one layer ends within the screen, repeat/loop it
     #
     def initialize(options = {})
       super(options)
       @repeat = options[:repeat] || true
-      @backgrounds = Array.new
+      @layers = Array.new
     end
     
     #
-    # Add one background, either an ParallaxBackground-object or a Hash of options to create one
-    # You can also add new backgrounds with the shortcut "<<":
+    # Add one layer, either an ParallaxLayer-object or a Hash of options to create one
+    # You can also add new layers with the shortcut "<<":
     #   @parallax << {:image => "landscape.png", :damping => 1}
     #
-    def add_background(arg)
-      @backgrounds << (arg.is_a?(ParallaxBackground) ? arg : ParallaxBackground.new(arg))
+    def add_layer(arg)
+      @layers << (arg.is_a?(ParallaxLayer) ? arg : ParallaxLayer.new(arg))
     end
-    alias << add_background
+    alias << add_layer
+
+    
+    #
+    # Parallax#camera_x= works in inverse to Parallax#x (moving the "camera", not the image)
+    #
+    def camera_x=(x)
+      @x = -x
+    end
+
+    #
+    # Parallax#camera_y= works in inverse to Parallax#y (moving the "camera", not the image)
+    #
+    def camera_y=(y)
+      @y = -y
+    end
+
+    #
+    # Get the x-coordinate for the camera (inverse to x)
+    #
+    def camera_x
+      -@x
+    end
+
+    #
+    # Get the y-coordinate for the camera (inverse to y)
+    #
+    def camera_y
+      -@y
+    end
     
     #
     # TODO: make use of $window.milliseconds_since_last_update here!
     #
     def update
-      @backgrounds.each do |background|
-        background.x = -@x / background.damping
-        background.y =  @y / background.damping
+      @layers.each do |layer|
+        layer.x = @x / layer.damping
+        layer.y = @y / layer.damping
         
-        # This is the magic that repeats the background to the left and right
-        background.x -= background.image.width  while background.x > 0
+        # This is the magic that repeats the layer to the left and right
+        layer.x -= layer.image.width  while layer.x > 0
       end
     end
     
@@ -44,40 +74,62 @@ module Chingu
     # Draw 
     #
     def draw
-      @backgrounds.each do |background|
-        background.draw
+      @layers.each do |layer|
+        layer.draw
         
-        save_x = background.x
+        save_x = layer.x
         
-        ## If background lands inside our screen, repeat it
-        while (background.x + background.image.width) < $window.width
-          background.x += background.image.width
-          background.draw
+        ## If layer lands inside our screen, repeat it
+        while (layer.x + layer.image.width) < $window.width
+          layer.x += layer.image.width
+          layer.draw
         end
                 
-        background.x = save_x
+        layer.x = save_x
       end
       self
     end
   end
   
   #
-  # One background item
+  # ParallaxLayer is mainly used by class Parallax to keep track of the different layers.
+  # If you @parallax << { :image => "foo.png" } a ParallaxLayer will be created automaticly from that Hash.
   #
-  class ParallaxBackground < Chingu::GameObject    
+  # If no zorder is provided the ParallaxLayer-class increments an internal zorder number which will
+  # put the last layer added on top of the rest.
+  #
+  class ParallaxLayer < Chingu::GameObject    
     @@zorder_counter = 0
     attr_reader :damping
     
     def initialize(options)
-      ## No auto update/draw, the parentclass Parallax takes care of that!
-      options.merge!(:draw => false, :update => false)
+      # No auto update/draw, the parentclass Parallax takes care of that!
+      options.merge!(:visible => false, :paused => true)
       
       # If no zorder is given, use a global incrementing counter. First added, furthest behind when drawn.
       options.merge!(:zorder => (@@zorder_counter+=1))  if options[:zorder].nil?
       
       super(options)
-
+      
       @damping = options[:damping] || 10
     end
+    
+    #
+    # Gets pixel from layers image
+    # The pixel is from the window point of view, so coordinates are converted:
+    #
+    #   @parallax.layers.first.get_pixel(10, 10)        # the visible pixel at 10, 10
+    #   @parallax.layers.first.image.get_pixel(10, 10)  # gets pixel 10, 10 from layers image no matter where layer is positioned
+    #
+    def get_pixel(x, y)
+      image_x = x - @x
+      image_y = y - @y
+      
+      # On a 100 x 100 image, get_pixel works to 99 x 99
+      image_x -= @image.width   while image_x >= @image.width 
+      
+      @image.get_pixel(image_x, image_y)
+    end
+    
   end
 end
