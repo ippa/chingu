@@ -41,11 +41,12 @@ module Chingu
       #@game_objects_by_class[klass] || []
     end
     
-    def remove_all
+    def destroy_all
       @game_objects.clear
       #@game_objects_of_class.clear
     end
-    alias :clear :remove_all
+    alias :clear :destroy_all
+    alias :remove_all :destroy_all
     
     def add_game_object(object)
       @game_objects.push(object)

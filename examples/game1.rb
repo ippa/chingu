@@ -7,8 +7,11 @@
 #
 require 'rubygems'
 require File.join(File.dirname($0), "..", "lib", "chingu")
-require 'texplay'
-require 'opengl'
+
+require 'texplay'     # adds Image#get_pixel
+#require 'devil/gosu'  # adds Gosu::Window#screenshot and better file support
+require 'opengl'      # adds raw gl stuff so Image#retrofy works (in some setups this seems to be 'gl')
+
 include Gosu
 include Chingu
 
@@ -80,27 +83,38 @@ class Level < Chingu::GameState
     @bg2 = Color.new(0xFF013E87)
   end
   
+  #
+  # This is called each time this GameState is switched/pushed/poped to.
+  #
   def setup
+    # Remove all lingering g
     Enemy.destroy_all
     Bullet.destroy_all
+    
     @player.score = 0
     @player.x = 10
     @player.y = 100
+    
     @parallax.camera_x = 0
     @total_game_ticks = 100000
     @timer = 100
     @total_ticks = 0
-
   end
-  
+
+  #
+  # Our 
+  #
   def solid_pixel_at?(x, y)
     @parallax.layers.last.get_pixel(x, y)[3] != 0
   end
   
   def update
     super
+    
+    # Move the level forward by increasing the parallax-scrollers camera x-coordinate
     @parallax.camera_x += 1
     
+    #
     Bullet.all.select { |b| solid_pixel_at?(b.x, b.y)}.each { |b| b.die }
     
     # Collide player with terrain

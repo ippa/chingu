@@ -156,7 +156,6 @@ module Chingu
     #
     def destroy
       @parent.remove_game_object(self) if @parent
-      self.freeze
     end
     alias :destroy! :destroy
   end
