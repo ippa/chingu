@@ -109,6 +109,7 @@ module Chingu
       end
       
       #
+      # Explicit radius-collision
       # Works like each_collsion but with inline-code for speedups
       #
       def each_radius_collision(klasses = [])
@@ -120,11 +121,23 @@ module Chingu
       end
 
 
+      #
+      # Explicit bounding_box-collision
+      # Works like each_collision but with inline-code for speedups
+      #
+      def each_bounding_box_collision(klasses = [])
+        Array(klasses).each do |klass|
+          klass.all.each do |object|
+            yield(self, object) if @bounding_box.collide_rect?(object.bounding_box)
+          end
+        end
+      end
+
       
       module ClassMethods
       
         #
-        # Works like each_collsion but with inline-code for speedups
+        # Works like each_collision but with inline-code for speedups
         #
         def each_radius_collision(klasses = [])
           Array(klasses).each do |klass|
@@ -135,6 +148,21 @@ module Chingu
               object2_list.each do |object2|
                 next  if object1 == object2  # Don't collide objects with themselves
                 yield object1, object2  if distance(object1.x, object1.y, object2.x, object2.y) < object1.radius + object2.radius
+              end
+            end
+          end
+        end
+        
+        #
+        # Works like each_collsion but with explicit bounding_box collisions (inline-code for speedups)
+        #
+        def each_bounding_box_collision(klasses = [])
+          Array(klasses).each do |klass|
+            object2_list = klass.all
+            self.all.each do |object1|
+              object2_list.each do |object2|
+                next  if object1 == object2  # Don't collide objects with themselves
+                yield object1, object2  if object1.bounding_box.collide_rect?(object2.bounding_box)
               end
             end
           end
@@ -157,7 +185,7 @@ module Chingu
             object2_list = klass.all
             
             self.all.each do |object1|
-              object2_list.all.each do |object2|
+              object2_list.each do |object2|
                 next  if object1 == object2  # Don't collide objects with themselves
                 yield object1, object2  if object1.collides?(object2)
               end
