@@ -1,10 +1,11 @@
 require 'rubygems'
+require 'devil'
 require File.join(File.dirname($0), "..", "lib", "chingu")
 include Gosu
 
 #
 # A little more complicated example where we do our own #update and #draw code.
-# We also add another Actor - a bullet fired with space.
+# We also add another GameObject - a bullet fired with space.
 #
 # Also tests out the Debug game state.
 #
@@ -64,8 +65,8 @@ class Play < Chingu::GameState
                       :holding_right => :move_right, 
                       :holding_up => :move_up, 
                       :holding_down => :move_down, 
-                      :space => :fire,
-                      }
+                      :space => :fire
+                    }
     self.input = { :f1 => :debug, :escape => :exit }
   end
   
@@ -75,19 +76,19 @@ class Play < Chingu::GameState
     
   #
   # If we want to add extra graphics drawn just define your own draw.
-  # Be sure to call #super for enabling Chingus autodrawing of Actors.
+  # Be sure to call #super for enabling Chingus autodrawing of instances of GameObject.
   # Putting #super before or after the background-draw-call really doesn't matter since Gosu work with "zorder".
   #
   def draw
     # Raw Gosu Image.draw(x,y,zorder)-call
-    Image["background1.png"].draw(0, 0, 0)    
+    Image["background1.png"].draw(0, 0, 0)
     super
   end
 
   #
   # Gosus place for gamelogic is #update in the mainwindow
   #
-  # A #super call here would call #update on all Chingu::Actors and check their inputs, and call the specified method.
+  # A #super call here would call #update on all Chingu::GameObject-instances and check their inputs, and call the specified method.
   # 
   def update
     super
