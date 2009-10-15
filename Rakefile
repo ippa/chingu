@@ -17,3 +17,19 @@ task :gemspec do
   system "rake git:manifest"
   system "rake debug_gem | grep -v \"(in \" | grep -v \"erik\" > chingu.gemspec"
 end
+
+
+#begin
+#  require 'jeweler'
+#  Jeweler::Tasks.new do |gemspec|
+#    gemspec.name = "chingu"
+#    gemspec.summary = "Game framework built on top of the OpenGL accelerated game lib Gosu"
+#    gemspec.description = "Game framework built on top of the OpenGL accelerated game lib Gosu"
+#    gemspec.email = "ippa@rubylicio.us"
+#    gemspec.homepage = "http://github.com/ippa/chingu"
+#    gemspec.authors = ["ippa"]
+#    gemspec.rubyforge_project = "chingu"
+#  end
+#rescue LoadError
+#  puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"
+#end
