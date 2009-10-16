@@ -1,5 +1,4 @@
 require 'rubygems'
-require 'devil'
 require File.join(File.dirname($0), "..", "lib", "chingu")
 include Gosu
 
