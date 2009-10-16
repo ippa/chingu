@@ -25,9 +25,9 @@ class Game < Chingu::Window
     # 1) Image["foo.png"]  2) "foo.png"
     #
     # TODO: scrolling to left borks outm, fix. + get rid of center_x / center_y args in a clean way.
-    @parallax << {:image => "paralaxx2", :damping => 100, :center => 0)
-    @parallax << {:image => "parallax-scroll-example-layer-1.png", :damping => 10, :center => 0)
-    @parallax << {:image => "paralaxx2.png", :damping => 5, :center => 0)
+    @parallax << {:image => "paralaxx2", :damping => 100, :center => 0}
+    @parallax << {:image => "parallax-scroll-example-layer-1.png", :damping => 10, :center => 0}
+    @parallax << {:image => "paralaxx2.png", :damping => 5, :center => 0}
   end
   
   def scroll_left

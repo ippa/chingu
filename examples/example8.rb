@@ -4,7 +4,7 @@ include Gosu
 include Chingu
 
 #
-# Demonstrating domponents "velocity" and "effect"
+# Demonstrating traits "velocity" and "effect"
 #
 class Game < Chingu::Window
   def initialize
