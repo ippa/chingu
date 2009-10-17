@@ -35,6 +35,7 @@ examples/media/bullet_hit.wav
 examples/media/city1.csv
 examples/media/city1.png
 examples/media/city2.png
+examples/media/droid.bmp
 examples/media/enemy_bullet.png
 examples/media/explosion.wav
 examples/media/fire_bullet.png
