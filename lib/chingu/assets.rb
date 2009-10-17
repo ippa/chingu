@@ -5,18 +5,18 @@
 #
 module Chingu
   def media_path(file)
-    File.join($window.root, "media", file)  
+    File.join(ROOT, "media", file)  
   end
   
   def image_path(file)
-    File.join($window.root, "gfx", file)
+    File.join(ROOT, "gfx", file)
   end
   
-  class ImagePath
+  class Asset
     include Chingu::NamedResource
 		
     def self.autoload(name)
-    find_file(name)
+      find_file(name)
     end
   end
 end

@@ -24,6 +24,7 @@ module Chingu
       $window = super(width, height, fullscreen, update_interval)
 			
       @root = File.dirname(File.expand_path($0))
+      Chingu::Asset.autoload_dirs = [".", File.join(@root, "gfx"), File.join(@root, "media"), File.join(@root, "sfx")]
       Gosu::Image.autoload_dirs = [".", File.join(@root, "gfx"), File.join(@root, "media")]
       Gosu::Sample.autoload_dirs = [".", File.join(@root, "sound"), File.join(@root, "media")]
       Gosu::Tile.autoload_dirs = [".", File.join(@root, "gfx"), File.join(@root, "media")]

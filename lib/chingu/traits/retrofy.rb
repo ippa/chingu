@@ -52,6 +52,18 @@ module Chingu
         (@y * self.factor).to_i
       end
       
+      # Returns true if object is inside the game window, false if outside
+      # this special version takes @factor into consideration
+      def inside_window?
+        @x >= 0 && @x <= $window.width/self.factor && @y >= 0 && @y <= $window.height/self.factor
+      end
+
+      # Returns true object is outside the game window 
+      # this special version takes @factor into consideration
+      def outside_window?
+        not inside_window?
+      end      
+      
       def draw
         @image.draw_rot(self.screen_x, self.screen_y, @zorder, @angle, @center_x, @center_y, @factor_x, @factor_y, @color, @mode)
       end

@@ -20,6 +20,7 @@
 #++
 
 CHINGU_ROOT = File.dirname(File.expand_path(__FILE__))
+ROOT = File.dirname(File.expand_path($0))
 
 require 'rubygems' unless RUBY_VERSION =~ /1\.9/
 require 'gosu'

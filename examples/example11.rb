@@ -1,51 +1,92 @@
 require 'rubygems'
+require 'opengl'
 require File.join(File.dirname($0), "..", "lib", "chingu")
 include Gosu
+include Chingu
 
 #
-# Parallax-example
-# Images from http://en.wikipedia.org/wiki/Parallax_scrolling
+# Animation / retrofy example
 #
 class Game < Chingu::Window
+  attr_reader :factor
+  
   def initialize
     super    
-    self.input = {  :holding_left => :scroll_left,
-                    :holding_right => :scroll_right,
-                    :holding_up => :scroll_up,
-                    :holding_down => :scroll_down, 
-                    :escape => :exit }
-          
-    self.caption = "Chingu::Parallax example. Scroll with left/right arrows."
+    @factor = 6
+    self.input = { :escape => :exit }          
+    self.caption = "Chingu::Animation / retrofy example. Move with arrows!"
+    Droid.create(:x => $window.width/@factor/2, :y => $window.height/@factor/2)
+  end
+end
+
+class Droid < Chingu::GameObject
+  has_trait :retrofy  # modifies draw(), 
+  
+  def initialize(options = {})
+    super
     
-    @parallax = Chingu::Parallax.create(:x => 0, :y => 0, :center_x => 0, :center_y => 0)
+    self.input = {  :holding_left => :left,
+                    :holding_right => :right,
+                    :holding_up => :up,
+                    :holding_down => :down }
+    
+    # Load the full animation from tile-file media/droid.bmp
+    @full_animation = Chingu::Animation.new(:file => "droid.bmp", :size => [11,16]).retrofy
+    
+    # Create new animations from specific frames and stuff them into easy to access hash
+    @animations = {}
+    @animations[:scan] = @full_animation[0..5]
+    @animations[:up] = @full_animation[6..7]
+    @animations[:down] = @full_animation[8..9]
+    @animations[:left] = @full_animation[10..11]
+    @animations[:right] = @full_animation[12..13]
+    
+    # Start out by animation frames 0-5 (contained by @animations[:scan])
+    @animation = @animations[:scan]
+    
+    self.factor = $window.factor
+    @last_x, @last_y = @x, @y
+    update
+  end
+    
+  def left
+    @x -= 1
+    @animation = @animations[:left]
+  end
+
+  def right
+    @x += 1
+    @animation = @animations[:right]
+  end
+
+  def up
+    @y -= 1
+    @animation = @animations[:up]
+  end
+
+  def down
+    @y += 1
+    @animation = @animations[:down]
+  end
+
+  # We don't need to call super() in update().
+  # By default GameObject#update is empty since it doesn't contain any gamelogic to speak of.
+  def update
+    
+    # Move the animation forward by fetching the next frame and putting it into @image
+    # @image is drawn by default by GameObject#draw
+    @image = @animation.next
     
     #
-    # If no :zorder is given to @parallax.add_background it defaults to first added -> lowest zorder
-    # Everywhere the :image argument is used, theese 2 values are the Same:
-    # 1) Image["foo.png"]  2) "foo.png"
+    # If droid stands still, use the scanning animation
     #
-    # TODO: scrolling to left borks outm, fix. + get rid of center_x / center_y args in a clean way.
-    @parallax << {:image => "paralaxx2", :damping => 100, :center => 0}
-    @parallax << {:image => "parallax-scroll-example-layer-1.png", :damping => 10, :center => 0}
-    @parallax << {:image => "paralaxx2.png", :damping => 5, :center => 0}
+    if @x == @last_x && @y == @last_y
+      @animation = @animations[:scan]
+    end
+    
+    @x, @y = @last_x, @last_y if outside_window?  # return to previous coordinates if outside window
+    @last_x, @last_y = @x, @y                     # save current coordinates for possible use next time
   end
-  
-  def scroll_left
-    @parallax.x -= 2
-  end
-  
-  def scroll_right
-    @parallax.x += 2
-  end  
-  
-  def scroll_up
-    @parallax.y -= 2
-  end
-  
-  def scroll_down
-    @parallax.y += 2
-  end  
-  
 end
 
 Game.new.show

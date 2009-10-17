@@ -16,7 +16,8 @@ module Chingu
     #   - file:   Tile-file to cut up animation frames from.
     #   - width:  width of each frame in the tileanimation
     #   - height:  width of each frame in the tileanimation
-    #
+    #   - size: [x,y] specify width/height with 1 argument (an array)
+    #   - delay: milliseconds between each frame
     #
     def initialize(options)
       options = {:loop => true, :bounce => false, :width => 32, :height => 32, :index => 0, :delay => 100}.merge(options)
@@ -34,6 +35,8 @@ module Chingu
         @width = options[:size][0]
         @height = options[:size][1]
       end
+      
+      @file = media_path(@file)  unless File.exist?(@file)
       
       @frame_actions = []
       @frames = Gosu::Image.load_tiles($window, @file, @width, @height, true)
