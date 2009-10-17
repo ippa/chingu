@@ -96,9 +96,9 @@ module Chingu
     
     #
     # Propelles the animation forward. Usually called in #update within the class which holds the animation.
-    # #next! will look at bounce and loop flags to always return a correct frame (a Gosu#Image)
+    # Animation#next() will look at bounce and loop flags to always return a correct frame (a Gosu#Image)
     #
-    def next!
+    def next
       if (@dt += $window.milliseconds_since_last_tick) > @delay
         @dt = 0
         @previous_index = @index
@@ -119,7 +119,8 @@ module Chingu
       end
       @frames[@index]
     end
-		
+		alias :next! :next
+    
     #
     # Initialize non-blurry zoom on frames in animation
     #
