@@ -19,7 +19,8 @@ class Game < Chingu::Window
 end
 
 class Plasma < Chingu::GameObject
-  has_traits :velocity, :effect
+  has_traits :velocity
+  attr_accessor :fade_rate
   
   def initialize(options)
     super    
@@ -32,7 +33,11 @@ class Plasma < Chingu::GameObject
     
     # Simulate gravity
     @acceleration_y = 0.4
-  end  
+  end
+  
+  def update
+    self.alpha -= @fade_rate  if defined?(@fade_rate)
+  end
 end
 
 class Particles < Chingu::GameState
@@ -85,7 +90,7 @@ class Particles < Chingu::GameState
         end
         
         # 3) Start fading the alphachannel
-        particle.fading = -3
+        particle.fade_rate = 3        
       end
     end
     

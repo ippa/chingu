@@ -77,6 +77,20 @@ module Chingu
       @center = center
       @center_x = @center_y = center
     end
+    
+    # Get objects alpha-value (internally stored in @color.alpha)
+    def alpha
+      @color.alpha
+    end
+    
+    # Set objects alpha-value (internally stored in @color.alpha)
+    # If out of range, set to closest working value. this makes fading simpler.
+    def alpha=(value)
+      value = 0   if value < 0
+      value = 255 if value > 255
+      @color.alpha = value
+    end
+      
 
     # Returns true if object is inside the game window, false if outside
     def inside_window?(x = @x, y = @y)

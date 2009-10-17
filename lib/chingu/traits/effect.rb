@@ -22,26 +22,28 @@
 
 module Chingu
   module Traits
+  
+    #
+    # Adds methods:
+    #   rotate(amount)  # modifies @angle
+    #   scale(amount)   # modifies @factor_x and @factor_y
+    #   fade(amount)    # modifies @color.alpha
+    # 
+    # Also adds attributes
+    #   rotation_rate=amount   # adds amount to @angle each game loop
+    #   scale_rate=amount      # adds amount to @factor_x and @factor_y each game loop
+    #   fade_rate=amount       # adds amount to @color.alpha each game loop
+    #
+    #
+    # WARNING, I'm very close to deprecating this trait, it doesn't do much and still introduces new names to learn.
+    # After a long discussion in #gosu I feel it's just better to use the accessors angle=, alpha= and factor=
+    #  
+    # BasicGameObject#alpha= contains the most important logic this trait had now anyhow.
+    #
+
     module Effect
-      #
-      # Adds .rotating .fading and .zooming to any GameObject.
-      #
-      # TODO: better naming? suggestions:
-      #
-      # basic gosu unit <-> automation name
-      # ==============================================
-      # angle <-> rotation? rotating? automatic_angle?
-      # factor <-> growth? scale? automatic_zoom?
-      # alpha <-> fade
-      #
-      attr_accessor :rotating, :fading, :zooming
-      
-      #def self.initialize_trait(options)
-      #  @effect_options = {:debug => false}.merge(options)
-      #  puts "Effect#initialize"    if @effect_options[:debug]
-      #  super
-      #end
-            
+      attr_accessor :rotation_rate, :fade_rate, :scale_rate
+                  
       #
       # Setup
       #
@@ -49,63 +51,58 @@ module Chingu
         @effect_options = {:debug => false}.merge(options)
         puts "Effect#setup"     if @effect_options[:debug]
         
-        @rotating = options[:rotating] || nil
-        @zooming = options[:zooming] || nil
-        @fading = options[:fading] || nil
+        @rotation_rate = options[:rotation_rate] || nil
+        @scale_rate = options[:scale_rate] || nil
+        @fade_rate = options[:fade_rate] || nil
         super
       end
       
       def draw_trait
-        puts "Effect#draw"      if @effect_options[:debug]
         super
       end
       
       def update_trait
         puts "Effect#update"    if @effect_options[:debug]
         
-        rotate(@rotating)    if @rotating
-        fade(@fading)        if @fading
-        zoom(@zooming)       if @zooming
+        rotate(@rotation_rate)  if @rotation_rate
+        fade(@fade_rate)        if @fade_rate
+        scale(@scale_rate)      if @scale_rate
         super
       end
       
-      # Zoom - increase @factor_x and @factor_y at the same time.
-      def zoom(amount = 0.1)
+      # Increase @factor_x and @factor_y at the same time.
+      def scale(amount = 0.1)
         @factor_x += amount
         @factor_y += amount
       end
+      alias :zoom :scale
           
-      # Zoom Out - decrease @factor_x and @factor_y at the same time.
-      def zoom_out(amount = 0.1)
+      # Ddecrease @factor_x and @factor_y at the same time.
+      def scale_out(amount = 0.1)
         @factor_x -= amount
         @factor_y -= amount
       end
-    
+      alias :zoom_out :scale_out
+      
       # Rotate object 'amount' degrees
       def rotate(amount = 1)
-        @angle += amount
+        self.angle += amount
       end
   
       # Fade object by decreasing/increasing color.alpha
       def fade(amount = 1)
         return if amount == 0
-            
-        new_alpha = @color.alpha + amount
-        if amount < 0
-          @color.alpha =  [0, new_alpha].max
-        else
-          @color.alpha =  [0, new_alpha].min
-        end
+        self.alpha += amount
       end
 
       # Fade out objects color by decreasing color.alpha
       def fade_out(amount = 1)
-        fade(-amount)
+        self.alpha -= amount
       end
 
       # Fade in objects color by increasing color.alpha
       def fade_in(amount = 1)
-        fade(amount)
+        self.alpha += amount
       end
       
     end

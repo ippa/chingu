@@ -52,7 +52,7 @@ class Thing < Chingu::GameObject
 
 
     self.factor = 8
-    self.rotating = 2
+    self.rotation_rate = 2
     self.velocity_x = 2
   end
   
@@ -60,7 +60,7 @@ class Thing < Chingu::GameObject
     puts "Thing#update"
     if outside_window?
       @velocity_x = -@velocity_x
-      @rotating = -@rotating
+      self.rotation_rate = -self.rotation_rate
     end
   end
   

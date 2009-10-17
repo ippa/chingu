@@ -4,7 +4,7 @@ include Gosu
 include Chingu
 
 #
-# Demonstrating traits "velocity" and "effect"
+# Demonstrating traits "velocity" and "collision_detection"
 #
 class Game < Chingu::Window
   def initialize
@@ -19,7 +19,6 @@ end
 
 class FireCube < Chingu::GameObject
   has_trait :velocity
-  has_trait :effect
   has_trait :collision_detection
   #
   # TODO:
