@@ -80,7 +80,7 @@ module Chingu
     def pause!
       @paused = true
     end
-    
+        
     #
     # Enable automatic calling of update() and update_trait() each game loop
     #
@@ -100,6 +100,20 @@ module Chingu
     #
     def show!
       @visible = true
+    end
+
+    #
+    # Returns true if paused
+    #
+    def paused?
+      @paused == true
+    end
+
+    #
+    # Returns true if visible (not hidden)
+    #
+    def visible?
+      @visible == true
     end
 
     def setup_trait(options)
