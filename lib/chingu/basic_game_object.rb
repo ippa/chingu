@@ -75,25 +75,28 @@ module Chingu
     end
 
     #
-    # Disable auto-updating of traits 
+    # Disable automatic calling of update() and update_trait() each game loop
     #
     def pause!
       @paused = true
     end
+    
     #
-    # Enable auto-update of traits
+    # Enable automatic calling of update() and update_trait() each game loop
     #
     def unpause!
       @paused = false
     end
+    
     #
-    # Disable auto-drawing of object
+    # Disable automatic calling of draw and draw_trait each game loop
     #
     def hide!
       @visible = false
     end
+    
     #
-    # Enable auto-drawing of object
+    # Enable automatic calling of draw and draw_trait each game loop
     #
     def show!
       @visible = true

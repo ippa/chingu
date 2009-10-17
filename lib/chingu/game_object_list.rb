@@ -88,5 +88,33 @@ module Chingu
     def select
       @game_objects.select { |object| yield object }
     end
+    
+    #
+    # Disable automatic calling of update() and update_trait() each game loop for all game objects
+    #
+    def pause!
+      @game_objects.each { |object| object.pause! }
+    end
+    
+    #
+    # Enable automatic calling of update() and update_trait() each game loop for all game objects
+    #
+    def unpause!
+      @game_objects.each { |object| object.unpause! }
+    end
+    
+    #
+    # Disable automatic calling of draw and draw_trait each game loop for all game objects
+    #
+    def hide!
+      @game_objects.each { |object| object.hide! }
+    end
+    
+    #
+    # Enable automatic calling of draw and draw_trait each game loop for all game objects
+    #
+    def show!
+      @game_objects.each { |object| object.show! }
+    end
   end  
 end
