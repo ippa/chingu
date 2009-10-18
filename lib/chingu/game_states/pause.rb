@@ -20,15 +20,15 @@
 #++
 
 module Chingu
-
-  #
-  # Premade game state for chingu - A simple pause state.
-  # Pause whenever with: 
-  #   push_game_state(Chingu::GameStates::Pause)
-  #
-  # requires the global $window set to the instance of Gosu::Window (automaticly handled if you use Chingu::Window)
-  #
   module GameStates
+  
+    #
+    # Premade game state for chingu - A simple pause state.
+    # Pause whenever with: 
+    #   push_game_state(Chingu::GameStates::Pause)
+    #
+    # requires the global $window set to the instance of Gosu::Window (automaticly handled if you use Chingu::Window)
+    #
     class Pause < Chingu::GameState
       def initialize(options = {})
         super

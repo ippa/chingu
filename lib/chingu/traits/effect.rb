@@ -29,9 +29,9 @@ module Chingu
     #   fade(amount)    # modifies @color.alpha
     # 
     # Also adds attributes
-    #   rotation_rate=amount   # adds amount to @angle each game loop
-    #   scale_rate=amount      # adds amount to @factor_x and @factor_y each game loop
-    #   fade_rate=amount       # adds amount to @color.alpha each game loop
+    #   rotation_rate = amount   # adds amount to @angle each game loop
+    #   scale_rate = amount      # adds amount to @factor_x and @factor_y each game loop
+    #   fade_rate = amount       # adds amount to @color.alpha each game loop
     #
     #
     # WARNING, I'm very close to deprecating this trait, it doesn't do much and still introduces new names to learn.

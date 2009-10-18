@@ -19,12 +19,12 @@
 #
 #++
 
-module Chingu
-  
-  #
-  # Debug game state (F1 is default key to start/exit debug win, 'p' to pause game)
-  #
+module Chingu  
   module GameStates
+  
+    #
+    # Debug game state (F1 is default key to start/exit debug win, 'p' to pause game)
+    #  
     class Debug < Chingu::GameState
       def initialize(options)
         super
