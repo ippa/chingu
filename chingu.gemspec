@@ -7,7 +7,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ippa"]
   s.date = %q{2009-10-18}
-  s.description = %q{Game framework built on top of the OpenGL accelerated game lib Gosu. 
+  s.description = %q{OpenGL accelerated 2D game framework for Ruby.
+Builds on the awesome Gosu (Ruby/C++) which provides all the core functionality.
 It adds simple yet powerful game states, prettier input handling, deployment safe asset-handling, a basic re-usable game object and automation of common task.}
   s.email = ["ippa@rubylicio.us"]
   s.extra_rdoc_files = ["History.txt", "Manifest.txt", "benchmarks/README.txt"]
@@ -17,7 +18,7 @@ It adds simple yet powerful game states, prettier input handling, deployment saf
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{chingu}
   s.rubygems_version = %q{1.3.5}
-  s.summary = %q{Game framework built on top of the OpenGL accelerated game lib Gosu}
+  s.summary = %q{OpenGL accelerated 2D game framework for Ruby}
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION

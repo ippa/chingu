@@ -12,7 +12,8 @@ Chingu has started to settle down, thouch core classes and naming can still chan
 
 
 == DESCRIPTION
-Game framework built on top of the OpenGL accelerated game lib Gosu. 
+OpenGL accelerated 2D game framework for Ruby.
+Builds on the awesome Gosu (Ruby/C++) which provides all the core functionality.
 It adds simple yet powerful game states, prettier input handling, deployment safe asset-handling, a basic re-usable game object and automation of common task.
 
 
@@ -200,7 +201,8 @@ The basic ideas behind it are:
 * Keep naming close to Gosu, but add smart convenient methods / shortcuts and a more rubyish feeling
 * No game logic allowed in GameObject, since that's not likely to be useful for others.
 
-I've chose to base it around Image#draw_rot. So basically all the arguments that you pass to draw_rot can be passed to GameObject#new when creating a new object, an example using almost all arguments would be:
+It's based around Image#draw_rot. So basically all the arguments that you pass to draw_rot can be passed to GameObject#new when creating a new object.
+An example using almost all arguments would be:
   
   #
   # You probably recognize the arguments from http://www.libgosu.org/rdoc/classes/Gosu/Image.html#M000023
@@ -560,6 +562,8 @@ See http://www.libgosu.org/rdoc/classes/Gosu/Window.html for a full set of metho
 There's 1 zillion ways of naming stuff. As a general guideline I've tried to follow Gosus naming.
 If Gosu didn't have a good name for a certain thing/method I've checked Ruby itself and then Rails since alot of Ruby-devs are familiar with Rails.
 GameObject.all is naming straight from rails for example. Most stuff in GameObject follow the naming from Gosus Image#draw_rot.
+
+As far as possible, use correct rubyfied english game_objects, not gameobjects. class HighScore, not Highscore.
 
 == TODO:
 * add :padding and :align => :topleft etc to class Text

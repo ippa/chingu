@@ -1,9 +1,35 @@
+#--
 #
-# Class for simple parallaxscrolling
+# Chingu -- OpenGL accelerated 2D game framework for Ruby
+# Copyright (C) 2009 ippa / ippa@rubylicio.us
 #
-# See: http://en.wikipedia.org/wiki/Parallax_scrolling
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
 #
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+#
+#++
+
 module Chingu
+  #
+  # Class for simple parallaxscrolling
+  #
+  # See http://en.wikipedia.org/wiki/Parallax_scrolling for information about parallaxscrolling.
+  #
+  # Basic usage:
+  #   @parallax = Chingu::Parallax.create(:x => 0, :y => 0)
+  #   @parallax << Chingu::ParallaxLayer.new(:image => "far_away_mountins.png", :damping => 20, :center => 0)
+  #   @parallax << Chingu::ParallaxLayer.new(:image => "trees.png", :damping => 5, :center => 0)
+  #
   class Parallax < Chingu::GameObject
     attr_reader :layers
 

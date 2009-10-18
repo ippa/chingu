@@ -1,6 +1,6 @@
 #--
 #
-# Chingu -- Game framework built on top of the opengl accelerated gamelib Gosu
+# Chingu -- OpenGL accelerated 2D game framework for Ruby
 # Copyright (C) 2009 ippa / ippa@rubylicio.us
 #
 # This library is free software; you can redistribute it and/or
@@ -26,6 +26,7 @@ require 'rubygems' unless RUBY_VERSION =~ /1\.9/
 require 'gosu'
 require File.join(CHINGU_ROOT,"chingu","require_all") # Thanks to http://github.com/tarcieri/require_all !
 require_all "#{CHINGU_ROOT}/chingu"
+#autoload :OpenStruct, "ostruct"
 
 module Chingu
   VERSION = "0.5.8"

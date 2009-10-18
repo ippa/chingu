@@ -1,6 +1,6 @@
 #--
 #
-# Chingu -- Game framework built on top of the opengl accelerated gamelib Gosu
+# Chingu -- OpenGL accelerated 2D game framework for Ruby
 # Copyright (C) 2009 ippa / ippa@rubylicio.us
 #
 # This library is free software; you can redistribute it and/or
@@ -19,11 +19,11 @@
 #
 #++
 
-
-#
-# Debug game state (F1 is default key to start/exit debug win, 'p' to pause game)
-#
 module Chingu
+  
+  #
+  # Debug game state (F1 is default key to start/exit debug win, 'p' to pause game)
+  #
   module GameStates
     class Debug < Chingu::GameState
       def initialize(options)

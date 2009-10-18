@@ -20,34 +20,41 @@
 #++
 
 
-#
-# Core extensions to GOSU
-# Some of these require the gem 'texplay'
-#
-module Gosu  
-  class Image
-    #
-    # Returns true if the pixel at x, y is 100% transperant (good for collisiondetection)
-    # Requires texplay
-    #
-    def transparent_pixel?(x, y)
-      begin
-        self.get_pixel(x,y)[3] == 0
-      rescue
-        puts "Error in get_pixel at x/y: #{x}/#{y}"
-      end
+module Chingu
+
+  #
+  # Highscore-class
+  #
+  # - Keeps a local YAML file with highscores, default highscores.yml in root game dir.
+  # - Add, delete, clear highscores
+  # - Iterate through highscores with simple Highscore#each
+  #
+  class HighScore
+    def initialize(options = {})
+      @file = options[:file] || "high_scores.yml"
+      @high_scores = Array.new
+      
+      #OpenStruct.new()
     end
     
     #
-    # Retrofy should be called just after the image is loaded.
-    # When retrofied an image will use a non-blurry zoom.
-    # This could be used to make each pixel a sharp 4 pixelblock => retrofeeling.
+    # 
     #
-    def retrofy
-      glBindTexture(GL_TEXTURE_2D, self.gl_tex_info.tex_name)
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-      self
+    def add(name, score)
+      
+    end
+    alias << add
+    
+    def each
+      @highscores.each { |highscore| yield highscore }
+    end
+
+    def save
+    end
+  
+    def self.all
+    
     end
   end
+
 end

@@ -1,6 +1,6 @@
 #--
 #
-# Chingu -- Game framework built on top of the opengl accelerated gamelib Gosu
+# Chingu -- OpenGL accelerated 2D game framework for Ruby
 # Copyright (C) 2009 ippa / ippa@rubylicio.us
 #
 # This library is free software; you can redistribute it and/or
@@ -20,18 +20,19 @@
 #++
 
 
-#
-# Premade game state for chingu - Fade between two game states
-# Fade from the current game state to a new one whenever with: 
-#
-#   push_game_state(Chingu::GameStates::FadeTo.new(new_game_state, :speed => 3))
-#
-# .. Or make your whole game look better with 1 line:
-#
-#   transitional_game_state(Chingu::GameStates::FadeTo, :speed => 10)
-#
 module Chingu
   module GameStates
+  
+    #
+    # Premade game state for chingu - Fade between two game states
+    # Fade from the current game state to a new one whenever with: 
+    #
+    #   push_game_state(Chingu::GameStates::FadeTo.new(new_game_state, :speed => 3))
+    #
+    # .. Or make your whole game look better with 1 line:
+    #
+    #   transitional_game_state(Chingu::GameStates::FadeTo, :speed => 10)
+    #
     class FadeTo < Chingu::GameState
       
       def initialize(new_game_state, options = {})
@@ -65,7 +66,7 @@ module Chingu
       end
       
       def draw
-        # Stop endless loops
+        # Stop possible endless loops
         if @drawn == false
           @drawn = true
           

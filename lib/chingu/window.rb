@@ -1,5 +1,37 @@
+#--
+#
+# Chingu -- OpenGL accelerated 2D game framework for Ruby
+# Copyright (C) 2009 ippa / ippa@rubylicio.us
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+#
+#++
+
 module Chingu
 
+  #
+  # See http://www.libgosu.org/rdoc/classes/Gosu/Window.html
+  #
+  # On top of that we add:
+  # - Default widht / height, --fullscreen option from console
+  # - Sets a global variable $window = self, which is then used throughout Chingu
+  # - Defaultd #update which updates all game_objects which are not pasued
+  # - Default #draw which draws all game_objects which are visible
+  # - Default Asset-directories media/, sfx/, gfx/ etc.
+  # - Tracking of button_up/button_down etc to enable Chingus pretty inputhandling
+  #
   class Window < Gosu::Window
     include Chingu::Helpers::GFX                # Adds fill(), fade() etc to each game state
     include Chingu::Helpers::GameState          # Easy access to the global game state-queue
@@ -9,16 +41,6 @@ module Chingu
     
     attr_reader :root, :game_state_manager, :game_objects, :milliseconds_since_last_tick
     
-    #
-    # See http://www.libgosu.org/rdoc/classes/Gosu/Window.html
-    #
-    # On top of that we add:
-    # - Default widht / height, --fullscreen option from console
-    # - Global variable $window
-    # - Standard #update which updates all Chingu::GameObject's 
-    # - Standard #draw which goes through 
-    # - Assethandling with Image["picture.png"] and Sample["shot.wav"]
-    #
     def initialize(width = 800, height = 600, fullscreen = false, update_interval = 16.666666)
       fullscreen ||= ARGV.include?("--fullscreen")
       $window = super(width, height, fullscreen, update_interval)

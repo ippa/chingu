@@ -3,7 +3,11 @@ module Chingu
   # The Animation-class helps you load and manage a tileanimation.
   # A Tileanimation is a file where all the frames are put after eachother.
   #
-  # An easy to use program to create tileanimations is http://tilestudio.sourceforge.net/
+  # An easy to use program to create tileanimations is http://tilestudio.sourceforge.net/ or http://www.humanbalance.net/gale/us/
+  #
+  # TODO: 
+  # Support frames in invidual image-files?
+  # Is autodetection of width / height possible? 
   #
   class Animation
     attr_accessor :frames, :delay
@@ -13,7 +17,7 @@ module Chingu
     #
     #   - loop: [true|false]. After the last frame is used, start from the beginning.
     #   - bounce: [true|false]. After the last frame is used, play it backwards untill the first frame is used again, then start playing forwards again.
-    #   - file:   Tile-file to cut up animation frames from.
+    #   - file:   Tile-file to cut up animation frames from. Could be a full path or just a name -- then it will look for media_path(file)
     #   - width:  width of each frame in the tileanimation
     #   - height:  width of each frame in the tileanimation
     #   - size: [x,y] specify width/height with 1 argument (an array)

@@ -1,6 +1,6 @@
 #--
 #
-# Chingu -- Game framework built on top of the opengl accelerated gamelib Gosu
+# Chingu -- OpenGL accelerated 2D game framework for Ruby
 # Copyright (C) 2009 ippa / ippa@rubylicio.us
 #
 # This library is free software; you can redistribute it and/or
@@ -19,16 +19,15 @@
 #
 #++
 
-
-
-#
-# Premade game state for chingu - A simple pause state.
-# Pause whenever with: 
-#   push_game_state(Chingu::GameStates::Pause)
-#
-# requires global $window
-#
 module Chingu
+
+  #
+  # Premade game state for chingu - A simple pause state.
+  # Pause whenever with: 
+  #   push_game_state(Chingu::GameStates::Pause)
+  #
+  # requires the global $window set to the instance of Gosu::Window (automaticly handled if you use Chingu::Window)
+  #
   module GameStates
     class Pause < Chingu::GameState
       def initialize(options = {})

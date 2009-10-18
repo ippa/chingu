@@ -1,6 +1,6 @@
 #--
 #
-# Chingu -- Game framework built on top of the opengl accelerated gamelib Gosu
+# Chingu -- OpenGL accelerated 2D game framework for Ruby
 # Copyright (C) 2009 ippa / ippa@rubylicio.us
 #
 # This library is free software; you can redistribute it and/or
@@ -19,9 +19,9 @@
 #
 #++
 
-
 module Chingu
   module Traits
+  
     #
     # A chingu trait providing timer-methods to its includer, examples:
     #   during(300) { @color = Color.new(0xFFFFFFFF) }   # forces @color to white ever update for 300 ms
