@@ -108,10 +108,12 @@ module Chingu
         # Make sure the game state knows about the manager
         new_state.game_state_manager = self
         
-        
         # Give the soon-to-be-disabled state a chance to clean up by calling finalize() on it.
         @previous_game_state = current_game_state
         current_game_state.finalize   if current_game_state.respond_to?(:finalize) && options[:finalize]
+        
+        # So BasicGameObject#create connects object to new state in its setup()
+        self.inside_state = new_state
         
         # Call setup
         new_state.setup               if new_state.respond_to?(:setup) && options[:setup]
@@ -128,7 +130,7 @@ module Chingu
             @game_states[-1] = new_state
           end
         end
-        self.inside_state = current_game_state
+        ## MOVEDE: self.inside_state = current_game_state
       end
     end
     alias :switch :switch_game_state
@@ -144,6 +146,10 @@ module Chingu
       new_state = game_state_instance(state)
             
       if new_state
+        
+        # So BasicGameObject#create connects object to new state in its setup()
+        self.inside_state = new_state
+        
         # Call setup
         new_state.setup               if new_state.respond_to?(:setup) && options[:setup]
         
@@ -162,7 +168,7 @@ module Chingu
           # Push new state on top of stack and therefore making it active
           @game_states.push(new_state)
         end
-        self.inside_state = current_game_state
+        ## MOVED: self.inside_state = current_game_state
       end
     end
     alias :push :push_game_state
@@ -185,7 +191,10 @@ module Chingu
       # Activate the game state "bellow" current one with a simple Array.pop
       #
       @game_states.pop
-        
+      
+      # So BasicGameObject#create connects object to new state in its setup()
+      self.inside_state = current_game_state
+      
       # Call setup on the new current state
       current_game_state.setup       if current_game_state.respond_to?(:setup) && options[:setup]
       
@@ -194,7 +203,7 @@ module Chingu
         transitional_game_state = @transitional_game_state.new(current_game_state, @transitional_game_state_options)
         self.switch_game_state(transitional_game_state, :transitional => false)
       end
-      self.inside_state = current_game_state
+      ## MOVED: self.inside_state = current_game_state
     end
     alias :pop :pop_game_state
 
