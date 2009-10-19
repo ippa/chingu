@@ -71,6 +71,7 @@ lib/chingu/helpers/gfx.rb
 lib/chingu/helpers/input_client.rb
 lib/chingu/helpers/input_dispatcher.rb
 lib/chingu/helpers/rotation_center.rb
+lib/chingu/high_score.rb
 lib/chingu/inflector.rb
 lib/chingu/input.rb
 lib/chingu/named_resource.rb

@@ -29,5 +29,5 @@ require_all "#{CHINGU_ROOT}/chingu"
 #autoload :OpenStruct, "ostruct"
 
 module Chingu
-  VERSION = "0.5.8"
+  VERSION = "0.5.8.1"
 end
