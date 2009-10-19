@@ -10,7 +10,7 @@ module Chingu
   # Is autodetection of width / height possible? 
   #
   class Animation
-    attr_accessor :frames, :delay
+    attr_accessor :frames, :delay, :step
     
     #
     # Create a new Animation. 
@@ -22,9 +22,10 @@ module Chingu
     #   - height:  width of each frame in the tileanimation
     #   - size: [x,y] specify width/height with 1 argument (an array)
     #   - delay: milliseconds between each frame
+    #   - step: [steps] move animation forward [steps] frames each time we call #next
     #
     def initialize(options)
-      options = {:loop => true, :bounce => false, :width => 32, :height => 32, :index => 0, :delay => 100}.merge(options)
+      options = {:step = 1, :loop => true, :bounce => false, :width => 32, :height => 32, :index => 0, :delay => 100}.merge(options)
       
       @loop = options[:loop]
       @bounce = options[:bounce]
@@ -33,6 +34,7 @@ module Chingu
       @width = options[:width]
       @index = options[:index]
       @delay = options[:delay]
+      @step = options[:step] || 1
       @dt = 0
       
       if options[:size]
@@ -44,7 +46,6 @@ module Chingu
       
       @frame_actions = []
       @frames = Gosu::Image.load_tiles($window, @file, @width, @height, true)
-      @step = 1
     end
     
     #
