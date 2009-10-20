@@ -528,10 +528,14 @@ You also have:
   Sound["shot.png"]
   Song["intromusic.ogg"]
 
-By default Image, Sound and Sound searches the current directory and directory "media".
+The default settings are like this:
+Image["image.png"] -- searches directories ".", "images", "gfx" and "media"
+Sample["sample.wav"] -- searches directories ".", "sounds", "sfx" and "media"
+Song["song.ogg"] -- searches directories ".", "songs", "sounds", "sfx" and "media"
+
 Add your own searchpaths like this:
-  Gosu::Image.autoload_dirs << File.join($window.root, "gfx")
-  Gosu::Sound.autoload_dirs << File.join($window.root, "samples")
+  Gosu::Image.autoload_dirs << File.join(ROOT, "gfx")
+  Gosu::Sound.autoload_dirs << File.join(ROOT, "samples")
 
 This will add \path\to\your\game\gfx and \path\to\your\game\samples  to Image and Sound.
   
