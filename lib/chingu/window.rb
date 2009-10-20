@@ -46,11 +46,11 @@ module Chingu
       $window = super(width, height, fullscreen, update_interval)
 			
       @root = File.dirname(File.expand_path($0))
-      Chingu::Asset.autoload_dirs = [".", File.join(@root, "gfx"), File.join(@root, "media"), File.join(@root, "sfx")]
-      Gosu::Image.autoload_dirs = [".", File.join(@root, "gfx"), File.join(@root, "media")]
-      Gosu::Sample.autoload_dirs = [".", File.join(@root, "sound"), File.join(@root, "media")]
+      Chingu::Asset.autoload_dirs = [".", File.join(@root, "assets"), File.join(@root, "media")]
+      Gosu::Image.autoload_dirs = [".", File.join(@root, "images"), File.join(@root, "gfx"), File.join(@root, "media")]
+      Gosu::Sample.autoload_dirs = [".", File.join(@root, "sounds"), File.join(@root, "sfx"), File.join(@root, "media")]
+      Gosu::Song.autoload_dirs = [".", File.join(@root, "songs"), File.join(@root, "sounds"), File.join(@root, "sfx"), File.join(@root, "media")]
       Gosu::Tile.autoload_dirs = [".", File.join(@root, "gfx"), File.join(@root, "media")]
-      Gosu::Song.autoload_dirs = [".", File.join(@root, "sfx"), File.join(@root, "media")]
 			
       @game_objects = GameObjectList.new
       @input_clients = Array.new

@@ -9,7 +9,7 @@ module Chingu
   end
   
   def image_path(file)
-    File.join(ROOT, "gfx", file)
+    File.join(ROOT, "images", file)
   end
   
   class Asset
@@ -21,6 +21,9 @@ module Chingu
   end
 end
 
+#
+# Extend GOSU's core classes with NamedResource
+#
 module Gosu
   class Image
     include Chingu::NamedResource
@@ -45,20 +48,5 @@ module Gosu
       (path = find_file(name)) ? Gosu::Sample.new($window, path) : nil
     end
   end
-  Sound = Sample
-	
-  class Tile
-    include Chingu::NamedResource	
-	
-    def self.autoload(name)
-      (path = find_file(name)) ? Gosu::Image.load_tiles($window, path, 32, 32, true) : nil
-    end
-  end
-  
-  class CutTiles
-    def self.[](name, width, height)
-      @@tiles = Hash.new unless defined?(@@tiles)
-      @@tiles[name] ||= Gosu::Image.load_tiles($window, name, width, height, true)
-    end
-  end
+  Sound = Sample  # Gosu uses Sample, but Sound makes sense too.
 end
