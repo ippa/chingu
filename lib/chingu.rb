@@ -26,7 +26,7 @@ require 'rubygems' unless RUBY_VERSION =~ /1\.9/
 require 'gosu'
 require File.join(CHINGU_ROOT,"chingu","require_all") # Thanks to http://github.com/tarcieri/require_all !
 require_all "#{CHINGU_ROOT}/chingu"
-#autoload :OpenStruct, "ostruct"
+autoload :YAML, "yaml"
 
 module Chingu
   VERSION = "0.5.8.1"
