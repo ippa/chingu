@@ -19,9 +19,7 @@
 #
 #++
 
-
 module Chingu
-
   #
   # Highscore-class
   #
@@ -29,32 +27,78 @@ module Chingu
   # - Add, delete, clear highscores
   # - Iterate through highscores with simple Highscore#each
   #
-  class HighScore
+  class HighScoreList
+    attr_reader :file
+    
+    #
+    # Create a new high score list with 0 entries
+    #
     def initialize(options = {})
-      @file = options[:file] || "high_scores.yml"
+      require 'yaml'
+      @file = options[:file] || "high_score_list.yml"
+      @size = options[:size] || 100
+      @sort_on = options[:sort_on] || :score
       @high_scores = Array.new
-      
-      #OpenStruct.new()
     end
     
     #
-    # 
+    # Create a new high score list and try to load content from :file-parameter
+    # If no :file is given, HighScoreList tries to load from file "high_score_list.yml"
     #
-    def add(name, score)
-      
+    def self.load(options = {})
+      high_score_list = HighScoreList.new(options)
+      high_score_list.load
+      return high_score_list
     end
+    
+    #
+    # Add a new high score to list.
+    # 'data' is a hash of key/value-pairs that needs to contain at least the keys :name and :score
+    #
+    def add(data)
+      raise "No :name value in high score!" if data[:name].nil?
+      raise "No :score value in high score!" if data[:score].nil?
+      
+      @high_scores.push(data)
+      @high_scores.sort! { |a, b| b[@sort_on] <=> a[@sort_on] }
+      @high_scores = @high_scores[0..@size]
+    end
+    
     alias << add
     
-    def each
-      @highscores.each { |highscore| yield highscore }
+    #
+    # Direct access to invidual high scores
+    #
+    def [](index)
+      @high_scores[index]
     end
-
-    def save
-    end
-  
-    def self.all
     
+    #
+    # Iterate through all high scores
+    #
+    def each
+      @high_scores.each { |high_score| yield high_score }
     end
-  end
+    
+    def each_with_index
+      @high_scores.each_with_index { |high_score, index| yield high_score, index }
+    end
 
+    #
+    # Load data from previously specified @file
+    #
+    def load
+      @high_scores = YAML.load_file(@file)  if File.exists?(@file)
+    end
+    
+    #
+    # Save high score data into previously specified @file
+    #
+    def save
+      File.open(@file, 'w') do |out|
+        YAML.dump(@high_scores, out)
+      end
+    end
+    
+  end
 end
