@@ -71,15 +71,18 @@ It currently has to be namespaced to Chingu::Traits for "has_trait" to work insi
 == OTHER CLASSES / HELPERS
 
 === Chingu::Text
-Makes use of Gosu::Font more rubyish and powerful.
-In it's core, another Chingu::GameObject + Gosu::Font.
+Makes use of Image#from_text more rubyish and powerful.
+In it's core, another Chingu::GameObject + image genning with Image#from_text.
 
 === Chingu::Animation
 Load and interact with tile-based animations. loop, bounce and access invidual frame(s) easily.
-An "@image = @animation.next!" in your Player#update is usually enough to get you started!
+An "@image = @animation.next" in your Player#update is usually enough to get you started!
 
 === Chingu::Parallax
-A class for easy paralaxxscrolling. See example3.rb for more.
+A class for easy parallaxscrolling. Add layers with different damping, move the camera to generate a new snapshot. See example3.rb for more.
+
+=== Chingu::HighScoreList
+A class to keep track of high scores, limit the list, automatic sorting on score, save/load to disc. See example13.rb for more.
 
 === Various Helpers
 Both $window and game states gets some new graphical helpers, currently only 3, but quite useful:
