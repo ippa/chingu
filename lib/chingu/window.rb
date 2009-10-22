@@ -50,7 +50,6 @@ module Chingu
       Gosu::Image.autoload_dirs = [".", File.join(@root, "images"), File.join(@root, "gfx"), File.join(@root, "media")]
       Gosu::Sample.autoload_dirs = [".", File.join(@root, "sounds"), File.join(@root, "sfx"), File.join(@root, "media")]
       Gosu::Song.autoload_dirs = [".", File.join(@root, "songs"), File.join(@root, "sounds"), File.join(@root, "sfx"), File.join(@root, "media")]
-      Gosu::Tile.autoload_dirs = [".", File.join(@root, "gfx"), File.join(@root, "media")]
 			
       @game_objects = GameObjectList.new
       @input_clients = Array.new
