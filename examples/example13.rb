@@ -25,7 +25,16 @@ class Game < Chingu::Window
     # Add some new high scores to the list. :name and :score are required but you can put whatever.
     # They will mix with the old scores, automatic default sorting on :score
     #
-    10.times { @high_score_list.add(:name => "NEW", :score => rand(10000)) }
+    10.times do
+      data = {:name => "NEW", :score => rand(10000)}
+      
+      position = @high_score_list.add(data)
+      if position
+        puts "#{data[:name]} - #{data[:score]} got position #{position}"
+      else
+        puts "#{data[:name]} - #{data[:score]} didn't make it"
+      end
+    end
     
     #
     # Iterate through all high scores and create the visual represenation of it
@@ -38,7 +47,7 @@ class Game < Chingu::Window
     
     5.times do
       score = rand(20000)
-      puts "position for #{score}: #{@high_score_list.position_by_score(score)}"
+      puts "position for possible score #{score}: #{@high_score_list.position_by_score(score)}"
     end
     
     # @high_score_list.save  # Uncomment to save list to disk

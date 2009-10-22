@@ -54,6 +54,7 @@ module Chingu
     #
     # Add a new high score to list.
     # 'data' is a hash of key/value-pairs that needs to contain at least the keys :name and :score
+    # Returns the position it got in the list, with 1 beeing the first positions
     #
     def add(data)
       raise "No :name value in high score!"   if data[:name].nil?
@@ -62,6 +63,9 @@ module Chingu
       @high_scores.push(data)
       @high_scores.sort! { |a, b| b[@sort_on] <=> a[@sort_on] }
       @high_scores = @high_scores[0..@size]
+      
+      position = @high_scores.rindex(data)
+      position += 1 if position
     end
     alias << add
     
