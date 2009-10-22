@@ -37,51 +37,65 @@ module Chingu
         
         #
         # Timers are saved as an array of arrays where each entry contains:
-        # [start_time, end_time (or nil if one-shot), &block]
+        # [start_time, end_time (or nil if one-shot), repeat-bool, &block]
         #
         @_timers = Array.new
+        @_repeating_timers = Array.new
         super
       end
 
       def during(time, &block)
-        ms = milliseconds()
+        ms = Gosu::milliseconds()
         @_last_timer = [ms, ms + time, block]
         @_timers << @_last_timer
         self
       end
       
       def after(time, &block)
-        ms = milliseconds()
+        ms = Gosu::milliseconds()
         @_last_timer = [ms + time, nil, block]
         @_timers << @_last_timer
         self
       end
       
       def between(start_time, end_time, &block)
-        ms = milliseconds()
+        ms = Gosu::milliseconds()
         @_last_timer = [ms + start_time, ms + end_time, block]
         @_timers << @_last_timer
         self
       end
-      
+
+      def every(delay, &block)
+        ms = Gosu::milliseconds()
+        @_repeating_timers << [ms + delay, delay, block]
+      end
+
       def then(&block)
         # ...use one-shots start_time for our trailing "then".
         # ...use durable timers end_time for our trailing "then".
         start_time = @_last_timer[1].nil? ? @_last_timer[0] : @_last_timer[1]
-        @_timers << [start_time, nil, block]
+        @_timers << [start_time, nil, false, block]
       end
       
       def update_trait
-        ms = milliseconds()
+        ms = Gosu::milliseconds()
         @_timers.each do |start_time, end_time, block|
-          if ms > start_time && (end_time == nil || ms < end_time)
-            block.call
+          block.call  if ms > start_time && (end_time == nil || ms < end_time)
+        end
+        
+        
+        index = 0
+        @_repeating_timers.each do |start_time, delay, block|
+          if ms > start_time
+            block.call  
+            @_repeating_timers[index] = [ms + delay, delay, block]
           end
+          index += 1
         end
 
         # Remove one-shot timers (only a start_time, no end_time) and all timers which have expired
         @_timers.reject! { |start_time, end_time, block| (ms > start_time && end_time == nil) || (end_time != nil && ms > end_time) }
-        
+      
         super
       end
       
