@@ -56,15 +56,28 @@ module Chingu
     # 'data' is a hash of key/value-pairs that needs to contain at least the keys :name and :score
     #
     def add(data)
-      raise "No :name value in high score!" if data[:name].nil?
-      raise "No :score value in high score!" if data[:score].nil?
+      raise "No :name value in high score!"   if data[:name].nil?
+      raise "No :score value in high score!"  if data[:score].nil?
       
       @high_scores.push(data)
       @high_scores.sort! { |a, b| b[@sort_on] <=> a[@sort_on] }
       @high_scores = @high_scores[0..@size]
     end
-    
     alias << add
+    
+    #
+    # Returns the position 'score' would get in among the high scores:
+    #   @high_score_list.position_by_score(999999999) # most likely returns 1 for the number one spot
+    #   @high_score_list.position_by_score(1)         # most likely returns nil since no placement is found (didn't make it to the high scores)
+    #
+    def position_by_score(score)
+      position = 1
+      @high_scores.each do |high_score|
+        return position   if score > high_score[:score]
+        position += 1
+      end
+      return nil
+    end
     
     #
     # Direct access to invidual high scores

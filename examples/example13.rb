@@ -35,6 +35,11 @@ class Game < Chingu::Window
       Text.create(:text => high_score[:score], :x => 400, :y => y, :size => 20)
     end
     
+    5.times do
+      score = rand(20000)
+      puts "position for #{score}: #{@high_score_list.position_by_score(score)}"
+    end
+    
     # @high_score_list.save  # Uncomment to save list to disk
   end
   
