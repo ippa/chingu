@@ -147,7 +147,7 @@ You're probably familiar with this very common Gosu pattern:
   Game.new.show   # Start the Game update/draw loop!
 
 
-Chingu doesn't change any fundamental concept of Gosu, but it will make the above code cleaner:
+Chingu doesn't change the fundamental concept/flow of Gosu, but it will make the above code cleaner:
   
   #
   # We use Chingu::Window instead of Gosu::Window
@@ -157,7 +157,7 @@ Chingu doesn't change any fundamental concept of Gosu, but it will make the abov
       super       # This is always needed if you want to take advantage of what chingu offers
       #
       # Player will automaticly be updated and drawn since it's a Chingu::GameObject
-      # You'll need your own Game#update/#draw after a while, but just put #super there and Chingu can do its thing.
+      # You'll need your own Chingu::Window#update and Chingu::Window#draw after a while, but just put #super there and Chingu can do its thing.
       #
       @player = Player.create
       @player.input = {:left => :move_left, :right => :move_right}
@@ -166,7 +166,8 @@ Chingu doesn't change any fundamental concept of Gosu, but it will make the abov
     
   #
   # If we create classes from Chingu::GameObject we get stuff for free.
-  # The accessors: image,x,y,zorder,angle,factor_x,factor_y,center_x,center_y,mode,update,draw
+  # The accessors image,x,y,zorder,angle,factor_x,factor_y,center_x,center_y,mode,alpha.
+  # We also get a default #draw which draws the image to screen with the parameters listed above.
   # You might recognize those from #draw_rot - http://www.libgosu.org/rdoc/classes/Gosu/Image.html#M000023
   # And in it's core, that's what Chingu::GameObject is, an encapsulation of draw_rot with some extra cheese.
   # For example, we get automatic calls to draw/update with Chingu::GameObject, which usually is what you want. 
@@ -193,6 +194,22 @@ Roughly 50 lines became 26 more powerful lines. (you can do @player.angle = 100 
 If you've worked with Gosu for a while you're probably tired of passing around the window-parameter.
 Chingu solves this (as has many other developers) with a global variable $window. Yes, globals are bad, but in this case it kinda makes sense. It's used under the hood in various places.
 
+The basic flow of Chingu::Window once show() is called is this (this is called one game iteration or game loop):
+  
+  - Chingu::Window#draw() is called
+  -- draw() is called on game objects belonging to Chingu::Window
+  -- draw() is called on all game objects belonging to current game state
+  
+  - Chingu::Window#update() is called
+  -- Input for Chingu::Window is processed
+  -- Input for all game objects belonging to Chingu::Window is processed
+  -- update() is called on all game objects belonging to Chingu::Window
+  -- Input for current game state is processed
+  -- Input for game objects belonging to current game state is processed
+  -- update() is called on all game objects belonging to current game state
+
+... the above is repeatet until game exists.
+  
 === Chingu::GameObject
 This is our basic "game unit"-class, meaning most in game objects (players, enemies, bullets etc) should be inherited from Chingu::GameObject.
 The basic ideas behind it are:
@@ -473,19 +490,20 @@ The flow for a game object then becomes:
 There's a couple of traits included as default in Chingu:
 
 ==== Trait "timer"
-Adds timer functionallity to your game object
+Adds timer functionality to your game object
   during(300) { @color = Color.new(0xFFFFFFFF) }   # forces @color to white every update for 300 ms
   after(400) { self.destroy }                      # destroy object after 400 ms
   between(1000,2000) { self.rotate(10) }           # starting after 1 second, call rotate(10) every update during 1 second
+  every(2000) { Sound["bleep.wav"].play }          # play bleep.wav every 2 seconds
   
 ==== Trait "velocity"
-Adds variables velocity_x, velocity_y, acceleration_x, acceleration_y, max_velocity to game object.
+Adds accessors velocity_x, velocity_y, acceleration_x, acceleration_y, max_velocity to game object.
 They modify x, y as you would expect. *speed / angle will come*
 
 
-==== (IN DEVELOPMENT) Trait "effect"
-Adds ability to automaticly fade, rotate and scale game objects.
-* API isn't stabilized yet! * 
+==== Trait "effect"
+Adds accessors rotation_rate, fade_rate and scale_rate to game object.
+They modify angle, alpha and factor_x/factor_y each update. Since this is pretty easy to do yourself this trait might be up for deprecation.
   
 ==== (IN DEVELOPMENT) Trait "collision_detection"
 Adds class and instance methods for basic collision detection.
@@ -507,7 +525,6 @@ Providing easier handling of the "retrofy" effect (non-blurry zoom)
 Aims to help out when using zoom-factor to create a retrofeeling with big pixels.
 Provides screen_x and screen_y which takes the zoom into account
 Also provides new code for draw() which uses screen_x / screen_y instead of x / y
-
 
 
 
