@@ -37,7 +37,7 @@ module Chingu
         
         #
         # Timers are saved as an array of arrays where each entry contains:
-        # [start_time, end_time (or nil if one-shot), repeat-bool, &block]
+        # [start_time, end_time (or nil if one-shot), &block]
         #
         @_timers = Array.new
         @_repeating_timers = Array.new
@@ -65,25 +65,24 @@ module Chingu
         self
       end
 
-      def every(delay, &block)
-        ms = Gosu::milliseconds()
-        @_repeating_timers << [ms + delay, delay, block]
-      end
-
       def then(&block)
         # ...use one-shots start_time for our trailing "then".
         # ...use durable timers end_time for our trailing "then".
         start_time = @_last_timer[1].nil? ? @_last_timer[0] : @_last_timer[1]
-        @_timers << [start_time, nil, false, block]
+        @_timers << [start_time, nil, block]
       end
+      
+      def every(delay, &block)
+        ms = Gosu::milliseconds()
+        @_repeating_timers << [ms + delay, delay, block]
+      end      
       
       def update_trait
         ms = Gosu::milliseconds()
         @_timers.each do |start_time, end_time, block|
           block.call  if ms > start_time && (end_time == nil || ms < end_time)
         end
-        
-        
+                
         index = 0
         @_repeating_timers.each do |start_time, delay, block|
           if ms > start_time
