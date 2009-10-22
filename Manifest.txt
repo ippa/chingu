@@ -16,6 +16,7 @@ examples/example1.rb
 examples/example10.rb
 examples/example11.rb
 examples/example12.rb
+examples/example13.rb
 examples/example2.rb
 examples/example3.rb
 examples/example4.rb
@@ -25,6 +26,7 @@ examples/example7.rb
 examples/example8.rb
 examples/example9.rb
 examples/game1.rb
+examples/high_score_list.yml
 examples/media/Parallax-scroll-example-layer-0.png
 examples/media/Parallax-scroll-example-layer-1.png
 examples/media/Parallax-scroll-example-layer-2.png
@@ -71,7 +73,7 @@ lib/chingu/helpers/gfx.rb
 lib/chingu/helpers/input_client.rb
 lib/chingu/helpers/input_dispatcher.rb
 lib/chingu/helpers/rotation_center.rb
-lib/chingu/high_score.rb
+lib/chingu/high_score_list.rb
 lib/chingu/inflector.rb
 lib/chingu/input.rb
 lib/chingu/named_resource.rb

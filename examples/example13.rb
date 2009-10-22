@@ -12,10 +12,6 @@ class Game < Chingu::Window
     super(640,400)
     self.input = {:esc => :exit}
     self.caption = "Example of Chingus HighScore class"
-    #Text.create("HIGH SCORES", :x => $window.width/2, :y => 50, :size => 70)
-    #Text.create("HIGH SCORES")
-    #Text.create("HIGH SCORES", :size => 30)
-    #return self
     
     PulsatingText.create("HIGH SCORES", :x => $window.width/2, :y => 50, :size => 70)
     
