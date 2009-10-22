@@ -12,7 +12,12 @@ class Game < Chingu::Window
     super(640,400)
     self.input = {:esc => :exit}
     self.caption = "Example of Chingus HighScore class"
-    PulsatingText.create(:text => "HIGH SCORES", :x => $window.width/2, :y => 50, :size => 70)
+    #Text.create("HIGH SCORES", :x => $window.width/2, :y => 50, :size => 70)
+    #Text.create("HIGH SCORES")
+    #Text.create("HIGH SCORES", :size => 30)
+    #return self
+    
+    PulsatingText.create("HIGH SCORES", :x => $window.width/2, :y => 50, :size => 70)
     
     #
     # Load a list from disk, defaults to "high_score_list.yml"
@@ -31,8 +36,8 @@ class Game < Chingu::Window
     #
     @high_score_list.each_with_index do |high_score, index|
       y = index * 25 + 100
-      Text.create(:text => high_score[:name], :x => 200, :y => y, :size => 20)
-      Text.create(:text => high_score[:score], :x => 400, :y => y, :size => 20)
+      Text.create(high_score[:name], :x => 200, :y => y, :size => 20)
+      Text.create(high_score[:score], :x => 400, :y => y, :size => 20)
     end
     
     5.times do
@@ -52,32 +57,29 @@ end
 #
 # colorful pulsating text...
 #
-class PulsatingText < GameObject
+class PulsatingText < Text
   has_trait :timer, :effect
   @@red = Color.new(0xFFFF0000)
   @@green = Color.new(0xFF00FF00)
   @@blue = Color.new(0xFF0000FF)
   
-  def initialize(options)
-    super
-    @text = options[:text]
-    @size = options[:size] || 20
-    @pulse = options[:pulse] || false
-    @image = options[:image] || Image.from_text($window, @text, default_font_name(), @size, 1, 440, :center)
+  def initialize(text, options = {})
+    super(text, options)
     
+    options = text  if text.is_a? Hash
+    @pulse = options[:pulse] || false
     self.rotation_center(:center_center)
-        
     every(20) { create_pulse }   if @pulse == false
   end
   
   def create_pulse
-    pulse = PulsatingText.create(:text => @text, :x => @x, :y => @y, :size => @size, :pulse => true, :image => @image, :zorder => @zorder+1)
+    pulse = PulsatingText.create(@text, :x => @x, :y => @y, :height => @height, :pulse => true, :image => @image, :zorder => @zorder+1)
     colors = [@@red, @@green, @@blue]
     pulse.color = colors[rand(colors.size)].dup
     pulse.mode = :additive
-    pulse.alpha -= 100
-    pulse.scale_rate = 0.005
-    pulse.fade_rate = -2 -rand(5)
+    pulse.alpha -= 150
+    pulse.scale_rate = 0.002
+    pulse.fade_rate = -3 + rand(2)
     pulse.rotation_rate = rand(2)==0 ? 0.05 : -0.05
   end
     

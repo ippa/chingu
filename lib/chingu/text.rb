@@ -27,14 +27,14 @@ module Chingu
   #   @font.draw("A Text", 200, 50, 55, 2.0)
   #
   # Chingu
-  #   @text = Chingu::Text.new(:text => "A Text", :x => 200, :y => 50, :zorder => 55, :factor_x => 2.0)
+  #   @text = Chingu::Text.new("A Text", :x => 200, :y => 50, :zorder => 55, :factor_x => 2.0)
   #   @text.draw  # usually not needed as Text is a GameObject and therefore autodrawn
   #
   # @text comes with a number of changable properties, x,y,zorder,angle,factor_x,color,mode etc.
   #
   class Text < Chingu::GameObject
     attr_accessor :text
-    attr_reader :height, :gosu_font
+    attr_reader :height, :gosu_font, :line_spacing, :align, :max_width
 
     @@size = nil
     @@font = nil
@@ -48,21 +48,47 @@ module Chingu
     
     #
     # Takes the standard GameObject-hash-arguments but also:
-    # - :text             - a string of text
-    # - :font_name|:font  - name of a systemfont (default: "verdana")
-    # - :height|size      - how many pixels high should the text be
+    #   :text               - a string of text
+    #   :font_name|:font    - Name of a system font, or a filename to a TTF file (must contain ’/’, does not work on Linux). 
+    #   :height|:size       - Height of the font in pixels. 
+    #   :line_spacing	      - Spacing between two lines of text in pixels. 
+    #   :max_width	        - Width of the bitmap that will be returned. Text will be split into multiple lines to avoid drawing over the right border. When a single word is too long, it will be truncated.
+    #   :align	            - One of :left, :right, :center or :justify. 
     #
-    def initialize(options)
+    # if :max_width is given the text is drawn using :line_spacing, :align and :max_width
+    #
+    def initialize(text, options = {})      
+      if text.is_a? Hash
+        options = text
+        text = nil
+      end
+     
       super(options)
-      @text = options[:text] || "-No text specified-"
+  
+      @text = text || options[:text] || "-No text specified-"
       @font =  options[:font] || @@font || default_font_name()
-      @height = options[:height] || options[:size] || @@size || 15
+      @height = @size = options[:height] || options[:size] || @@size || 15
+      @line_spacing = options[:line_spacing] || 1
+      @align = options[:align] || :left
+      @max_width = options[:max_width]
+    
+      self.rotation_center(:top_left)
       
       @gosu_font = Gosu::Font.new($window, @font, @height)
+      
+      create_image  unless @image
     end
     
-    def draw
-      @gosu_font.draw_rot(@text, @x.to_i, @y.to_i, @zorder, @angle, @factor_x, @factor_y, @color, @mode)
+    #
+    # Set a new text, a new image is created.
+    #
+    def text=(text)
+      @text = text
+      create_image
+    end
+    
+    def size
+      @height
     end
     
     #
@@ -71,7 +97,18 @@ module Chingu
     def width
       @gosu_font.text_width(@text, @factor_x)
     end
-
+    
+    private
+    
+    #
+    # Create the actual image from text and parameters supplied.
+    #
+    def create_image
+      if @max_width
+        @image = Gosu::Image.from_text($window, @text, @font, @height, @line_spacing, @max_width, @align)
+      else
+        @image = Gosu::Image.from_text($window, @text, @font, @height)
+      end
+    end
   end
-  
 end

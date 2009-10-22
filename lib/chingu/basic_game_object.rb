@@ -62,9 +62,9 @@ module Chingu
     # Use create() instead of new() if you want to keep track of your objects through
     # Chingus "game_objects" which is available in all game states and the main window.
     #
-    def self.create(options = {})
-      instance = self.new(options)
-      
+    #def self.create(options = {})
+    def self.create(*options)
+      instance = self.new(*options)
       
       #
       # Add to parents list of game objects
