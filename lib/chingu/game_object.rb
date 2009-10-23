@@ -47,13 +47,16 @@ module Chingu
       @y = options[:y] || 0
       @angle = options[:angle] || 0
       
-      self.center = options[:center] || 0.5
+
       self.factor = options[:factor] || 1.0
-      @center_x = options[:center_x] if options[:center_x]
-      @center_y = options[:center_y] if options[:center_y]
       @factor_x = options[:factor_x] if options[:factor_x]
       @factor_y = options[:factor_y] if options[:factor_y]
-
+      
+      self.center = options[:center] || 0.5      
+      self.rotation_center(options[:rotation_center]) if options[:rotation_center]
+      @center_x = options[:center_x] if options[:center_x]
+      @center_y = options[:center_y] if options[:center_y]
+      
       if options[:color].is_a?(Gosu::Color)
         @color = options[:color]
       else
