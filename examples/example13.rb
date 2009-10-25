@@ -10,10 +10,10 @@ include Chingu
 class Game < Chingu::Window
   def initialize
     super(640,400)
-    self.input = {:esc => :exit}
-    self.caption = "Example of Chingus HighScore class"
+    self.input = {:esc => :exit, :space => :remote_high_score, :a => :add}
+    self.caption = "Example of Chingus HighScore class. Press Space to go to fetch high scores remotely!"
     
-    PulsatingText.create("HIGH SCORES", :x => $window.width/2, :y => 50, :size => 70)
+    @title = PulsatingText.create("HIGH SCORES", :x => $window.width/2, :y => 50, :size => 70)
     
     #
     # Load a list from disk, defaults to "high_score_list.yml"
@@ -36,27 +36,54 @@ class Game < Chingu::Window
       end
     end
     
+    create_text
+    
+    # @high_score_list.save_to_file  # Uncomment to save list to disk
+  end
+  
+  def remote_high_score
+    game_objects.destroy_all
+    
+    @title = PulsatingText.create("REMOTE WEBSERVICE HIGH SCORES", :x => $window.width/2, :y => 50, :size => 30)
+    
+    #
+    # :game_id is the unique ID the game has on www.gamercv.com
+    # :user is the login for that specific game (set by owner)
+    # :password is the password for that specific game (set by owner)
+    #
+    # To read a high score list only :game_id is required
+    # To write to a high score list :user and :password is required as well
+    #
+    @high_score_list = HighScoreList.load_remote(:game_id => 1, :user => "chingu", :password => "chingu", :size => 10)
+    create_text
+  end
+  
+  def add
+    data = {:name => "NEW", :score => 1600}
+    position = @high_score_list.add(data)
+    puts "Got position: #{position.to_s}"
+    create_text
+  end
+  
+  def create_text
+    @score_texts ||= []
+    @score_texts.each { |text| text.destroy }
+    
     #
     # Iterate through all high scores and create the visual represenation of it
     #
     @high_score_list.each_with_index do |high_score, index|
       y = index * 25 + 100
-      Text.create(high_score[:name], :x => 200, :y => y, :size => 20)
-      Text.create(high_score[:score], :x => 400, :y => y, :size => 20)
+      @score_texts << Text.create(high_score[:name], :x => 200, :y => y, :size => 20)
+      @score_texts << Text.create(high_score[:score], :x => 400, :y => y, :size => 20)
     end
     
     5.times do
       score = rand(20000)
       puts "position for possible score #{score}: #{@high_score_list.position_by_score(score)}"
     end
-    
-    # @high_score_list.save  # Uncomment to save list to disk
   end
   
-  def update
-    super
-    self.caption = "FPS #{$window.fps} - game objects: #{game_objects.size}"
-  end
 end
 
 #
