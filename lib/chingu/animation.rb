@@ -10,7 +10,7 @@ module Chingu
   # Is autodetection of width / height possible? 
   #
   class Animation
-    attr_accessor :frames, :delay, :step
+    attr_accessor :frames, :delay, :step, :loop, :bounce, :step
     
     #
     # Create a new Animation. 
@@ -59,7 +59,7 @@ module Chingu
     # Returns last frame (GOSU::Image) from animation
     #
     def last
-      @frames.first
+      @frames.last
     end
     
     #

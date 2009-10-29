@@ -102,10 +102,14 @@ class Level < Chingu::GameState
   end
 
   #
-  # Our 
+  # The foremost layer in our parallax scroller is the collidable terrain
   #
   def solid_pixel_at?(x, y)
-    @parallax.layers.last.get_pixel(x, y)[3] != 0
+    begin
+      @parallax.layers.last.get_pixel(x, y)[3] != 0
+    rescue
+      puts "Error in get_pixel(#{x}, #{y})"
+    end
   end
   
   def update
@@ -114,9 +118,16 @@ class Level < Chingu::GameState
     # Move the level forward by increasing the parallax-scrollers camera x-coordinate
     @parallax.camera_x += 1
     
-    #
-    Bullet.all.select { |b| solid_pixel_at?(b.x, b.y)}.each { |b| b.die }
+    # Remove all objects outside screen
+    game_objects.destroy_if { |game_object| game_object.respond_to?("outside_screen?") && game_object.outside_screen? }
     
+    # Collide shrapnel with terrain
+    ## Shrapnel.all.select { |o| solid_pixel_at?(o.x, o.y)}.each { |o| o.die }
+
+
+    # Collide bullets with terrain
+    Bullet.all.select { |o| solid_pixel_at?(o.x, o.y)}.each { |o| o.die }
+        
     # Collide player with terrain
     push_game_state(GameOver) if solid_pixel_at?(@player.x, @player.y)
     
@@ -143,7 +154,7 @@ class Level < Chingu::GameState
     
     #push_game_state(Done.new(:score => @player.score)) if @game_steps == 1
     
-    $window.caption = "City Battle! Score: #{@player.score}"
+    $window.caption = "City Battle! Score: #{@player.score} .... FPS: #{$window.fps}"
   end
   
   def draw
@@ -156,7 +167,7 @@ end
 # OUR PLAYER
 #
 class Player < GameObject
-  has_trait :velocity, :collision_detection, :retrofy
+  has_trait :velocity, :collision_detection, :retrofy, :timer
   attr_accessor :score
   
   def initialize(options = {})
@@ -169,11 +180,12 @@ class Player < GameObject
       :holding_right => :right, 
       :holding_up => :up, 
       :holding_down => :down, 
-      :space => :fire }
+      :holding_space => :fire }
     
     @max_velocity = 1
     @radius = 10
     @score = 0
+    @cooling_down = false
   end
   
   def up
@@ -190,6 +202,10 @@ class Player < GameObject
   end
   
   def fire
+    return if @cooling_down
+    @cooling_down = true
+    after(100) { @cooling_down = false}
+    
     Bullet.create(:x => self.x, :y => self.y)
     Sound["laser.wav"].play
   end
@@ -245,12 +261,74 @@ class EnemyBullet < Bullet
   end
 end
 
+class Explosion < GameObject
+  has_trait :timer,:retrofy
+  
+  def initialize(options)
+    super
+    
+    unless defined?(@@image)
+      @@image = TexPlay::create_blank_image($window, 100, 100)
+      @@image.paint { circle 50,50,49, :fill => true, :color => [1,1,1,1] }
+    end
+    
+    @image = @@image.dup  if @image.nil?
+    
+    
+    self.rotation_center(:center)
+    self.factor = options[:factor] ? options[:factor] : $window.factor
+    during(100) { self.alpha -= 30}.then { destroy }
+  end
+  
+end
+
+class Shrapnel < GameObject
+  has_trait :retrofy, :timer, :effect, :velocity
+  
+  def initialize(options)
+    super
+    
+    @exploding_image = options[:exploding_image]
+    
+    #
+    # Create an image from a random part of the original image (on our case the exploding_image)
+    #
+    width = 10
+    height = 10
+    
+    @image = TexPlay::create_blank_image($window, width, height)
+    x1 = rand(@exploding_image.width/width)
+    y1 = rand(@exploding_image.height/height)
+    @image.paint { splice @exploding_image,0,0, :crop => [x1, y1, x1+width, y1+height] }
+    
+    unless defined?(@@explosion)
+      @@explosion = TexPlay::create_blank_image($window, width, height)
+      @@explosion.paint { circle width/2,height/2,width/3, :fill => true, :color => [1,1,1,1] }
+    end
+    
+    self.rotation_rate = 1 + rand(10)
+    self.velocity_x = 4 - rand(8)
+    self.velocity_y = 4 - rand(10)
+    self.acceleration_y = 0.2 # gravity = downards acceleration
+    
+    rotation_center(:center)
+    self.factor = $window.factor
+    @status = :default
+  end
+  
+  def die    
+    Explosion.create(:x => @x, :y => @y, :image => @@explosion.dup)
+    destroy
+  end
+  
+end
+
 #
 # OUR ENEMY SAUCER
 #
 class Enemy < GameObject
-  has_trait :collision_detection, :retrofy, :timer 
-  
+  has_trait :collision_detection, :retrofy, :timer  
+
   def initialize(options)
     super
     @velocity = options[:velocity] || 2
@@ -259,7 +337,7 @@ class Enemy < GameObject
     @anim = Animation.new(:file => "media/saucer.png", :size => [32,13], :delay => 100)
     @anim.retrofy
     @image = @anim.first
-    
+      
     self.factor = $window.factor
     @radius = 5
     @black = Color.new(0xFF000000)
@@ -287,6 +365,9 @@ class Enemy < GameObject
   def die
     return  if @status == :dying
     Sound["explosion.wav"].play
+    Explosion.create(:x => @x, :y => @y)
+    5.times { Shrapnel.create(:x => @x, :y => @y, :exploding_image => self.image)}
+    
     @status = :dying
     @color = @black
     @color.alpha = 50
