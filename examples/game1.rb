@@ -75,7 +75,7 @@ class Level < Chingu::GameState
     
     @parallax = Parallax.create
     ParallaxLayer.has_trait :retrofy
-    @parallax << ParallaxLayer.new(:image => Image["city2.png"].retrofy, :center => 0, :damping => 5, :factor => $window.factor)
+    @parallax << ParallaxLayer.new(:image => Image["city2.png"].retrofy, :center => 0, :damping => 2, :factor => $window.factor)
     @parallax << ParallaxLayer.new(:image => Image["city1.png"].retrofy, :center => 0, :damping => 1, :factor => $window.factor)
     @player = Player.create(:x => 10, :y => 100)
     
@@ -120,10 +120,6 @@ class Level < Chingu::GameState
     
     # Remove all objects outside screen
     game_objects.destroy_if { |game_object| game_object.respond_to?("outside_window?") && game_object.outside_window? }
-    
-    # Collide shrapnel with terrain
-    ## Shrapnel.all.select { |o| solid_pixel_at?(o.x, o.y)}.each { |o| o.die }
-
 
     # Collide bullets with terrain
     Bullet.all.select { |o| solid_pixel_at?(o.x, o.y)}.each { |o| o.die }
@@ -344,14 +340,22 @@ class Enemy < GameObject
     @black = Color.new(0xFF000000)
     @status == :default
     
-    @shrapnel_image ||= Shrapnel.create_image_for(self)
-    @explosion_image ||= Explosion.create_image_for(self)
+    #
+    # Cache explosion and shrapnel images (created with texplay, not recomended doing over and over each time)
+    #
+    @@shrapnel_image ||= Shrapnel.create_image_for(self)
+    @@explosion_image ||= Explosion.create_image_for(self)
   end
   
   def hit_by(object)
     return if @status == :dying
     
+    #
+    # During 20 millisecons, use Gosus :additive draw-mode, which here results in a white sprite
+    # Classic "hit by a bullet"-effect
+    #
     during(20) { @mode = :additive; }.then { @mode = :default }
+    
     @health -= 20
   
     if @health <= 0
@@ -367,12 +371,24 @@ class Enemy < GameObject
   end
   
   def die
+    #
+    # Make sure die() is only called once
+    #
     return  if @status == :dying
-    Sound["explosion.wav"].play(0.3)
-    Explosion.create(:x => @x, :y => @y, :image => @explosion_image )
-    5.times { Shrapnel.create(:x => @x, :y => @y, :image => @shrapnel_image)}
-    
     @status = :dying
+    
+    #
+    # Play our explosion-sound file
+    # Create an explosion-object
+    # Create some shrapnel-objects
+    #
+    Sound["explosion.wav"].play(0.3)
+    Explosion.create(:x => @x, :y => @y, :image => @@explosion_image )
+    5.times { Shrapnel.create(:x => @x, :y => @y, :image => @@shrapnel_image)}
+    
+    #
+    # During 200 ms, fade and scale image, then destroy it
+    #
     @color = @black
     @color.alpha = 50
     during(200) { @factor_x += 0.5; @factor_y += 0.5; @x -= 1; @color.alpha -= 1}.then { self.destroy }
@@ -381,7 +397,7 @@ class Enemy < GameObject
   def update
     return if @status == :dying
     
-    @image = @anim.next!
+    @image = @anim.next
     @x -= @velocity
   end
 end
