@@ -7,7 +7,11 @@ module Chingu
   def media_path(file)
     File.join(ROOT, "media", file)  
   end
-  
+
+  def root_path(file)
+    File.join(ROOT, file)  
+  end
+
   def image_path(file)
     File.join(ROOT, "images", file)
   end
