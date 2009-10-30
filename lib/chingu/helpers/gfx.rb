@@ -29,26 +29,26 @@ module Chingu
   module GFX
   
     #
-    # Fills whole window with color 'color'.
+    # Fills whole window with specified 'color' and 'zorder'
     #
-    def fill(color)
+    def fill(color, zorder = 0)
       $window.draw_quad(0, 0, color,
                         $window.width, 0, color,
                         $window.width, $window.height, color,
                         0, $window.height, color,
-                        0, :default)
+                        zorder, :default)
     end
      
     #
-    # Fills a given Rect 'rect' with Color 'color'
+    # Fills a given Rect 'rect' with Color 'color', drawing with zorder 'zorder'
     #
-    def fill_rect(rect, color)
+    def fill_rect(rect, color, zorder = 0)
       rect = Rect.new(rect)     # Make sure it's a rect
       $window.draw_quad(  rect.x, rect.y, color,
                           rect.right, rect.y, color,
                           rect.right, rect.bottom, color,
                           rect.x, rect.bottom, color,
-                          0, :default)
+                          zorder, :default)
     end
     
     #
