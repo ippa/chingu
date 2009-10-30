@@ -207,7 +207,7 @@ class Player < GameObject
     after(100) { @cooling_down = false}
     
     Bullet.create(:x => self.x, :y => self.y)
-    Sound["laser.wav"].play
+    Sound["laser.wav"].play(0.1)
   end
   
   def update
@@ -239,7 +239,7 @@ class Bullet < GameObject
   
   def die
     return  if @status == :dying
-    Sound["bullet_hit.wav"].play
+    Sound["bullet_hit.wav"].play(0.2)
     @status = :dying
     during(50) { @factor_x += 1; @factor_y += 1; @x -= 1; }.then { self.destroy }
   end
@@ -280,6 +280,13 @@ class Explosion < GameObject
     during(100) { self.alpha -= 30}.then { destroy }
   end
   
+  def self.create_image_for(object)
+    width = height = (object.image.width + object.image.height) / 2
+    explosion_image = TexPlay::create_blank_image($window, 100, 100)
+    explosion_image.paint { circle 50,50,49, :fill => true, :color => [1,1,1,1] }
+    return explosion_image
+  end
+  
 end
 
 class Shrapnel < GameObject
@@ -287,24 +294,6 @@ class Shrapnel < GameObject
   
   def initialize(options)
     super
-    
-    @exploding_image = options[:exploding_image]
-    
-    #
-    # Create an image from a random part of the original image (on our case the exploding_image)
-    #
-    width = 10
-    height = 10
-    
-    @image = TexPlay::create_blank_image($window, width, height)
-    x1 = rand(@exploding_image.width/width)
-    y1 = rand(@exploding_image.height/height)
-    @image.paint { splice @exploding_image,0,0, :crop => [x1, y1, x1+width, y1+height] }
-    
-    unless defined?(@@explosion)
-      @@explosion = TexPlay::create_blank_image($window, width, height)
-      @@explosion.paint { circle width/2,height/2,width/3, :fill => true, :color => [1,1,1,1] }
-    end
     
     self.rotation_rate = 1 + rand(10)
     self.velocity_x = 4 - rand(8)
@@ -316,8 +305,20 @@ class Shrapnel < GameObject
     @status = :default
   end
   
-  def die    
-    Explosion.create(:x => @x, :y => @y, :image => @@explosion.dup)
+  def self.create_image_for(object)
+    image = object.image
+    width = image.width / 5
+    height = image.width / 5
+    
+    shrapnel_image = TexPlay::create_blank_image($window, width, height)
+    x1 = rand(image.width/width)
+    y1 = rand(image.height/height)
+    shrapnel_image.paint { splice image,0,0, :crop => [x1, y1, x1+width, y1+height] }    
+    
+    return shrapnel_image
+  end
+  
+  def die
     destroy
   end
   
@@ -328,7 +329,7 @@ end
 #
 class Enemy < GameObject
   has_trait :collision_detection, :retrofy, :timer  
-
+  
   def initialize(options)
     super
     @velocity = options[:velocity] || 2
@@ -342,6 +343,9 @@ class Enemy < GameObject
     @radius = 5
     @black = Color.new(0xFF000000)
     @status == :default
+    
+    @shrapnel_image ||= Shrapnel.create_image_for(self)
+    @explosion_image ||= Explosion.create_image_for(self)
   end
   
   def hit_by(object)
@@ -364,9 +368,9 @@ class Enemy < GameObject
   
   def die
     return  if @status == :dying
-    Sound["explosion.wav"].play
-    Explosion.create(:x => @x, :y => @y)
-    5.times { Shrapnel.create(:x => @x, :y => @y, :exploding_image => self.image)}
+    Sound["explosion.wav"].play(0.3)
+    Explosion.create(:x => @x, :y => @y, :image => @explosion_image )
+    5.times { Shrapnel.create(:x => @x, :y => @y, :image => @shrapnel_image)}
     
     @status = :dying
     @color = @black
