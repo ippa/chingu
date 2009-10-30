@@ -61,7 +61,9 @@ module Chingu
         @color = options[:color]
       else
         @color = Gosu::Color.new(options[:color] || 0xFFFFFFFF)
-      end      
+      end
+      
+      self.alpha = options[:alpha]  if options[:alpha]
       
       @mode = options[:mode] || :default # :additive is also available.
       @zorder = options[:zorder] || 100

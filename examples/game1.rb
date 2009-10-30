@@ -75,6 +75,7 @@ class Level < Chingu::GameState
     
     @parallax = Parallax.create
     ParallaxLayer.has_trait :retrofy
+    #@parallax << ParallaxLayer.new(:image => Image["city3.png"].retrofy, :center => 0, :damping => 4, :factor => $window.factor)
     @parallax << ParallaxLayer.new(:image => Image["city2.png"].retrofy, :center => 0, :damping => 2, :factor => $window.factor)
     @parallax << ParallaxLayer.new(:image => Image["city1.png"].retrofy, :center => 0, :damping => 1, :factor => $window.factor)
     @player = Player.create(:x => 10, :y => 100)
