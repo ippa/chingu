@@ -66,7 +66,7 @@ module Chingu
       super(options)
   
       @text = text || options[:text] || "-No text specified-"
-      @font =  options[:font] || @@font || default_font_name()
+      @font =  options[:font] || @@font || Gosu::default_font_name()
       @height = @size = options[:height] || options[:size] || @@size || 15
       @line_spacing = options[:line_spacing] || 1
       @align = options[:align] || :left
