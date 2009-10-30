@@ -119,7 +119,7 @@ class Level < Chingu::GameState
     @parallax.camera_x += 1
     
     # Remove all objects outside screen
-    game_objects.destroy_if { |game_object| game_object.respond_to?("outside_screen?") && game_object.outside_screen? }
+    game_objects.destroy_if { |game_object| game_object.respond_to?("outside_window?") && game_object.outside_window? }
     
     # Collide shrapnel with terrain
     ## Shrapnel.all.select { |o| solid_pixel_at?(o.x, o.y)}.each { |o| o.die }
@@ -154,7 +154,7 @@ class Level < Chingu::GameState
     
     #push_game_state(Done.new(:score => @player.score)) if @game_steps == 1
     
-    $window.caption = "City Battle! Score: #{@player.score} .... FPS: #{$window.fps}"
+    $window.caption = "City Battle! Score: #{@player.score} .... FPS: #{$window.fps} ... game objects: #{game_objects.size}"
   end
   
   def draw

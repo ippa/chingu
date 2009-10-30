@@ -56,6 +56,22 @@ module Chingu
 
     
     #
+    # returns true if any part of the parallax-scroller is inside the window
+    #
+    def inside_window?
+      return true if @repeat
+      @layers.each { |layer| return true if layer.inside_window? }
+      return false
+    end
+
+    #
+    # Returns true if all parallax-layers are outside the window
+    #
+    def outside_window?
+      not inside_window?
+    end
+    
+    #
     # Parallax#camera_x= works in inverse to Parallax#x (moving the "camera", not the image)
     #
     def camera_x=(x)
