@@ -102,6 +102,8 @@ module Chingu
     def switch_game_state(state, options = {})
       options = {:setup => true, :finalize => true, :transitional => true}.merge(options)
 
+      @previous_game_state = current_game_state
+      
       new_state = game_state_instance(state)
       
       if new_state
@@ -109,7 +111,6 @@ module Chingu
         new_state.game_state_manager = self
         
         # Give the soon-to-be-disabled state a chance to clean up by calling finalize() on it.
-        @previous_game_state = current_game_state
         current_game_state.finalize   if current_game_state.respond_to?(:finalize) && options[:finalize]
         
         # So BasicGameObject#create connects object to new state in its setup()
@@ -143,6 +144,8 @@ module Chingu
     def push_game_state(state, options = {})
       options = {:setup => true, :finalize => true, :transitional => true}.merge(options)
 
+      @previous_game_state = current_game_state
+      
       new_state = game_state_instance(state)
             
       if new_state
@@ -157,7 +160,6 @@ module Chingu
         new_state.game_state_manager = self
         
         # Give the soon-to-be-disabled state a chance to clean up by calling finalize() on it.
-        @previous_game_state = current_game_state
         current_game_state.finalize   if current_game_state.respond_to?(:finalize) && options[:finalize]
         
         if @transitional_game_state && options[:transitional]
