@@ -65,6 +65,7 @@ lib/chingu/game_object_list.rb
 lib/chingu/game_state.rb
 lib/chingu/game_state_manager.rb
 lib/chingu/game_states/debug.rb
+lib/chingu/game_states/edit.rb
 lib/chingu/game_states/fade_to.rb
 lib/chingu/game_states/pause.rb
 lib/chingu/helpers/game_object.rb

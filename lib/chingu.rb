@@ -28,5 +28,5 @@ require File.join(CHINGU_ROOT,"chingu","require_all") # Thanks to http://github.
 require_all "#{CHINGU_ROOT}/chingu"
 
 module Chingu
-  VERSION = "0.5.9.1"
+  VERSION = "0.5.9.2"
 end
