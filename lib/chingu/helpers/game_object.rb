@@ -46,6 +46,33 @@ module Chingu
     def game_objects_of_class(klass)
       @game_objects.select { |game_object| game_object.is_a? klass }
     end
+    
+    #
+    # Creates game objects from a Chingu-spezed game objects file (created with game state 'Edit')
+    #
+    def load_game_objects(options = {})
+      filename = options[:file] || "#{self.class.to_s.downcase}.yml"
+      
+      require 'yaml'
+      
+      if File.exists?(filename)
+        game_objects = YAML.load_file(filename)
+        game_objects.each do |game_object|
+          game_object.each_pair do |klassname, attributes|
+            begin
+              klass = Kernel::const_get(klassname)
+              unless klass.class == "GameObject"
+                puts "Creating #{klassname.to_s}: #{attributes.to_s}"
+                klass.create(attributes)
+              end
+            rescue
+              puts "Couldn't create class '#{klassname}'"
+            end
+          end
+        end
+      end
+    end
+  
   end
 
   end
