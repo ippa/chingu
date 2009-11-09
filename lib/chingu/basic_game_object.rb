@@ -53,7 +53,7 @@ module Chingu
       # which then will pass it on to the next setup_trait() with a super-call.
       setup_trait(options)
     end
-    
+
     #
     # Creates a new object from class just as new() but also:
     # - adds game object to current game state
@@ -73,6 +73,14 @@ module Chingu
       
       return instance
     end
+
+    #
+    # This ruby callback is called each time someone subclasses BasicGameObject or GameObject
+    # We hook into it to keep track of all game object classes (just as we keep track of game objects instances)
+    #
+    ## def self.inherited(klass)
+    ##   instance.parent.add_game_object_class(klass) if instance.parent
+    ## end
 
     #
     # Disable automatic calling of update() and update_trait() each game loop

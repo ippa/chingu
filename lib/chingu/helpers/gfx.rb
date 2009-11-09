@@ -31,13 +31,72 @@ module Chingu
     #
     # Fills whole window with specified 'color' and 'zorder'
     #
-    def fill(color, zorder = 0)
-      $window.draw_quad(0, 0, color,
-                        $window.width, 0, color,
-                        $window.width, $window.height, color,
-                        0, $window.height, color,
-                        zorder, :default)
+    #def fill(color, zorder = 0)
+    #  $window.draw_quad(0, 0, color,
+    #                    $window.width, 0, color,
+    #                    $window.width, $window.height, color,
+    #                    0, $window.height, color,
+    #                    zorder, :default)
+    #end
+    #
+    
+    # Fills window or a given rect with a gradient between two colors.
+    #
+    #   :from         - Start with this color
+    #   :to           - End with this color
+    #   :rect         - Only fill rectangle :rect with the gradient, either a Rect-instance or [x,y,width,height] Array.
+    #   :orientation  - Either :vertical (top to bottom) or :horizontal (left to right)
+    #
+    
+    def fill(options)
+      #
+      # if only 1 color-argument is given, assume fullscreen simple color fill.
+      #
+      if options.is_a?(Gosu::Color)
+        $window.draw_quad(0, 0, color,
+                        $window.width, 0, options,
+                        $window.width, $window.height, options,
+                        0, $window.height, options, 0, :default)
+        return
+      end
+      
+      default_options = { :colors => [Gosu::Color.new(0xFFFFFFFF), Gosu::Color.new(0xFF000000)],
+                          :orientation => :vertical,
+                          :rect => Rect.new([0, 0, $window.width, $window.height]),
+                          :zorder => 0,
+                          :mode => :default
+                        }
+			options = default_options.merge(options)
+      rect = Rect.new(options[:rect])
+      
+      if options[:orientation] == :vertical
+        x = rect.x
+        y = rect.y
+        right = rect.right
+        bottom = rect.bottom
+        
+        step = (rect.x + rect.right) / options[:colors].size
+        1.upto(options[:colors].size).each do |nr|
+          from = options[:colors]
+          to = 
+        
+          $window.draw_quad(  x, y, options[:from],
+                            x + step, rect.y, options[:from],
+                            x + step, rect.bottom, options[:to],
+                            x, rect.bottom, options[:to],
+                            options[:zorder], options[:mode]
+                          )
+        end
+      else
+        $window.draw_quad(  rect.x, rect.y, options[:from],
+                            rect.x, rect.bottom, options[:from],
+                            rect.right, rect.bottom, options[:to],
+                            rect.right, rect.y, options[:to],
+                            options[:zorder], options[:mode]
+                          )        
+      end
     end
+    
      
     #
     # Fills a given Rect 'rect' with Color 'color', drawing with zorder 'zorder'
@@ -69,7 +128,8 @@ module Chingu
                           :mode => :default
                         }
 			options = default_options.merge(options)
-      rect = Rect.new(options[:rect])      
+      rect = Rect.new(options[:rect])
+      
       if options[:orientation] == :vertical
         $window.draw_quad(  rect.x, rect.y, options[:from],
                             rect.right, rect.y, options[:from],

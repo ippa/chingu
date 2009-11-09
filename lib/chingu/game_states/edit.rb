@@ -45,7 +45,7 @@ module Chingu
       end
 
       def setup
-        name = if previous_game_state.filename
+        name = if defined?(previous_game_state.filename)
           previous_game_state.filename
         else 
           "#{previous_game_state.class.to_s.downcase}.yml"
@@ -65,12 +65,13 @@ module Chingu
                             0,100,@color,10)
         super
         
-        #previous_game_state.game_objects.select { |o| o.options[:selected] }.each do |game_object|
+        previous_game_state.game_objects.select { |o| o.options[:selected] }.each do |game_object|
+          
         #  rect = game_object.bounding_box
         #  rect.x *= $window.factor
         #  rect.y *= $window.factor
         #  $window.fill_rect(rect, @red, game_object.zorder - 1)
-        #end
+        end
         
         #
         # draw a simple triagle-shaped cursor
@@ -82,6 +83,14 @@ module Chingu
         if @left_mouse_button && @selected_game_object
           @selected_game_object.x = $window.mouse_x / $window.factor
           @selected_game_object.y = $window.mouse_y / $window.factor
+          
+          #
+          # Can we abstract this out somehow?
+          #
+          if @selected_game_object.respond_to?(:bounding_box)
+            @selected_game_object.bounding_box.x = @selected_game_object.x
+            @selected_game_object.bounding_box.y = @selected_game_object.y
+          end
         end
       end  
        
@@ -90,15 +99,22 @@ module Chingu
         x = $window.mouse_x / $window.factor
         y = $window.mouse_y / $window.factor
         @text.text = "Click @ #{x} / #{y}"
-        @selected_game_object = previous_game_state.game_object_at(x, y)
+        @selected_game_object = game_object_at(x, y)
         if @selected_game_object
           @text.text = "#{@text.text} : #{@game_object.class.to_s}"
+          @selected_game_object.options[:selected] = true
         end
       end
       
       def released_left_mouse_button
         @left_mouse_button = false
         @selected_game_object = false
+      end
+      
+      def game_object_at(x, y)
+        previous_game_state.game_objects.select do |game_object| 
+          game_object.respond_to?(:bounding_box) && game_object.bounding_box.collide_point?(x,y)
+        end.first
       end
       
       
