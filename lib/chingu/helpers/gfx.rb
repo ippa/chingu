@@ -97,7 +97,16 @@ module Chingu
       end
     end
     
-     
+    #
+    # Draws a unfilled rect in given color
+    #
+    def draw_rect(rect, color, zorder)
+      $window.draw_line(rect.x, rect.y, color, rect.right, rect.y, color, zorder)
+      $window.draw_line(rect.right, rect.y, color, rect.right, rect.bottom, color, zorder)
+      $window.draw_line(rect.right, rect.bottom, color, rect.x, rect.bottom, color, zorder)
+      $window.draw_line(rect.x, rect.bottom, color, rect.x, rect.y, color, zorder)
+    end
+    
     #
     # Fills a given Rect 'rect' with Color 'color', drawing with zorder 'zorder'
     #
