@@ -32,16 +32,25 @@ module Chingu
     class Edit < Chingu::GameState
       def initialize(options = {})
         super
+        @grid = options[:grid]
+        @classes = options[:classes] || []
+        
         @color = Gosu::Color.new(200,0,0,0)
         @red = Gosu::Color.new(0xFFFF0000)
         @white = Gosu::Color.new(0xFFFFFFFF)
         @selected_game_object = nil        
         self.input =  { :left_mouse_button => :left_mouse_button, 
                         :released_left_mouse_button => :released_left_mouse_button,
+                        :delete => :destroy_selected_game_objects,
                         :e => :save_and_quit,
                         :s => :save,
-                        :esc => :quit 
-          }
+                        :esc => :quit,
+                        :"1" => :create_object_1,
+                        :"2" => :create_object_2,
+                        :"3" => :create_object_3,
+                        :"4" => :create_object_4,
+                        :"5" => :create_object_5,
+                      }
       end
 
       def setup
@@ -51,26 +60,45 @@ module Chingu
           "#{previous_game_state.class.to_s.downcase}.yml"
         end
         @filename = File.join($window.root, name)
-        @title = Text.create("Editing #{@filename}", :x => 5, :y => 10)
-        @title2 = Text.create("(S) Save  (E) Save and Quit  (ESC) Quit without saving", :x => 5, :y => 30)
-        @text = Text.create("", :x => 5, :y => 50)
+        @title = Text.create("File: #{@filename}", :x => 5, :y => 10)
+        @title.text += " - Grid: #{@grid}" if @grid
+        @title2 = Text.create("(1-10) Create object at mouse pos  (DEL) Delete selected object  (S) Save  (E) Save and Quit  (ESC) Quit without saving", :x => 5, :y => 30)        
+        @text = Text.create("", :x => 5, :y => 50)        
       end
       
-      def draw
-        previous_game_state.draw    # Draw prev game state onto screen (in this case our level)
+      def create_object_nr(number)
+        @classes[number].create(:x => $window.mouse_x, :y => $window.mouse_y, :parent => previous_game_state)  if @classes[number]
+      end
+      
+      def create_object_1; create_object_nr(0); end
+      def create_object_2; create_object_nr(1); end
+      def create_object_3; create_object_nr(2); end
+      def create_object_4; create_object_nr(3); end
+      def create_object_5; create_object_nr(4); end
+      
         
+      
+      def draw
+        # Draw prev game state onto screen (the level we're editing for example)
+        previous_game_state.draw 
+        
+        #
+        # Draw an edit HUD
+        #
         $window.draw_quad(  0,0,@color,
                             $window.width,0,@color,
                             $window.width,100,@color,
                             0,100,@color,10)
+        #
+        # Draw debug Texts etc..
+        #
         super
         
-        previous_game_state.game_objects.select { |o| o.options[:selected] }.each do |game_object|
-          
-        #  rect = game_object.bounding_box
-        #  rect.x *= $window.factor
-        #  rect.y *= $window.factor
-        #  $window.fill_rect(rect, @red, game_object.zorder - 1)
+        #
+        # Draw a red rectangle around all selected game objects
+        #
+        selected_game_objects.each do |game_object|
+          draw_rect(game_object.bounding_box.inflate(2,2), @red, 999)
         end
         
         #
@@ -79,34 +107,64 @@ module Chingu
         $window.draw_triangle( $window.mouse_x, $window.mouse_y, @white, 
                                $window.mouse_x, $window.mouse_y + 10, @white, 
                                $window.mouse_x + 10, $window.mouse_y + 10, @white, 9999)
-                               
+        
+      end
+      
+      def update
+        super
+        
         if @left_mouse_button && @selected_game_object
-          @selected_game_object.x = $window.mouse_x / $window.factor
-          @selected_game_object.y = $window.mouse_y / $window.factor
+          @selected_game_object.x = ($window.mouse_x + @mouse_x_offset) / $window.factor
+          @selected_game_object.y = ($window.mouse_y + @mouse_y_offset) / $window.factor
+          @selected_game_object.x -= @selected_game_object.x % @grid[0]
+          @selected_game_object.y -= @selected_game_object.y % @grid[1]
           
-          #
-          # Can we abstract this out somehow?
-          #
+          # TODO: better cleaner sollution
           if @selected_game_object.respond_to?(:bounding_box)
             @selected_game_object.bounding_box.x = @selected_game_object.x
             @selected_game_object.bounding_box.y = @selected_game_object.y
           end
         end
-      end  
+      end
+
+      def selected_game_objects
+        previous_game_state.game_objects.select { |o| o.options[:selected] }
+      end
+      
+      def destroy_selected_game_objects
+        selected_game_objects.each(&:destroy)
+      end
        
       def left_mouse_button
         @left_mouse_button = true
         x = $window.mouse_x / $window.factor
         y = $window.mouse_y / $window.factor
+                
         @text.text = "Click @ #{x} / #{y}"
-        @selected_game_object = game_object_at(x, y)
-        if @selected_game_object
-          @text.text = "#{@text.text} : #{@game_object.class.to_s}"
-          @selected_game_object.options[:selected] = true
+        
+        #
+        # Deselect all objects
+        #
+        selected_game_objects.each do |game_object|         
+          game_object.options[:selected] = false
         end
+        
+        #
+        # Get new object that was clicked at (if any)
+        #
+        @selected_game_object = game_object_at(x, y)
+        
+        if @selected_game_object
+          @text.text = "#{@text.text} : #{@selected_game_object.class.to_s}"
+          @selected_game_object.options[:selected] = true
+          
+          @mouse_x_offset = @selected_game_object.x - $window.mouse_x
+          @mouse_y_offset = @selected_game_object.y - $window.mouse_y
+        end
+        
       end
       
-      def released_left_mouse_button
+      def released_left_mouse_button        
         @left_mouse_button = false
         @selected_game_object = false
       end
@@ -148,7 +206,7 @@ module Chingu
       end
       
       def quit
-        pop_game_state
+        pop_game_state(:setup => false)
       end
       
       #
