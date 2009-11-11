@@ -42,6 +42,7 @@ module Chingu
         self.input =  { :left_mouse_button => :left_mouse_button, 
                         :released_left_mouse_button => :released_left_mouse_button,
                         :delete => :destroy_selected_game_objects,
+                        :backspace => :destroy_selected_game_objects,
                         :e => :save_and_quit,
                         :s => :save,
                         :esc => :quit,
