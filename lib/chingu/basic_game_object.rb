@@ -35,11 +35,12 @@ module Chingu
     #
     def initialize(options = {})
       @options = options
+      @parent = options[:parent]
       
       #
       # A GameObject either belong to a GameState or our mainwindow ($window)
       #
-      if $window && $window.respond_to?(:game_state_manager)
+      if !@parent && $window && $window.respond_to?(:game_state_manager)
         @parent = $window.game_state_manager.inside_state || $window
       end
       
