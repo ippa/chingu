@@ -74,8 +74,14 @@ module Chingu
       # They're also available (hey, hashlookups are speedy) with "middle" instead of "center" since
       # those 2 words basicly have the same meaning and are both understandable.
       #
-      def rotation_center(alignment)
+      def rotation_center(alignment = nil)
+        #return @rotation_center unless alignment
+        #@rotation_center = alignment
         @center_x, @center_y = @@rotation_centers[alignment.to_sym]
+      end
+      
+      def rotation_center=(alignment)
+        rotation_center(alignment)
       end
       
     end
