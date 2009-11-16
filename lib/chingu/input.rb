@@ -20,13 +20,13 @@
 #++
 
 module Chingu
-	module Input
-		include Gosu::Button
-    
+  module Input
+    include Gosu::Button
+  
     #
     # Ruby symbols describing http://www.libgosu.org/rdoc/classes/Gosu.html
     #
-		CONSTANT_TO_SYMBOL = {
+    CONSTANT_TO_SYMBOL = {
       Kb0 => [:zero],
       Kb1 => [:one],
       Kb2 => [:two],
@@ -75,11 +75,11 @@ module Chingu
       MsWheelDown       => [:mouse_wheel_down, :wheel_down],
       MsWheelUp         => [:mouse_wheel_up, :wheel_up],
       
-      GpDown 	          => [:gamepad_down, :gp_down, :pad_down],
-      GpLeft 	          => [:gamepad_left, :gp_left, :pad_left],
-      GpRight 	        => [:gamepad_right, :gp_right, :pad_right],
+      GpDown            => [:gamepad_down, :gp_down, :pad_down],
+      GpLeft            => [:gamepad_left, :gp_left, :pad_left],
+      GpRight           => [:gamepad_right, :gp_right, :pad_right],
       GpUp              => [:gamepad_up, :gp_up, :pad_up]
-		}
+    }
     
     # Letters, A-Z
     ("A".."Z").each do |letter|
@@ -117,5 +117,5 @@ module Chingu
       end
     end
     
-	end
+  end
 end
