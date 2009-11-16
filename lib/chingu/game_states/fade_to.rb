@@ -37,7 +37,10 @@ module Chingu
       
       def initialize(new_game_state, options = {})
         @options = {:speed => 3}.merge(options)
+        
         @new_game_state = new_game_state
+        @new_game_state = new_game_state.new if new_game_state.is_a? Class
+        
         @manager = options[:game_state_manager] || self
         #@manager = game_state_manager
       end

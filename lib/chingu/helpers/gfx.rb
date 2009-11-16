@@ -48,12 +48,12 @@ module Chingu
     #   :orientation  - Either :vertical (top to bottom) or :horizontal (left to right)
     #
     
-    def fill(options)
+    def fill(options, zorder = 99)
       #
       # if only 1 color-argument is given, assume fullscreen simple color fill.
       #
       if options.is_a?(Gosu::Color)
-        $window.draw_quad(0, 0, color,
+        $window.draw_quad(0, 0, options,
                         $window.width, 0, options,
                         $window.width, $window.height, options,
                         0, $window.height, options, 0, :default)
