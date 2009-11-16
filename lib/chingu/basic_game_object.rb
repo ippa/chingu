@@ -10,17 +10,14 @@ module Chingu
     attr_accessor :parent
         
     #
-    # adds a trait or traits to a certain game class
-    # 
-    # Executes a ruby "include" the specified module
+    # Adds a trait or traits to a certain game class
+    # Executes a standard ruby "include" the specified module
     #
     def self.has_trait(*traits)
       has_traits(*traits)
     end
     
-    #
     # See #has_trait
-    #
     def self.has_traits(*traits)
       Array(traits).each do |trait|
         if trait.is_a?(::Symbol) || trait.is_a?(::String)

@@ -58,6 +58,24 @@ module Chingu
     attr_reader :options
     attr_accessor :game_state_manager, :game_objects
     
+    #
+    # Adds a trait or traits to a certain game class
+    # Executes a standard ruby "include" the specified module
+    #
+    def self.has_trait(*traits)
+      has_traits(*traits)
+    end
+    
+    # See #has_trait
+    def self.has_traits(*traits)
+      Array(traits).each do |trait|
+        if trait.is_a?(::Symbol) || trait.is_a?(::String)
+          include Chingu::Traits.const_get(Chingu::Inflector.camelize(trait))
+        end
+      end
+    end
+
+
     def initialize(options = {})
       @options = options
       @game_objects = GameObjectList.new
@@ -67,6 +85,8 @@ module Chingu
       if defined?($window) && $window.respond_to?(:game_state_manager)
         $window.game_state_manager.inside_state = self
       end
+      
+      setup_trait(options)
     end
         
     #
@@ -100,7 +120,7 @@ module Chingu
       dispatch_button_up(id, self)
       @input_clients.each { |object| dispatch_button_up(id, object) }   if @input_clients
     end
-    
+        
     #
     # Calls update on each game object that has current game state as parent (created inside that game state)
     #
@@ -118,6 +138,11 @@ module Chingu
     def draw
       @game_objects.draw
     end
+
+    # Placeholder for trait-system to override
+    def setup_trait(options);end
+    def update_trait;end
+    def draw_trait;end
         
     #
     # Closes game state by poping it off the stack (and activating the game state below)

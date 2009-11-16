@@ -262,7 +262,10 @@ module Chingu
     # If you're using Chingu::Window instead of Gosu::Window this will automaticly be called.
     #
     def update
-      current_game_state.update         if current_game_state
+      if current_game_state
+        current_game_state.update_trait
+        current_game_state.update
+      end
     end
 
     #
@@ -272,7 +275,10 @@ module Chingu
     # If you're using Chingu::Window instead of Gosu::Window this will automaticly be called.
     #
     def draw
-      current_game_state.draw           if current_game_state
+      if current_game_state
+        current_game_state.draw_trait
+        current_game_state.draw
+      end
     end
     
     private
