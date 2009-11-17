@@ -84,18 +84,6 @@ module Chingu
       end
       
       #
-      # Have bounding box follow game objects x/y
-      #
-      def update_trait
-        if defined?(@bounding_box) && @bounding_box.is_a?(Rect)
-          @bounding_box.x = self.x
-          @bounding_box.y = self.y
-        end
-        
-        super
-      end
-
-      #
       # Collides self with all objects of given classes
       # Yields self and the objects it collides with
       #
