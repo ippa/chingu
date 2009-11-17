@@ -83,6 +83,7 @@ lib/chingu/particle.rb
 lib/chingu/rect.rb
 lib/chingu/require_all.rb
 lib/chingu/text.rb
+lib/chingu/traits/bounding_box.rb
 lib/chingu/traits/collision_detection.rb
 lib/chingu/traits/effect.rb
 lib/chingu/traits/retrofy.rb
