@@ -48,8 +48,8 @@ module Chingu
       def update_trait
         if self.image
           # Addapt width / height to scaling
-          real_width = self.image.width * self.factor_x
-          real_height = self.image.height * self.factor_y
+          real_width = self.image.width * self.factor_x.abs
+          real_height = self.image.height * self.factor_y.abs
           
           self.bounding_box.x = self.x - (real_width * self.center_x.abs)
           self.bounding_box.y = self.y - (real_height * self.center_y.abs)
