@@ -42,14 +42,11 @@ module Chingu
 
     module Effect
       attr_accessor :rotation_rate, :fade_rate, :scale_rate
-                  
+                        
       #
       # Setup
       #
-      def setup_trait(options)
-        @effect_options = {:debug => false}.merge(options)
-        puts "Effect#setup"     if @effect_options[:debug]
-        
+      def setup_trait(options)        
         @rotation_rate = options[:rotation_rate] || nil
         @scale_rate = options[:scale_rate] || nil
         @fade_rate = options[:fade_rate] || nil
@@ -60,9 +57,7 @@ module Chingu
         super
       end
       
-      def update_trait
-        puts "Effect#update"    if @effect_options[:debug]
-        
+      def update_trait        
         rotate(@rotation_rate)  if @rotation_rate
         fade(@fade_rate)        if @fade_rate
         scale(@scale_rate)      if @scale_rate

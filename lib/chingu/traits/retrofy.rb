@@ -23,38 +23,37 @@ module Chingu
   module Traits
     #
     # A chingu trait providing easier handling of the "retrofy" effect (non-blurry zoom)
-    # Aims to help out when using zoom-factor to create a retrofeeling with big pixels.
-    # Provides screen_x and screen_y which takes the zoom into account
+    # Aims to help out when using scaling with "factor" to create a retrofeeling with big pixels.
+    # Provides screen_x and screen_y which takes the scaling into account
     # Also provides new code for draw() which uses screen_x / screen_y instead of x / y
     #
     module Retrofy
-      
+    
       def setup_trait(options)
         @retrofy_options = {:debug => false}.merge(options)        
-
         super
       end
       
       def screen_width
-        (@image.width * self.factor).to_i
+        (self.image.width * self.factor).to_i
       end
 
       def screen_height
-        (@image.heigt * self.factor).to_i
+        (self.image.heigt * self.factor).to_i
       end
 
       def screen_x
-        (@x * self.factor).to_i
+        (self.x * self.factor).to_i
       end
 
       def screen_y
-        (@y * self.factor).to_i
+        (self.y * self.factor).to_i
       end
-      
+
       # Returns true if object is inside the game window, false if outside
       # this special version takes @factor into consideration
       def inside_window?
-        @x >= 0 && @x <= $window.width/self.factor && @y >= 0 && @y <= $window.height/self.factor
+        self.x >= 0 && self.x <= $window.width/self.factor && self.y >= 0 && self.y <= $window.height/self.factor
       end
 
       # Returns true object is outside the game window 
@@ -66,7 +65,6 @@ module Chingu
       def draw
         @image.draw_rot(self.screen_x, self.screen_y, @zorder, @angle, @center_x, @center_y, @factor_x, @factor_y, @color, @mode)
       end
-      
     end
   end
 end

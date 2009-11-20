@@ -28,33 +28,16 @@ module Chingu
     #
     # SEE: http://www.shmup-dev.com/forum/index.php?board=65.0
     #
-    # Makes use of 3 attributes
-    #   @bounding_box      - a Rect-instance, uses in bounding_box collisions
-    #   @radius            -
-    #   @detect_collisions - [true|false], should object be checked for collisions with Object.each_collision
+    # Makes use of 2 attributes
+    #   bounding_box      - a Rect-instance, uses in bounding_box collisions
+    #   radius            - a number
     #
     module CollisionDetection
-      attr_accessor :bounding_box, :radius
-      ## attr_accessor :detect_collisions # slowed down example9 with 3 fps
       
-      def self.included(base)
-        base.extend(ClassMethods)
-      end
-      
-      #
-      # Automaticly try to set a bounding_box and radius. Don't overwrite if they already exists.
-      #
-      def setup_trait(options)
-        if @x and @y and @image
-          @bounding_box ||= Rect.new(@x, @y, @image.width, @image.height)
+      module ClassMethods
+        def initialize_trait(options = {})
+          @trait_options[:collision_detection] = options
         end
-        
-        if @image
-          @radius ||= (@image.height + @image.width) / 2 * 0.80
-        end
-        
-        ## @detect_collisions = true
-        super
       end
       
       #
@@ -102,11 +85,10 @@ module Chingu
       def each_radius_collision(klasses = [])
         Array(klasses).each do |klass|
           klass.all.each do |object|
-            yield(self, object) if distance(@x, @y, object.x, object.y) < @radius + object.radius
+            yield(self, object) if distance(self.x, self.y, object.x, object.y) < self.radius + object.radius
           end
         end
       end
-
 
       #
       # Explicit bounding_box-collision
@@ -115,14 +97,13 @@ module Chingu
       def each_bounding_box_collision(klasses = [])
         Array(klasses).each do |klass|
           klass.all.each do |object|
-            yield(self, object) if @bounding_box.collide_rect?(object.bounding_box)
+            yield(self, object) if self.bounding_box.collide_rect?(object.bounding_box)
           end
         end
       end
 
       
       module ClassMethods
-      
         #
         # Works like each_collision but with inline-code for speedups
         #

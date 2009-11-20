@@ -31,10 +31,9 @@ module Chingu
     # All the above can be combined with a 'then { do_something }'. For example, a classic shmup damage effect:
     #   during(100) { @color.alpha = 100 }.then { @color.alpha = 255 }
     #
-    module Timer 
-      def setup_trait(options)
-        @timer_options = {:debug => false}.merge(options)        
-        
+    module Timer
+    
+      def setup_trait(options)        
         #
         # Timers are saved as an array of arrays where each entry contains:
         # [start_time, end_time (or nil if one-shot), &block]

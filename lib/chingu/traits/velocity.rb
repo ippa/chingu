@@ -27,15 +27,8 @@ module Chingu
     module Velocity
       attr_accessor :velocity_x, :velocity_y, :acceleration_x, :acceleration_y, :max_velocity
       
-      #def self.initialize_trait(options)
-      #  @velocity_options = {:debug => false}.merge(options)
-      #  puts "Velocity#initialize"    if @velocity_options[:debug]
-      #  super
-      #end
-            
       def setup_trait(options)
         @velocity_options = {:debug => false}.merge(options)        
-        puts "Velocity#setup"   if @velocity_options[:debug]
         
         @velocity_x = options[:velocity_x] || 0
         @velocity_y = options[:velocity_y] || 0
@@ -48,13 +41,11 @@ module Chingu
       #
       # Modifies X & Y of parent
       #
-      def update_trait
-        puts "Velocity#update"    if @velocity_options[:debug]
-        
+      def update_trait        
         @velocity_y += @acceleration_y		if	(@velocity_y + @acceleration_y).abs < @max_velocity
         @velocity_x += @acceleration_x		if	(@velocity_x + @acceleration_x).abs < @max_velocity
-        @y += @velocity_y
-        @x += @velocity_x
+        self.y += @velocity_y
+        self.x += @velocity_x
         super
       end
       

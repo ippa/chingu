@@ -9,7 +9,6 @@ require 'rubygems'
 require File.join(File.dirname($0), "..", "lib", "chingu")
 
 require 'texplay'     # adds Image#get_pixel
-#require 'devil/gosu'  # adds Gosu::Window#screenshot and better file support
 require 'opengl'      # adds raw gl stuff so Image#retrofy works (in some setups this seems to be 'gl')
 
 include Gosu
@@ -26,59 +25,22 @@ class Game < Chingu::Window
   end
 end
 
-#
-# GAME STATE: GAME OVER
-#
-class GameOver < Chingu::GameState  
-  def setup
-    @text = Text.create(:text => "GAME OVER (ESC to quit, RETURN to try again!)", :size => 40, :x => 30, :y => 100)
-    self.input = { :esc => :exit, :return => :try_again}
-    @layover = Color.new(0x99000000)
-  end
-  
-  def draw
-    super
-    previous_game_state.draw
-    fill(@layover)
-  end
-  
-  def try_again
-    pop_game_state  # pop back to our playing game state
-  end
-end
-
-#
-# GAME STATE: GAME OVER
-#
-class Done < Chingu::GameState
-  def initialize(options)
-    @score = options[:score]
-  end
-  
-  def setup
-    @text = Text.create(:text => "You made it! Score #{@score} (ESC to quit, RETURN to try again!)", :size => 40, :x => 30, :y => 100)
-    self.input = { :esc => :exit, :return => :try_again}
-  end  
-  
-  def try_again
-    pop_game_state  # pop back to our playing game state
-  end
-end
-
 
 #
 # GAME STATE: LEVEL
 #
 class Level < Chingu::GameState
+  has_trait :timer
+  
   def initialize(options = {})
     super
     
     @parallax = Parallax.create
-    ParallaxLayer.has_trait :retrofy
+    #ParallaxLayer.has_trait :retrofy
     #@parallax << ParallaxLayer.new(:image => Image["city3.png"].retrofy, :center => 0, :damping => 4, :factor => $window.factor)
     @parallax << ParallaxLayer.new(:image => Image["city2.png"].retrofy, :center => 0, :damping => 2, :factor => $window.factor)
     @parallax << ParallaxLayer.new(:image => Image["city1.png"].retrofy, :center => 0, :damping => 1, :factor => $window.factor)
-    @player = Player.create(:x => 10, :y => 100)
+    @player = Player.create(:x => 10, :y => 10)
     
     @bg1 = Color.new(0xFFCE28FF)
     @bg2 = Color.new(0xFF013E87)
@@ -88,7 +50,7 @@ class Level < Chingu::GameState
   # This is called each time this GameState is switched/pushed/poped to.
   #
   def setup
-    # Remove all lingering g
+    # Remove all lingering game objects
     Enemy.destroy_all
     Bullet.destroy_all
     
@@ -107,7 +69,11 @@ class Level < Chingu::GameState
   #
   def solid_pixel_at?(x, y)
     begin
-      @parallax.layers.last.get_pixel(x, y)[3] != 0
+      #pixel = @parallax.layers.last.get_pixel(x/$window.factor, y/$window.factor)
+      #return false  if  pixel.nil?
+      #return 
+      
+      @parallax.layers.last.get_pixel(x/$window.factor, y/$window.factor)[3] != 0
     rescue
       puts "Error in get_pixel(#{x}, #{y})"
     end
@@ -145,13 +111,13 @@ class Level < Chingu::GameState
     @timer = @timer * 0.9999
     @total_ticks += 1
     if @total_ticks > @timer
-      Enemy.create(:x => $window.width/2, :y => rand(300))
+      Enemy.create(:x => $window.width, :y => rand(300))
       @total_ticks = 0
     end
     
     #push_game_state(Done.new(:score => @player.score)) if @game_steps == 1
     
-    $window.caption = "City Battle! Score: #{@player.score} .... FPS: #{$window.fps} ... game objects: #{game_objects.size}"
+    $window.caption = "City Battle! Player x/y: #{@player.x}/#{@player.y} - Score: #{@player.score} - FPS: #{$window.fps} - game objects: #{game_objects.size}"
   end
   
   def draw
@@ -164,7 +130,9 @@ end
 # OUR PLAYER
 #
 class Player < GameObject
-  has_trait :velocity, :collision_detection, :retrofy, :timer
+  has_traits :velocity, :collision_detection, :timer
+  has_trait :radius, :scale => 0.50, :debug => true
+  
   attr_accessor :score
   
   def initialize(options = {})
@@ -179,40 +147,39 @@ class Player < GameObject
       :holding_down => :down, 
       :holding_space => :fire }
     
-    @max_velocity = 1
-    @radius = 10
+    @max_velocity = 2
     @score = 0
     @cooling_down = false
   end
   
   def up
-    @velocity_y += -@max_velocity
+    self.velocity_y = -@max_velocity
   end
   def down
-    @velocity_y += @max_velocity
+    self.velocity_y = @max_velocity
   end
   def right
-    @velocity_x += @max_velocity
+    self.velocity_x = @max_velocity
   end
   def left
-    @velocity_x -= @max_velocity
+    self.velocity_x = -@max_velocity
   end
   
   def fire
     return if @cooling_down
     @cooling_down = true
-    after(100) { @cooling_down = false}
+    after(100) { @cooling_down = false }
     
     Bullet.create(:x => self.x, :y => self.y)
     Sound["laser.wav"].play(0.1)
   end
   
   def update
-    @velocity_y *= 0.6
-    @velocity_x *= 0.6
+    self.velocity_y *= 0.6
+    self.velocity_x *= 0.6
     
-    @x = @last_x  if @x < 0 || @x > $window.width/$window.factor
-    @y = @last_y  if @y < 0 || @y > $window.height/$window.factor
+    @x = @last_x  if @x < 0 || @x > $window.width#/$window.factor
+    @y = @last_y  if @y < 0 || @y > $window.height#/$window.factor
     @last_x, @last_y = @x, @y
   end
   
@@ -222,14 +189,14 @@ end
 # OUR PLAYERS BULLETS
 #
 class Bullet < GameObject
-  has_trait :retrofy, :timer, :collision_detection
-  attr_reader :status
+  has_traits :timer, :collision_detection, :velocity
+  attr_reader :status, :radius
   
   def initialize(options)
     super
     @image = Image["bullet.png"].retrofy
     self.factor = $window.factor
-    @velocity_x = 10
+    self.velocity_x = 10
     @status = :default
     @radius = 3
   end
@@ -241,10 +208,10 @@ class Bullet < GameObject
     during(50) { @factor_x += 1; @factor_y += 1; @x -= 1; }.then { self.destroy }
   end
   
-  def update
-    return if @status == :dying
-    @x += @velocity_x
-  end
+  #def update
+    #return if @status == :dying
+    #@x += self.velocity_x
+  #end
 end
 
 #
@@ -254,12 +221,12 @@ class EnemyBullet < Bullet
   def initialize(options)
     super
     @image = Image["enemy_bullet.png"].retrofy
-    @velocity_x = -3
+    self.velocity_x = -3
   end
 end
 
 class Explosion < GameObject
-  has_trait :timer,:retrofy
+  has_traits :timer
   
   def initialize(options)
     super
@@ -271,8 +238,7 @@ class Explosion < GameObject
     
     @image = @@image.dup  if @image.nil?
     
-    
-    self.rotation_center(:center)
+    self.rotation_center = :center
     self.factor = options[:factor] ? options[:factor] : $window.factor
     during(100) { self.alpha -= 30}.then { destroy }
   end
@@ -287,7 +253,7 @@ class Explosion < GameObject
 end
 
 class Shrapnel < GameObject
-  has_trait :retrofy, :timer, :effect, :velocity
+  has_traits :timer, :effect, :velocity
   
   def initialize(options)
     super
@@ -296,8 +262,7 @@ class Shrapnel < GameObject
     self.velocity_x = 4 - rand(8)
     self.velocity_y = 4 - rand(10)
     self.acceleration_y = 0.2 # gravity = downards acceleration
-    
-    rotation_center(:center)
+    self.rotation_center = :center
     self.factor = $window.factor
     @status = :default
   end
@@ -325,15 +290,16 @@ end
 # OUR ENEMY SAUCER
 #
 class Enemy < GameObject
-  has_trait :collision_detection, :retrofy, :timer  
+  has_traits :collision_detection, :timer  
+  attr_reader :radius
   
   def initialize(options)
     super
     @velocity = options[:velocity] || 2
     @health = options[:health] || 100
     
-    @anim = Animation.new(:file => "media/saucer.png", :size => [32,13], :delay => 100)
-    @anim.retrofy
+    @anim = Animation.new(:file => "media/saucer.png", :size => [32,13], :delay => 100).retrofy
+    #  @anim.retrofy
     @image = @anim.first
       
     self.factor = $window.factor
@@ -403,4 +369,49 @@ class Enemy < GameObject
   end
 end
 
+
+#
+# GAME STATE: GAME OVER
+#
+class GameOver < Chingu::GameState  
+  def setup
+    @text = Text.create("GAME OVER (ESC to quit, RETURN to try again!)", :size => 40, :x => 30, :y => 100)
+    self.input = { :esc => :exit, :return => :try_again }
+    @layover = Color.new(0x99000000)
+  end
+  
+  def draw
+    super
+    previous_game_state.draw
+    fill(@layover)
+  end
+  
+  def try_again
+    pop_game_state  # pop back to our playing game state
+  end
+end
+
+#
+# GAME STATE: GAME OVER
+#
+class Done < Chingu::GameState
+  def initialize(options)
+    @score = options[:score]
+  end
+  
+  def setup
+    @text = Text.create("You made it! Score #{@score} (ESC to quit, RETURN to try again!)", :size => 40, :x => 30, :y => 100)
+    self.input = { :esc => :exit, :return => :try_again}
+  end  
+  
+  def try_again
+    pop_game_state  # pop back to our playing game state
+  end
+end
+
+
 Game.new.show
+
+
+
+

@@ -15,12 +15,12 @@ class Game < Chingu::Window
     @factor = 6
     self.input = { :escape => :exit }          
     self.caption = "Chingu::Animation / retrofy example. Move with arrows!"
-    Droid.create(:x => $window.width/@factor/2, :y => $window.height/@factor/2)
+    Droid.create(:x => $window.width/2, :y => $window.height/2)
   end
 end
 
 class Droid < Chingu::GameObject
-  has_trait :retrofy  # modifies draw(), 
+  has_traits :timer
   
   def initialize(options = {})
     super
@@ -50,22 +50,22 @@ class Droid < Chingu::GameObject
   end
     
   def left
-    @x -= 1
+    @x -= 2
     @animation = @animations[:left]
   end
 
   def right
-    @x += 1
+    @x += 2
     @animation = @animations[:right]
   end
 
   def up
-    @y -= 1
+    @y -= 2
     @animation = @animations[:up]
   end
 
   def down
-    @y += 1
+    @y += 2
     @animation = @animations[:down]
   end
 

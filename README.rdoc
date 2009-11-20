@@ -66,7 +66,7 @@ For example, inside game state Menu you call push_game_state(Level). When Level 
 Traits are extensions (or plugins if you so will) to BasicGameObjects. 
 The aim is so encapsulate common behaivor into modules for easy inclusion in your game classes.
 Making a trait is easy, just an ordinary module with the methods setup_trait(), update_trait() and/or draw_trait().
-It currently has to be namespaced to Chingu::Traits for "has_trait" to work inside GameObject-classes.
+It currently has to be namespaced to Chingu::Traits for "has_traits" to work inside GameObject-classes.
 
 == OTHER CLASSES / HELPERS
 
@@ -454,7 +454,7 @@ Each of those 3 methods must call "super" to continue the trait-chain.
 Example:
 
   class Ogre < Chingu::GameObject
-    has_trait :velocity, :timer
+    has_traits :velocity, :timer
     
     def initialize(options)
       super
@@ -481,7 +481,10 @@ Example:
   
 The flow for a game object then becomes:
 
-  -- creating the object
+  -- creating a GameObject class X  ( with a "has_trait :bounding_box, :scale => 0.80" )
+  1) trait gets merged into X, instance and class methods are added
+  2) GameObject.initialize_trait(:scale => 0.80)
+  -- creating an instance of X
   1) GameObject#initialize(options)
   2) GameObject#setup_trait(options)
   -- each game iteration
@@ -503,6 +506,20 @@ Adds timer functionality to your game object
 Adds accessors velocity_x, velocity_y, acceleration_x, acceleration_y, max_velocity to game object.
 They modify x, y as you would expect. *speed / angle will come*
 
+==== Trait "bounding_box"
+Adds accessor 'bounding_box', which returns a Rect based on current image size,x,y,factor_x,factor_y,center_x,center_y
+You can also scale the calculated rect with has_trait-options:
+
+  # This would return a rect slightly smaller then the image. 
+  # Make player think he's better @ dodging bullets then he really is ;)
+  has_trait :bounding_box, :scale => 0.80 
+
+==== Trait "radius"
+Adds accessor 'radius', which returns a Fixnum based on current image size,factor_x and factor_y
+You can also scale the calculated radius with has_trait-options:
+
+  # This would return a radius slightly bigger then what initialize was calculated
+  has_trait :radius, :scale => 1.10
 
 ==== Trait "effect"
 Adds accessors rotation_rate, fade_rate and scale_rate to game object.
@@ -651,3 +668,10 @@ As far as possible, use correct rubyfied english game_objects, not gameobjects. 
 * gem 'texplay' for some bonus Image-pixel operations, not needed otherwise
 
 
+
+
+
+  "If you program and want any longevity to your work, make a game. 
+  All else recycles, but people rewrite architectures to keep games alive.", _why
+  
+  

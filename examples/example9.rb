@@ -18,14 +18,7 @@ class Game < Chingu::Window
 end
 
 class FireCube < Chingu::GameObject
-  has_trait :velocity
-  has_trait :collision_detection
-  #
-  # TODO:
-  # has_trait :collision_detection, :type => :bounding_box
-  # has_trait :collision_detection, :type => :radius
-  #
-  
+  has_traits :velocity, :collision_detection  
   attr_accessor :color, :radius
   
   def initialize(options)
@@ -36,7 +29,7 @@ class FireCube < Chingu::GameObject
     @velocity_x = options[:velocity_x] || 1 + rand(2)
     @velocity_y = options[:velocity_y] || 1 + rand(2)
     
-    @bounding_box = Rect.new([@x, @y, 10, 10])
+    @box = Rect.new([@x, @y, 10, 10])
     @radius = 6
     
     @blue = Color.new(255,100,255,255)
@@ -45,17 +38,14 @@ class FireCube < Chingu::GameObject
   end
   
   def draw
-    $window.fill_rect(@bounding_box, @color)
+    $window.fill_rect(@box, @color)
   end
   
   def update
+    @box.x, @box.y = @x, @y
     @color = @blue
   end
   
-  def collides?(object2)
-    radius_collision?(object2)
-  end
-    
   def die!
     @color = @red
   end

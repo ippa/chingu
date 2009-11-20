@@ -98,13 +98,25 @@ module Chingu
     end
     
     #
-    # Draws a unfilled rect in given color
+    # Draws an unfilled rect in given color
     #
     def draw_rect(rect, color, zorder)
       $window.draw_line(rect.x, rect.y, color, rect.right, rect.y, color, zorder)
       $window.draw_line(rect.right, rect.y, color, rect.right, rect.bottom, color, zorder)
       $window.draw_line(rect.right, rect.bottom, color, rect.x, rect.bottom, color, zorder)
       $window.draw_line(rect.x, rect.bottom, color, rect.x, rect.y, color, zorder)
+    end
+    
+    
+    #
+    # Draws an unfilled circle, thanks shawn24!
+    #
+    CIRCLE_STEP = 10
+    def draw_circle(cx,cy,r,color)      
+      0.step(360, CIRCLE_STEP) do |a1|
+        a2 = a1 + CIRCLE_STEP
+        $window.draw_line cx + offset_x(a1, r), cy + offset_y(a1, r), color, cx + offset_x(a2, r), cy + offset_y(a2, r), color, 9999
+      end
     end
     
     #

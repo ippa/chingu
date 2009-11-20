@@ -8,22 +8,38 @@ module Chingu
   class BasicGameObject
     attr_reader :options, :paused, :visible
     attr_accessor :parent
-        
+    
+    def self.trait_options; @trait_options; end
+    def trait_options; self.class.trait_options; end
+    
     #
     # Adds a trait or traits to a certain game class
     # Executes a standard ruby "include" the specified module
     #
-    def self.has_trait(*traits)
-      has_traits(*traits)
-    end
-    
-    # See #has_trait
-    def self.has_traits(*traits)
-      Array(traits).each do |trait|
-        if trait.is_a?(::Symbol) || trait.is_a?(::String)
-          include Chingu::Traits.const_get(Chingu::Inflector.camelize(trait))
+    def self.has_trait(trait, options = {})
+      @trait_options ||= Hash.new
+      if trait.is_a?(::Symbol) || trait.is_a?(::String)
+        begin
+          # Convert user-given symbol (eg. :timer) to a Module (eg. Chingu::Traits::Timer)
+          mod = Chingu::Traits.const_get(Chingu::Inflector.camelize(trait))
+          
+          # Include the module, which will add the containing methods as instance methods
+          include mod
+                   
+          # Add possible classmethods defined in sub-module ClassMethods (eg: Chingu::Traits::Timer::ClassMethods)
+          mod2 = mod.const_get("ClassMethods")
+          extend mod2
+          
+          # If the newly included trait has a initialize_trait method...
+          # ... call it with the options provided with the has_trait-call
+          initialize_trait(options)  if mod2.method_defined?(:initialize_trait)
+        rescue
         end
       end
+    end
+    
+    def self.has_traits(*traits)
+      Array(traits).each { |trait| has_trait trait }
     end
         
     #
@@ -122,20 +138,15 @@ module Chingu
       @visible == true
     end
 
-    def setup_trait(options)
-    end
-    
-    def update_trait
-		end
-    
-    def draw_trait
-    end    
-        
-    def update
-    end
-
-    def draw
-    end
+    #
+    # Empty placeholders to be overridden
+    #
+    def self.initialize_trait(options); end
+    def setup_trait(options); end
+    def update_trait; end
+    def draw_trait; end    
+    def update; end
+    def draw; end
     
         
     #

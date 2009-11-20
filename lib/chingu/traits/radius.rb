@@ -22,39 +22,31 @@
 module Chingu
   module Traits
     #
-    # Providing a bounding_box-method which generates a AABB on the fly from:
-    # x, y, factor_x, factor_y and rotation_center
+    # Providing a bounding_box and keeps it up to date by reading:
+    # image, factor_x, factor_y
     #
-    module BoundingBox
+    # ...only makes sense with rotation_center = :center
+    #
+    module Radius
     
       module ClassMethods
         def initialize_trait(options = {})
-          ## puts "bounding_box initialize_trait #{options}"
-          @trait_options[:bounding_box] = options
+          @trait_options[:radius] = options
         end
       end
-            
-      def bounding_box
+      
+      def radius
         width = self.image.width * self.factor_x.abs
         height = self.image.height * self.factor_y.abs
-        
-        if trait_options[:bounding_box][:scale]
-          width = width * trait_options[:bounding_box][:scale]
-          height = height * trait_options[:bounding_box][:scale]
-        end
-        
-        x = self.x - (width * self.center_x.abs)
-        y = self.y - (height * self.center_y.abs)
-        
-        return Rect.new(x, y, width, height)
+        radius = (width + height) / 2
+        radius = radius * trait_options[:radius][:scale] if  trait_options[:radius][:scale]
+        return radius
       end
-      alias :bb :bounding_box
       
       def draw_trait
-        if trait_options[:bounding_box][:debug]
-          $window.draw_rect(self.bounding_box, Chingu::DEBUG_COLOR, Chingu::DEBUG_ZORDER)
+        if trait_options[:radius][:debug]
+          $window.draw_circle(self.x, self.y, self.radius, Chingu::DEBUG_COLOR)
         end
-        
         super
       end
       
