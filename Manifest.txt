@@ -11,12 +11,14 @@ benchmarks/benchmark5.rb
 benchmarks/benchmark6.rb
 benchmarks/meta_benchmark.rb
 benchmarks/meta_benchmark2.rb
+chingu-0.5.9.7.gem
 chingu.gemspec
 examples/example1.rb
 examples/example10.rb
 examples/example11.rb
 examples/example12.rb
 examples/example13.rb
+examples/example14.rb
 examples/example2.rb
 examples/example3.rb
 examples/example4.rb
@@ -86,6 +88,7 @@ lib/chingu/text.rb
 lib/chingu/traits/bounding_box.rb
 lib/chingu/traits/collision_detection.rb
 lib/chingu/traits/effect.rb
+lib/chingu/traits/radius.rb
 lib/chingu/traits/retrofy.rb
 lib/chingu/traits/timer.rb
 lib/chingu/traits/velocity.rb

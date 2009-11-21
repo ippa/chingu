@@ -25,10 +25,11 @@ class Droid < Chingu::GameObject
   def initialize(options = {})
     super
     
-    self.input = {  :holding_left => :left,
-                    :holding_right => :right,
-                    :holding_up => :up,
-                    :holding_down => :down }
+    #
+    # This shows up the shorten versio of input-maps, where each key calls a method of the very same name.
+    # Use this by giving an array of symbols to self.input
+    #
+    self.input = [:holding_left, :holding_right, :holding_up, :holding_down]
     
     # Load the full animation from tile-file media/droid.bmp
     @full_animation = Chingu::Animation.new(:file => "droid.bmp", :size => [11,16]).retrofy
@@ -49,22 +50,22 @@ class Droid < Chingu::GameObject
     update
   end
     
-  def left
+  def holding_left
     @x -= 2
     @animation = @animations[:left]
   end
 
-  def right
+  def holding_right
     @x += 2
     @animation = @animations[:right]
   end
 
-  def up
+  def holding_up
     @y -= 2
     @animation = @animations[:up]
   end
 
-  def down
+  def holding_down
     @y += 2
     @animation = @animations[:down]
   end

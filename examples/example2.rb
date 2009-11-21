@@ -60,13 +60,17 @@ class Play < Chingu::GameState
   def initialize
     super
     @player = Player.create(:x => 200, :y => 200)
-    @player.input = { :holding_left => :move_left, 
-                      :holding_right => :move_right, 
-                      :holding_up => :move_up, 
-                      :holding_down => :move_down, 
-                      :space => :fire
+    
+    #
+    # More advanced input-maps, showing of multiple keys leading to the same method
+    #
+    @player.input = { [:holding_a, :holding_left, :holding_pad_left] => :move_left, 
+                      [:holding_d, :holding_right, :holding_pad_right] => :move_right, 
+                      [:holding_w, :holding_up, :holding_pad_up] => :move_up, 
+                      [:holding_s, :holding_down, :holding_pad_down] => :move_down, 
+                      [:space, :return, :pad_button_2] => :fire
                     }
-    self.input = { :f1 => :debug, :escape => :exit }
+    self.input = { :f1 => :debug, [:q, :escape] => :exit }
   end
   
   def debug   

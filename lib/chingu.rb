@@ -28,7 +28,7 @@ require File.join(CHINGU_ROOT,"chingu","require_all") # Thanks to http://github.
 require_all "#{CHINGU_ROOT}/chingu"
 
 module Chingu
-  VERSION = "0.5.9.7"
+  VERSION = "0.6"
   
   DEBUG_COLOR = Gosu::Color.new(0xFFFF0000)
   DEBUG_ZORDER = 9999
