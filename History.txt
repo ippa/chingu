@@ -1,5 +1,9 @@
+=== 0.6 / 2009-11-21
+More traits, better input, fixes
+See github commithistory. 
+
 === 0.5.7 / 2009-10-15
-alot,alot of stuffz :].. see github commithistory.
+See github commithistory.
 
 === 0.5 / 2009-10-7
 Big refactor of GameObject. Now has BasicGameObject as base.
