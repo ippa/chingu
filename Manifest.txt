@@ -55,6 +55,7 @@ examples/media/spaceship.png
 examples/media/stickfigure.bmp
 examples/media/stickfigure.png
 examples/media/video_games.png
+examples/media/wood.png
 lib/chingu.rb
 lib/chingu/animation.rb
 lib/chingu/assets.rb
