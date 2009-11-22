@@ -40,7 +40,9 @@ module Chingu
     #
     def initialize(options = {})
       super(options)
-      @repeat = options[:repeat] || true
+      @repeat_x = options[:repeat_x] || true
+      @repeat_y = options[:repeat_y] || false
+      
       @layers = Array.new
     end
     
@@ -50,7 +52,7 @@ module Chingu
     #   @parallax << {:image => "landscape.png", :damping => 1}
     #
     def add_layer(arg)
-      @layers << (arg.is_a?(ParallaxLayer) ? arg : ParallaxLayer.new(arg))
+      @layers << (arg.is_a?(ParallaxLayer) ? arg : ParallaxLayer.new(arg.merge({:parallax => self})))
     end
     alias << add_layer
 
@@ -108,7 +110,10 @@ module Chingu
         layer.y = @y / layer.damping
         
         # This is the magic that repeats the layer to the left and right
-        layer.x -= layer.image.width  while layer.x > 0
+        layer.x -= layer.image.width  while (layer.repeat_x && layer.x > 0)
+       
+        # This is the magic that repeats the layer to the left and right
+        layer.y -= layer.image.height while (layer.repeat_y && layer.y > 0)
       end
     end
     
@@ -119,14 +124,29 @@ module Chingu
       @layers.each do |layer|
         layer.draw
         
-        save_x = layer.x
+        save_x, save_y = layer.x, layer.y
         
-        ## If layer lands inside our screen, repeat it
-        while (layer.x + layer.image.width) < $window.width
+        # If layer lands inside our window and repeat_x is true (defaults to true), draw it until window ends
+        while layer.repeat_x && layer.x < $window.width
+          while layer.repeat_y && layer.y < $window.height
+            layer.y += layer.image.height
+            layer.draw
+          end
+          layer.y = save_y
+          
           layer.x += layer.image.width
           layer.draw
         end
-                
+        
+        # Special loop for when repeat_y is set but not repeat_x
+        if layer.repeat_y && !layer.repeat_x
+          while layer.repeat_y && layer.y < $window.height
+            layer.y += layer.image.height
+            layer.draw
+          end
+        end
+
+          
         layer.x = save_x
       end
       self
@@ -143,17 +163,33 @@ module Chingu
   class ParallaxLayer < Chingu::GameObject    
     @@zorder_counter = 0
     attr_reader :damping
+    attr_accessor :repeat_x, :repeat_y
     
-    def initialize(options)
+    def initialize(options)      
+      @parallax = options[:parallax]      
       # No auto update/draw, the parentclass Parallax takes care of that!
       options.merge!(:visible => false, :paused => true)
+    
+      options = {:rotation_center => @parallax.options[:rotation_center]}.merge(options)  if @parallax
       
-      # If no zorder is given, use a global incrementing counter. First added, furthest behind when drawn.
-      options.merge!(:zorder => (@@zorder_counter+=1))  if options[:zorder].nil?
+      #
+      # Default arguments for repeat_x and repeat_y
+      # If no zorder is given, use a global incrementing counter. 
+      # First added, furthest behind when drawn.
+      #
+      options = {
+          :repeat_x => true, 
+          :repeat_y => false, 
+          :zorder => (@@zorder_counter+=1)
+      }.merge(options)
+      
+      
+      @repeat_x = options[:repeat_x]
+      @repeat_y = options[:repeat_y]
       
       super(options)
       
-      @damping = options[:damping] || 10
+      @damping = options[:damping] || 1
     end
     
     #

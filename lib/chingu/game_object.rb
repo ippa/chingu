@@ -28,7 +28,7 @@ module Chingu
   #
   class GameObject < Chingu::BasicGameObject
     attr_accessor :image, :x, :y, :angle, :center_x, :center_y, :factor_x, :factor_y, :color, :mode, :zorder
-    attr_reader :factor, :center
+    attr_reader :factor, :center#, :rotation_center
     
     include Chingu::Helpers::InputClient        # Adds input and input=
     include Chingu::Helpers::RotationCenter     # Adds easy and verbose modification of @center_x and @center_y
@@ -48,13 +48,16 @@ module Chingu
       @y = options[:y] || 0
       @angle = options[:angle] || 0
       
-
       self.factor = options[:factor] || 1.0
       @factor_x = options[:factor_x] if options[:factor_x]
       @factor_y = options[:factor_y] if options[:factor_y]
       
-      self.center = options[:center] || 0.5      
+      self.center = options[:center] || 0.5
+      
+      
+      @rotation_center = options[:rotation_center]
       self.rotation_center(options[:rotation_center]) if options[:rotation_center]
+      
       @center_x = options[:center_x] if options[:center_x]
       @center_y = options[:center_y] if options[:center_y]
       
