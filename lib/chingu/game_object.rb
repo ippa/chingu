@@ -19,12 +19,16 @@
 #
 #++
 
-
+require_rel 'helpers/*'
 module Chingu
   #
-  # GameObject is our BasisGameObject (class with framespecific stuff)
+  # GameObject inherits from BasicGameObject to get traits and some class-methods like .all and .destroy
   #
   # On top of that, it encapsulates GOSUs Image#draw_rot and all its parameters.
+  #
+  # In Chingu GameObject is a visual object, something to put on screen, centers around the .image-parameter.
+  #
+  # If you wan't a invisible object but with traits, use BasicGameObject.
   #
   class GameObject < Chingu::BasicGameObject
     attr_accessor :image, :x, :y, :angle, :center_x, :center_y, :factor_x, :factor_y, :color, :mode, :zorder

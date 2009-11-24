@@ -1,3 +1,4 @@
+require_rel 'helpers/class_inheritable_accessor'
 module Chingu
   #
   # BasicGameObject. Resonating with 1.9.1, this is our most basic class that all game objects ultimate should build on.
@@ -6,18 +7,20 @@ module Chingu
   # It will also acts as a container for the trait-system of chingu.
   #
   class BasicGameObject
+    include Chingu::ClassInheritableAccessor
+    
     attr_reader :options, :paused, :visible
     attr_accessor :parent
     
-    def self.trait_options; @trait_options; end
+    class_inheritable_accessor :trait_options
+    @trait_options = Hash.new
     def trait_options; self.class.trait_options; end
-    
+            
     #
     # Adds a trait or traits to a certain game class
     # Executes a standard ruby "include" the specified module
     #
-    def self.has_trait(trait, options = {})
-      @trait_options ||= Hash.new
+    def self.has_trait(trait, options = {})      
       if trait.is_a?(::Symbol) || trait.is_a?(::String)
         begin
           # Convert user-given symbol (eg. :timer) to a Module (eg. Chingu::Traits::Timer)
@@ -30,9 +33,11 @@ module Chingu
           mod2 = mod.const_get("ClassMethods")
           extend mod2
           
-          # If the newly included trait has a initialize_trait method...
-          # ... call it with the options provided with the has_trait-call
-          initialize_trait(options)  if mod2.method_defined?(:initialize_trait)
+          # If the newly included trait has a initialize_trait method in the ClassMethods-scope:
+          # ... call it with the options provided with the has_trait-line.
+          if mod2.method_defined?(:initialize_trait)
+            initialize_trait(options)
+          end
         rescue
         end
       end
