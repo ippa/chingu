@@ -15,7 +15,7 @@ class Game < Chingu::Window
     @factor = 6
     self.input = { :escape => :exit }          
     self.caption = "Chingu::Animation / retrofy example. Move with arrows!"
-    Droid.create(:x => $window.width/2, :y => $window.height/2)
+    Droid.create #(:x => $window.width/2, :y => $window.height/2)
   end
 end
 

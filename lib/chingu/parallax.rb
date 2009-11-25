@@ -36,7 +36,8 @@ module Chingu
     #
     # Options (in hash-format):
     #
-    # repeat: [true|false]  When one layer ends within the screen, repeat/loop it
+    # repeat_x: [true|false]  repeat layer on X-axis
+    # repeat_y: [true|false]  repeat layer on Y-axis
     #
     def initialize(options = {})
       super(options)
@@ -61,7 +62,7 @@ module Chingu
     # returns true if any part of the parallax-scroller is inside the window
     #
     def inside_window?
-      return true if @repeat
+      return true if @repeat_x || @repeat_y
       @layers.each { |layer| return true if layer.inside_window? }
       return false
     end
@@ -122,31 +123,30 @@ module Chingu
     #
     def draw
       @layers.each do |layer|
-        layer.draw
+        #layer.draw
         
         save_x, save_y = layer.x, layer.y
         
         # If layer lands inside our window and repeat_x is true (defaults to true), draw it until window ends
         while layer.repeat_x && layer.x < $window.width
           while layer.repeat_y && layer.y < $window.height
-            layer.y += layer.image.height
             layer.draw
+            layer.y += layer.image.height
           end
           layer.y = save_y
           
-          layer.x += layer.image.width
           layer.draw
+          layer.x += layer.image.width
         end
         
-        # Special loop for when repeat_y is set but not repeat_x
+        # Special loop for when repeat_y is true but not repeat_x
         if layer.repeat_y && !layer.repeat_x
           while layer.repeat_y && layer.y < $window.height
-            layer.y += layer.image.height
             layer.draw
+            layer.y += layer.image.height
           end
         end
 
-          
         layer.x = save_x
       end
       self

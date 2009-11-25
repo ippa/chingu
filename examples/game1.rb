@@ -20,7 +20,7 @@ class Game < Chingu::Window
   def initialize
     super(1000,800,false)
     self.input = { :escape => :exit }
-    @factor = 2
+    @factor = 1
     switch_game_state(Level)
   end
 end
@@ -35,12 +35,10 @@ class Level < Chingu::GameState
   def initialize(options = {})
     super
     
-    @parallax = Parallax.create
-    #ParallaxLayer.has_trait :retrofy
-    #@parallax << ParallaxLayer.new(:image => Image["city3.png"].retrofy, :center => 0, :damping => 4, :factor => $window.factor)
-    @parallax << ParallaxLayer.new(:image => Image["city2.png"].retrofy, :center => 0, :damping => 2, :factor => $window.factor)
-    @parallax << ParallaxLayer.new(:image => Image["city1.png"].retrofy, :center => 0, :damping => 1, :factor => $window.factor)
-    @player = Player.create(:x => 10, :y => 10)
+    @parallax = Parallax.create(:rotation_center => :top_left)
+    @parallax << { :image => Image["city2.png"].retrofy, :damping => 2, :factor => $window.factor }
+    @parallax << { :image => Image["city1.png"].retrofy, :damping => 1, :factor => $window.factor }
+    @player = Player.create(:x => 30, :y => 10)
     
     @bg1 = Color.new(0xFFCE28FF)
     @bg2 = Color.new(0xFF013E87)
@@ -121,7 +119,8 @@ class Level < Chingu::GameState
   end
   
   def draw
-    fill_gradient(:from => @bg2, :to => @bg1)
+    #fill_gradient(:from => @bg2, :to => @bg1)
+    #@parallax.layers.first.draw
     super    
   end
 end
