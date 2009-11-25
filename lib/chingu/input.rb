@@ -98,17 +98,18 @@ module Chingu
 
     #F-keys, F1-F12
     (1..12).each do |number|
-      CONSTANT_TO_SYMBOL[eval("KbF#{number.to_s}")] = ["f#{number.to_s}".to_sym]
-      CONSTANT_TO_SYMBOL[eval("KbF#{number.to_s}")] = ["F#{number.to_s}".to_sym]
+      CONSTANT_TO_SYMBOL[eval("KbF#{number.to_s}")] = ["f#{number.to_s}".to_sym, "F#{number.to_s}".to_sym]
     end
 
     # Gamepad-buttons 0-15
     (0..15).each do |number|
-      CONSTANT_TO_SYMBOL[eval("GpButton#{number.to_s}")] = ["gamepad_button_#{number.to_s}"]
-      CONSTANT_TO_SYMBOL[eval("GpButton#{number.to_s}")] = ["gamepad_#{number.to_s}"]
-      CONSTANT_TO_SYMBOL[eval("GpButton#{number.to_s}")] = ["pad_button_#{number.to_s}"]
-      CONSTANT_TO_SYMBOL[eval("GpButton#{number.to_s}")] = ["pad_#{number.to_s}"]
-      CONSTANT_TO_SYMBOL[eval("GpButton#{number.to_s}")] = ["gp_#{number.to_s}"]
+      CONSTANT_TO_SYMBOL[eval("GpButton#{number.to_s}")] = [
+        "gamepad_button_#{number.to_s}",
+        "gamepad_#{number.to_s}",
+        "pad_button_#{number.to_s}",
+        "pad_#{number.to_s}",
+        "gp_#{number.to_s}"
+      ]
     end
 
     #
