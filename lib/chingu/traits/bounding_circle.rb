@@ -22,26 +22,35 @@
 module Chingu
   module Traits
     #
-    # Providing a bounding_box and keeps it up to date by reading:
-    # image, factor_x, factor_y
+    # Providing a bounding circle in the form of 2 attributes, self.radius and self.diameter
+    # It creates these 2 attributes from reading image.height, image.width, factor_x and factor_y
     #
-    # ...only makes sense with rotation_center = :center
+    # ...this usually only makes sense with rotation_center = :center
     #
-    module Radius
+    module BoundingCircle
     
       module ClassMethods
         def initialize_trait(options = {})
-          @trait_options[:radius] = options
+          trait_options[:radius] = options
         end
       end
       
       def radius
         width = self.image.width * self.factor_x.abs
         height = self.image.height * self.factor_y.abs
-        radius = (width + height) / 2
+        radius = (width + height) / 4
         radius = radius * trait_options[:radius][:scale] if  trait_options[:radius][:scale]
         return radius
       end
+      
+      def diameter
+        radius * 2
+      end
+      
+      def circle_left;    self.x - self.radius; end
+      def circle_right;   self.x + self.radius; end
+      def circle_top;     self.y - self.radius; end
+      def circle_bottom;  self.y + self.radius; end
       
       def draw_trait
         if trait_options[:radius][:debug]

@@ -36,8 +36,14 @@ module RequireAll
     args.flatten!
     
     if args.size > 1
-      # If we got a list, those be are files!
-      files = args
+      # Expand files below directories
+      files = args.map do |path|
+        if File.directory? path
+          Dir[File.join(path, '**', '*.rb')]
+        else
+          path
+        end
+      end.flatten
     else
       arg = args.first
       begin
@@ -70,6 +76,7 @@ module RequireAll
     raise LoadError, "no files to load" if files.empty?
     
     files.map! { |file| File.expand_path file }
+    files.sort!
             
     begin
       failed = []

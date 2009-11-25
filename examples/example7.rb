@@ -79,7 +79,7 @@ class Particles < Chingu::GameState
     @yellow = Color.new(0xFFF9F120)
     
     # Thanks jsb in #gosu of Encave-fame for fireball.png :)
-    @fireball_animation = Chingu::Animation.new(:file => media_path("fireball.png"), :width => 32, :height => 32)
+    @fireball_animation = Chingu::Animation.new(:file => media_path("fireball.png"), :size => [32,32])
     @ground_y = $window.height * 0.95
   end
   

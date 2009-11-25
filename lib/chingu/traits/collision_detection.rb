@@ -36,7 +36,7 @@ module Chingu
       
       module ClassMethods
         def initialize_trait(options = {})
-          @trait_options[:collision_detection] = options
+          trait_options[:collision_detection] = options
         end
       end
       
@@ -46,8 +46,13 @@ module Chingu
       # two objects "bounding_box" attributs (a Chingu::Rect instance)
       #
       def collides?(object2)
-        bounding_box_collision?(object2)
-        #radius_collision?(object2)
+        if self.respond_to?(:bounding_box) && object2.respond_to?(:bounding_box)
+          bounding_box_collision?(object2)
+        elsif self.respond_to?(:radius) && object2.respond_to?(:radius)
+          radius_collision?(object2)
+        else
+          bounding_box_radius_collision?(object2)
+        end
       end
       
       #
@@ -67,11 +72,34 @@ module Chingu
       end
       
       #
+      # BoundingBox vs Radius collision
+      #
+      # http://stackoverflow.com/questions/401847/circle-rectangle-collision-detection-intersection
+      #
+      def bounding_box_radius_collision?(object2)
+        rect = self.respond_to?(:bounding_box) ? self.bounding_box : object2.bounding_box
+        circle = self.respond_to?(:radius) ? self : object2
+        radius = circle.radius.to_i
+        
+        distance_x = (circle.x - rect.x - rect.width/2).abs
+        distance_y = (circle.y - rect.y - rect.height/2).abs
+        
+        return false if distance_x > (rect.width/2 + circle.radius)
+        return false if distance_y > (rect.height/2 + circle.radius)
+        
+        return true if distance_x <= (rect.width/2)
+        return true if distance_y <= (rect.height/2)
+          
+        cornerDistance_sq = (distance_x - rect.width/2) ** 2 + (distance_y - rect.height/2) ** 2
+        return (cornerDistance_sq <= (circle.radius ** 2))
+      end
+        
+      #
       # Collides self with all objects of given classes
       # Yields self and the objects it collides with
       #
       def each_collision(klasses = [])
-        Array(klasses).each do |klass|        
+        Array(klasses).each do |klass|
           klass.all.each do |object|
             yield(self, object)   if collides?(object)
           end
@@ -147,10 +175,23 @@ module Chingu
         #   Enemy.each_collision(Bullet).each do |enemy, bullet| enemy.die!; end
         #
         #
-        def each_collision(klasses = [])
+        def each_collision(*klasses)
           # Make sure klasses is always an array.
           Array(klasses).each do |klass|
             object2_list = klass.all
+            type1 = self.instance_methods.include?(:bounding_box) ? :bb : :bc
+            type2 = klass.instance_methods.include?(:bounding_box) ? :bb : :bc
+            
+            # Pointless optmization-attempts?
+            #if type1 != type2
+            #  self.all.each do |object1|
+            #    object2_list.each do |object2|
+            #      next  if object1 == object2  # Don't collide objects with themselves
+            #      yield object1, object2  if object1.bounding_box_radius_collision?(object2)
+            #    end
+            #  end
+            #end
+              
             
             self.all.each do |object1|
               object2_list.each do |object2|
@@ -160,9 +201,7 @@ module Chingu
             end
           end
         end
-        
       end
-      
     end
   end
 end

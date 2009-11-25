@@ -131,7 +131,7 @@ end
 #
 class Player < GameObject
   has_traits :velocity, :collision_detection, :timer
-  has_trait :radius, :scale => 0.50, :debug => true
+  has_trait :bounding_circle, :scale => 0.50, :debug => true
   
   attr_accessor :score
   

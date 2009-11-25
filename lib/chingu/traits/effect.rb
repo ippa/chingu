@@ -42,21 +42,18 @@ module Chingu
 
     module Effect
       attr_accessor :rotation_rate, :fade_rate, :scale_rate
-                        
+      
       #
       # Setup
       #
-      def setup_trait(options)        
+      def setup_trait(options)
+        ## puts "Effect#setup_trait(#{options})"
         @rotation_rate = options[:rotation_rate] || nil
         @scale_rate = options[:scale_rate] || nil
         @fade_rate = options[:fade_rate] || nil
         super
       end
-      
-      def draw_trait
-        super
-      end
-      
+            
       def update_trait        
         rotate(@rotation_rate)  if @rotation_rate
         fade(@fade_rate)        if @fade_rate

@@ -20,8 +20,10 @@ module Chingu
     # Adds a trait or traits to a certain game class
     # Executes a standard ruby "include" the specified module
     #
-    def self.has_trait(trait, options = {})      
+    def self.has_trait(trait, options = {})
+      
       if trait.is_a?(::Symbol) || trait.is_a?(::String)
+        ## puts "has_trait #{trait}, #{options}"
         begin
           # Convert user-given symbol (eg. :timer) to a Module (eg. Chingu::Traits::Timer)
           mod = Chingu::Traits.const_get(Chingu::Inflector.camelize(trait))
@@ -29,16 +31,21 @@ module Chingu
           # Include the module, which will add the containing methods as instance methods
           include mod
                    
-          # Add possible classmethods defined in sub-module ClassMethods (eg: Chingu::Traits::Timer::ClassMethods)
-          mod2 = mod.const_get("ClassMethods")
-          extend mod2
+          # Does sub-module "ClessMethods" exists?
+          # (eg: Chingu::Traits::Timer::ClassMethods)
+          if mod.const_defined?("ClassMethods")
+            # Add methods in scope ClassMethods as.. class methods!
+            mod2 = mod.const_get("ClassMethods")
+            extend mod2
           
-          # If the newly included trait has a initialize_trait method in the ClassMethods-scope:
-          # ... call it with the options provided with the has_trait-line.
-          if mod2.method_defined?(:initialize_trait)
-            initialize_trait(options)
+            # If the newly included trait has a initialize_trait method in the ClassMethods-scope:
+            # ... call it with the options provided with the has_trait-line.
+            if mod2.method_defined?(:initialize_trait)
+              initialize_trait(options)
+            end
           end
         rescue
+          puts $!
         end
       end
     end

@@ -12,7 +12,6 @@ class Game < Chingu::Window
     self.input = {:esc => :exit}
     self.caption = "Example of game object traits 'velocity' and 'effect'"
     push_game_state(Particles)
-    puts RUBY_VERSION
   end
   
   def next_effect; pop_game_state; end

@@ -29,8 +29,7 @@ module Chingu
     
       module ClassMethods
         def initialize_trait(options = {})
-          ## puts "bounding_box initialize_trait #{options}"
-          @trait_options[:bounding_box] = options
+          trait_options[:bounding_box] = options
         end
       end
             
@@ -50,11 +49,10 @@ module Chingu
       end
       alias :bb :bounding_box
       
-      def draw_trait
+      def draw_trait      
         if trait_options[:bounding_box][:debug]
           $window.draw_rect(self.bounding_box, Chingu::DEBUG_COLOR, Chingu::DEBUG_ZORDER)
         end
-        
         super
       end
       
