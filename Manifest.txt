@@ -35,6 +35,7 @@ examples/media/Parallax-scroll-example-layer-3.png
 examples/media/background1.png
 examples/media/bullet.png
 examples/media/bullet_hit.wav
+examples/media/circle.png
 examples/media/city1.csv
 examples/media/city1.png
 examples/media/city2.png
@@ -47,6 +48,7 @@ examples/media/laser.wav
 examples/media/particle.png
 examples/media/plane.csv
 examples/media/plane.png
+examples/media/rect.png
 examples/media/ruby.png
 examples/media/saucer.csv
 examples/media/saucer.gal
@@ -60,7 +62,7 @@ lib/chingu.rb
 lib/chingu/animation.rb
 lib/chingu/assets.rb
 lib/chingu/basic_game_object.rb
-lib/chingu/core_extensions.rb
+lib/chingu/core_ext/array.rb
 lib/chingu/fpscounter.rb
 lib/chingu/game_object.rb
 lib/chingu/game_object_list.rb
@@ -70,6 +72,8 @@ lib/chingu/game_states/debug.rb
 lib/chingu/game_states/edit.rb
 lib/chingu/game_states/fade_to.rb
 lib/chingu/game_states/pause.rb
+lib/chingu/gosu_ext/image.rb
+lib/chingu/helpers/class_inheritable_accessor.rb
 lib/chingu/helpers/game_object.rb
 lib/chingu/helpers/game_state.rb
 lib/chingu/helpers/gfx.rb
@@ -86,9 +90,9 @@ lib/chingu/rect.rb
 lib/chingu/require_all.rb
 lib/chingu/text.rb
 lib/chingu/traits/bounding_box.rb
+lib/chingu/traits/bounding_circle.rb
 lib/chingu/traits/collision_detection.rb
 lib/chingu/traits/effect.rb
-lib/chingu/traits/radius.rb
 lib/chingu/traits/retrofy.rb
 lib/chingu/traits/timer.rb
 lib/chingu/traits/velocity.rb

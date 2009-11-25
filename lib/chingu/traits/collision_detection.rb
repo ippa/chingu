@@ -98,7 +98,7 @@ module Chingu
       # Collides self with all objects of given classes
       # Yields self and the objects it collides with
       #
-      def each_collision(klasses = [])
+      def each_collision(*klasses)
         Array(klasses).each do |klass|
           klass.all.each do |object|
             yield(self, object)   if collides?(object)
@@ -179,9 +179,12 @@ module Chingu
           # Make sure klasses is always an array.
           Array(klasses).each do |klass|
             object2_list = klass.all
-            type1 = self.instance_methods.include?(:bounding_box) ? :bb : :bc
-            type2 = klass.instance_methods.include?(:bounding_box) ? :bb : :bc
             
+            #
+            # Possible optimization, look into later.
+            #
+            # type1 = self.instance_methods.include?(:bounding_box) ? :bb : :bc
+            # type2 = klass.instance_methods.include?(:bounding_box) ? :bb : :bc
             # Pointless optmization-attempts?
             #if type1 != type2
             #  self.all.each do |object1|
