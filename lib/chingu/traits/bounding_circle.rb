@@ -37,6 +37,7 @@ module Chingu
       
       def setup_trait(options)
         @cached_radius = nil
+        super
       end
       
       def radius

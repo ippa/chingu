@@ -35,6 +35,7 @@ module Chingu
       
       def setup_trait(options)
         @cached_bounding_box = nil
+        super
       end
       
       #
