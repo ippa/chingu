@@ -41,7 +41,7 @@ class Game < Chingu::Window
     # Before optmization: 25 FPS  (20 boxes and 20 circles)
     # Cached radius and rects:
     #
-    [Box, Circle].each_collision(Box, Circle) { |o, o2| o.color, o2.color = @blue, @blue }
+    #[Box, Circle].each_collision(Box, Circle) { |o, o2| o.color, o2.color = @blue, @blue }
     
     #
     # Only collide boxes with other boxes
