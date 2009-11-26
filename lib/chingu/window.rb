@@ -59,8 +59,15 @@ module Chingu
       @milliseconds_since_last_tick = 0
     end
     
-    def current_parent
-      game_state_manager.current_game_state || self
+    #
+    # Returns self inside GameState.initialize (a game state is not 'active' inside initialize())
+    # Or returns current active game state (as in a switched to or pushed game state)
+    # ... Falls back to returning $window
+    #
+    # current_scope is used to make GameObject.all and friends work everywhere.
+    #
+    def current_scope
+      game_state_manager.inside_state || game_state_manager.current_game_state || self
     end
     
     #
