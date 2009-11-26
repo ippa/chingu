@@ -32,8 +32,22 @@ module Chingu
           trait_options[:bounding_box] = options
         end
       end
-            
-      def bounding_box
+      
+      def setup_trait(options)
+        @cached_bounding_box = nil
+      end
+      
+      #
+      # Returns an instance of class Rect
+      #
+      def bounding_box        
+        if @cached_bounding_box
+          @cached_bounding_box.x = self.x + @_x_diff
+          @cached_bounding_box.y = self.y + @_y_diff
+          
+          return @cached_bounding_box
+        end
+        
         width = self.image.width * self.factor_x.abs
         height = self.image.height * self.factor_y.abs
         
@@ -48,6 +62,18 @@ module Chingu
         return Rect.new(x, y, width, height)
       end
       alias :bb :bounding_box
+      
+      def cache_bounding_box
+        @cached_bounding_box = nil
+        @cached_bounding_box = self.bounding_box
+        @_x_diff = @cached_bounding_box.x - self.x
+        @_y_diff = @cached_bounding_box.y - self.y
+      end
+      
+      #def update_trait
+      #  cache_bounding_box  if trait_options[:bounding_box][:cache] && !@cached_bounding_box
+      #  super
+      #end
       
       def draw_trait      
         if trait_options[:bounding_box][:debug]

@@ -11,8 +11,8 @@ class Game < Chingu::Window
     super(640,400)
     self.input = {:esc => :exit, :q => :decrease_size, :w => :increase_size, :a => :decrease_speed, :s => :increase_speed}
     
-    10.times { Circle.create(:x => width/2, :y => height/2) }
-    10.times { Box.create(:x => width/2, :y => height/2) }
+    20.times { Circle.create(:x => width/2, :y => height/2) }
+    20.times { Box.create(:x => width/2, :y => height/2) }
     @blue = Color.new(0xFF0000FF)
     @white = Color.new(0xFFFFFFFF)
   end
@@ -37,6 +37,9 @@ class Game < Chingu::Window
 
     #
     # Collide Boxes/Circles, Boxes/Boxes and Circles/Circles (basicly all objects on screen)
+    #
+    # Before optmization: 25 FPS  (20 boxes and 20 circles)
+    # Cached radius and rects:
     #
     [Box, Circle].each_collision(Box, Circle) { |o, o2| o.color, o2.color = @blue, @blue }
     
@@ -69,8 +72,8 @@ class Circle < GameObject
     self.velocity_x = 3 - rand * 6
     self.velocity_y = 3 - rand * 6
     self.factor = 2
-    
     self.input = [:holding_left, :holding_right, :holding_down, :holding_up]
+    cache_bounding_circle
   end
   
   def holding_left; @x -= 1; end
@@ -94,11 +97,14 @@ class Box < GameObject
     self.velocity_x = 3 - rand * 6
     self.velocity_y = 3 - rand * 6
     self.factor = 2
+    cache_bounding_box
   end
   
   def update
     self.velocity_x = -self.velocity_x  if @x < 0 || @x > $window.width
     self.velocity_y = -self.velocity_y  if @y < 0 || @y > $window.height
+    @x = @x.to_i
+    @y = @y.to_i
   end
 end
 

@@ -31,15 +31,21 @@ module Chingu
     
       module ClassMethods
         def initialize_trait(options = {})
-          trait_options[:radius] = options
+          trait_options[:bounding_circle] = options
         end
       end
       
+      def setup_trait(options)
+        @cached_radius = nil
+      end
+      
       def radius
+        return @cached_radius if @cached_radius
+        
         width = self.image.width * self.factor_x.abs
         height = self.image.height * self.factor_y.abs
         radius = (width + height) / 4
-        radius = radius * trait_options[:radius][:scale] if  trait_options[:radius][:scale]
+        radius = radius * trait_options[:bounding_circle][:scale] if  trait_options[:bounding_circle][:scale]
         return radius
       end
       
@@ -47,13 +53,23 @@ module Chingu
         radius * 2
       end
       
+      def cache_bounding_circle
+        @cached_radius = nil
+        @cached_radius = self.radius
+      end
+      
+      #def update_trait
+      #  cache_bounding_circle  if trait_options[:bounding_circle][:cache] && !@cached_radius
+      #  super
+      #end
+      
       def circle_left;    self.x - self.radius; end
       def circle_right;   self.x + self.radius; end
       def circle_top;     self.y - self.radius; end
       def circle_bottom;  self.y + self.radius; end
       
       def draw_trait
-        if trait_options[:radius][:debug]
+        if trait_options[:bounding_circle][:debug]
           $window.draw_circle(self.x, self.y, self.radius, Chingu::DEBUG_COLOR)
         end
         super

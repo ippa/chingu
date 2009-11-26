@@ -78,7 +78,11 @@ class ParticleState < Chingu::GameState
     #
     # GameObject.each_collsion / each_radius_collision wont collide an object with itself
     #
-    FireCube.each_radius_collision(FireCube) do |cube1, cube2|
+    # FireCube.each_radius_collision(FireCube) do |cube1, cube2|  # 30 FPS on my computer
+    #
+    # Let's see if we can optimize each_collision, starts with 19 FPS
+    #
+    FireCube.each_collision(FireCube) do |cube1, cube2|
       cube1.die!
       cube2.die!
     end

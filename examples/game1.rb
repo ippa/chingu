@@ -20,7 +20,7 @@ class Game < Chingu::Window
   def initialize
     super(1000,800,false)
     self.input = { :escape => :exit }
-    @factor = 1
+    @factor = 2
     switch_game_state(Level)
   end
 end
@@ -119,8 +119,7 @@ class Level < Chingu::GameState
   end
   
   def draw
-    #fill_gradient(:from => @bg2, :to => @bg1)
-    #@parallax.layers.first.draw
+    fill_gradient(:from => @bg2, :to => @bg1)
     super    
   end
 end
