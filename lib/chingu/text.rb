@@ -72,7 +72,7 @@ module Chingu
       @align = options[:align] || :left
       @max_width = options[:max_width]
     
-      self.rotation_center(:top_left)
+      self.rotation_center = :top_left
       
       @gosu_font = Gosu::Font.new($window, @font, @height)
       

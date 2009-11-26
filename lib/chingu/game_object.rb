@@ -76,7 +76,7 @@ module Chingu
       @mode = options[:mode] || :default # :additive is also available.
       @zorder = options[:zorder] || 100
       
-      ## setup_trait(options)  if self.respond_to?(:setup_trait)
+      #setup_trait(options)  if self.respond_to?(:setup_trait)
     end
     
     # Quick way of setting both factor_x and factor_y

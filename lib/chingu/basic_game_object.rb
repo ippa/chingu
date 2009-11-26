@@ -7,7 +7,7 @@ module Chingu
   # It will also acts as a container for the trait-system of chingu.
   #
   class BasicGameObject
-    include Chingu::ClassInheritableAccessor
+    include Chingu::Helpers::ClassInheritableAccessor # adds classmethod class_inheritable_accessor
     
     attr_reader :options, :paused, :visible
     attr_accessor :parent
@@ -65,9 +65,10 @@ module Chingu
       #
       # A GameObject either belong to a GameState or our mainwindow ($window)
       #
-      if !@parent && $window && $window.respond_to?(:game_state_manager)
-        @parent = $window.game_state_manager.inside_state || $window
-      end
+      #if !@parent && $window && $window.respond_to?(:game_state_manager)
+      #  @parent = $window.game_state_manager.inside_state || $window
+      #end
+      @parent = $window.current_scope if !@parent && $window
       
       # if true, BasicGameObject#update will be called
       @paused = options[:paused] || false
@@ -96,6 +97,7 @@ module Chingu
       # Add to parents list of game objects
       #
       instance.parent.add_game_object(instance) if instance.parent
+      
       
       return instance
     end
@@ -168,14 +170,14 @@ module Chingu
     #   Bullet.all.each do {}  # Iterate through all bullets in current game state
     #
     def self.all
-      $window.current_parent.game_objects.of_class(self).dup
+      $window.current_scope.game_objects.of_class(self).dup
     end
     
     #
     # Returns
     #
     def self.size
-      $window.current_parent.game_objects.of_class(self).size
+      $window.current_scope.game_objects.of_class(self).size
     end
     
     #

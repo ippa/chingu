@@ -114,6 +114,7 @@ module Chingu
         current_game_state.finalize   if current_game_state.respond_to?(:finalize) && options[:finalize]
         
         # So BasicGameObject#create connects object to new state in its setup()
+        # Is this doubled in GameState.initialize() ?
         self.inside_state = new_state
         
         # Call setup
@@ -131,8 +132,10 @@ module Chingu
             @game_states[-1] = new_state
           end
         end
-        ## MOVEDE: self.inside_state = current_game_state
+        ## MOVED: self.inside_state = current_game_state
       end
+      
+      self.inside_state = nil   # no longer 'inside' (as in within initialize() etc) a game state
     end
     alias :switch :switch_game_state
     
@@ -157,6 +160,7 @@ module Chingu
         new_state.setup               if new_state.respond_to?(:setup) && options[:setup]
         
         # Make sure the game state knows about the manager
+        # Is this doubled in GameState.initialize() ?
         new_state.game_state_manager = self
         
         # Give the soon-to-be-disabled state a chance to clean up by calling finalize() on it.
@@ -172,6 +176,8 @@ module Chingu
         end
         ## MOVED: self.inside_state = current_game_state
       end
+      
+      self.inside_state = nil   # no longer 'inside' (as in within initialize() etc) a game state
     end
     alias :push :push_game_state
     
@@ -195,6 +201,7 @@ module Chingu
       @game_states.pop
       
       # So BasicGameObject#create connects object to new state in its setup()
+      # Is this doubled in GameState.initialize() ?
       self.inside_state = current_game_state
       
       # Call setup on the new current state
@@ -205,7 +212,9 @@ module Chingu
         transitional_game_state = @transitional_game_state.new(current_game_state, @transitional_game_state_options)
         self.switch_game_state(transitional_game_state, :transitional => false)
       end
+      
       ## MOVED: self.inside_state = current_game_state
+      self.inside_state = nil   # no longer 'inside' (as in within initialize() etc) a game state
     end
     alias :pop :pop_game_state
 

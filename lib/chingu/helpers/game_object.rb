@@ -29,6 +29,7 @@ module Chingu
   module GameObject
   
     def add_game_object(object)
+      # puts "#{self.to_s} add_game_object(#{object.to_s})"
       @game_objects.add_game_object(object)
     end
     
