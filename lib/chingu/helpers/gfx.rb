@@ -115,7 +115,7 @@ module Chingu
     def draw_circle(cx,cy,r,color)      
       0.step(360, CIRCLE_STEP) do |a1|
         a2 = a1 + CIRCLE_STEP
-        $window.draw_line cx + offset_x(a1, r), cy + offset_y(a1, r), color, cx + offset_x(a2, r), cy + offset_y(a2, r), color, 9999
+        $window.draw_line cx + Gosu.offset_x(a1, r), cy + Gosu.offset_y(a1, r), color, cx + Gosu.offset_x(a2, r), cy + Gosu.offset_y(a2, r), color, 9999
       end
     end
     
