@@ -90,6 +90,8 @@ Both $window and game states gets some new graphical helpers, currently only 3, 
   fill()          # Fills whole window with color 'color'.
   fill_rect()     # Fills a given Rect 'rect' with Color 'color'
   fill_gradient() # Fills window or a given rect with a gradient between two colors.
+  draw_circle()   # Draws a circle
+  draw_rect()     # Draws a rect
 
 If you base your models on GameObject (or BasicGameObject) you get:
   Enemy.all                 # Returns an Array of all Enemy-instances
@@ -445,13 +447,41 @@ Chingus inputhandler will detect that Menu is a GameState-class, create a new in
 
 === Traits
 Traits (often called behaivors) is a way of adding logic to any class inheriting from BasicGameObject / GameObject.
-Chingus trait-implementation is just ordinary ruby modules with 3 special methods: 
+Chingus trait-implementation is just ordinary ruby modules with 3 special methods:
  - setup_trait 
  - update_trait 
  - draw_trait
 Each of those 3 methods must call "super" to continue the trait-chain.
 
-Example:
+Inside a certian trait-module you can also have a module called ClassMethods, methods inside that module will be added,
+yes you guessed it, as class methods. If initialize_trait is defined inside ClassMethods it will be called class-evaluation time
+(basicly on the has_trait :some_trait line).
+
+A simple trait could be:
+
+module Chingu
+  module Trait
+    module Inspect
+      module ClassMethods
+        def initialize_trait(options)
+            # possible initialize stuff here
+        end
+      
+        def inspect
+          "There's {self.size} active instances of class {self.to_s}"
+        end
+    end
+  end
+end
+
+class Enemy < GameObject
+  has_trait :inspect    # includes Chingu::Trait::Inspect and extends Chingu::Trait::Inspect::ClassMethods
+end
+10.times { Enemy.create }
+Enemy.inspect           # => There's 10 active instances of class Enemy
+
+
+Example of using traits :velocity and :timer:
 
   class Ogre < Chingu::GameObject
     has_traits :velocity, :timer
@@ -466,8 +496,8 @@ Example:
       # These 2 parameters will affect @x and @y every game-iteration
       # So if your ogre is standing on the ground, make sure you cancel out the effect of @acceleration_y
       #
-      @velocity_x = 1       # move constantly to the right
-      @acceleration_y = 0.4 # gravity is basicly a downwards acceleration
+      self.velocity_x = 1       # move constantly to the right
+      self.acceleration_y = 0.4 # gravity is basicly a downwards acceleration
     end
     
     def hit_by(object)
@@ -475,7 +505,7 @@ Example:
       # during() and then() is provided by the timer-trait
       # flash red for 300 millisec when hit, then go back to normal
       #
-      during(100) { @color = @red; @mode = :additive }.then { @color = @white; @mode = :default }
+      during(100) { self.color = @red; self.mode = :additive }.then { self.color = @white; self.mode = :default }
     end
   end
   
@@ -483,7 +513,7 @@ The flow for a game object then becomes:
 
   -- creating a GameObject class X  ( with a "has_trait :bounding_box, :scale => 0.80" )
   1) trait gets merged into X, instance and class methods are added
-  2) GameObject.initialize_trait(:scale => 0.80)
+  2) GameObject.initialize_trait(:scale => 0.80)   (initialize_trait is a class-method!)
   -- creating an instance of X
   1) GameObject#initialize(options)
   2) GameObject#setup_trait(options)
@@ -497,7 +527,7 @@ There's a couple of traits included as default in Chingu:
 
 ==== Trait "timer"
 Adds timer functionality to your game object
-  during(300) { @color = Color.new(0xFFFFFFFF) }   # forces @color to white every update for 300 ms
+  during(300) { self.color = Color.new(0xFFFFFFFF) }   # forces @color to white every update for 300 ms
   after(400) { self.destroy }                      # destroy object after 400 ms
   between(1000,2000) { self.rotate(10) }           # starting after 1 second, call rotate(10) every update during 1 second
   every(2000) { Sound["bleep.wav"].play }          # play bleep.wav every 2 seconds
@@ -514,7 +544,7 @@ You can also scale the calculated rect with has_trait-options:
   # Make player think he's better @ dodging bullets then he really is ;)
   has_trait :bounding_box, :scale => 0.80 
 
-==== Trait "radius"
+==== Trait "bounding_circle"
 Adds accessor 'radius', which returns a Fixnum based on current image size,factor_x and factor_y
 You can also scale the calculated radius with has_trait-options:
 
@@ -538,6 +568,16 @@ Adds class and instance methods for basic collision detection.
     player.die!
   end
   
+
+  #
+  # each_collision automatically tries to access #radius and #bounding_box to see what a certain game object provides
+  # It knows how to collide radius/radius, bounding_box/bounding_box and radius/bounding_box !
+  # Since You're not explicity telling what collision type to use it might be slighty slower.
+  #
+  [Player, PlayerBullet].each_collision(Enemy, EnemyBullet) do |friend, foe|
+  
+  end
+
 * API isn't stabilized yet! *
 
 ==== (IN DEVELOPMENT) Trait "retrofy"
@@ -589,7 +629,7 @@ Text is a class to give the use of Gosu::Font more rubyish feel and fit it bette
   @font.draw("A Text", 200, 50, 55, 2.0)
   
 # Chingu
-  @text = Chingu::Text.create(:text => "A Text", :x => 200, :y => 50, :zorder => 55, :factor_x => 2.0)
+  @text = Chingu::Text.create("A Text", :x => 200, :y => 50, :zorder => 55, :factor_x => 2.0)
   @text.draw
 
 @text.draw is usually not needed as Text is a GameObject and therefore automaticly updated/drawn (it #create is used instead of #new)
@@ -610,7 +650,7 @@ GameObject.all is naming straight from rails for example. Most stuff in GameObje
 
 As far as possible, use correct rubyfied english game_objects, not gameobjects. class HighScore, not Highscore.
 
-== TODO:
+== TODO - this list is discontinued and no longer updated
 * add :padding and :align => :topleft etc to class Text
 * (skip) rename Chingu::Window so 'include Chingu' and 'include Gosu' wont make Window collide
 * (done) BasicObject vs GameObject vs ScreenObject => Became BasicGameObject and GameObject
@@ -656,9 +696,11 @@ As far as possible, use correct rubyfied english game_objects, not gameobjects. 
 
 == CREDITS:
 * Jacius of Rubygame (For doing cool stuff that's well documented as re-usable). So far rect.rb and named_resource.rb is straight outta Rubygame.
+* Banister (of texplay fame) for general feedeback, ruby-internals help and building the trait-system
 * Jduff for input / commits
 * Jlnr,Philymore,Shawn24,JamesKilton for constructive feedback/discussions
 * Ariel Pillet for codesuggestions and cleanups
+* Deps for making the first real full game with Chingu (and making it better in the process)
 * Thanks to http://github.com/tarcieri for require_all code, good stuff
 
 == REQUIREMENTS:
