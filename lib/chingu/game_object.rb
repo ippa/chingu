@@ -37,7 +37,6 @@ module Chingu
     include Chingu::Helpers::InputClient        # Adds input and input=
     include Chingu::Helpers::RotationCenter     # Adds easy and verbose modification of @center_x and @center_y
         
-    
     def initialize(options = {})
       super
 
@@ -45,7 +44,7 @@ module Chingu
       if options[:image].is_a?(Gosu::Image)
         @image = options[:image]
       elsif options[:image].is_a? String
-        @image = Image[options[:image]]
+        @image = Gosu::Image[options[:image]]
       end
       
       @x = options[:x] || 0
