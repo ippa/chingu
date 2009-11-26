@@ -34,7 +34,7 @@ class Game < Chingu::Window
     push_game_state(Intro)
     
     # Yes you can do crazy things like this :)
-    self.input = { :left_mouse_button => lambda{Chingu::Text.create(:text => "Woff!")}, :esc => :exit}    
+    self.input = { :left_mouse_button => lambda{Chingu::Text.create(:text => "Woff!")}, :esc => :exit}
   end
 end
 
@@ -51,8 +51,8 @@ class Player < Chingu::GameObject
   def move_down;  @y += 1; end 
 
   def fire
-    #puts $window.current_parent.to_s
-    #puts $window.game_state_manager.inside_state
+    #puts "current_scope: #{$window.current_scope.to_s}"
+    #puts "inside_state: #{$window.game_state_manager.inside_state}"
     Bullet.create(:x => @x - 20, :y => @y)
     Bullet.create(:x => @x, :y => @y) 
     Bullet.create(:x => @x + 20, :y => @y)

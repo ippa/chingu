@@ -72,7 +72,7 @@ class Circle < GameObject
     self.velocity_x = 3 - rand * 6
     self.velocity_y = 3 - rand * 6
     self.factor = 2
-    self.input = [:holding_left, :holding_right, :holding_down, :holding_up]
+    self.input = [:holding_left, :holding_right, :holding_down, :holding_up]  # NOTE: giving input an Array, not a Hash 
     cache_bounding_circle
   end
   
@@ -103,8 +103,8 @@ class Box < GameObject
   def update
     self.velocity_x = -self.velocity_x  if @x < 0 || @x > $window.width
     self.velocity_y = -self.velocity_y  if @y < 0 || @y > $window.height
-    @x = @x.to_i
-    @y = @y.to_i
+    #@x = @x.to_i
+    #@y = @y.to_i
   end
 end
 

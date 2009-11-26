@@ -560,14 +560,13 @@ Adds class and instance methods for basic collision detection.
   
   # Class method example
   # This will collide all Enemy-instances with all Bullet-instances using the attribute #radius from each object.
-  Enemy.each_radius_collision(Bullet) do |enemy, bullet|
+  Enemy.each_bounding_circle_collision(Bullet) do |enemy, bullet|
   end
   
   # You can also use the instance methods. This will use the Rect bounding_box from @player and each EnemyRocket-object.
   @player.each_bounding_box_collision(EnemyRocket) do |player, enemyrocket|
     player.die!
   end
-  
 
   #
   # each_collision automatically tries to access #radius and #bounding_box to see what a certain game object provides

@@ -93,12 +93,12 @@ class Level < Chingu::GameState
     push_game_state(GameOver) if solid_pixel_at?(@player.x, @player.y)
     
     # Collide player with enemies and enemy bullets
-    @player.each_radius_collision(Enemy) do |player, enemy|
+    @player.each_bounding_circle_collision(Enemy) do |player, enemy|
       enemy.die
       push_game_state(GameOver)
     end
     
-    Bullet.each_radius_collision(Enemy) do |bullet, enemy|
+    Bullet.each_bounding_circle_collision(Enemy) do |bullet, enemy|
       bullet.die
       if enemy.hit_by(bullet)
         @player.score += 20

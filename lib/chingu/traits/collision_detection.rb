@@ -49,11 +49,12 @@ module Chingu
         if self.respond_to?(:bounding_box) && object2.respond_to?(:bounding_box)
           bounding_box_collision?(object2)
         elsif self.respond_to?(:radius) && object2.respond_to?(:radius)
-          radius_collision?(object2)
+          bounding_circle_collision?(object2)
         else
-          bounding_box_radius_collision?(object2)
+          bounding_box_bounding_circle_collision?(object2)
         end
       end
+      alias :collision? :collides?
       
       #
       # Collide self with a given game object by checking both objects bounding_box'es
@@ -67,7 +68,7 @@ module Chingu
       # Collide self using distance between 2 objects and their radius.
       # Returns true if colliding.
       #
-      def radius_collision?(object2)
+      def bounding_circle_collision?(object2)
         Gosu.distance(self.x, self.y, object2.x, object2.y) < self.radius + object2.radius
       end
       
@@ -76,7 +77,7 @@ module Chingu
       #
       # http://stackoverflow.com/questions/401847/circle-rectangle-collision-detection-intersection
       #
-      def bounding_box_radius_collision?(object2)
+      def bounding_box_bounding_circle_collision?(object2)
         rect = self.respond_to?(:bounding_box) ? self.bounding_box : object2.bounding_box
         circle = self.respond_to?(:radius) ? self : object2
         radius = circle.radius.to_i
@@ -110,7 +111,7 @@ module Chingu
       # Explicit radius-collision
       # Works like each_collsion but with inline-code for speedups
       #
-      def each_radius_collision(klasses = [])
+      def each_bounding_circle_collision(klasses = [])
         Array(klasses).each do |klass|
           klass.all.each do |object|
             yield(self, object) if Gosu.distance(self.x, self.y, object.x, object.y) < self.radius + object.radius
@@ -135,7 +136,7 @@ module Chingu
         #
         # Works like each_collision but with inline-code for speedups
         #
-        def each_radius_collision(klasses = [])
+        def each_bounding_circle_collision(klasses = [])
           Array(klasses).each do |klass|
             object2_list = klass.all
             #total_radius = object1.radius + object2.radius  # possible optimization?
@@ -190,7 +191,7 @@ module Chingu
             #  self.all.each do |object1|
             #    object2_list.each do |object2|
             #      next  if object1 == object2  # Don't collide objects with themselves
-            #      yield object1, object2  if object1.bounding_box_radius_collision?(object2)
+            #      yield object1, object2  if object1.bounding_box_bounding_circle_collision?(object2)
             #    end
             #  end
             #end
