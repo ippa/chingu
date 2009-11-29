@@ -78,12 +78,9 @@ module Chingu
       
       def update_trait
         ms = Gosu::milliseconds()
-        #puts "ms: #{ms} size: #{@_timers.size}"
         
         @_timers.each do |start_time, end_time, block|
-          #puts "#{ms} ==> #{start_time} -> #{end_time}"
-          block.call  if ms > start_time && end_time == nil
-          #block.call  if ms > start_time && (end_time == nil || ms < end_time)
+          block.call  if ms > start_time && (end_time == nil || ms < end_time)
         end
                 
         index = 0
