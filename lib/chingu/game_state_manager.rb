@@ -123,6 +123,7 @@ module Chingu
         if @transitional_game_state && options[:transitional]
           # If we have a transitional, switch to that instead, with new_state as first argument
           transitional_game_state = @transitional_game_state.new(new_state, @transitional_game_state_options)
+          transitional_game_state.game_state_manager = self
           self.switch_game_state(transitional_game_state, :transitional => false)
         else
           if current_game_state.nil?
@@ -156,19 +157,20 @@ module Chingu
         # So BasicGameObject#create connects object to new state in its setup()
         self.inside_state = new_state
         
-        # Call setup
-        new_state.setup               if new_state.respond_to?(:setup) && options[:setup]
-        
         # Make sure the game state knows about the manager
         # Is this doubled in GameState.initialize() ?
         new_state.game_state_manager = self
         
+        # Call setup
+        new_state.setup               if new_state.respond_to?(:setup) && options[:setup]
+                
         # Give the soon-to-be-disabled state a chance to clean up by calling finalize() on it.
         current_game_state.finalize   if current_game_state.respond_to?(:finalize) && options[:finalize]
         
         if @transitional_game_state && options[:transitional]
           # If we have a transitional, push that instead, with new_state as first argument
           transitional_game_state = @transitional_game_state.new(new_state, @transitional_game_state_options)
+          transitional_game_state.game_state_manager = self
           self.push_game_state(transitional_game_state, :transitional => false)
         else
           # Push new state on top of stack and therefore making it active
@@ -210,6 +212,7 @@ module Chingu
       if @transitional_game_state && options[:transitional]
         # If we have a transitional, push that instead, with new_state as first argument
         transitional_game_state = @transitional_game_state.new(current_game_state, @transitional_game_state_options)
+        transitional_game_state.game_state_manager = self
         self.switch_game_state(transitional_game_state, :transitional => false)
       end
       
@@ -270,7 +273,8 @@ module Chingu
     #
     # If you're using Chingu::Window instead of Gosu::Window this will automaticly be called.
     #
-    def update
+    def update(options = {})
+      puts current_game_state.to_s  if options[:debug]
       if current_game_state
         current_game_state.update_trait
         current_game_state.update

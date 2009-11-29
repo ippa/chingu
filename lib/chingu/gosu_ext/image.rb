@@ -34,7 +34,7 @@ module Gosu
       begin
         self.get_pixel(x,y)[3] == 0
       rescue
-        puts "Error in get_pixel at x/y: #{x}/#{y}"
+        puts "Error in get_pixel at x/y: #{x}/#{y}: #{$!}"
       end
     end
     

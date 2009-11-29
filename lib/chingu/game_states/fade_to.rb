@@ -41,13 +41,14 @@ module Chingu
         @new_game_state = new_game_state
         @new_game_state = new_game_state.new if new_game_state.is_a? Class
         
-        @manager = options[:game_state_manager] || self
+        #@manager = options[:game_state_manager] || self
         #@manager = game_state_manager
       end
     
       def setup
         @color = Gosu::Color.new(0,0,0,0)
-        if @manager.previous_game_state
+        ## if @manager.previous_game_state
+        if previous_game_state
           @fading_in = false
           @alpha = 0.0
         else
@@ -76,7 +77,8 @@ module Chingu
           if @fading_in
             @new_game_state.draw
           else
-            @manager.previous_game_state.draw
+            ## @manager.previous_game_state.draw
+            previous_game_state.draw
           end
       
           $window.draw_quad( 0,0,@color,
@@ -86,7 +88,8 @@ module Chingu
         end
         
         if @fading_in && @alpha == 0
-          @manager.switch_game_state(@new_game_state, :transitional => false)
+          ##@manager.switch_game_state(@new_game_state, :transitional => false)
+          switch_game_state(@new_game_state, :transitional => false)
         end
                             
       end

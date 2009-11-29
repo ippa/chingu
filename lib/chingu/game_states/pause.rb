@@ -39,11 +39,11 @@ module Chingu
       end
     
       def button_down(id)
-        game_state_manager.pop_game_state(:setup => false)    # Return the previous game state, dont call setup()
+        pop_game_state(:setup => false)    # Return the previous game state, dont call setup()
       end
       
       def draw
-        game_state_manager.previous_game_state.draw    # Draw prev game state onto screen (in this case our level)
+        previous_game_state.draw    # Draw prev game state onto screen (in this case our level)
         $window.draw_quad(  0,0,@color,
                             $window.width,0,@color,
                             $window.width,$window.height,@color,
