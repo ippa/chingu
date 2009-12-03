@@ -48,13 +48,13 @@ class Game < Chingu::Window
     
     #
     # :game_id is the unique ID the game has on www.gamercv.com
-    # :user is the login for that specific game (set by owner)
+    # :login is the login for that specific game (set by owner)
     # :password is the password for that specific game (set by owner)
     #
     # To read a high score list only :game_id is required
-    # To write to a high score list :user and :password is required as well
+    # To write to a high score list :login and :password is required as well
     #
-    @high_score_list = HighScoreList.load_remote(:game_id => 1, :user => "chingu", :password => "chingu", :size => 10)
+    @high_score_list = HighScoreList.load_remote(:game_id => 1, :login => "chingu", :password => "chingu", :size => 10)
     create_text
   end
   

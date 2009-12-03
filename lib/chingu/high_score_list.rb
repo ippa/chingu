@@ -42,7 +42,7 @@ module Chingu
       @size = options[:size] || 100
       @sort_on = options[:sort_on] || :score
       
-      @user = options[:user]
+      @login = options[:login]
       @password = options[:password]
       @game_id = options[:game_id]
       @server = "http://api.gamercv.com"
@@ -92,7 +92,7 @@ module Chingu
       rescue RestClient::RequestFailed
         puts "RequestFailed: couldn't add high score"
       rescue RestClient::Unauthorized
-        puts "Unauthorized to add high score (check :user and :password arguments)"
+        puts "Unauthorized to add high score (check :login and :password arguments)"
       end
     end
       
@@ -142,12 +142,12 @@ module Chingu
     #
     def load_remote
       raise "You need to specify a Game_id to load a remote high score list"    unless defined?(@game_id)
-      raise "You need to specify a User to load a remote high score list"       unless defined?(@user)
+      raise "You need to specify a Login to load a remote high score list"       unless defined?(@login)
       raise "You need to specify a Password to load a remote high score list"   unless defined?(@password)
       
       require 'rest_client'
       require 'crack/xml'
-      @resource = RestClient::Resource.new "#{@server}/games/#{@game_id}/high_scores", :user => @user, :password => @password, :timeout => 20, :open_timeout => 5
+      @resource = RestClient::Resource.new "#{@server}/games/#{@game_id}/high_scores", :user => @login, :password => @password, :timeout => 20, :open_timeout => 5
       
       @high_scores.clear
       begin
