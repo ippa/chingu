@@ -4,67 +4,52 @@ include Gosu
 include Chingu
 
 #
-# Demonstrating Chingus HighScoreList-class
-# I couldn't keep myself from spicying it up some though  :P
+# Demonstrating Chingus OnlineHighScoreList-class
+# 
+# Syncs against http://www.gamercv.com/games/1-test
 #
 class Game < Chingu::Window
   def initialize
     super(640,400)
-    self.input = {:esc => :exit, :a => :add}
-    self.caption = "Example of Chingus HighScore class"
+    self.input = {:esc => :exit, :a => :add, :r => :add_random}
+    self.caption = "OnlineHighScoreList example. Press 'A' to add a top-score, 'R' to add a random."
     
-    @title = PulsatingText.create("HIGH SCORES", :x => $window.width/2, :y => 50, :size => 70)
+    @title = PulsatingText.create("REMOTE WEBSERVICE HIGH SCORES", :x => $window.width/2, :y => 50, :size => 30)
     
     #
-    # Load a list from disk, defaults to "high_score_list.yml"
-    # Argument :size forces list to this size
+    # Load a remote high score list
     #
-    @high_score_list = HighScoreList.load(:size => 10)
+    @high_score_list = OnlineHighScoreList.load(:game_id => 1, :login => "chingu", :password => "chingu", :limit => 10)
 
-    #
-    # Add some new high scores to the list. :name and :score are required but you can put whatever.
-    # They will mix with the old scores, automatic default sorting on :score
-    #
-    10.times do
-      data = {:name => "NEW", :score => rand(10000)}
-      
-      position = @high_score_list.add(data)
-      if position
-        puts "#{data[:name]} - #{data[:score]} got position #{position}"
-      else
-        puts "#{data[:name]} - #{data[:score]} didn't make it"
-      end
-    end
-    
     create_text
-  end
+  end  
   
   def add
-    data = {:name => "NEW", :score => rand(8000), :text => "w0rld dom1nat1on!@#"}
+    data = {:name => "NEW", :score => (@high_score_list[0][:score].to_i + 10), :text => "Hello from Chingus example16.rb"}
     position = @high_score_list.add(data)
     puts "Got position: #{position.to_s}"
     create_text
   end
-  
+
+  def add_random
+    data = {:name => "RND", :score => @high_score_list[0][:score]-rand(100), :text => "Random from Chingus example16.rb"}
+    position = @high_score_list.add(data)
+    puts "Got position: #{position.to_s}"
+    create_text
+  end
+
   def create_text
-    @score_texts ||= []
-    @score_texts.each { |text| text.destroy }
+    Text.destroy_if { |text| text.size == 20 }
     
     #
     # Iterate through all high scores and create the visual represenation of it
     #
     @high_score_list.each_with_index do |high_score, index|
       y = index * 25 + 100
-      @score_texts << Text.create(high_score[:name], :x => 200, :y => y, :size => 20)
-      @score_texts << Text.create(high_score[:score], :x => 400, :y => y, :size => 20)
-    end
-    
-    5.times do
-      score = rand(20000)
-      puts "position for possible score #{score}: #{@high_score_list.position_by_score(score)}"
+      Text.create(high_score[:name], :x => 200, :y => y, :size => 20)
+      Text.create(high_score[:score], :x => 400, :y => y, :size => 20)
     end
   end
-  
 end
 
 #
