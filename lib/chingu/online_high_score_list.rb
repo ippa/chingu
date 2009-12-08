@@ -28,7 +28,9 @@ module Chingu
   #
   # Requires gems 'crack' and 'rest_client', included on initialize.
   #
-  class OnlineHighScoreList    
+  class OnlineHighScoreList
+    attr_reader :resource, :high_scores
+    
     def initialize(options = {})
       @limit = options[:limit] || 100
       @sort_on = options[:sort_on] || :score
@@ -38,7 +40,7 @@ module Chingu
 
       require 'rest_client'
       require 'crack/xml'
-      @high_scores_resource = RestClient::Resource.new("http://api.gamercv.com/games/#{@game_id}/high_scores", 
+      @resource = RestClient::Resource.new("http://api.gamercv.com/games/#{@game_id}/high_scores", 
                                               :user => @login, :password => @password, :timeout => 20, :open_timeout => 5)
                                               
       @high_scores = Array.new  # Keeping a local copy in a ruby array
@@ -69,7 +71,7 @@ module Chingu
       raise "No :name value in high score!"   if data[:name].nil?
       raise "No :score value in high score!"  if data[:score].nil?
       begin
-        @res = @high_scores_resource.post({:high_score => data})
+        @res = @resource.post({:high_score => data})
         data = Crack::XML.parse(@res)
         add_to_list(force_symbol_hash(data["high_score"]))
       rescue RestClient::RequestFailed
@@ -109,7 +111,7 @@ module Chingu
       
       @high_scores.clear
       begin
-        res = @high_scores_resource.get
+        res = @resource.get
         data = Crack::XML.parse(res)
         if data["high_scores"]
           data["high_scores"].each do |high_score|
@@ -125,19 +127,22 @@ module Chingu
     end
     
     #
-    # Direct access to invidual high scores
+    # Direct access to @high_scores-array
     #
     def [](index)
       @high_scores[index]
     end
     
     #
-    # Iterate through all high scores
+    # Iterate through @high_scores-array with each
     #
     def each
       @high_scores.each { |high_score| yield high_score }
     end
-    
+
+    #
+    # Iterate through @high_scores-array with each_with_index
+    #
     def each_with_index
       @high_scores.each_with_index { |high_score, index| yield high_score, index }
     end

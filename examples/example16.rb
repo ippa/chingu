@@ -14,7 +14,7 @@ class Game < Chingu::Window
     self.input = {:esc => :exit, :a => :add, :r => :add_random}
     self.caption = "OnlineHighScoreList example. Press 'A' to add a top-score, 'R' to add a random."
     
-    @title = PulsatingText.create("REMOTE WEBSERVICE HIGH SCORES", :x => $window.width/2, :y => 50, :size => 30)
+    @title = PulsatingText.create("class OnlineHighScoreList & www.gamvercv.com", :x => $window.width/2, :y => 50, :size => 30)
     
     #
     # Load a remote high score list

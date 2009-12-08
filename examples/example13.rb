@@ -10,7 +10,7 @@ include Chingu
 class Game < Chingu::Window
   def initialize
     super(640,400)
-    self.input = {:esc => :exit, :a => :add}
+    self.input = {:esc => :exit, :a => :add }
     self.caption = "Example of Chingus HighScore class"
     
     @title = PulsatingText.create("HIGH SCORES", :x => $window.width/2, :y => 50, :size => 70)
@@ -40,31 +40,24 @@ class Game < Chingu::Window
   end
   
   def add
-    data = {:name => "NEW", :score => rand(8000), :text => "w0rld dom1nat1on!@#"}
+    data = {:name => "NEW", :score => @high_score_list.high_scores.first[:score] + 10, :text => "from example13.rb"}
     position = @high_score_list.add(data)
     puts "Got position: #{position.to_s}"
     create_text
   end
   
   def create_text
-    @score_texts ||= []
-    @score_texts.each { |text| text.destroy }
+    Text.destroy_if { |text| text.size == 20}
     
     #
     # Iterate through all high scores and create the visual represenation of it
     #
     @high_score_list.each_with_index do |high_score, index|
       y = index * 25 + 100
-      @score_texts << Text.create(high_score[:name], :x => 200, :y => y, :size => 20)
-      @score_texts << Text.create(high_score[:score], :x => 400, :y => y, :size => 20)
-    end
-    
-    5.times do
-      score = rand(20000)
-      puts "position for possible score #{score}: #{@high_score_list.position_by_score(score)}"
-    end
+      Text.create(high_score[:name], :x => 200, :y => y, :size => 20)
+      Text.create(high_score[:score], :x => 400, :y => y, :size => 20)
+    end    
   end
-  
 end
 
 #
