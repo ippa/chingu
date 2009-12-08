@@ -18,6 +18,8 @@ examples/example11.rb
 examples/example12.rb
 examples/example13.rb
 examples/example14.rb
+examples/example15.rb
+examples/example16.rb
 examples/example2.rb
 examples/example3.rb
 examples/example4.rb
@@ -84,6 +86,7 @@ lib/chingu/high_score_list.rb
 lib/chingu/inflector.rb
 lib/chingu/input.rb
 lib/chingu/named_resource.rb
+lib/chingu/online_high_score_list.rb
 lib/chingu/parallax.rb
 lib/chingu/particle.rb
 lib/chingu/rect.rb
