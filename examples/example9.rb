@@ -37,6 +37,10 @@ class FireCube < Chingu::GameObject
     @color = @blue
   end
   
+  def bounding_box
+    @box
+  end
+  
   def draw
     $window.fill_rect(@box, @color)
   end
@@ -80,7 +84,11 @@ class ParticleState < Chingu::GameState
     #
     # FireCube.each_bounding_circle_collision(FireCube) do |cube1, cube2|  # 30 FPS on my computer
     #
-    # Let's see if we can optimize each_collision, starts with 19 FPS
+    # Let's see if we can optimize each_collision, starts with 19 FPS with radius collision
+    # 30 FPS by checking for radius and automatically delegate to each_bounding_circle_collision
+    #
+    # For bounding_box collision we start out with 7 FPS
+    # Got 8 FPS, the bulk CPU consumtion is in the rect vs rect check, not in the loops.
     #
     FireCube.each_collision(FireCube) do |cube1, cube2|
       cube1.die!

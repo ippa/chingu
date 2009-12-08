@@ -179,8 +179,21 @@ module Chingu
         def each_collision(*klasses)
           # Make sure klasses is always an array.
           Array(klasses).each do |klass|
-            object2_list = klass.all
             
+            if self.instance_methods.include?(:radius) && klass.instance_methods.include?(:radius)
+              self.each_bounding_circle_collision(klass) do |o1, o2|
+                yield o1, o2
+              end
+              next
+            end
+                
+            if self.instance_methods.include?(:bounding_box) && klass.instance_methods.include?(:bounding_box)
+              self.each_bounding_box_collision(klass) do |o1, o2|
+                yield o1, o2
+              end
+              next
+            end
+              
             #
             # Possible optimization, look into later.
             #
@@ -195,8 +208,7 @@ module Chingu
             #    end
             #  end
             #end
-              
-            
+            object2_list = klass.all
             self.all.each do |object1|
               object2_list.each do |object2|
                 next  if object1 == object2  # Don't collide objects with themselves
