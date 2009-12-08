@@ -111,7 +111,7 @@ module Chingu
       # Explicit radius-collision
       # Works like each_collsion but with inline-code for speedups
       #
-      def each_bounding_circle_collision(klasses = [])
+      def each_bounding_circle_collision(*klasses)
         Array(klasses).each do |klass|
           klass.all.each do |object|
             yield(self, object) if Gosu.distance(self.x, self.y, object.x, object.y) < self.radius + object.radius
@@ -123,7 +123,7 @@ module Chingu
       # Explicit bounding_box-collision
       # Works like each_collision but with inline-code for speedups
       #
-      def each_bounding_box_collision(klasses = [])
+      def each_bounding_box_collision(*klasses)
         Array(klasses).each do |klass|
           klass.all.each do |object|
             yield(self, object) if self.bounding_box.collide_rect?(object.bounding_box)
@@ -136,7 +136,7 @@ module Chingu
         #
         # Works like each_collision but with inline-code for speedups
         #
-        def each_bounding_circle_collision(klasses = [])
+        def each_bounding_circle_collision(*klasses)
           Array(klasses).each do |klass|
             object2_list = klass.all
             #total_radius = object1.radius + object2.radius  # possible optimization?
@@ -153,7 +153,7 @@ module Chingu
         #
         # Works like each_collsion but with explicit bounding_box collisions (inline-code for speedups)
         #
-        def each_bounding_box_collision(klasses = [])
+        def each_bounding_box_collision(*klasses)
           Array(klasses).each do |klass|
             object2_list = klass.all
             self.all.each do |object1|
