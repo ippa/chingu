@@ -36,64 +36,118 @@ module Chingu
       def setup_trait(options)        
         #
         # Timers are saved as an array of arrays where each entry contains:
-        # [start_time, end_time (or nil if one-shot), &block]
+        # [name, start_time, end_time (or nil if one-shot), &block]
         #
         @_timers = Array.new
         @_repeating_timers = Array.new
         super
       end
 
-      def during(time, &block)
+      #
+      # Executes block each update during 'time' milliseconds 
+      #
+      def during(time, options = {}, &block)
+        return if timer_exists?(options[:name]) && options[:replace] == false
+        stop_timer(options[:name])
+
         ms = Gosu::milliseconds()
-        @_last_timer = [ms, ms + time, block]
+        @_last_timer = [options[:name], ms, ms + time, block]
         @_timers << @_last_timer
         self
       end
       
-      def after(time, &block)
+      #
+      # Executes block after 'time' milliseconds 
+      #
+      def after(time, options = {}, &block)
+        return if timer_exists?(options[:name]) && options[:replace] == false
+        stop_timer(options[:name])
+
         ms = Gosu::milliseconds()
-        @_last_timer = [ms + time, nil, block]
-        @_timers << @_last_timer
-        self
-      end
-      
-      def between(start_time, end_time, &block)
-        ms = Gosu::milliseconds()
-        @_last_timer = [ms + start_time, ms + end_time, block]
+        @_last_timer = [options[:name], ms + time, nil, block]
         @_timers << @_last_timer
         self
       end
 
+      #
+      # Executes block each update during 'start_time' and 'end_time'
+      #
+      def between(start_time, end_time, options = {}, &block)
+        return if timer_exists?(options[:name]) && options[:replace] == false
+        stop_timer(options[:name])
+
+        ms = Gosu::milliseconds()
+        @_last_timer = [options[:name], ms + start_time, ms + end_time, block]
+        @_timers << @_last_timer
+        self
+      end
+
+      #
+      # Executes block every 'delay' milliseconds 
+      #
+      def every(delay, options = {}, &block)
+        return if timer_exists?(options[:name]) && options[:replace] == false
+        stop_timer(options[:name])
+        
+        ms = Gosu::milliseconds()
+        @_repeating_timers << [options[:name], ms + delay, delay, block]
+      end
+
+      #
+      # Executes block after the last timer ends 
+      # ...use one-shots start_time for our trailing "then".
+      # ...use durable timers end_time for our trailing "then".      
+      #
       def then(&block)
-        # ...use one-shots start_time for our trailing "then".
-        # ...use durable timers end_time for our trailing "then".
-        start_time = @_last_timer[1].nil? ? @_last_timer[0] : @_last_timer[1]
-        @_timers << [start_time, nil, block]
+        start_time = @_last_timer[2].nil? ? @_last_timer[1] : @_last_timer[2]
+        @_timers << [@_last_timer[0], start_time, nil, block]
+      end
+
+
+      #
+      # See if a timer with name 'name' exists
+      #
+      def timer_exists?(timer_name = nil)
+        return false if timer_name.nil?
+        @_timers.each { |name, | return true if timer_name == name }
+        @_repeating_timers.each { |name, | return true if timer_name == name }
+        return false
+      end
+
+      #
+      # Stop timer with name 'name'
+      #
+      def stop_timer(name)
+        @_timers.reject! { |name, start_time, end_time, block| name == name }
+        @_repeating_timers.reject! { |name, start_time, end_time, block| name == name }
       end
       
-      def every(delay, &block)
-        ms = Gosu::milliseconds()
-        @_repeating_timers << [ms + delay, delay, block]
-      end      
+      #
+      # Stop all timers
+      #
+      def stop_timers
+        @_timers.clear
+        @_repeating_timers.clear
+      end
       
       def update_trait
         ms = Gosu::milliseconds()
         
-        @_timers.each do |start_time, end_time, block|
+        @_timers.each do |name, start_time, end_time, block|
           block.call  if ms > start_time && (end_time == nil || ms < end_time)
         end
                 
         index = 0
-        @_repeating_timers.each do |start_time, delay, block|
+        @_repeating_timers.each do |name, start_time, delay, block|
           if ms > start_time
             block.call  
-            @_repeating_timers[index] = [ms + delay, delay, block]
+            @_repeating_timers[index] = [name, ms + delay, delay, block]
           end
           index += 1
         end
 
         # Remove one-shot timers (only a start_time, no end_time) and all timers which have expired
-        @_timers.reject! { |start_time, end_time, block| (ms > start_time && end_time == nil) || (end_time != nil && ms > end_time) }
+        @_timers.reject! { |name, start_time, end_time, block| (ms > start_time && end_time == nil) || (end_time != nil && ms > end_time) }
       
         super
       end
