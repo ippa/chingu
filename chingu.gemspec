@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{chingu}
-  s.version = "0.6.5.1"
+  s.version = "0.6.6"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ippa"]
-  s.date = %q{2009-12-09}
+  s.date = %q{2009-12-12}
   s.description = %q{OpenGL accelerated 2D game framework for Ruby.
 Builds on the awesome Gosu (Ruby/C++) which provides all the core functionality.
 It adds simple yet powerful game states, prettier input handling, deployment safe asset-handling, a basic re-usable game object and automation of common task.}
@@ -25,11 +25,11 @@ It adds simple yet powerful game states, prettier input handling, deployment saf
     s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
-      s.add_development_dependency(%q<hoe>, [">= 2.3.3"])
+      s.add_development_dependency(%q<hoe>, [">= 2.4.0"])
     else
-      s.add_dependency(%q<hoe>, [">= 2.3.3"])
+      s.add_dependency(%q<hoe>, [">= 2.4.0"])
     end
   else
-    s.add_dependency(%q<hoe>, [">= 2.3.3"])
+    s.add_dependency(%q<hoe>, [">= 2.4.0"])
   end
 end

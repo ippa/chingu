@@ -23,9 +23,13 @@ module Chingu
   module Traits
     #
     # A chingu trait providing velocity and acceleration logic. 
+    # Adds parameters: velocity_x/y, acceleration_x/y and modifies self.x / self.y
+    # Also keeps previous_x and previous_y which is the x, y before modification.
+    # Can be useful for example collision detection
     #
     module Velocity
       attr_accessor :velocity_x, :velocity_y, :acceleration_x, :acceleration_y, :max_velocity
+      attr_reader :previous_x, :previous_y
       
       def setup_trait(options)
         @velocity_options = {:debug => false}.merge(options)        
@@ -44,13 +48,19 @@ module Chingu
       def update_trait        
         @velocity_y += @acceleration_y		if	(@velocity_y + @acceleration_y).abs < @max_velocity
         @velocity_x += @acceleration_x		if	(@velocity_x + @acceleration_x).abs < @max_velocity
+        
+        @previous_y = @y
+        @previous_x = @x
+        
         self.y += @velocity_y
         self.x += @velocity_x
         super
       end
       
       def stop
-        @acceleration_y = @acceleration_x = @velocity_y = @acceleration_y = 0
+        # @acceleration_y = @acceleration_x = 0
+        @velocity_x = 0
+        @velocity_y = 0
       end      
     end
   end
