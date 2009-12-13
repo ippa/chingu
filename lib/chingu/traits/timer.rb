@@ -47,8 +47,10 @@ module Chingu
       # Executes block each update during 'time' milliseconds 
       #
       def during(time, options = {}, &block)
-        return if timer_exists?(options[:name]) && options[:replace] == false
-        stop_timer(options[:name])
+        if options[:name]
+          return if timer_exists?(options[:name]) && options[:preserve]
+          stop_timer(options[:name])
+        end
 
         ms = Gosu::milliseconds()
         @_last_timer = [options[:name], ms, ms + time, block]
@@ -60,8 +62,10 @@ module Chingu
       # Executes block after 'time' milliseconds 
       #
       def after(time, options = {}, &block)
-        return if timer_exists?(options[:name]) && options[:replace] == false
-        stop_timer(options[:name])
+        if options[:name]
+          return if timer_exists?(options[:name]) && options[:preserve]
+          stop_timer(options[:name])
+        end
 
         ms = Gosu::milliseconds()
         @_last_timer = [options[:name], ms + time, nil, block]
@@ -73,8 +77,10 @@ module Chingu
       # Executes block each update during 'start_time' and 'end_time'
       #
       def between(start_time, end_time, options = {}, &block)
-        return if timer_exists?(options[:name]) && options[:replace] == false
-        stop_timer(options[:name])
+        if options[:name]
+          return if timer_exists?(options[:name]) && options[:preserve]
+          stop_timer(options[:name])
+        end
 
         ms = Gosu::milliseconds()
         @_last_timer = [options[:name], ms + start_time, ms + end_time, block]
@@ -86,8 +92,10 @@ module Chingu
       # Executes block every 'delay' milliseconds 
       #
       def every(delay, options = {}, &block)
-        return if timer_exists?(options[:name]) && options[:replace] == false
-        stop_timer(options[:name])
+        if options[:name]
+          return if timer_exists?(options[:name]) && options[:preserve]
+          stop_timer(options[:name])
+        end
         
         ms = Gosu::milliseconds()
         @_repeating_timers << [options[:name], ms + delay, delay, block]
