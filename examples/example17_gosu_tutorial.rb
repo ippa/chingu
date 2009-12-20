@@ -2,6 +2,8 @@ require 'rubygems'
 require 'chingu'
 include Gosu
 include Chingu
+
+# Set to true to see bounding circles used for collision detection
 DEBUG = false
 
 class Game < Chingu::Window
@@ -11,22 +13,26 @@ class Game < Chingu::Window
     
     @player = Player.create(:zorder => 2, :x=>320, :y=>240)
     @score = 0
-    @text = Text.create("Score: #{@score}", :x => 10, :y => 10, :zorder => 55, :size=>20)
+    @score_text = Text.create("Score: #{@score}", :x => 10, :y => 10, :zorder => 55, :size=>20)
   end
 
   def update
     super
+
     if rand(100) < 4 && Star.all.size < 25
       Star.create
     end
     
-    [Player, Star].each_collision(Player, Star) do |player, star| 
+    #
+    # Collide @player with all instances of class Star
+    #
+    @player.each_collision(Star) do |player, star| 
       star.destroy
       @score+=10
     end
     
-    @text.text = "Score: #{@score}"
-    self.caption = "Chingu Game - " + @text.text
+    @score_text.text = "Score: #{@score}"
+    self.caption = "Chingu Game - " + @score_text.text
   end
 end
 
@@ -47,10 +53,12 @@ class Player < GameObject
   end
   
   def turn_right
+    # The same can be achieved without trait 'effect' as: self.angle += 4.5
     rotate(4.5)
   end
   
   def turn_left
+    # The same can be achieved without trait 'effect' as: self.angle -= 4.5
     rotate(-4.5)
   end
   
@@ -65,7 +73,7 @@ end
 
 class Star < GameObject
   has_trait :bounding_circle, :debug => DEBUG
-  has_traits :collision_detection
+  has_trait :collision_detection
   
   def initialize(options={})
     super(:zorder=>1)
@@ -78,6 +86,10 @@ class Star < GameObject
     self.x =rand * 640
     self.y =rand * 480
     
+    #
+    # A cached bounding circle will not adapt to changes in size, but it will follow objects X / Y
+    # Same is true for "cache_bounding_box"
+    #
     cache_bounding_circle
   end
   
