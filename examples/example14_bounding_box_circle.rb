@@ -4,7 +4,7 @@ include Gosu
 include Chingu
 
 #
-# Demonstrating Chingutrait radius, bounding_box and collision_detection.
+# Demonstrating Chingu-traits bounding_circle, bounding_box and collision_detection.
 #
 class Game < Chingu::Window
   def initialize

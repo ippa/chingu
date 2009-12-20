@@ -3,6 +3,9 @@ require File.join(File.dirname($0), "..", "lib", "chingu")
 include Gosu
 include Chingu
 
+#
+# Using trait "timer" to achieve various moves
+#
 class Game < Chingu::Window
   def initialize
     super(640,400)
