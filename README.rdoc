@@ -543,13 +543,20 @@ You can also scale the calculated rect with has_trait-options:
   # This would return a rect slightly smaller then the image. 
   # Make player think he's better @ dodging bullets then he really is ;)
   has_trait :bounding_box, :scale => 0.80 
+  
+  # Make the bounding box bigger then the image
+  # :debug => true shows the actual box in red on the screen
+  has_trait :bounding_box, :scale => 1.5, :debug => true
 
 ==== Trait "bounding_circle"
 Adds accessor 'radius', which returns a Fixnum based on current image size,factor_x and factor_y
 You can also scale the calculated radius with has_trait-options:
 
   # This would return a radius slightly bigger then what initialize was calculated
-  has_trait :radius, :scale => 1.10
+  has_trait :bounding_circle, :scale => 1.10
+
+  # :debug => true shows the actual circle in red on the screen
+  has_trait :bounding_circle, :debug => true
 
 ==== Trait "effect"
 Adds accessors rotation_rate, fade_rate and scale_rate to game object.
@@ -605,9 +612,9 @@ You also have:
   Song["intromusic.ogg"]
 
 The default settings are like this:
-Image["image.png"] -- searches directories ".", "images", "gfx" and "media"
-Sample["sample.wav"] -- searches directories ".", "sounds", "sfx" and "media"
-Song["song.ogg"] -- searches directories ".", "songs", "sounds", "sfx" and "media"
+  Image["image.png"] -- searches directories ".", "images", "gfx" and "media"
+  Sample["sample.wav"] -- searches directories ".", "sounds", "sfx" and "media"
+  Song["song.ogg"] -- searches directories ".", "songs", "sounds", "sfx" and "media"
 
 Add your own searchpaths like this:
   Gosu::Image.autoload_dirs << File.join(ROOT, "gfx")
