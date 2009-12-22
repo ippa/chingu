@@ -31,6 +31,12 @@ module Chingu
       attr_accessor :velocity_x, :velocity_y, :acceleration_x, :acceleration_y, :max_velocity
       attr_reader :previous_x, :previous_y
       
+      module ClassMethods
+        def initialize_trait(options = {})
+          trait_options[:velocity] = {:apply => true}.merge(options)
+        end
+      end
+      
       def setup_trait(options)
         @velocity_options = {:debug => false}.merge(options)        
         
@@ -49,11 +55,16 @@ module Chingu
         @velocity_y += @acceleration_y		if	(@velocity_y + @acceleration_y).abs < @max_velocity
         @velocity_x += @acceleration_x		if	(@velocity_x + @acceleration_x).abs < @max_velocity
         
-        @previous_y = @y
-        @previous_x = @x
-        
-        self.y += @velocity_y
-        self.x += @velocity_x
+        #
+        # if option :apply is false, just calculate velocities, don't apply them to x/y
+        #
+        if trait_options[:velocity][:apply]
+          @previous_y = @y
+          @previous_x = @x
+          
+          self.y += @velocity_y
+          self.x += @velocity_x
+        end
         super
       end
       
