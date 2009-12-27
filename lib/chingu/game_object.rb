@@ -57,7 +57,6 @@ module Chingu
       
       self.center = options[:center] || 0.5
       
-      
       @rotation_center = options[:rotation_center]
       self.rotation_center(options[:rotation_center]) if options[:rotation_center]
       
@@ -74,8 +73,6 @@ module Chingu
       
       @mode = options[:mode] || :default # :additive is also available.
       @zorder = options[:zorder] || 100
-      
-      #setup_trait(options)  if self.respond_to?(:setup_trait)
     end
     
     # Quick way of setting both factor_x and factor_y
@@ -83,6 +80,8 @@ module Chingu
       @factor = factor
       @factor_x = @factor_y = factor
     end
+    alias scale= factor=
+    alias scale factor
           
     # Quick way of setting both center_x and center_y
     def center=(center)
