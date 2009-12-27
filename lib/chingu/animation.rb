@@ -20,7 +20,7 @@ module Chingu
     #   - file:   Tile-file to cut up animation frames from. Could be a full path or just a name -- then it will look for media_path(file)
     #   - width:  width of each frame in the tileanimation
     #   - height:  width of each frame in the tileanimation
-    #   - size: [x,y] specify width/height with 1 argument (an array) or just one fixnum which will spez both height and width
+    #   - size: [width, height]-Array or just one fixnum which will spez both height and width
     #   - delay: milliseconds between each frame
     #   - step: [steps] move animation forward [steps] frames each time we call #next
     #

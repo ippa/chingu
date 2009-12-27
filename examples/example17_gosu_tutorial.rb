@@ -98,7 +98,6 @@ class Star < GameObject
     # @image is drawn by default by GameObject#draw
     @image = @animation.next
   end
-
 end
 
 Game.new.show
