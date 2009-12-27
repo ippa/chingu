@@ -1,35 +1,21 @@
 require 'rubygems'
-require 'hoe'
 require File.dirname(__FILE__) + '/lib/chingu'
-
 include Chingu
 
-Hoe.plugin :git
-Hoe.spec "chingu" do
-  developer "ippa", "ippa@rubylicio.us"
-  self.readme_file   = 'README.rdoc'
-  self.rubyforge_name = "chingu"
-  self.version = Chingu::VERSION
+begin
+  require 'jeweler'
+  Jeweler::Tasks.new do |gemspec|
+    gemspec.name = "chingu"
+    gemspec.summary = "OpenGL accelerated 2D game framework for Ruby"
+    gemspec.description = "OpenGL accelerated 2D game framework for Ruby. Builds on Gosu (Ruby/C++) which provides all the core functionality. Chingu adds simple yet powerful game states, prettier input handling, deployment safe asset-handling, a basic re-usable game object and stackable game logic."
+    gemspec.email = "ippa@rubylicio.us"
+    gemspec.homepage = "http://github.com/ippa/chingu"
+    gemspec.authors = ["ippa"]
+    gemspec.rubyforge_project = "chingu"
+    gemspec.version = Chingu::VERSION
+    gemspec.add_dependency 'gosu'
+  end
+  Jeweler::GemcutterTasks.new
+rescue LoadError
+  puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"
 end
-
-desc "Build a working gemspec"
-task :gemspec do
-  system "rake git:manifest"
-  system "rake debug_gem | grep -v \"(in \" | grep -v \"erik\" > chingu.gemspec"
-end
-
-
-#begin
-#  require 'jeweler'
-#  Jeweler::Tasks.new do |gemspec|
-#    gemspec.name = "chingu"
-#    gemspec.summary = "Game framework built on top of the OpenGL accelerated game lib Gosu"
-#    gemspec.description = "Game framework built on top of the OpenGL accelerated game lib Gosu"
-#    gemspec.email = "ippa@rubylicio.us"
-#    gemspec.homepage = "http://github.com/ippa/chingu"
-#    gemspec.authors = ["ippa"]
-#    gemspec.rubyforge_project = "chingu"
-#  end
-#rescue LoadError
-#  puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"
-#end
