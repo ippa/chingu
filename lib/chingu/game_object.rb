@@ -51,7 +51,7 @@ module Chingu
       @y = options[:y] || 0
       @angle = options[:angle] || 0
       
-      self.factor = options[:factor] || 1.0
+      self.factor = options[:factor] || options[:scale] || 1.0
       @factor_x = options[:factor_x] if options[:factor_x]
       @factor_y = options[:factor_y] if options[:factor_y]
       
