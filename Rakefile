@@ -13,7 +13,8 @@ begin
     gemspec.authors = ["ippa"]
     gemspec.rubyforge_project = "chingu"
     gemspec.version = Chingu::VERSION
-    gemspec.add_dependency 'gosu'
+    
+    gemspec.add_dependency 'gosu', '>= 0.7.15'
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
