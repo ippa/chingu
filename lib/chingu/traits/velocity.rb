@@ -55,13 +55,13 @@ module Chingu
         @velocity_y += @acceleration_y		if	(@velocity_y + @acceleration_y).abs < @max_velocity
         @velocity_x += @acceleration_x		if	(@velocity_x + @acceleration_x).abs < @max_velocity
         
+        @previous_y = @y
+        @previous_x = @x
+        
         #
         # if option :apply is false, just calculate velocities, don't apply them to x/y
         #
-        if trait_options[:velocity][:apply]
-          @previous_y = @y
-          @previous_x = @x
-          
+        if trait_options[:velocity][:apply]          
           self.y += @velocity_y
           self.x += @velocity_x
         end

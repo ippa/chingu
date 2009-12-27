@@ -51,7 +51,8 @@ class Thing < Chingu::GameObject
     @image.retrofy
 
 
-    self.factor = 8
+    self.scale = 8
+    puts "scale: " + scale.to_i.to_s
     self.rotation_rate = 2
     self.velocity_x = 2
   end
@@ -73,3 +74,4 @@ end
 
 
 Game.new.show
+ 
