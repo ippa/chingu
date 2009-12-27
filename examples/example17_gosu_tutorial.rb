@@ -1,5 +1,5 @@
 require 'rubygems'
-require 'chingu'
+require File.join(File.dirname($0), "..", "lib", "chingu")
 include Gosu
 include Chingu
 
@@ -77,7 +77,7 @@ class Star < GameObject
   
   def initialize(options={})
     super(:zorder=>1)
-    @animation = Chingu::Animation.new(:file => media_path("Star.png"), :size => [25,25])
+    @animation = Chingu::Animation.new(:file => media_path("Star.png"), :size => 25)
     @image = @animation.next
     self.color = Gosu::Color.new(0xff000000)
     self.color.red = rand(255 - 40) + 40
