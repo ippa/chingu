@@ -21,9 +21,6 @@ class Cube < GameObject
   
   def initialize(options)
     super
-    @white = Color.new(0xFFFFFFFF)
-    @red = Color.new(0xFFFF0000)
-    @blue = Color.new(0xFF0000FF)
     self.input = {  :left => :left, :right => :right, :up => :up, :down => :down, 
                     :space => :shake1, :return => :shake2 }
   end
@@ -37,13 +34,13 @@ class Cube < GameObject
   end
   
   def up
-    @color = @red
-    during(500) { @y -= 1 }.then { @color = @white }
+    @color = Color::RED
+    during(500) { @y -= 1 }.then { @color = Color::WHITE }
   end
 
   def down
-    @color = @blue
-    during(500) { @y += 1 }.then { @color = @white }
+    @color = Color::BLUE
+    during(500) { @y += 1 }.then { @color = Color::WHITE }
   end
 
   def shake1

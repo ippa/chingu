@@ -65,9 +65,6 @@ end
 #
 class PulsatingText < Text
   has_traits :timer, :effect
-  @@red = Color.new(0xFFFF0000)
-  @@green = Color.new(0xFF00FF00)
-  @@blue = Color.new(0xFF0000FF)
   
   def initialize(text, options = {})
     super(text, options)
@@ -80,7 +77,7 @@ class PulsatingText < Text
   
   def create_pulse
     pulse = PulsatingText.create(@text, :x => @x, :y => @y, :height => @height, :pulse => true, :image => @image, :zorder => @zorder+1)
-    colors = [@@red, @@green, @@blue]
+    colors = [Color::RED, Color::GREEN, Color::BLUE]
     pulse.color = colors[rand(colors.size)].dup
     pulse.mode = :additive
     pulse.alpha -= 150
