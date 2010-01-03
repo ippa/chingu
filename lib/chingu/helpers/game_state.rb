@@ -29,6 +29,10 @@ module Chingu
   # It will make call new() on a class, and just push an object.
   #
   module GameState
+    def game_states
+      game_state_manager.game_states
+    end
+    
     def push_game_state(state, options = {})
       #$window.game_state_manager.push_game_state(state, options)
       game_state_manager.push_game_state(state, options)

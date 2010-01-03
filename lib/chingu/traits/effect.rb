@@ -50,6 +50,8 @@ module Chingu
         ## puts "Effect#setup_trait(#{options})"
         @rotation_rate = options[:rotation_rate] || nil
         @scale_rate = options[:scale_rate] || nil
+        @scale_x_rate = options[:scale_x_rate] || nil
+        @scale_y_rate = options[:scale_y_rate] || nil
         @fade_rate = options[:fade_rate] || nil
         super
       end
