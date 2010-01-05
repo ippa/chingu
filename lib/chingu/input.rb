@@ -21,8 +21,8 @@
 
 module Chingu
   module Input
-    include Gosu::Button
-  
+    include Gosu
+    
     #
     # Ruby symbols describing http://www.libgosu.org/rdoc/classes/Gosu.html
     #
