@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 #
 #
 # A "full" simple game in Chingu, using GameState, GameObject, Paralaxx, has_traits etc

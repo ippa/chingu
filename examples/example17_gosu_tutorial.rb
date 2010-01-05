@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 require 'rubygems'
 require File.join(File.dirname($0), "..", "lib", "chingu")
 include Gosu
