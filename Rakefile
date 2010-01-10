@@ -14,7 +14,7 @@ begin
     gemspec.rubyforge_project = "chingu"
     gemspec.version = Chingu::VERSION
     
-    gemspec.add_dependency 'gosu', '>= 0.7.17'
+    gemspec.add_dependency 'gosu', '>= 0.7.18'
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
