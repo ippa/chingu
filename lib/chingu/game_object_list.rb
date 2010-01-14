@@ -73,7 +73,14 @@ module Chingu
         object.draw
       end
     end
-    
+
+    def draw_relative(x=0, y=0, zorder=0, angle=0, center_x=0, center_y=0, factor_x=0, factor_y=0)
+      @game_objects.each{ |object| object.visible }.each do |object| 
+        object.draw_trait
+        object.draw_relative(x, y, zorder, angle, center_x, center_y, factor_x, factor_y)
+      end
+    end
+
     def update
       @game_objects.select{ |object| not object.paused }.each do |object| 
         object.update_trait 

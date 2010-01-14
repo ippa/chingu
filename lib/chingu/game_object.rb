@@ -118,8 +118,19 @@ module Chingu
       distance(self.x, self.y, object.x, object.y)
     end
     
+    #
+    # Our encapsulation of GOSU's image.draw_rot, uses the objects variables to draw it on screen if @visible is true
+    #
     def draw
       @image.draw_rot(@x, @y, @zorder, @angle, @center_x, @center_y, @factor_x, @factor_y, @color, @mode) if @visible
     end
+    
+    #
+    # Works as #draw() but takes offsets for all draw_rot()-arguments. Used among others by by viewport-trait
+    #
+    def draw_relative(x=0, y=0, zorder=0, angle=0, center_x=0, center_y=0, factor_x=0, factor_y=0)
+      @image.draw_rot(@x+x, @y+y, @zorder+zorder, @angle+angle, @center_x+center_x, @center_y+center_y, @factor_x+factor_x, @factor_y+factor_y, @color, @mode) if @visible
+    end
+    
   end  
 end

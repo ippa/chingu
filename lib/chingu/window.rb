@@ -37,7 +37,7 @@ module Chingu
     include Chingu::Helpers::GameState          # Easy access to the global game state-queue
     include Chingu::Helpers::GameObject         # Adds game_objects_of_class etc ...
     include Chingu::Helpers::InputDispatcher    # Input dispatch-helpers
-    include Chingu::Helpers::InputClient        # WIndow has its own inputmap
+    include Chingu::Helpers::InputClient        # Window has its own inputmap
     
     attr_reader :root, :game_state_manager, :game_objects, :milliseconds_since_last_tick
     
@@ -56,7 +56,7 @@ module Chingu
       
       @fps_counter = FPSCounter.new
       @game_state_manager = GameStateManager.new
-      @milliseconds_since_last_tick = 0
+      @milliseconds_since_last_tick = 0      
     end
     
     #
