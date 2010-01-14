@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{chingu}
-  s.version = "0.6.9"
+  s.version = "0.7.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ippa"]
-  s.date = %q{2010-01-05}
+  s.date = %q{2010-01-14}
   s.description = %q{OpenGL accelerated 2D game framework for Ruby. Builds on Gosu (Ruby/C++) which provides all the core functionality. Chingu adds simple yet powerful game states, prettier input handling, deployment safe asset-handling, a basic re-usable game object and stackable game logic.}
   s.email = %q{ippa@rubylicio.us}
   s.extra_rdoc_files = [
@@ -39,6 +39,7 @@ Gem::Specification.new do |s|
      "examples/example15_trait_timer2.rb",
      "examples/example16_online_high_scores.rb",
      "examples/example17_gosu_tutorial.rb",
+     "examples/example18_viewport.rb",
      "examples/example1_basics.rb",
      "examples/example2_gamestate_basics.rb",
      "examples/example3_parallax.rb",
@@ -121,6 +122,8 @@ Gem::Specification.new do |s|
      "lib/chingu/traits/retrofy.rb",
      "lib/chingu/traits/timer.rb",
      "lib/chingu/traits/velocity.rb",
+     "lib/chingu/traits/viewport.rb",
+     "lib/chingu/viewport.rb",
      "lib/chingu/window.rb"
   ]
   s.homepage = %q{http://github.com/ippa/chingu}
@@ -138,6 +141,7 @@ Gem::Specification.new do |s|
      "examples/example15_trait_timer2.rb",
      "examples/example16_online_high_scores.rb",
      "examples/example17_gosu_tutorial.rb",
+     "examples/example18_viewport.rb",
      "examples/example1_basics.rb",
      "examples/example2_gamestate_basics.rb",
      "examples/example3_parallax.rb",
@@ -155,12 +159,12 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<gosu>, [">= 0.7.17"])
+      s.add_runtime_dependency(%q<gosu>, [">= 0.7.18"])
     else
-      s.add_dependency(%q<gosu>, [">= 0.7.17"])
+      s.add_dependency(%q<gosu>, [">= 0.7.18"])
     end
   else
-    s.add_dependency(%q<gosu>, [">= 0.7.17"])
+    s.add_dependency(%q<gosu>, [">= 0.7.18"])
   end
 end
 
