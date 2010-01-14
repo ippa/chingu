@@ -28,9 +28,7 @@ module Chingu
     # Can be useful for example collision detection
     #
     module Viewport
-      attr_accessor :viewport_x, :viewport_y
-      attr_accessor :viewport_x_min, :viewport_y_min
-      attr_accessor :viewport_x_max, :viewport_y_max
+      attr_accessor :viewport
       
       module ClassMethods
         def initialize_trait(options = {})
@@ -40,34 +38,38 @@ module Chingu
       
       def setup_trait(options)
         @viewport_options = {:debug => false}.merge(options)
-        @viewport_x = options[:viewport_x] || 0
-        @viewport_y = options[:viewport_y] || 0
-
-        # In it's most simple explanation, remove @camera_x from every game objects @x when drawing. Same for @y.
-        @viewport_x_min = nil
-        @viewport_x_max = nil
-        @viewport_y_min = nil
-        @viewport_y_max = nil
+        
+        @viewport = Chingu::Viewport.new()
+        @viewport.x = options[:viewport_x] || 0
+        @viewport.y = options[:viewport_y] || 0
         
         super
       end
-      
-      def viewport_x=(x)
-        @viewport_x = x
-        @viewport_x = @viewport_x_min   if @viewport_x_min && @viewport_x < @viewport_x_min
-        @viewport_x = @viewport_x_max   if @viewport_x_max && @viewport_x > @viewport_x_max
+            
+      #
+      # Returns true if object is inside view port, false if outside
+      # TODO: add view port height and width! (and use clip_to when painting?)
+      #
+      # This is a very flawed implementation, it Should take inte account objects 
+      # height,width,factor_x,factor_y,center_x,center_y as well...
+      #
+      def inside_viewport?(object)
+        object.x >= @viewport.x && object.x <= (@viewport.x + $window.width) && 
+        object.y >= @viewport.y && object.y <= (@viewport.y + $window.height)
+      end
+
+      # Returns true object is outside the view port
+      def outside_viewport?(object)
+        not inside_viewport?(object)
       end
       
-      def viewport_y=(y)
-        @viewport_y = y
-        @viewport_y = @viewport_y_min   if @viewport_y_min && @viewport_y < @viewport_y_min
-        @viewport_y = @viewport_y_max   if @viewport_y_max && @viewport_y > @viewport_y_max
-      end
-      
+      #
+      # Override game states default draw that draws objects relative to the viewport.
+      # It only draws game objects inside the viewport. (GOSU does no such optimizations)
+      #
       def draw
-        @game_objects.draw_relative(-@viewport_x, -@viewport_y)
-      end
-      
+        self.game_objects.draw_relative(-@viewport.x, -@viewport.y)
+      end      
     end
   end
 end

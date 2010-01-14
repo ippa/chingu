@@ -27,8 +27,8 @@ module Chingu
   #
   class GameObjectList
         
-    def initialize
-      @game_objects = Array.new
+    def initialize(options = {})
+      @game_objects = options[:game_objects] || []
       #@game_objects_by_class = Hash.new
     end
     
