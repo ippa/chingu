@@ -35,7 +35,7 @@ class Game < Chingu::Window
     push_game_state(Intro)
     
     # Yes you can do crazy things like this :)
-    self.input = { :left_mouse_button => lambda{Chingu::Text.create(:text => "Woff!")}, :esc => :exit}
+    self.input = { :left_mouse_button => lambda{Chingu::Text.create(:text => "Woof!")}, :esc => :exit}
   end
 end
 
