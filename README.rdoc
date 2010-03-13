@@ -561,7 +561,13 @@ You can also scale the calculated radius with has_trait-options:
 ==== Trait "effect"
 Adds accessors rotation_rate, fade_rate and scale_rate to game object.
 They modify angle, alpha and factor_x/factor_y each update. Since this is pretty easy to do yourself this trait might be up for deprecation.
-  
+
+==== (IN DEVELOPMENT) Trait "viewport"
+A game state trait. Adds accessor *viewport*. Set viewport.x and viewport.y to.
+Basically what viewport.x = 10 will do is draw all game objects 10 pixels to the left of their ordinary position.
+Since the viewport has moved 10 pixels to the right, the game objects will be seen "moving" 10 pixels to the left.
+This is great for scrolling games.
+
 ==== (IN DEVELOPMENT) Trait "collision_detection"
 Adds class and instance methods for basic collision detection.
   
