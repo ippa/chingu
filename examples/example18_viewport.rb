@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 require 'rubygems'
-require 'opengl'
+#require 'opengl'
 require File.join(File.dirname($0), "..", "lib", "chingu")
 include Gosu
 include Chingu
@@ -34,7 +34,9 @@ class Level < GameState
   #
   def initialize(options = {})
     super
-    @map = GameObject.create(:image => "background1.png", :factor => $window.factor, :rotation_center => :top_left, :retrofy => true)    
+    @map = GameObject.create(:image => "background1.png", :factor => $window.factor, :rotation_center => :top_left)
+    self.viewport.x_lag = 0.95	# lag goes from 0 (no lag at all) to 1 (too much lag for viewport to move ;))
+    self.viewport.y_lag = 0.95
     self.viewport.x_min = 0
     self.viewport.y_min = 0
     self.viewport.x_max = @map.image.width * $window.factor - $window.width
@@ -59,8 +61,8 @@ class Level < GameState
     # This will make droid will be in the center of the screen all the time...
     # ...except when hitting outer borders and viewport x/y _ min/max kicks in.
     #
-    self.viewport.x = @droid.x - $window.width / 2
-    self.viewport.y = @droid.y - $window.height / 2
+    self.viewport.x_target = @droid.x - $window.width / 2
+    self.viewport.y_target = @droid.y - $window.height / 2
         
     $window.caption = "viewport-trait example. Move with arrows! x/y: #{@droid.x}/#{@droid.y} - viewport x/y: #{self.viewport.x}/#{self.viewport.y} - FPS: #{$window.fps}"
   end
@@ -82,7 +84,7 @@ class Droid < Chingu::GameObject
     self.input = [:holding_left, :holding_right, :holding_up, :holding_down]
     
     # Load the full animation from tile-file media/droid.bmp
-    @full_animation = Chingu::Animation.new(:file => "droid.bmp", :size => [11,16]).retrofy
+    @full_animation = Chingu::Animation.new(:file => "droid.bmp", :size => [11,16])
     
     # Create new animations from specific frames and stuff them into easy to access hash
     @animations = {}
