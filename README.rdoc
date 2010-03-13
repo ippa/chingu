@@ -34,8 +34,8 @@ Chingu consists of the following core classes / concepts:
 
 === Chingu::Window
 The main window, use it at you use Gosu::Window now. Calcs the framerate, takes care of states, 
-handles chingu-formated input, updates and draws BasicGameObject / GameObjects automaticly.
-Available thoughout your source as $window (Yes, that's the only global Chingu has).
+handles chingu-formated input, updates and draws BasicGameObject / GameObjects automatically.
+Available throughout your source as $window (Yes, that's the only global Chingu has).
 
 === Chingu::GameObject
 Use this for all your in game objects. The player, the enemies, the bullets, the powerups, the loot laying around.
@@ -47,8 +47,8 @@ Has either Chingu::Window or a Chingu::GameState as "parent".
 === Chingu::BasicGameObject
 For those who think GameObject is a too little fat, there's BasicGameObject (GameObject inherits from BasicGameObject).
 BasicGameObject is just an empty frame (no x,y,image accessors or draw-logic) for you to build on.
-It _can_ be extended with Chingus trait-system though. The new() vs create() behaivor of GameObject comes from BasicGameObject.
-BasicGameObject#parent points to either $window or a game state and is automaticly set on creation time.
+It _can_ be extended with Chingus trait-system though. The new() vs create() behavior of GameObject comes from BasicGameObject.
+BasicGameObject#parent points to either $window or a game state and is automatically set on creation time.
 
 === Chingu::GameStateManager
 Keeps track of the game states. Implements a stack-based system with push_game_state and pop_game_state.
@@ -64,7 +64,7 @@ For example, inside game state Menu you call push_game_state(Level). When Level 
 
 === Traits
 Traits are extensions (or plugins if you so will) to BasicGameObjects. 
-The aim is so encapsulate common behaivor into modules for easy inclusion in your game classes.
+The aim is so encapsulate common behavior into modules for easy inclusion in your game classes.
 Making a trait is easy, just an ordinary module with the methods setup_trait(), update_trait() and/or draw_trait().
 It currently has to be namespaced to Chingu::Traits for "has_traits" to work inside GameObject-classes.
 
@@ -161,7 +161,7 @@ Chingu doesn't change the fundamental concept/flow of Gosu, but it will make the
     def initialize
       super       # This is always needed if you want to take advantage of what chingu offers
       #
-      # Player will automaticly be updated and drawn since it's a Chingu::GameObject
+      # Player will automatically be updated and drawn since it's a Chingu::GameObject
       # You'll need your own Chingu::Window#update and Chingu::Window#draw after a while, but just put #super there and Chingu can do its thing.
       #
       @player = Player.create
@@ -446,7 +446,7 @@ Or Chingus shortcut:
 Chingus inputhandler will detect that Menu is a GameState-class, create a new instance and activate it with push_game_state().
 
 === Traits
-Traits (often called behaivors) is a way of adding logic to any class inheriting from BasicGameObject / GameObject.
+Traits (often called behaviors) is a way of adding logic to any class inheriting from BasicGameObject / GameObject.
 Chingus trait-implementation is just ordinary ruby modules with 3 special methods:
  - setup_trait 
  - update_trait 
@@ -638,7 +638,7 @@ Text is a class to give the use of Gosu::Font more rubyish feel and fit it bette
   @text = Chingu::Text.create("A Text", :x => 200, :y => 50, :zorder => 55, :factor_x => 2.0)
   @text.draw
 
-@text.draw is usually not needed as Text is a GameObject and therefore automaticly updated/drawn (it #create is used instead of #new)
+@text.draw is usually not needed as Text is a GameObject and therefore automatically updated/drawn (it #create is used instead of #new)
 It's not only that the second example is readable by ppl now even familiar with Gosu, @text comes with a number of changeable properties, x,y,zorder,angle,factor_x,color,mode etc. 
 Set a new x or angle or color and it will instantly update on screen.
 
