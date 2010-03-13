@@ -28,11 +28,16 @@ module Chingu
   #
   class Viewport
     attr_accessor :x, :y, :x_min, :x_max, :y_min, :y_max
+		attr_accessor :x_target, :y_target, :x_lag, :y_lag
     #attr_accessor :angle, :center_x, :center_y, :factor_x, :factor_y
     
     def initialize(options = {})
       @x = options[:x] || 0
       @y = options[:y] || 0
+			@x_target = options[:x_target]
+			@y_target = options[:y_target]
+			@x_lag = options[:x_lag] || 0.9
+			@y_lag = options[:y_lag] || 0.9
       @angle = options[:angle] || 0
       
       #self.factor = options[:factor] || options[:scale] || 1.0
@@ -50,14 +55,41 @@ module Chingu
       @x_max = nil
       @y_min = nil
       @y_max = nil      
-    end
+		end
+  
+		#
+		# Modify viewports x and y from target_x / target_y and x_lag / y_lag 
+		# Use this to have the viewport "slide" after the player
+		#
+		def move_towards_target
+			#return
+			#@x = @target_x
+			#@y = @target_y
+			
+			if @x_target && @x != @x_target
+				x_step = @x_target - @x
+				self.x = @x + x_step * (1.0 - @x_lag)
+			end
+			
+			if @y_target && @y != @y_target
+				y_step = @y_target - @y
+				self.y = @y + y_step * (1.0 - @y_lag)
+			end
+			
+		end
     
+		#
+		# Viewports X setter with boundscheck
+		#
     def x=(x)
       @x = x
       @x = @x_min   if @x_min && @x < @x_min
       @x = @x_max   if @x_max && @x > @x_max
     end
 
+		#
+		# Viewports Y setter with boundscheck
+		#
     def y=(y)
       @y = y
       @y = @y_min   if @y_min && @y < @y_min

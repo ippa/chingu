@@ -61,10 +61,12 @@ module Chingu
         #
         # if option :apply is false, just calculate velocities, don't apply them to x/y
         #
-        if trait_options[:velocity][:apply]          
+        
+        unless trait_options[:velocity][:apply] == false
           self.y += @velocity_y
           self.x += @velocity_x
         end
+        
         super
       end
       

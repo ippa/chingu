@@ -63,6 +63,12 @@ module Chingu
         not inside_viewport?(object)
       end
       
+			# Take care of laggy viewport movements
+      def update_trait
+				@viewport.move_towards_target
+				super
+      end
+      
       #
       # Override game states default draw that draws objects relative to the viewport.
       # It only draws game objects inside the viewport. (GOSU does no such optimizations)
