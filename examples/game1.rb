@@ -10,7 +10,7 @@ require 'rubygems'
 require File.join(File.dirname($0), "..", "lib", "chingu")
 
 require 'texplay'     # adds Image#get_pixel
-require 'opengl'      # adds raw gl stuff so Image#retrofy works (in some setups this seems to be 'gl')
+#require 'opengl'      # adds raw gl stuff so Image#retrofy works (in some setups this seems to be 'gl')
 
 include Gosu
 include Chingu
@@ -22,6 +22,7 @@ class Game < Chingu::Window
     super(1000,800,false)
     self.input = { :escape => :exit }
     @factor = 2
+		Gosu::enable_undocumented_retrofication
     switch_game_state(Level)
   end
 end
@@ -37,8 +38,8 @@ class Level < Chingu::GameState
     super
     
     @parallax = Parallax.create(:rotation_center => :top_left)
-    @parallax << { :image => Image["city2.png"].retrofy, :damping => 2, :factor => $window.factor }
-    @parallax << { :image => Image["city1.png"].retrofy, :damping => 1, :factor => $window.factor }
+    @parallax << { :image => Image["city2.png"], :damping => 2, :factor => $window.factor }
+    @parallax << { :image => Image["city1.png"], :damping => 1, :factor => $window.factor }
     @player = Player.create(:x => 30, :y => 10)
     
     @bg1 = Color.new(0xFFCE28FF)
@@ -136,7 +137,7 @@ class Player < GameObject
   
   def initialize(options = {})
     super
-    @image = Image["plane.png"].retrofy
+    @image = Image["plane.png"]
     self.factor = $window.factor
     
     self.input = { 
@@ -193,7 +194,7 @@ class Bullet < GameObject
   
   def initialize(options)
     super
-    @image = Image["bullet.png"].retrofy
+    @image = Image["bullet.png"]
     self.factor = $window.factor
     self.velocity_x = 10
     @status = :default
@@ -219,7 +220,7 @@ end
 class EnemyBullet < Bullet
   def initialize(options)
     super
-    @image = Image["enemy_bullet.png"].retrofy
+    @image = Image["enemy_bullet.png"]
     self.velocity_x = -3
   end
 end
@@ -297,7 +298,7 @@ class Enemy < GameObject
     @velocity = options[:velocity] || 2
     @health = options[:health] || 100
     
-    @anim = Animation.new(:file => "media/saucer.png", :size => [32,13], :delay => 100).retrofy
+    @anim = Animation.new(:file => "media/saucer.png", :size => [32,13], :delay => 100)
     #  @anim.retrofy
     @image = @anim.first
       
