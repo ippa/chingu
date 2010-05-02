@@ -113,23 +113,36 @@ module Chingu
                           :zorder => 0,
                           :mode => :default
                         }
-			options = default_options.merge(options)
-      rect = Rect.new(options[:rect])
+      options = default_options.merge(options)
       
-      if options[:orientation] == :vertical
-        $window.draw_quad(  rect.x, rect.y, options[:from],
-                            rect.right, rect.y, options[:from],
-                            rect.right, rect.bottom, options[:to],
-                            rect.x, rect.bottom, options[:to],
-                            options[:zorder], options[:mode]
-                          )
+      rect   = Rect.new options[:rect]
+      colors = options[:colors] || options.values_at(:from, :to)
+      
+      case options[:orientation]
+      when :vertical
+        rect.height /= colors.count - 1
+        colors.each_cons(2) do |from, to|
+          $window.draw_quad(  rect.left,  rect.top,    from,
+                              rect.right, rect.top,    from,
+                              rect.right, rect.bottom, to,
+                              rect.left,  rect.bottom, to,
+                              options[:zorder], options[:mode]
+                            )
+          rect.top += rect.height
+        end
+      when :horizontal
+        rect.height /= colors.count - 1
+        colors.each_cons(2) do |from, to|
+          $window.draw_quad(  rect.left,  rect.top,    from,
+                              rect.left,  rect.bottom, from,
+                              rect.right, rect.bottom, to,
+                              rect.right, rect.top,    to,
+                              options[:zorder], options[:mode]
+                            )
+          rect.left += rect.width
+        end
       else
-        $window.draw_quad(  rect.x, rect.y, options[:from],
-                            rect.x, rect.bottom, options[:from],
-                            rect.right, rect.bottom, options[:to],
-                            rect.right, rect.y, options[:to],
-                            options[:zorder], options[:mode]
-                          )        
+        raise ArgumentError, "bad gradient orientation: #{options[:orientation]}"
       end
     end
   end
