@@ -90,8 +90,8 @@ module Chingu
     # Chingus "game_objects" which is available in all game states and the main window.
     #
     #def self.create(options = {})
-    def self.create(*options)
-      instance = self.new(*options)
+    def self.create(*options, &block)
+      instance = self.new(*options, &block)
       
       #
       # Add to parents list of game objects
