@@ -3,14 +3,13 @@
 #
 # A "full" simple game in Chingu, using GameState, GameObject, Paralaxx, has_traits etc
 # 
-# TODO: clean up code as Chingu moves along :). Comments.
+# TODO: clean up code as Chingu moves along :). Comments. Get it working ;).
 #
 #
 require 'rubygems'
 require File.join(File.dirname($0), "..", "lib", "chingu")
-
 require 'texplay'     # adds Image#get_pixel
-#require 'opengl'      # adds raw gl stuff so Image#retrofy works (in some setups this seems to be 'gl')
+#require 'opengl'     # adds raw gl stuff so Image#retrofy works (in some setups this seems to be 'gl')
 
 include Gosu
 include Chingu
@@ -38,8 +37,12 @@ class Level < Chingu::GameState
     super
     
     @parallax = Parallax.create(:rotation_center => :top_left)
+		#@parallax = Parallax.create(:rotation_center => :center)
     @parallax << { :image => Image["city2.png"], :damping => 2, :factor => $window.factor }
     @parallax << { :image => Image["city1.png"], :damping => 1, :factor => $window.factor }
+		#@parallax.x = $window.width / 2
+		#@parallax.y = $window.height / 2
+		
     @player = Player.create(:x => 30, :y => 10)
     
     @bg1 = Color.new(0xFFCE28FF)
@@ -73,7 +76,8 @@ class Level < Chingu::GameState
       #return false  if  pixel.nil?
       #return 
       
-      @parallax.layers.last.get_pixel(x/$window.factor, y/$window.factor)[3] != 0
+      @parallax.layers.last.get_pixel(x * $window.factor, y * $window.factor)[3] != 0
+			#@parallax.layers.last.get_pixel(x, y)[3] != 0
     rescue
       puts "Error in get_pixel(#{x}, #{y})"
     end
@@ -151,7 +155,7 @@ class Player < GameObject
     @score = 0
     @cooling_down = false
   end
-  
+  	
   def up
     self.velocity_y = -@max_velocity
   end

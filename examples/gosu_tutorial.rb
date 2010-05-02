@@ -16,17 +16,16 @@ class Game < Chingu::Window
 
   def update
     super
-    if rand(100) < 4 && Star.all.size < 25
-      Star.create
-    end
     
-    [Player, Star].each_collision(Player, Star) do |player, star| 
+		Star.create	if rand(100) < 4 && Star.all.size < 25
+		
+		Player.each_collision(Star) do |player, star| 			
       star.destroy
-      @score+=10
+      @score += 10
+			@text.text = "Score: #{@score}"
+			self.caption = "Chingu Game - " + @text.text
     end
     
-    @text.text = "Score: #{@score}"
-    self.caption = "Chingu Game - " + @text.text
   end
 end
 
