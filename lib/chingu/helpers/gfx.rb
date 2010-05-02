@@ -48,7 +48,7 @@ module Chingu
     #   :orientation  - Either :vertical (top to bottom) or :horizontal (left to right)
     #
     
-    def fill(options, zorder = 99)
+    def fill(options, zorder = 0)
       #
       # if only 1 color-argument is given, assume fullscreen simple color fill.
       #
@@ -56,44 +56,9 @@ module Chingu
         $window.draw_quad(0, 0, options,
                         $window.width, 0, options,
                         $window.width, $window.height, options,
-                        0, $window.height, options, 0, :default)
-        return
-      end
-      
-      default_options = { :colors => [Gosu::Color.new(0xFFFFFFFF), Gosu::Color.new(0xFF000000)],
-                          :orientation => :vertical,
-                          :rect => Rect.new([0, 0, $window.width, $window.height]),
-                          :zorder => 0,
-                          :mode => :default
-                        }
-			options = default_options.merge(options)
-      rect = Rect.new(options[:rect])
-      
-      if options[:orientation] == :vertical
-        x = rect.x
-        y = rect.y
-        right = rect.right
-        bottom = rect.bottom
-        
-        step = (rect.x + rect.right) / options[:colors].size
-        1.upto(options[:colors].size).each do |nr|
-          from = options[:colors]
-          to = 
-        
-          $window.draw_quad(  x, y, options[:from],
-                            x + step, rect.y, options[:from],
-                            x + step, rect.bottom, options[:to],
-                            x, rect.bottom, options[:to],
-                            options[:zorder], options[:mode]
-                          )
-        end
+                        0, $window.height, options, zorder, :default)
       else
-        $window.draw_quad(  rect.x, rect.y, options[:from],
-                            rect.x, rect.bottom, options[:from],
-                            rect.right, rect.bottom, options[:to],
-                            rect.right, rect.y, options[:to],
-                            options[:zorder], options[:mode]
-                          )        
+        fill_gradient(options)
       end
     end
     
@@ -140,8 +105,8 @@ module Chingu
     #   :orientation  - Either :vertical (top to bottom) or :horizontal (left to right)
     #
     def fill_gradient(options)
-      default_options = { :from => Gosu::Color.new(255,0,0,0),
-                          :to => Gosu::Color.new(255,255,255,255), 
+      default_options = { :from => Gosu::Color::BLACK,
+                          :to => Gosu::Color::WHITE,
                           :thickness => 10, 
                           :orientation => :vertical,
                           :rect => Rect.new([0, 0, $window.width, $window.height]),
