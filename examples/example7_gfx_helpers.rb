@@ -17,6 +17,7 @@ class Game < Chingu::Window
     push_game_state(FillRect)
     push_game_state(FillGradient)
     push_game_state(FillGradientRect)
+    push_game_state(FillGradientMultipleColors)
     push_game_state(Particles)
   end
   
@@ -55,6 +56,17 @@ class FillGradient < Chingu::GameState
   def draw
     $window.caption = "fill_gradient (space to continue)"
     fill_gradient(:from => @pinkish, :to => @blueish, :orientation => :vertical)
+  end
+end
+
+class FillGradientMultipleColors < Chingu::GameState
+  def setup
+    @colors = [ 0xffff0000, 0xff00ff00, 0xff0000ff ].map { |c| Color.new(c) }
+  end
+  
+  def draw
+    $window.caption = "fill_gradient with more than two colors (space to continue)"
+    fill_gradient(:colors => @colors, :orientation => :horizontal)
   end
 end
 
