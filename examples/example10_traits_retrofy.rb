@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 require 'rubygems'
-require 'opengl'
 require File.join(File.dirname($0), "..", "lib", "chingu")
 include Gosu
 include Chingu
@@ -14,6 +13,7 @@ class Game < Chingu::Window
     super(600,400)
     self.caption = "Testing out new module-based traits (SPACE for more spaceships)"
     self.input = { :space => :create_thing, :esc => :exit }
+		Gosu::enable_undocumented_retrofication
     create_thing(200,200)
   end
 
@@ -49,7 +49,9 @@ class Thing < Chingu::GameObject
     #
     # The above code has been merged into chingu as @image.retrofy
     #
-    @image.retrofy
+    # @image.retrofy
+		#
+		# Use Gosu::enable_undocumented_retrofication instead!
 
 
     self.scale = 8

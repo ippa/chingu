@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 require 'rubygems'
-#require 'opengl'
 require File.join(File.dirname($0), "..", "lib", "chingu")
 include Gosu
 include Chingu

@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 require 'rubygems'
-require 'opengl'
 require File.join(File.dirname($0), "..", "lib", "chingu")
 include Gosu
 include Chingu
@@ -14,7 +13,8 @@ class Game < Chingu::Window
   def initialize
     super    
     @factor = 6
-    self.input = { :escape => :exit }          
+    self.input = { :escape => :exit }
+		Gosu::enable_undocumented_retrofication
     self.caption = "Chingu::Animation / retrofy example. Move with arrows!"
     Droid.create(:x => $window.width/2, :y => $window.height/2)
   end
@@ -33,7 +33,7 @@ class Droid < Chingu::GameObject
     self.input = [:holding_left, :holding_right, :holding_up, :holding_down]
     
     # Load the full animation from tile-file media/droid.bmp
-    @full_animation = Chingu::Animation.new(:file => "droid.bmp", :size => [11,16]).retrofy
+    @full_animation = Chingu::Animation.new(:file => "droid.bmp", :size => [11,16])
     
     # Create new animations from specific frames and stuff them into easy to access hash
     @animations = {}
