@@ -115,7 +115,7 @@ module Chingu
                         }
       options = default_options.merge(options)
       
-      rect   = Rect.new options[:rect]
+      rect   = Rect.new(options[:rect])
       colors = options[:colors] || options.values_at(:from, :to)
       
       case options[:orientation]
@@ -131,7 +131,7 @@ module Chingu
           rect.top += rect.height
         end
       when :horizontal
-        rect.height /= colors.count - 1
+        rect.width /= colors.count - 1
         colors.each_cons(2) do |from, to|
           $window.draw_quad(  rect.left,  rect.top,    from,
                               rect.left,  rect.bottom, from,
