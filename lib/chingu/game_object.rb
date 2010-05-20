@@ -41,10 +41,18 @@ module Chingu
       super
 
       # All encapsulated draw_rot arguments can be set with hash-options at creation time
+			
+			
       if options[:image].is_a?(Gosu::Image)
         @image = options[:image]
       elsif options[:image].is_a? String
-        @image = Gosu::Image[options[:image]]
+				begin
+					# 1) Try loading the image the normal way
+					@image = Gosu::Image.new($window, options[:image])
+				rescue
+					# 2) Try looking up the picture using Chingus Image-cache
+					@image = Gosu::Image[options[:image]]
+				end
       end
       
       @x = options[:x] || 0
