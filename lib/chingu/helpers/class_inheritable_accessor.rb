@@ -24,7 +24,13 @@ module Helpers
       def inherited(subclass)
         @cattr_inheritable_attrs.each do |inheritable_attribute|
           instance_var = "@#{inheritable_attribute}" 
-          subclass.instance_variable_set(instance_var, instance_variable_get(instance_var))
+          subclass.instance_variable_set(instance_var, instance_variable_get(instance_var).dup)
+					
+					#if instance_var =~ /trait_options/
+					#	puts "#{self.to_s} -> #{subclass.to_s}: #{instance_var}"	# DEBUG
+					#	puts instance_variable_get(instance_var)
+					#	puts "------"
+					#end
         end
       end
     end
