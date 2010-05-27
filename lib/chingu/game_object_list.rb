@@ -29,6 +29,8 @@ module Chingu
         
     def initialize(options = {})
       @game_objects = options[:game_objects] || []
+			@add_game_objects = []
+			@remove_game_objects = []
       #@game_objects_by_class = Hash.new
     end
     
@@ -49,12 +51,16 @@ module Chingu
     alias :remove_all :destroy_all
     
     def add_game_object(object)
-      @game_objects.push(object)
+      #@game_objects.push(object)
+			@add_game_objects.push(object)	
+			
       #(@game_objects_by_class[object.class] ||= []).push(object)
     end
     
     def remove_game_object(object)
-      @game_objects.delete(object)
+      #@game_objects.delete(object)
+			@remove_game_objects.push(object)	
+			
       #@game_objects_by_class[object.class].delete(object)
     end
     
@@ -82,6 +88,12 @@ module Chingu
     end
 
     def update
+			@game_objects += @add_game_objects
+			@add_game_objects.clear
+			
+			@game_objects -= @remove_game_objects
+			@remove_game_objects.clear
+			
       @game_objects.select{ |object| not object.paused }.each do |object| 
         object.update_trait 
         object.update
