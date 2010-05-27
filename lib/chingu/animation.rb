@@ -64,6 +64,13 @@ module Chingu
     def last
       @frames.last
     end
+		
+		#
+		# Returns true if the current frame is the last
+		#
+		def last_frame?
+			@previous_index == @index
+		end
     
     #
     # Fetch a frame or frames:
@@ -96,7 +103,7 @@ module Chingu
     # Returns a new animation with the frames from the original animation.
     # Specify which frames you want with "range", for example "0..3" for the 4 first frames.
     #
-    def new_from_frames(range)
+    def new_from_frames(range)				
       new_animation = self.dup
       new_animation.frames = []
       range.each do |nr|
