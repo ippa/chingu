@@ -39,18 +39,21 @@ module Chingu
       end
 			
       def setup_trait(options)
+				#puts "AutomaticAssets#setup_trait"
+			
         @automatic_assets_options = {:debug => false}.merge(options)
 				
 				#
 				# Try loading animation
 				#
-				glob = "#{trait_options[:automatic_assets][:directory]}/#{self.asset_label}-*"
+				glob = "#{trait_options[:automatic_assets][:directory]}/#{self.asset_label}_*"
+				puts "Animations? #{glob}" if trait_options[:automatic_assets][:debug]
 				if tile_file = Dir[glob].first
-					if tile_file =~ /[a-zA-Z\_+]-(\d+)x(\d+)/
+					if tile_file =~ /[a-zA-Z\_+]_(\d+)x(\d+)/
 						width = $1.to_i
 						height = $2.to_i
 					end
-					puts "Loading animation: #{tile_file}, width: #{width}, height: #{height}" if @automatic_assets_options[:debug]
+					puts "Loading animation: #{tile_file}, width: #{width}, height: #{height}" if trait_options[:automatic_assets][:debug]
 					@animation = Chingu::Animation.new(:file => tile_file, :size => [width, height], :delay => trait_options[:automatic_assets][:delay])
 					@image = @animation.next
 				#
@@ -60,13 +63,19 @@ module Chingu
 					@image_postfixes = ["bmp", "png"]
 					@image_postfixes.each do |postfix|
 						image_name = "#{self.asset_label}.#{postfix}"
-						puts "Trying to load #{image_name}"	if @automatic_assets_options[:debug]
+						puts "Trying to load #{image_name}"	if trait_options[:automatic_assets][:debug]
 						
-						@image = Image[image_name] if Image[image_name]
+						begin
+							@image = Gosu::Image.new($window, File.join(trait_options[:automatic_assets][:directory], image_name) )
+						rescue
+							@image = Image[image_name] if Image[image_name]
+						end
 					end
 				end
 				
-        super
+				puts "!!! automatic_assets couldn't find any image for class #{self.class}" unless @image
+				
+				super
       end
 			
 			def asset_label
