@@ -38,20 +38,42 @@ module Chingu
       end
       
       def setup_trait(options)
-        @velocity_options = {:debug => false}.merge(options)        
+        @velocity_options = {:debug => false}.merge(options)
         
         @velocity_x = options[:velocity_x] || 0
         @velocity_y = options[:velocity_y] || 0
+				self.velocity = options[:velocity] if options[:velocity]
+				
         @acceleration_x = options[:acceleration_x] || 0
         @acceleration_y = options[:acceleration_y] || 0
+				self.acceleration = options[:acceleration] if options[:acceleration]
+				
         @max_velocity = options[:max_velocity] || 1000
         super
       end
       
+			#
+			# Sets X and Y velocity with one single call. Takes an Array-argument with 2 values.
+			#
+			def velocity=(velocity)
+				@velocity_x, @velocity_y = velocity
+			end
+			
+			def velocity; [@velocity_x, @velocity_y]; end
+
+			#
+			# Sets X and Y acceleration with one single call. Takes an Array-argument with 2 values.
+			#
+			def acceleration=(acceleration)
+				@acceleration_x, @acceleration_y = acceleration
+			end
+	
+			def acceleration; [@acceleration_x, @acceleration_y]; end
+
       #
       # Modifies X & Y of parent
       #
-      def update_trait        
+      def update_trait
         @velocity_y += @acceleration_y		if	(@velocity_y + @acceleration_y).abs < @max_velocity
         @velocity_x += @acceleration_x		if	(@velocity_x + @acceleration_x).abs < @max_velocity
         
@@ -61,7 +83,6 @@ module Chingu
         #
         # if option :apply is false, just calculate velocities, don't apply them to x/y
         #
-        
         unless trait_options[:velocity][:apply] == false
           self.y += @velocity_y
           self.x += @velocity_x
