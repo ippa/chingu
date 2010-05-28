@@ -558,6 +558,19 @@ You can also scale the calculated radius with has_trait-options:
   # :debug => true shows the actual circle in red on the screen
   has_trait :bounding_circle, :debug => true
 
+==== Trait "automatic_assets"
+Automatically load images and animations depending on the class-name.
+Useful when having a lot of simple classes thats mainpurpose is displaying an image or animation.
+Assuming the below code is included in a class FireBall.
+
+  # fire_ball.png / fire_ball.png will be loaded into @image
+  has_trait :automatic_assets
+
+  # If a fire_ball-10x10.png/bmp exists, it will be loaded as a tileanimation (and fire_ball.png image will be ignored)
+	# 10x10 would indicate the width and height of each tile so Chingu knows hows to cut it up into single frames.
+	# The below example will animate the frames with 200ms delay between each frame.
+  has_trait :automatic_assets, :delay => 200
+
 ==== Trait "effect"
 Adds accessors rotation_rate, fade_rate and scale_rate to game object.
 They modify angle, alpha and factor_x/factor_y each update. Since this is pretty easy to do yourself this trait might be up for deprecation.

@@ -9,7 +9,7 @@ include Gosu
 #
 class Game < Chingu::Window
   def initialize
-    super(600,200)          
+    super(600,200)
     self.caption = "Chingu::Parallax example. Scroll with left/right arrows. Space for new parallax example!"
     switch_game_state(Wood)
   end
