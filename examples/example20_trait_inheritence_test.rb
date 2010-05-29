@@ -9,11 +9,8 @@ include Chingu
 # ..more then it's a fun-to-watch demo.
 #
 class Game < Chingu::Window
-  attr_reader :factor
-  
   def initialize
     super    
-    @factor = 6
     self.input = { :escape => :exit }
 		
 		star = SpinningStar.create(:x => 400, :y => 100)

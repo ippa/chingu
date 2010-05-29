@@ -9,11 +9,9 @@ include Chingu
 #
 # Gotcha: collision_detection-trait debug mode currently borks up with viewports (only the visuals)
 # 
-class Game < Chingu::Window
-  attr_reader :factor
-  
+class Game < Chingu::Window 
   def setup
-    @factor = 6
+    self.factor = 6
     self.input = { :escape => :exit }          
     switch_game_state(Level)
   end
@@ -85,10 +83,10 @@ class Droid < Chingu::GameObject
     # Start out by animation frames 0-5 (contained by @animations[:scan])
     @animation = @animations[:scan]
     
-    self.factor = $window.factor
-    @last_x, @last_y = @x, @y
     @speed = 3
+    self.factor = $window.factor
     
+    @last_x, @last_y = @x, @y
     update
   end
     
@@ -143,6 +141,7 @@ class Star < GameObject
     self.color.red = rand(255 - 40) + 40
     self.color.green = rand(255 - 40) + 40
     self.color.blue = rand(255 - 40) + 40
+    self.factor = 1
     
     #
     # A cached bounding circle will not adapt to changes in size, but it will follow objects X / Y

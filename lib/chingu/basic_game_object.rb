@@ -83,11 +83,7 @@ module Chingu
 
       # This will call #setup_trait on the latest trait mixed in
       # which then will pass it on to the next setup_trait() with a super-call.
-      setup_trait(options)
-      
-      # Call setup, this class holds an empty setup() to be overriden
-      # setup() will be an easier method to override for init-stuff since you don't need to do super etc..
-      setup
+      setup_trait(options)      
     end
 
     #

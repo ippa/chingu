@@ -15,12 +15,12 @@ include Gosu
 include Chingu
 
 class Game < Chingu::Window
-  attr_reader :factor
+  #attr_reader :factor
   
   def initialize
     super(1000,800,false)
     self.input = { :escape => :exit }
-    @factor = 2
+    self.factor = 2
 		Gosu::enable_undocumented_retrofication
     switch_game_state(Level)
   end
@@ -38,8 +38,8 @@ class Level < Chingu::GameState
     
     @parallax = Parallax.create(:rotation_center => :top_left)
 		#@parallax = Parallax.create(:rotation_center => :center)
-    @parallax << { :image => "city2.png", :damping => 2, :factor => $window.factor }
-    @parallax << { :image => "city1.png", :damping => 1, :factor => $window.factor }
+    @parallax << { :image => "city2.png", :damping => 2}#, :factor => $window.factor }
+    @parallax << { :image => "city1.png", :damping => 1}#, :factor => $window.factor }
 		#@parallax.x = $window.width / 2
 		#@parallax.y = $window.height / 2
 		
@@ -139,7 +139,7 @@ class Player < GameObject
   
   def setup
     @image = Image["plane.png"]
-    self.factor = $window.factor
+    #self.factor = $window.factor
     
     self.input = { 
       :holding_left => :left, 
@@ -195,7 +195,7 @@ class Bullet < GameObject
   
   def setup
     @image = Image["bullet.png"]
-    self.factor = $window.factor
+    #self.factor = $window.factor
     self.velocity_x = 10
     @status = :default
     @radius = 3
@@ -238,7 +238,7 @@ class Explosion < GameObject
     @image = @@image.dup  if @image.nil?
     
     self.rotation_center = :center
-    self.factor = options[:factor] ? options[:factor] : $window.factor
+    #self.factor = options[:factor] ? options[:factor] : $window.factor
     during(100) { self.alpha -= 30}.then { destroy }
   end
   
@@ -262,7 +262,7 @@ class Shrapnel < GameObject
     self.velocity_y = 4 - rand(10)
     self.acceleration_y = 0.2 # gravity = downards acceleration
     self.rotation_center = :center
-    self.factor = $window.factor
+    #self.factor = $window.factor
     @status = :default
   end
   
@@ -300,7 +300,7 @@ class Enemy < GameObject
     #  @anim.retrofy
     @image = @anim.first
       
-    self.factor = $window.factor
+    #self.factor = $window.factor
     @radius = 5
     @black = Color.new(0xFF000000)
     @status == :default
