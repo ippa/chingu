@@ -30,7 +30,7 @@ module Chingu
     #
     # Will automatically load fire_ball.png into @image
     #
-    # Adds accessors animations, animation and method switch_animation(state)
+    # Adds accessors animations -> Hash with all animations, hash-key is the name of the animation
     #
     module AutomaticAssets
     
@@ -54,16 +54,28 @@ module Chingu
       def setup_trait(options)			
         @automatic_assets_options = {:debug => false}.merge(options)
         
-        @_animation_state = :default
-        @_animations = load_animations
-        if anim = @_animations.values.first
-          @image = anim.frames[0]
-        else
-          @image = load_image
-        end
+        @animations = load_animations
+        @image = @animations.values.first ? @animations.values.first.first : load_image
 								
         puts "!!! automatic_assets couldn't find any image for class #{self.class}" unless @image
         super
+      end
+
+      #
+      # Try loading animation from class-name
+      #
+      def load_animations
+        animations = {}
+        glob = "#{trait_options[:automatic_assets][:directory]}/#{self.asset_label}_*"
+        puts "Animations? #{glob}" if trait_options[:automatic_assets][:debug]
+        Dir[glob].each do |tile_file|
+          if tile_file =~ /[a-zA-Z\_+]_(\d+)x(\d+)_*([a-zA-Z]*)\.(bmp|png)/
+            state = $3.length > 0 ? $3 : "default"            
+            puts "ANIM: #{tile_file}, width: #{width}, height: #{height}, state: #{state}" if trait_options[:automatic_assets][:debug]
+            animations[state.to_sym] = Chingu::Animation.new(:file => tile_file, :delay => trait_options[:automatic_assets][:delay])
+          end
+        end
+        return animations
       end
 
       #
@@ -86,28 +98,6 @@ module Chingu
       end
 
       #
-      # Try loading animation from class-name
-      #
-      def load_animations
-        animations = {}
-        glob = "#{trait_options[:automatic_assets][:directory]}/#{self.asset_label}_*"
-        puts "Animations? #{glob}" if trait_options[:automatic_assets][:debug]
-        Dir[glob].each do |tile_file|
-          if tile_file =~ /[a-zA-Z\_+]_(\d+)x(\d+)_*([a-zA-Z]*)\.(bmp|png)/
-            width = $1.to_i
-            height = $2.to_i
-            state = $3
-            state = "default" if state.length < 1
-            
-            puts "ANIM: #{tile_file}, width: #{width}, height: #{height}, state: #{state}" if trait_options[:automatic_assets][:debug]
-            animations[state.to_sym] = Chingu::Animation.new(:file => tile_file, :size => [width, height], :delay => trait_options[:automatic_assets][:delay])
-          end
-        end
-        return animations
-      end			
-
-      
-      #
       # Returns a filename-friendly string from the current class-name
       #
       # "FireBall" -> "fire_ball"
@@ -115,35 +105,12 @@ module Chingu
       def asset_label
         Chingu::Inflector.underscore(self.class.to_s)
       end
-      
+            
       #
       # Returns all animations, then access invidual states with animations[:explode] etc.
       #
       def animations
-        @_animations
-      end
-
-      #
-      # Return the current playing animation
-      #
-      def animation
-        @_animations[@_animation_state]
-      end
-			
-      #
-      # Change animation-state: star_10x10_<state>.png
-      # For example switch_animation(:exploding) will animation something_10x10_exploding.png
-      #
-      def switch_animation(state)
-        @_animation_state = state
-        animation
-      end
-      
-      def update_trait
-        if animation && trait_options[:automatic_assets][:play]
-          self.image = animation.next	
-        end
-        super
+        @animations
       end
       
     end

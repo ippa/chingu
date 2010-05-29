@@ -43,12 +43,19 @@ module Chingu
       elsif options[:size]
         @width = options[:size]
         @height = options[:size]
+      else      
+        if @file =~ /_(\d+)x(\d+)/      # Auto-detect width/height from filename!
+          @width = $1.to_i
+          @height = $2.to_i
+        end
       end
       
-      @file = media_path(@file)  unless File.exist?(@file)
+      @file = media_path(@file)  if @file && !File.exist?(@file)
       
-      @frame_names = {}
+      
+      @sub_animations = {}
       @frame_actions = []
+      
       @frames = Gosu::Image.load_tiles($window, @file, @width, @height, true)
     end
     
@@ -60,8 +67,11 @@ module Chingu
     #
     def frame_names=(names)
       names.each do |key, value|
-        @frame_names[key] = self.new_from_frames(value) if value.is_a? Range
-        #@frame_names[key] = self.new_from_frames(value) if value.is_a? Array
+        @sub_animations[key] = self.new_from_frames(value) if value.is_a? Range
+        #
+        # TODO: Add support for [1,4,5] array frame selection
+        #
+        # @frame_names[key] = self.new_from_frames(value) if value.is_a? Array
       end
     end
     
@@ -70,6 +80,10 @@ module Chingu
     #
     def frame_names
       @frame_names
+    end
+    
+    def animations
+      @sub_animations.keys
     end
     
     #
@@ -103,9 +117,19 @@ module Chingu
     def [](index)
       return @frames[index]               if  index.is_a?(Fixnum)
       return self.new_from_frames(index)  if  index.is_a?(Range)
-      return @frame_names[index]          if  index.is_a?(Symbol)
+      return @sub_animations[index]          if  index.is_a?(Symbol)
     end
-		
+
+    #
+    # Manually initialize a frame-range with an Animation-instance
+    #
+    #   @animation[:scan] = Animation.new(...)
+    #
+    def []=(name, animation)
+      @sub_animations[name] = animation
+      return @sub_animations[name]
+    end
+
     #
     # Get the current frame (a Gosu#Image)
     #
@@ -134,12 +158,13 @@ module Chingu
       end
       return new_animation
     end
-    
+            
     #
     # Propelles the animation forward. Usually called in #update within the class which holds the animation.
     # Animation#next() will look at bounce and loop flags to always return a correct frame (a Gosu#Image)
     #
-    def next
+    def next(recursion = true)
+        
       if (@dt += $window.milliseconds_since_last_tick) > @delay
         @dt = 0
         @previous_index = @index

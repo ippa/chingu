@@ -33,10 +33,10 @@ class Droid < Chingu::GameObject
     self.input = [:holding_left, :holding_right, :holding_up, :holding_down]
     
     # Load the full animation from tile-file media/droid.bmp
-    @animations = Chingu::Animation.new(:file => "droid_11x16.bmp")
-    @animations.frame_names = { :scan => 0..5, :up => 6..7, :down => 8..9, :left => 10..11, :right => 12..13 }
+    @animation = Chingu::Animation.new(:file => "droid_11x16.bmp")
+    @animation.frame_names = { :scan => 0..5, :up => 6..7, :down => 8..9, :left => 10..11, :right => 12..13 }
     
-    # Start out by animation frames 0-5 (contained by @animations[:scan])
+    # Start out by animation frames 0-5 (contained by @animation[:scan])
     @frame_name = :scan
     
     self.factor = $window.factor
@@ -53,7 +53,7 @@ class Droid < Chingu::GameObject
     @x += 2
     @frame_name = :right
   end
-
+  
   def holding_up
     @y -= 2
     @frame_name = :up
@@ -70,7 +70,7 @@ class Droid < Chingu::GameObject
     
     # Move the animation forward by fetching the next frame and putting it into @image
     # @image is drawn by default by GameObject#draw
-    @image = @animations[@frame_name].next
+    @image = @animation[@frame_name].next
     
     #
     # If droid stands still, use the scanning animation

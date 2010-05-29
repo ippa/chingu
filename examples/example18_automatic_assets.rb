@@ -35,8 +35,10 @@ end
 class Actor < GameObject
   has_trait :automatic_assets, :delay => 100
   has_trait :velocity
+  
   def update
     destroy if outside_window?
+    @image = @animation.next if @animation
   end
 end
 
@@ -53,8 +55,8 @@ class Droid < Actor; end      # droid_11x16.png will be loaded and animated with
 class Star < Actor
   def update
     if @x < $window.width/2 || @y < $window.height/2
-      switch_animation(:explode)
-      animations[:explode].loop = false
+      @animation = self.animations[:explode]
+      @animation.loop = false
     end
     super
   end
