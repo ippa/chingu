@@ -78,8 +78,13 @@ module Chingu
       
       def draw_trait      
         if trait_options[:bounding_box][:debug]
-          $window.draw_rect(self.bounding_box, Chingu::DEBUG_COLOR, Chingu::DEBUG_ZORDER)
+          if defined?(parent.viewport)
+            $window.draw_rect(self.bounding_box.move(-parent.viewport.x, -parent.viewport.y), Chingu::DEBUG_COLOR, Chingu::DEBUG_ZORDER)
+          else
+            $window.draw_rect(self.bounding_box, Chingu::DEBUG_COLOR, Chingu::DEBUG_ZORDER)
+          end
         end
+        
         super
       end
       
