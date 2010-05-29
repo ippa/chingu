@@ -47,8 +47,28 @@ module Chingu
       
       @file = media_path(@file)  unless File.exist?(@file)
       
+      @frame_names = {}
       @frame_actions = []
       @frames = Gosu::Image.load_tiles($window, @file, @width, @height, true)
+    end
+    
+    #
+    # Put name on specific ranges of frames.
+    # Eg. name_frames(:default => 0..3, :explode => 3..8)
+    #
+    # Can then be accessed with @animation[:explode]
+    #
+    def frame_names=(names)
+      names.each do |key, value|
+        @frame_names[key] = self.new_from_frames(value)
+      end
+    end
+    
+    #
+    # Return frame names in { :name => range } -form
+    #
+    def frame_names
+      @frame_names
     end
     
     #
@@ -75,12 +95,14 @@ module Chingu
     #
     # Fetch a frame or frames:
     #
-    #   @animation[0]       # returns first frame
-    #   @animation[0..2]    # returns a new Animation-instance with first, second and third frame
+    #   @animation[0]         # returns first frame
+    #   @animation[0..2]      # returns a new Animation-instance with first, second and third frame
+    #   @animation[:explode]  # returns a cached Animation-instance with frames earlier set with @animation.frame_names = { ... }
     #
     def [](index)
       return @frames[index]               if  index.is_a?(Fixnum)
       return self.new_from_frames(index)  if  index.is_a?(Range)
+      return @frame_names[index]          if  index.is_a?(Symbol)
     end
 		
     #

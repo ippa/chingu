@@ -83,15 +83,8 @@ class Droid < Chingu::GameObject
     self.input = [:holding_left, :holding_right, :holding_up, :holding_down]
     
     # Load the full animation from tile-file media/droid.bmp
-    @full_animation = Chingu::Animation.new(:file => "droid.bmp", :size => [11,16])
-    
-    # Create new animations from specific frames and stuff them into easy to access hash
-    @animations = {}
-    @animations[:scan] = @full_animation[0..5]
-    @animations[:up] = @full_animation[6..7]
-    @animations[:down] = @full_animation[8..9]
-    @animations[:left] = @full_animation[10..11]
-    @animations[:right] = @full_animation[12..13]
+    @animations = Chingu::Animation.new(:file => "droid.bmp", :size => [11,16])
+    @animations.frame_names = { :scan => 0..5, :up => 6..7, :down => 8..9, :left => 10..11, :right => 12..13 }
     
     # Start out by animation frames 0-5 (contained by @animations[:scan])
     @animation = @animations[:scan]
