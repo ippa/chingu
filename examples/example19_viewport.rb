@@ -12,12 +12,12 @@ include Chingu
 class Game < Chingu::Window
   attr_reader :factor
   
-  def initialize
-    super    
+  def setup
     @factor = 6
     self.input = { :escape => :exit }          
     switch_game_state(Level)
   end
+  
 end
 
 class Level < GameState
@@ -31,8 +31,7 @@ class Level < GameState
   # 1) map 2) stars 3) player
   # Since we don't give any zorders Chingu automatically increments zorder between each object created, putting player on top
   #
-  def initialize(options = {})
-    super
+  def setup
     @map = GameObject.create(:image => "background1.png", :factor => $window.factor, :rotation_center => :top_left)
     self.viewport.x_lag = 0.95	# lag goes from 0 (no lag at all) to 1 (too much lag for viewport to move ;))
     self.viewport.y_lag = 0.95
@@ -69,15 +68,12 @@ end
 
 class Droid < Chingu::GameObject
   has_trait :bounding_box, :debug => true
-  has_traits :timer, :collision_detection
-  
+  has_traits :timer, :collision_detection 
   attr_accessor :last_x, :last_y
   
-  def initialize(options = {})
-    super
-    
+  def setup
     #
-    # This shows up the shorten versio of input-maps, where each key calls a method of the very same name.
+    # This shows up the shortened version of input-maps, where each key calls a method of the very same name.
     # Use this by giving an array of symbols to self.input
     #
     self.input = [:holding_left, :holding_right, :holding_up, :holding_down]
@@ -140,9 +136,7 @@ class Star < GameObject
   has_trait :bounding_circle
   has_trait :collision_detection
   
-  def initialize(options={})
-    super
-    
+  def setup    
     @animation = Chingu::Animation.new(:file => media_path("Star.png"), :size => 25)
     @image = @animation.next
     self.color = Gosu::Color.new(0xff000000)

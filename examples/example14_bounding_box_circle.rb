@@ -67,8 +67,7 @@ class Circle < GameObject
   has_trait :bounding_circle, :debug => true
   has_traits :velocity, :collision_detection
   
-  def initialize(options)
-    super
+  def setup
     @image = Image["circle.png"]
     self.velocity_x = 3 - rand * 6
     self.velocity_y = 3 - rand * 6
@@ -92,8 +91,7 @@ class Box < GameObject
   has_trait :bounding_box, :debug => true
   has_traits :velocity, :collision_detection
   
-  def initialize(options)
-    super
+  def setup
     @image = Image["rect.png"]
     self.velocity_x = 3 - rand * 6
     self.velocity_y = 3 - rand * 6
@@ -104,8 +102,6 @@ class Box < GameObject
   def update
     self.velocity_x = -self.velocity_x  if @x < 0 || @x > $window.width
     self.velocity_y = -self.velocity_y  if @y < 0 || @y > $window.height
-    #@x = @x.to_i
-    #@y = @y.to_i
   end
 end
 

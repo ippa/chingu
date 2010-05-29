@@ -26,24 +26,17 @@ class Game < Chingu::Window
   end
 end
 
-
 class Fill < Chingu::GameState 
-  def setup
-    @white = Color.new(255,255,255,255)
-  end
   def draw
     $window.caption = "fill (space to continue)"
-    fill(@white)
+    fill(Color::RED)
   end
 end
 
 class FillRect < Chingu::GameState 
-  def setup
-    @white = Color.new(255,255,255,255)
-  end
   def draw
     $window.caption = "fill_rect (space to continue)"
-    fill_rect([10,10,100,100], @white)
+    fill_rect([10,10,100,100], Color::WHITE)
   end
 end
 

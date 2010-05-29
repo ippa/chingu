@@ -38,11 +38,9 @@ module Chingu
     include Chingu::Helpers::RotationCenter     # Adds easy and verbose modification of @center_x and @center_y
         
     def initialize(options = {})
-      super
-
-      # All encapsulated draw_rot arguments can be set with hash-options at creation time
-			
-			
+      #
+      # All encapsulated Gosu::Image.draw_rot arguments can be set with hash-options at creation time
+			#
       if options[:image].is_a?(Gosu::Image)
         @image = options[:image]
       elsif options[:image].is_a? String
@@ -81,6 +79,8 @@ module Chingu
       
       @mode = options[:mode] || :default # :additive is also available.
       @zorder = options[:zorder] || 100
+      
+      super
     end
     
     # Quick way of setting both factor_x and factor_y

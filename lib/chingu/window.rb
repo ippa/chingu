@@ -56,8 +56,13 @@ module Chingu
       
       @fps_counter = FPSCounter.new
       @game_state_manager = GameStateManager.new
-      @milliseconds_since_last_tick = 0      
+      @milliseconds_since_last_tick = 0
+      
+      setup
     end
+    
+    # Placeholder to be overwritten
+    def setup; end;
     
     #
     # Returns self inside GameState.initialize (a game state is not 'active' inside initialize())

@@ -53,6 +53,11 @@ class Droid < Actor; end      # droid_11x16.png will be loaded and animated with
 # You could also change the default playing animation with switch_animation(state)
 #
 class Star < Actor
+  
+  def setup
+    @animation = self.animations[:default]
+  end
+  
   def update
     if @x < $window.width/2 || @y < $window.height/2
       @animation = self.animations[:explode]

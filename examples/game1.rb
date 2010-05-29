@@ -38,8 +38,8 @@ class Level < Chingu::GameState
     
     @parallax = Parallax.create(:rotation_center => :top_left)
 		#@parallax = Parallax.create(:rotation_center => :center)
-    @parallax << { :image => Image["city2.png"], :damping => 2, :factor => $window.factor }
-    @parallax << { :image => Image["city1.png"], :damping => 1, :factor => $window.factor }
+    @parallax << { :image => "city2.png", :damping => 2, :factor => $window.factor }
+    @parallax << { :image => "city1.png", :damping => 1, :factor => $window.factor }
 		#@parallax.x = $window.width / 2
 		#@parallax.y = $window.height / 2
 		
@@ -96,7 +96,7 @@ class Level < Chingu::GameState
     Bullet.all.select { |o| solid_pixel_at?(o.x, o.y)}.each { |o| o.die }
         
     # Collide player with terrain
-    push_game_state(GameOver) if solid_pixel_at?(@player.x, @player.y)
+    #push_game_state(GameOver) if solid_pixel_at?(@player.x, @player.y)
     
     # Collide player with enemies and enemy bullets
     @player.each_bounding_circle_collision(Enemy) do |player, enemy|
@@ -110,7 +110,6 @@ class Level < Chingu::GameState
         @player.score += 20
       end
     end
-    
     
     @timer = @timer * 0.9999
     @total_ticks += 1
@@ -135,12 +134,10 @@ end
 #
 class Player < GameObject
   has_traits :velocity, :collision_detection, :timer
-  has_trait :bounding_circle, :scale => 0.50, :debug => true
-  
+  has_trait :bounding_circle, :scale => 0.50, :debug => true 
   attr_accessor :score
   
-  def initialize(options = {})
-    super
+  def setup
     @image = Image["plane.png"]
     self.factor = $window.factor
     
@@ -196,8 +193,7 @@ class Bullet < GameObject
   has_traits :timer, :collision_detection, :velocity
   attr_reader :status, :radius
   
-  def initialize(options)
-    super
+  def setup
     @image = Image["bullet.png"]
     self.factor = $window.factor
     self.velocity_x = 10
@@ -222,8 +218,7 @@ end
 # ENEMY BULLET
 #
 class EnemyBullet < Bullet
-  def initialize(options)
-    super
+  def setup
     @image = Image["enemy_bullet.png"]
     self.velocity_x = -3
   end
@@ -259,9 +254,9 @@ end
 class Shrapnel < GameObject
   has_traits :timer, :effect, :velocity
   
-  def initialize(options)
-    super
-    
+  #def initialize(options)
+  #  super
+  def setup
     self.rotation_rate = 1 + rand(10)
     self.velocity_x = 4 - rand(8)
     self.velocity_y = 4 - rand(10)
@@ -297,8 +292,7 @@ class Enemy < GameObject
   has_traits :collision_detection, :timer  
   attr_reader :radius
   
-  def initialize(options)
-    super
+  def setup
     @velocity = options[:velocity] || 2
     @health = options[:health] || 100
     
@@ -415,7 +409,3 @@ end
 
 
 Game.new.show
-
-
-
-
