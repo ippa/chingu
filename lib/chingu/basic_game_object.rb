@@ -53,6 +53,11 @@ module Chingu
     def self.has_traits(*traits)
       Array(traits).each { |trait| has_trait trait }
     end
+		
+		#def self.inherited(subclass)
+		#	subclass.initialize_inherited_trait	if subclass.method_defined?(:initialize_inherited_trait)
+		#end
+			
         
     #
     # BasicGameObject initialize

@@ -52,7 +52,8 @@ module Chingu
     
     def add_game_object(object)
       #@game_objects.push(object)
-			@add_game_objects.push(object)	
+			@add_game_objects.push(object)
+			
 			
       #(@game_objects_by_class[object.class] ||= []).push(object)
     end
@@ -94,6 +95,8 @@ module Chingu
 			@game_objects -= @remove_game_objects
 			@remove_game_objects.clear
 			
+			#@game_objects.select{ |object| not object.paused }.each do |object| 
+				
       @game_objects.select{ |object| not object.paused }.each do |object| 
         object.update_trait 
         object.update
