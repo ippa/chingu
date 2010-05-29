@@ -68,7 +68,7 @@ class Level < GameState
 end
 
 class Droid < Chingu::GameObject
-  has_trait :bounding_box
+  has_trait :bounding_box, :debug => true
   has_traits :timer, :collision_detection
   
   attr_accessor :last_x, :last_y
