@@ -33,11 +33,11 @@ class Droid < Chingu::GameObject
     self.input = [:holding_left, :holding_right, :holding_up, :holding_down]
     
     # Load the full animation from tile-file media/droid.bmp
-    @animations = Chingu::Animation.new(:file => "droid.bmp", :size => [11,16])
+    @animations = Chingu::Animation.new(:file => "droid_11x16.bmp")
     @animations.frame_names = { :scan => 0..5, :up => 6..7, :down => 8..9, :left => 10..11, :right => 12..13 }
     
     # Start out by animation frames 0-5 (contained by @animations[:scan])
-    @animation = @animations[:scan]
+    @frame_name = :scan
     
     self.factor = $window.factor
     @last_x, @last_y = @x, @y
@@ -46,22 +46,22 @@ class Droid < Chingu::GameObject
     
   def holding_left
     @x -= 2
-    @animation = @animations[:left]
+    @frame_name = :left
   end
 
   def holding_right
     @x += 2
-    @animation = @animations[:right]
+    @frame_name = :right
   end
 
   def holding_up
     @y -= 2
-    @animation = @animations[:up]
+    @frame_name = :up
   end
 
   def holding_down
     @y += 2
-    @animation = @animations[:down]
+    @frame_name = :down
   end
 
   # We don't need to call super() in update().
@@ -70,14 +70,12 @@ class Droid < Chingu::GameObject
     
     # Move the animation forward by fetching the next frame and putting it into @image
     # @image is drawn by default by GameObject#draw
-    @image = @animation.next
+    @image = @animations[@frame_name].next
     
     #
     # If droid stands still, use the scanning animation
     #
-    if @x == @last_x && @y == @last_y
-      @animation = @animations[:scan]
-    end
+    @frame_name = :scan if @x == @last_x && @y == @last_y
     
     @x, @y = @last_x, @last_y if outside_window?  # return to previous coordinates if outside window
     @last_x, @last_y = @x, @y                     # save current coordinates for possible use next time

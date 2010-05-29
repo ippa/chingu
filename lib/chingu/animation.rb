@@ -60,7 +60,8 @@ module Chingu
     #
     def frame_names=(names)
       names.each do |key, value|
-        @frame_names[key] = self.new_from_frames(value)
+        @frame_names[key] = self.new_from_frames(value) if value.is_a? Range
+        #@frame_names[key] = self.new_from_frames(value) if value.is_a? Array
       end
     end
     
