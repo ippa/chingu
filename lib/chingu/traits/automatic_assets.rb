@@ -66,7 +66,7 @@ module Chingu
       #
       def load_animations
         animations = {}
-        glob = "#{trait_options[:automatic_assets][:directory]}/#{self.asset_label}_*"
+        glob = "#{trait_options[:automatic_assets][:directory]}/#{self.filename}_*"
         puts "Animations? #{glob}" if trait_options[:automatic_assets][:debug]
         Dir[glob].each do |tile_file|
           if tile_file =~ /[a-zA-Z\_+]_(\d+)x(\d+)_*([a-zA-Z]*)\.(bmp|png)/
@@ -84,7 +84,7 @@ module Chingu
       def load_image
         @image_postfixes = ["bmp", "png"]
         @image_postfixes.each do |postfix|
-          image_name = "#{self.asset_label}.#{postfix}"
+          image_name = "#{self.filename}.#{postfix}"
           puts "Trying to load #{image_name}"	if trait_options[:automatic_assets][:debug]
               
           begin
@@ -96,16 +96,7 @@ module Chingu
           return image if image
         end          
       end
-
-      #
-      # Returns a filename-friendly string from the current class-name
-      #
-      # "FireBall" -> "fire_ball"
-      #
-      def asset_label
-        Chingu::Inflector.underscore(self.class.to_s)
-      end
-            
+           
       #
       # Returns all animations, then access invidual states with animations[:explode] etc.
       #
