@@ -14,7 +14,7 @@ Chingu has started to settle down, thouch core classes and naming can still chan
 == DESCRIPTION
 OpenGL accelerated 2D game framework for Ruby.
 Builds on the awesome Gosu (Ruby/C++) which provides all the core functionality.
-It adds simple yet powerful game states, prettier input handling, deployment safe asset-handling, a basic re-usable game object and automation of common task.
+It adds simple yet powerful game states, pretty input handling, deployment safe asset-handling, a basic re-usable game object and automation of common task.
 
 
 == THE STORY
@@ -33,9 +33,10 @@ Borrowing ideas from Rubygame this has now become @player.keyboard(:left => :mov
 Chingu consists of the following core classes / concepts:
 
 === Chingu::Window
-The main window, use it at you use Gosu::Window now. Calcs the framerate, takes care of states, 
+The main window, use it at you use Gosu::Window now. Calculates the framerate, takes care of states, 
 handles chingu-formated input, updates and draws BasicGameObject / GameObjects automatically.
 Available throughout your source as $window (Yes, that's the only global Chingu has).
+You can also set various global settings. For example, self.factor=3, will make all fortcomming GameObjects scale 3 times.
 
 === Chingu::GameObject
 Use this for all your in game objects. The player, the enemies, the bullets, the powerups, the loot laying around.
@@ -63,7 +64,7 @@ Chingu::Window --> Chingu::GameStateManager --> Chingu::GameState.
 For example, inside game state Menu you call push_game_state(Level). When Level exists, it will go back to Menu.
 
 === Traits
-Traits are extensions (or plugins if you so will) to BasicGameObjects. 
+Traits are extensions (or plugins if you so will) to BasicGameObjects included on the class-level.
 The aim is so encapsulate common behavior into modules for easy inclusion in your game classes.
 Making a trait is easy, just an ordinary module with the methods setup_trait(), update_trait() and/or draw_trait().
 It currently has to be namespaced to Chingu::Traits for "has_traits" to work inside GameObject-classes.
@@ -159,7 +160,7 @@ Chingu doesn't change the fundamental concept/flow of Gosu, but it will make the
   #
   class Game < Chingu::Window
     def initialize
-      super       # This is always needed if you want to take advantage of what chingu offers
+      super       # This is always needed if you override Window#initialize
       #
       # Player will automatically be updated and drawn since it's a Chingu::GameObject
       # You'll need your own Chingu::Window#update and Chingu::Window#draw after a while, but just put #super there and Chingu can do its thing.
@@ -234,7 +235,7 @@ An example using almost all arguments would be:
   #
   # A shortcut for the above line would be
   #
-  @player = Player.new(:image => Image["player.png"], :x=>100, :y=>100, :zorder=>100, :angle=>45, :factor=>10, :center=>0)
+  @player = Player.new(:image => "player.png", :x=>100, :y=>100, :zorder=>100, :angle=>45, :factor=>10, :center=>0)
 
   #
   # I've tried doing sensible defaults:
@@ -445,8 +446,31 @@ Or Chingus shortcut:
   
 Chingus inputhandler will detect that Menu is a GameState-class, create a new instance and activate it with push_game_state().
 
+=== WorkFlow
+(This text is under development)
+
+== The setup-method
+If a setup() is available in a instance of Chingu::GameObject, Chingu::Window and Chingu::GameState it will automatically be called.
+This is the perfect spot to include various setup/init-tasks like setting colors or loading animations (if you're not using the automatic_assets-trait).
+You could also override initialize() for this purpose but it's been proven prone to errors again and again.
+Compare the 2 snippets below:
+
+  # Easy to mess up, forgetting options or super
+  def initialize(options = {})
+    super
+    @color = Color::WHITE
+  end
+  
+  # Less code, easier to get right and works in GameObject, Window and GameState
+  # Feel free to call setup() anytime, there's no magic about ut except it's autocalled once on object creation time.
+  def setup
+    @color = Color::WHITE
+  end
+  
+  
+
 === Traits
-Traits (often called behaviors) is a way of adding logic to any class inheriting from BasicGameObject / GameObject.
+Traits (sometimes called behaviors in other frameworks) is a way of adding logic to any class inheriting from BasicGameObject / GameObject.
 Chingus trait-implementation is just ordinary ruby modules with 3 special methods:
  - setup_trait 
  - update_trait 
@@ -462,6 +486,10 @@ A simple trait could be:
 module Chingu
   module Trait
     module Inspect
+    
+      #
+      # methods namespaced to ClassMethods get's extended as ... class methods!
+      #
       module ClassMethods
         def initialize_trait(options)
             # possible initialize stuff here
@@ -470,6 +498,15 @@ module Chingu
         def inspect
           "There's {self.size} active instances of class {self.to_s}"
         end
+      end
+      
+      #
+      # Namespaced outside ClassMethods get's included as normal instance-methods
+      #
+      def inspect
+        "Hello I'm an #{self.class.to_s}"
+      end
+      
     end
   end
 end
@@ -478,7 +515,8 @@ class Enemy < GameObject
   has_trait :inspect    # includes Chingu::Trait::Inspect and extends Chingu::Trait::Inspect::ClassMethods
 end
 10.times { Enemy.create }
-Enemy.inspect           # => There's 10 active instances of class Enemy
+Enemy.inspect           # => "There's 10 active instances of class Enemy"
+Enemy.all.first.inspect # => "Hello I'm a Enemy"
 
 
 Example of using traits :velocity and :timer:
@@ -527,10 +565,10 @@ There's a couple of traits included as default in Chingu:
 
 ==== Trait "timer"
 Adds timer functionality to your game object
-  during(300) { self.color = Color.new(0xFFFFFFFF) }   # forces @color to white every update for 300 ms
-  after(400) { self.destroy }                      # destroy object after 400 ms
-  between(1000,2000) { self.rotate(10) }           # starting after 1 second, call rotate(10) every update during 1 second
-  every(2000) { Sound["bleep.wav"].play }          # play bleep.wav every 2 seconds
+  during(300) { self.color = Color.new(0xFFFFFFFF) }  # forces @color to white every update for 300 ms
+  after(400) { self.destroy }                         # destroy object after 400 ms
+  between(1000,2000) { self.angle += 10 }             # starting after 1 second, modify angleevery update during 1 second
+  every(2000) { Sound["bleep.wav"].play }             # play bleep.wav every 2 seconds
   
 ==== Trait "velocity"
 Adds accessors velocity_x, velocity_y, acceleration_x, acceleration_y, max_velocity to game object.
@@ -566,9 +604,16 @@ Assuming the below code is included in a class FireBall.
   # fire_ball.png / fire_ball.png will be loaded into @image
   has_trait :automatic_assets
 
-  # If a fire_ball-10x10.png/bmp exists, it will be loaded as a tileanimation (and fire_ball.png image will be ignored)
+  # If a fire_ball_10x10.png/bmp exists, it will be loaded as a tileanimation (and fire_ball.png image will be ignored)
 	# 10x10 would indicate the width and height of each tile so Chingu knows hows to cut it up into single frames.
-	# The below example will animate the frames with 200ms delay between each frame.
+  # The animation will then be available in animations[:default] as a Animation-instance.
+  #
+  # Several animations can be loaded at the same time, for example if these tile files exist:
+  # fire_ball_10x10_fly.png       # Will be available in animations[:fly] as a Animation-instance
+  # fire_ball_10x10_explode.png   # Will be available in animations[:explode] as a Animation-instance
+  # 
+	# The below example will set the 200ms delay between each frame on all animations loaded.
+  #
   has_trait :automatic_assets, :delay => 200
 
 ==== Trait "effect"
@@ -675,7 +720,34 @@ GameObject.all is naming straight from rails for example. Most stuff in GameObje
 
 As far as possible, use correct rubyfied english game_objects, not gameobjects. class HighScore, not Highscore.
 
-== TODO - this list is discontinued and no longer updated
+
+== WHY?
+* Plain Gosu is very minimalistic, perfect to build some higher level logic on!
+* Deployment and asset handling should be simple
+* Managing game states/scenes (intros, menus, levels etc) should be simple
+* There are patterns in game development
+
+== OPINIONS
+* Less code is usually better
+* Hash arguments FTW. And it becomes even better in 1.9.
+* Don't separate too much from Gosus core-naming
+
+== CREDITS:
+* Jacius of Rubygame (For doing cool stuff that's well documented as re-usable). So far rect.rb and named_resource.rb is straight outta Rubygame.
+* Banister (of texplay fame) for general feedeback and help with ruby-internals and building the trait-system
+* Jduff for input / commits
+* Jlnr,Philymore,Shawn24,JamesKilton for constructive feedback/discussions
+* Ariel Pillet for codesuggestions and cleanups
+* Deps for making the first real full game with Chingu (and making it better in the process)
+* Thanks to http://github.com/tarcieri for require_all code, good stuff
+
+== REQUIREMENTS:
+* Gosu latest version
+* Ruby 1.9.1+ or 1.8.7+
+* gem 'opengl' if you want to use Image#retrofy, not needed otherwise
+* gem 'texplay' for some bonus Image-pixel operations, not needed otherwise
+
+== TODO - this list is Discontinued and no longer updated!
 * add :padding and :align => :topleft etc to class Text
 * (skip) rename Chingu::Window so 'include Chingu' and 'include Gosu' wont make Window collide
 * (done) BasicObject vs GameObject vs ScreenObject => Became BasicGameObject and GameObject
@@ -707,34 +779,6 @@ As far as possible, use correct rubyfied english game_objects, not gameobjects. 
 * (skipping) intergrate MovieMaker - solve this with traits instead.
 * A more robust game state <-> game_object system to connect them together.
 * FIX example4: :p => Pause.new  would Change the "inside_game_state" to Pause and make @player belong to Pause.
-
-== WHY?
-* Plain Gosu is very minimalistic, perfect to build some higher level logic on!
-* Deployment and asset handling should be simple
-* Managing game states/scenes (intros, menus, levels etc) should be simple
-* There are patterns in game development
-
-== OPINIONS
-* Less code is usually better
-* Hash arguments FTW. And it becomes even better in 1.9.
-* Don't separate too much from Gosus core-naming
-
-== CREDITS:
-* Jacius of Rubygame (For doing cool stuff that's well documented as re-usable). So far rect.rb and named_resource.rb is straight outta Rubygame.
-* Banister (of texplay fame) for general feedeback and help with ruby-internals and building the trait-system
-* Jduff for input / commits
-* Jlnr,Philymore,Shawn24,JamesKilton for constructive feedback/discussions
-* Ariel Pillet for codesuggestions and cleanups
-* Deps for making the first real full game with Chingu (and making it better in the process)
-* Thanks to http://github.com/tarcieri for require_all code, good stuff
-
-== REQUIREMENTS:
-* Gosu latest version
-* Ruby 1.9.1+ or 1.8.7+
-* gem 'opengl' if you want to use Image#retrofy, not needed otherwise
-* gem 'texplay' for some bonus Image-pixel operations, not needed otherwise
-
-
 
 
 
