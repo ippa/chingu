@@ -131,7 +131,16 @@ module Chingu
     def distance_to(object)
       distance(self.x, self.y, object.x, object.y)
     end
-    
+
+    #
+    # Returns a filename-friendly string from the current class-name
+    #
+    # "FireBall" -> "fire_ball"
+    #
+    def filename
+      Chingu::Inflector.underscore(self.class.to_s)
+    end
+
     #
     # Our encapsulation of GOSU's image.draw_rot, uses the objects variables to draw it on screen if @visible is true
     #
