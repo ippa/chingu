@@ -451,7 +451,7 @@ Chingus inputhandler will detect that Menu is a GameState-class, create a new in
 
 == The setup-method
 If a setup() is available in a instance of Chingu::GameObject, Chingu::Window and Chingu::GameState it will automatically be called.
-This is the perfect spot to include various setup/init-tasks like setting colors or loading animations (if you're not using the automatic_assets-trait).
+This is the perfect spot to include various setup/init-tasks like setting colors or loading animations (if you're not using the animation-trait).
 You could also override initialize() for this purpose but it's been proven prone to errors again and again.
 Compare the 2 snippets below:
 
@@ -596,21 +596,19 @@ You can also scale the calculated radius with has_trait-options:
   # :debug => true shows the actual circle in red on the screen
   has_trait :bounding_circle, :debug => true
 
-==== Trait "automatic_assets"
-Automatically load images and animations depending on the class-name.
-Useful when having a lot of simple classes thats mainpurpose is displaying an image or animation.
+==== Trait "animation"
+Automatically load animations depending on the class-name.
+Useful when having a lot of simple classes thats mainpurpose is displaying an animation.
 Assuming the below code is included in a class FireBall.
 
-  # fire_ball.png / fire_ball.png will be loaded into @image
-  has_trait :automatic_assets
-
-  # If a fire_ball_10x10.png/bmp exists, it will be loaded as a tileanimation (and fire_ball.png image will be ignored)
-	# 10x10 would indicate the width and height of each tile so Chingu knows hows to cut it up into single frames.
-  # The animation will then be available in animations[:default] as a Animation-instance.
   #
-  # Several animations can be loaded at the same time, for example if these tile files exist:
-  # fire_ball_10x10_fly.png       # Will be available in animations[:fly] as a Animation-instance
-  # fire_ball_10x10_explode.png   # Will be available in animations[:explode] as a Animation-instance
+  # If a fire_ball_10x10.png/bmp exists, it will be loaded as a tileanimation.
+	# 10x10 would indicate the width and height of each tile so Chingu knows hows to cut it up into single frames.
+  # The animation will then be available in animations[:default] as an Animation-instance.
+  #
+  # If more then 1 animation exist, they'll will be loaded at the same time, for example:
+  # fire_ball_10x10_fly.png       # Will be available in animations[:fly] as an Animation-instance
+  # fire_ball_10x10_explode.png   # Will be available in animations[:explode] as an Animation-instance
   # 
 	# The below example will set the 200ms delay between each frame on all animations loaded.
   #

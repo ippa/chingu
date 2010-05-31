@@ -5,7 +5,7 @@ include Gosu
 include Chingu
 
 #
-# automatic_asset-trait example
+# animation-trait example
 # 
 class Game < Chingu::Window	
   def initialize
@@ -28,43 +28,56 @@ class Play < Chingu::GameState
 
   def update
     super
+    game_objects.select { |game_object| game_object.outside_window? }.each(&:destroy)
     $window.caption = "game_objects: #{game_objects.size}"
   end
 end
 	
 class Actor < GameObject
-  has_trait :automatic_assets, :delay => 100
   has_trait :velocity
   
-  def update
-    destroy if outside_window?
-    @image = @animation.next if @animation
+  def setup
+    @image = Image["#{self.filename}.png"]
   end
+  
 end
 
 class Spaceship < Actor; end  # spaceship.png will be loaded
 class Plane < Actor; end      # plane.png will be loaded
 class FireBullet < Actor; end # fire_bullet.png will be loaded
-class Droid < Actor; end      # droid_11x16.png will be loaded and animated with :delay parameter, each frame beeing 11 x 16 pixels
+
+#
+# droid_11x16.png will be loaded and animated with :delay parameter, each frame beeing 11 x 16 pixels
+#
+class Droid < Actor
+  has_trait :animation, :delay => 200
+  
+  def update
+    @image = self.animation.next
+  end
+end
 
 #
 # star_25x25_default.png and star_25x25_explode.png will be loaded.
-# Access the 2 animation-"states" with animation[:default] and animation[:explode]
-# You could also change the default playing animation with switch_animation(state)
+# Access the 2 animation-"states" with self.animations[:default] and self.animations[:explode]
+# self.animation will point to self.animations[:default]
 #
 class Star < Actor
+  has_trait :animation, :delay => 100
   
   def setup
-    @animation = self.animations[:default]
+    self.animations[:explode].loop = false
   end
   
   def update
+    
     if @x < $window.width/2 || @y < $window.height/2
-      @animation = self.animations[:explode]
-      @animation.loop = false
+      @image = self.animations[:explode].next
+    else
+      @image = self.animations[:default].next
     end
-    super
   end
+  
 end
 
 Game.new.show
