@@ -37,25 +37,30 @@ module Chingu
       @step = options[:step] || 1
       @dt = 0
       
+      @sub_animations = {}
+      @frame_actions = []
+      @file = media_path(@file)  if @file && !File.exist?(@file)
+      
+      #
+      # Various ways of determening the framesize
+      #
       if options[:size] && options[:size].is_a?(Array)
         @width = options[:size][0]
         @height = options[:size][1]
       elsif options[:size]
         @width = options[:size]
         @height = options[:size]
-      else      
-        if @file =~ /_(\d+)x(\d+)/      # Auto-detect width/height from filename!
-          @width = $1.to_i
-          @height = $2.to_i
-        end
+      elsif @file =~ /_(\d+)x(\d+)/
+        # Auto-detect width/height from filename 
+        # Tilefile foo_10x25.png would mean frame width 10px and height 25px
+        @width = $1.to_i
+        @height = $2.to_i
+      else
+        # Assume the shortest side is the width/height for each frame
+        @image = Image.new($window, @file)
+        @width = @height = (@image.width < @image.height) ? @image.width : @image.height
       end
-      
-      @file = media_path(@file)  if @file && !File.exist?(@file)
-      
-      
-      @sub_animations = {}
-      @frame_actions = []
-      
+  
       @frames = Gosu::Image.load_tiles($window, @file, @width, @height, true)
     end
     
