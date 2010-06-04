@@ -23,21 +23,34 @@ module Chingu
   module GameStates
   
     #
-    # Premade game state for chingu - A simple pause state.
-    # Pause whenever with: 
-    #   push_game_state(Chingu::GameStates::Pause)
+    # Premade game state for chingu - simple level editing.
+    # Start editing in a gamestate with:
+    #   push_game_state(Chingu::GameStates::Edit)
     #
     # requires the global $window set to the instance of Gosu::Window (automaticly handled if you use Chingu::Window)
     #
     class Edit < Chingu::GameState
+      
       def initialize(options = {})
         super
         @grid = options[:grid]
         @classes = options[:classes] || []
+        @only = options[:only] || []
+        @except = options[:except] || []
+        @filename = options[:filename]
+        
+        unless @filename
+          name = if defined?(previous_game_state.filename)
+            previous_game_state.filename
+          else 
+            "#{previous_game_state.class.to_s.downcase}.yml"
+          end
+          @filename = File.join($window.root, name)
+        end
         
         @color = Gosu::Color.new(200,0,0,0)
-        @red = Gosu::Color.new(0xFFFF0000)
-        @white = Gosu::Color.new(0xFFFFFFFF)
+        #@red = Gosu::Color.new(0xFFFF0000)
+        #@white = Gosu::Color.new(0xFFFFFFFF)
         @selected_game_object = nil        
         self.input =  { :left_mouse_button => :left_mouse_button, 
                         :released_left_mouse_button => :released_left_mouse_button,
@@ -46,29 +59,63 @@ module Chingu
                         :e => :save_and_quit,
                         :s => :save,
                         :esc => :quit,
+                        :holding_up_arrow => :scroll_up,
+                        :holding_down_arrow => :scroll_down,
+                        :holding_left_arrow => :scroll_left,
+                        :holding_right_arrow => :scroll_right,
                         :"1" => :create_object_1,
                         :"2" => :create_object_2,
                         :"3" => :create_object_3,
                         :"4" => :create_object_4,
                         :"5" => :create_object_5,
                       }
+        
+      end
+      
+      def game_object_classes
+        ObjectSpace.enum_for(:each_object, class << GameObject; self; end).to_a.select do |game_class|
+          game_class.instance_methods
+        end
+      end
+      
+      def scroll_up
+        self.previous_game_state.viewport.y -= 10 if defined?(self.previous_game_state.viewport)
+      end
+      def scroll_down
+        self.previous_game_state.viewport.y += 10 if defined?(self.previous_game_state.viewport)
+      end
+      def scroll_left
+        self.previous_game_state.viewport.x -= 10 if defined?(self.previous_game_state.viewport)
+      end
+      def scroll_right
+        self.previous_game_state.viewport.x += 10 if defined?(self.previous_game_state.viewport)
+      end
+      
+      def x
+        x = $window.mouse_x 
+        x += self.previous_game_state.viewport.x if defined?(self.previous_game_state.viewport)
+      end
+
+      def y
+        y = $window.mouse_y
+        y += self.previous_game_state.viewport.y if defined?(self.previous_game_state.viewport)
       end
 
       def setup
-        name = if defined?(previous_game_state.filename)
-          previous_game_state.filename
-        else 
-          "#{previous_game_state.class.to_s.downcase}.yml"
-        end
-        @filename = File.join($window.root, name)
-        @title = Text.create("File: #{@filename}", :x => 5, :y => 10)
+        Text.font = "arial"
+        Text.size = 15
+                
+        @title = Text.create("File: #{@filename}", :x => 5, :y => 10, :factor => 1)
         @title.text += " - Grid: #{@grid}" if @grid
-        @title2 = Text.create("(1-10) Create object at mouse pos  (DEL) Delete selected object  (S) Save  (E) Save and Quit  (ESC) Quit without saving", :x => 5, :y => 30)        
-        @text = Text.create("", :x => 5, :y => 50)        
+        @title2 = Text.create("(1-10) Create object at mouse pos  (DEL) Delete selected object  (S) Save  (E) Save and Quit  (ESC) Quit without saving", :x => 5, :y => 30, :factor => 1)
+        @text = Text.create("", :x => 5, :y => 50, :factor => 1)
+        
+        @status_text = Text.create("-", :x => 5, :y => $window.height-20, :factor => 1)
       end
       
       def create_object_nr(number)
-        @classes[number].create(:x => $window.mouse_x, :y => $window.mouse_y, :parent => previous_game_state)  if @classes[number]
+        c = @classes[number].create(:x => $window.mouse_x, :y => $window.mouse_y, :parent => previous_game_state)  if @classes[number]
+        p c.class
       end
       
       def create_object_1; create_object_nr(0); end
@@ -90,6 +137,15 @@ module Chingu
                             $window.width,0,@color,
                             $window.width,100,@color,
                             0,100,@color,10)
+
+        #
+        # Draw an status HUD
+        #
+        $window.draw_quad(  0,$window.height - 30,@color,
+                            $window.width,$window.height - 30,@color,
+                            $window.width,$window.height,@color,
+                            0,$window.height,@color,10)
+
         #
         # Draw debug Texts etc..
         #
@@ -99,15 +155,15 @@ module Chingu
         # Draw a red rectangle around all selected game objects
         #
         selected_game_objects.each do |game_object|
-          draw_rect(game_object.bounding_box.inflate(2,2), @red, 999)
+          draw_rect(game_object.bounding_box.inflate(2,2), Color::RED, 999)
         end
         
         #
         # draw a simple triagle-shaped cursor
         #
-        $window.draw_triangle( $window.mouse_x, $window.mouse_y, @white, 
-                               $window.mouse_x, $window.mouse_y + 10, @white, 
-                               $window.mouse_x + 10, $window.mouse_y + 10, @white, 9999)
+        $window.draw_triangle( $window.mouse_x, $window.mouse_y, Color::WHITE, 
+                               $window.mouse_x, $window.mouse_y + 10, Color::WHITE, 
+                               $window.mouse_x + 10, $window.mouse_y + 10, Color::WHITE, 9999)
         
       end
       
@@ -126,6 +182,8 @@ module Chingu
             @selected_game_object.bounding_box.y = @selected_game_object.y
           end
         end
+        
+        @status_text.text = "#{x} / #{y}"
       end
 
       def selected_game_objects
