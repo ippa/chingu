@@ -48,7 +48,7 @@ module Chingu
           @filename = File.join($window.root, name)
         end
         
-        @color = Gosu::Color.new(200,0,0,0)
+        @color = Gosu::Color.new(150,0,0,0)
         @selected_game_object = nil        
         self.input =  { :left_mouse_button => :left_mouse_button, 
                         :released_left_mouse_button => :released_left_mouse_button,
@@ -106,12 +106,10 @@ module Chingu
       def scroll_right
         self.previous_game_state.viewport.x += 10 if defined?(self.previous_game_state.viewport)
       end
-      
       def x
         x = $window.mouse_x 
         x += self.previous_game_state.viewport.x if defined?(self.previous_game_state.viewport)
       end
-
       def y
         y = $window.mouse_y
         y += self.previous_game_state.viewport.y if defined?(self.previous_game_state.viewport)
@@ -142,7 +140,7 @@ module Chingu
       
       def draw
         # Draw prev game state onto screen (the level we're editing)
-        previous_game_state.draw 
+        previous_game_state.draw
         
         #
         # Draw an edit HUD
@@ -182,6 +180,16 @@ module Chingu
       end
       
       def update
+        previous_game_state.update
+        
+        # Hacky way of preventing game objects to move
+        # While you edit you don't want enemies running around etc etc..
+        # TODO: Solve this in a more general way? Skip call to previous_game_state.update in whole maybe.
+        previous_game_state.game_objects.each do |game_object|
+          game_object.x = game_object.previous_x if defined?(game_object.previous_x)
+          game_object.y = game_object.previous_y if defined?(game_object.previous_y)
+        end
+        
         super
         
         if @left_mouse_button && @selected_game_object
@@ -218,14 +226,18 @@ module Chingu
         selected_game_objects.each do |game_object|         
           game_object.options[:selected] = false
         end
-        
+
         #
         # Get new object that was clicked at (if any)
         #
         @selected_game_object = game_object_at(x, y)
-        
-        @text.text = game_object_icon_at($window.mouse_x, $window.mouse_y).class
-        
+
+        if icon = game_object_icon_at($window.mouse_x, $window.mouse_y)
+          game_object = icon.class.create(:x => x, :y => y, :parent => previous_game_state)          
+          @text.text = game_object.class
+          @selected_game_object = game_object
+        end
+                
         if @selected_game_object
           @text.text = "#{@text.text} : #{@selected_game_object.class.to_s}"
           @selected_game_object.options[:selected] = true
