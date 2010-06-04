@@ -33,7 +33,7 @@ module Chingu
       
       def initialize(options = {})
         super
-        @grid = options[:grid]
+        @grid = options[:grid] || [8,8]
         @classes = options[:classes] || []
         @only = options[:only] || []
         @except = options[:except] || []
@@ -49,8 +49,6 @@ module Chingu
         end
         
         @color = Gosu::Color.new(200,0,0,0)
-        #@red = Gosu::Color.new(0xFFFF0000)
-        #@white = Gosu::Color.new(0xFFFFFFFF)
         @selected_game_object = nil        
         self.input =  { :left_mouse_button => :left_mouse_button, 
                         :released_left_mouse_button => :released_left_mouse_button,
@@ -63,6 +61,8 @@ module Chingu
                         :holding_down_arrow => :scroll_down,
                         :holding_left_arrow => :scroll_left,
                         :holding_right_arrow => :scroll_right,
+                        :page_up => :page_up,
+                        :page_down => :page_down,
                         :"1" => :create_object_1,
                         :"2" => :create_object_2,
                         :"3" => :create_object_3,
@@ -70,6 +70,16 @@ module Chingu
                         :"5" => :create_object_5,
                       }
         
+        x = 32
+        y = 70
+        @classes.each do |klass|
+          puts "Creating a #{klass}"
+          if game_object = klass.create(:save_to_file => false)
+            game_object.x = x + game_object.image.width
+            game_object.y = y + game_object.image.height
+            x += 32
+          end
+        end
       end
       
       def game_object_classes
@@ -78,6 +88,12 @@ module Chingu
         end
       end
       
+      def page_up
+        self.previous_game_state.viewport.y -= $window.height if defined?(self.previous_game_state.viewport)
+      end
+      def page_down
+        self.previous_game_state.viewport.y += $window.height if defined?(self.previous_game_state.viewport)
+      end
       def scroll_up
         self.previous_game_state.viewport.y -= 10 if defined?(self.previous_game_state.viewport)
       end
@@ -105,17 +121,17 @@ module Chingu
         Text.font = "arial"
         Text.size = 15
                 
-        @title = Text.create("File: #{@filename}", :x => 5, :y => 10, :factor => 1)
+        @title = Text.create("#{@filename}", :x => 5, :y => 2, :factor => 1)
         @title.text += " - Grid: #{@grid}" if @grid
-        @title2 = Text.create("(1-10) Create object at mouse pos  (DEL) Delete selected object  (S) Save  (E) Save and Quit  (ESC) Quit without saving", :x => 5, :y => 30, :factor => 1)
+        #@title2 = Text.create("(1-10) Create object at mouse pos  (DEL) Delete selected object  (S) Save  (E) Save and Quit  (ESC) Quit without saving", :x => 5, :y => 30, :factor => 1)
         @text = Text.create("", :x => 5, :y => 50, :factor => 1)
         
         @status_text = Text.create("-", :x => 5, :y => $window.height-20, :factor => 1)
       end
       
       def create_object_nr(number)
-        c = @classes[number].create(:x => $window.mouse_x, :y => $window.mouse_y, :parent => previous_game_state)  if @classes[number]
-        p c.class
+        c = @classes[number].create(:x => x, :y => y, :parent => previous_game_state)  if @classes[number]
+        @text.text = "Created a #{c.class} @ #{c.x} / #{c.y}"
       end
       
       def create_object_1; create_object_nr(0); end
@@ -124,10 +140,8 @@ module Chingu
       def create_object_4; create_object_nr(3); end
       def create_object_5; create_object_nr(4); end
       
-        
-      
       def draw
-        # Draw prev game state onto screen (the level we're editing for example)
+        # Draw prev game state onto screen (the level we're editing)
         previous_game_state.draw 
         
         #
@@ -135,8 +149,8 @@ module Chingu
         #
         $window.draw_quad(  0,0,@color,
                             $window.width,0,@color,
-                            $window.width,100,@color,
-                            0,100,@color,10)
+                            $window.width,20,@color,
+                            0,20,@color,10)
 
         #
         # Draw an status HUD
@@ -171,8 +185,9 @@ module Chingu
         super
         
         if @left_mouse_button && @selected_game_object
-          @selected_game_object.x = ($window.mouse_x + @mouse_x_offset) / $window.factor
-          @selected_game_object.y = ($window.mouse_y + @mouse_y_offset) / $window.factor
+          @selected_game_object.x = x + @mouse_x_offset
+          @selected_game_object.y = y + @mouse_y_offset
+          
           @selected_game_object.x -= @selected_game_object.x % @grid[0]
           @selected_game_object.y -= @selected_game_object.y % @grid[1]
           
@@ -195,11 +210,7 @@ module Chingu
       end
        
       def left_mouse_button
-        @left_mouse_button = true
-        x = $window.mouse_x / $window.factor
-        y = $window.mouse_y / $window.factor
-                
-        @text.text = "Click @ #{x} / #{y}"
+        @left_mouse_button = true        
         
         #
         # Deselect all objects
@@ -213,12 +224,14 @@ module Chingu
         #
         @selected_game_object = game_object_at(x, y)
         
+        @text.text = game_object_icon_at($window.mouse_x, $window.mouse_y).class
+        
         if @selected_game_object
           @text.text = "#{@text.text} : #{@selected_game_object.class.to_s}"
           @selected_game_object.options[:selected] = true
           
-          @mouse_x_offset = @selected_game_object.x - $window.mouse_x
-          @mouse_y_offset = @selected_game_object.y - $window.mouse_y
+          @mouse_x_offset = @selected_game_object.x - x
+          @mouse_y_offset = @selected_game_object.y - y          
         end
         
       end
@@ -227,7 +240,13 @@ module Chingu
         @left_mouse_button = false
         @selected_game_object = false
       end
-      
+
+      def game_object_icon_at(x, y)
+        game_objects.select do |game_object| 
+          game_object.respond_to?(:bounding_box) && game_object.bounding_box.collide_point?(x,y)
+        end.first
+      end
+
       def game_object_at(x, y)
         previous_game_state.game_objects.select do |game_object| 
           game_object.respond_to?(:bounding_box) && game_object.bounding_box.collide_point?(x,y)
