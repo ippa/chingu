@@ -38,6 +38,10 @@ module Chingu
         super
       end
       
+      def collision_at?(x,y)
+        bounding_box.collide_point?(x,y)
+      end
+      
       #
       # Returns an instance of class Rect
       #

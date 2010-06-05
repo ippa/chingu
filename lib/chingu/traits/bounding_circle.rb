@@ -40,6 +40,10 @@ module Chingu
         super
       end
       
+      def collision_at?(x,y)
+        Gosu.distance(self.x, self.y, x, y) < self.radius
+      end
+      
       def radius
         return @cached_radius if @cached_radius
         
