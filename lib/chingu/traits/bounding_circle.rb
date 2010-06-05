@@ -71,7 +71,11 @@ module Chingu
       
       def draw_trait
         if trait_options[:bounding_circle][:debug]
-          $window.draw_circle(self.x, self.y, self.radius, Chingu::DEBUG_COLOR)
+          if defined?(parent.viewport)
+            $window.draw_circle(self.x - parent.viewport.x, self.y - parent.viewport.y, self.radius, Chingu::DEBUG_COLOR)
+          else
+            $window.draw_circle(self.x, self.y, self.radius, Chingu::DEBUG_COLOR)
+          end
         end
         super
       end
