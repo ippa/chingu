@@ -37,7 +37,7 @@ module Chingu
         @classes = options[:classes] || []
         @only = options[:only] || []
         @except = options[:except] || []
-        @filename = options[:filename]
+        @file = options[:file]
         
         @color = Gosu::Color.new(150,0,0,0)
         @selected_game_object = nil        
@@ -65,11 +65,14 @@ module Chingu
         y = 70
         @classes.each do |klass|
           puts "Creating a #{klass}"
-          if game_object = klass.create(:save_to_file => false)
+          game_object = klass.create
+          
+          if game_object.image
             game_object.x = x + game_object.image.width
             game_object.y = y + game_object.image.height
             x += 32
           end
+
         end
         # @save = Text.create("SAVE", :x => $window.width - 150, :size => 16)
       end
@@ -108,19 +111,19 @@ module Chingu
       end
 
       def setup
-        unless @filename
+        unless @file
           name = if defined?(previous_game_state.filename)
             previous_game_state.filename
           else 
             "#{previous_game_state.class.to_s.downcase}.yml"
           end
-          @filename = File.join($window.root, name)
+          @file = File.join($window.root, name)
         end
         
         Text.font = "arial"
         Text.size = 15
                 
-        @title = Text.create("#{@filename}", :x => 5, :y => 2, :factor => 1)
+        @title = Text.create("#{@file}", :x => 5, :y => 2, :factor => 1)
         @title.text += " - Grid: #{@grid}" if @grid
         #@title2 = Text.create("(1-10) Create object at mouse pos  (DEL) Delete selected object  (S) Save  (E) Save and Quit  (ESC) Quit without saving", :x => 5, :y => 30, :factor => 1)
         @text = Text.create("", :x => 100, :y => $window.height-15, :factor => 1)
@@ -270,29 +273,8 @@ module Chingu
         end.first
       end
       
-      
       def save
-        require 'yaml'
-        objects = []
-        previous_game_state.game_objects.each do |game_object|
-          objects << {game_object.class.to_s  => 
-                        {
-                        :x => game_object.x, 
-                        :y => game_object.y,
-                        :angle => game_object.angle,
-                        :zorder => game_object.zorder,
-                        :factor_x => game_object.factor_x,
-                        :factor_y => game_object.factor_y,
-                        :center_x => game_object.center_x,
-                        :center_y => game_object.center_y,
-                        }
-                      }
-        end
-        
-        #Marshal.dump(previous_game_state.game_objects, File.open(@filename, "w"))
-        File.open(@filename, 'w') do |out|
-          YAML.dump(objects, out)
-        end
+        save_game_objects(:game_objects => previous_game_state.game_objects, :file => @file, :only => @classes)
       end
       
       def save_and_quit

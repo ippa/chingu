@@ -52,18 +52,19 @@ module Chingu
     # Creates game objects from a Chingu-spezed game objects file (created with game state 'Edit')
     #
     def load_game_objects(options = {})
-      filename = options[:file] || "#{self.class.to_s.downcase}.yml"
+      file = options[:file] || "#{self.class.to_s.downcase}.yml"
+      debug = options[:debug]
       
       require 'yaml'
       
-      if File.exists?(filename)
-        game_objects = YAML.load_file(filename)
+      if File.exists?(file)
+        game_objects = YAML.load_file(file)
         game_objects.each do |game_object|
           game_object.each_pair do |klassname, attributes|
             begin
               klass = Kernel::const_get(klassname)
               unless klass.class == "GameObject"
-                puts "Creating #{klassname.to_s}: #{attributes.to_s}"
+                puts "Creating #{klassname.to_s}: #{attributes.to_s}" if debug
                 klass.create(attributes)
               end
             rescue
@@ -73,6 +74,34 @@ module Chingu
         end
       end
     end
+    
+    def save_game_objects(options = {})
+      file = options[:file] || "#{self.class.to_s.downcase}.yml"
+      game_objects = options[:game_objects]
+      
+      require 'yaml'
+      objects = []
+      game_objects.each do |game_object|
+        objects << {game_object.class.to_s  => 
+                      {
+                      :x => game_object.x, 
+                      :y => game_object.y,
+                      :angle => game_object.angle,
+                      :zorder => game_object.zorder,
+                      :factor_x => game_object.factor_x,
+                      :factor_y => game_object.factor_y,
+                      :center_x => game_object.center_x,
+                      :center_y => game_object.center_y,
+                      }
+                    }
+      end
+        
+      #Marshal.dump(previous_game_state.game_objects, File.open(@filename, "w"))
+      File.open(file, 'w') do |out|
+        YAML.dump(objects, out)
+      end
+    end
+    
   
   end
 
