@@ -57,10 +57,12 @@ module Chingu
         glob = "#{trait_options[:animation][:directory]}/#{self.filename}_*"
         puts "Animations? #{glob}" if trait_options[:animation][:debug]
         Dir[glob].each do |tile_file|
-          if tile_file =~ /[a-zA-Z\_+]_(\d+)x(\d+)_*([a-zA-Z]*)\.(bmp|png)/
+          #state = :default
+          if tile_file =~ /[a-zA-Z\_+]_*(\d+)x(\d+)_*([a-zA-Z]*)\.(bmp|png)/
+          #if tile_file =~ /_*([a-zA-Z]*)\.(bmp|png)\Z/
+          #if tile_file =~ /#{self.filename}\.(bmp|png)/
             state = $3.length > 0 ? $3 : "default"            
-            animations[state.to_sym] = Chingu::Animation.new(:file => tile_file, :delay => trait_options[:animation][:delay])
-            # puts "ANIM: #{tile_file}, width: #{width}, height: #{height}, state: #{state}" if trait_options[:animation][:debug]
+            animations[state.to_sym] = Chingu::Animation.new(:file => tile_file, :delay => trait_options[:animation][:delay])          
           end
         end
         return animations

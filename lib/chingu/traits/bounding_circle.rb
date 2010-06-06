@@ -40,8 +40,8 @@ module Chingu
         super
       end
       
-      def collision_at?(x,y)
-        Gosu.distance(self.x, self.y, x, y) < self.radius
+      def collision_at?(x, y)
+        Gosu.distance(self.x, self.y, x, y) < radius
       end
       
       def radius
@@ -74,16 +74,21 @@ module Chingu
       def circle_bottom;  self.y + self.radius; end
       
       def draw_trait
-        if trait_options[:bounding_circle][:debug]
-          if defined?(parent.viewport)
-            $window.draw_circle(self.x - parent.viewport.x, self.y - parent.viewport.y, self.radius, Chingu::DEBUG_COLOR)
-          else
-            $window.draw_circle(self.x, self.y, self.radius, Chingu::DEBUG_COLOR)
-          end
-        end
+        draw_debug  if trait_options[:bounding_circle][:debug]
         super
       end
-      
+
+      #
+      # Visualises the bounding circle as a red circle.
+      #
+      def draw_debug
+        if defined?(parent.viewport)
+          $window.draw_circle(self.x - parent.viewport.x, self.y - parent.viewport.y, self.radius, Chingu::DEBUG_COLOR)
+        else
+          $window.draw_circle(self.x, self.y, self.radius, Chingu::DEBUG_COLOR)
+        end
+      end
+        
     end
   end
 end

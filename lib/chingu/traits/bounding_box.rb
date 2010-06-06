@@ -38,7 +38,7 @@ module Chingu
         super
       end
       
-      def collision_at?(x,y)
+      def collision_at?(x, y)
         bounding_box.collide_point?(x,y)
       end
       
@@ -81,15 +81,19 @@ module Chingu
       #end
       
       def draw_trait      
-        if trait_options[:bounding_box][:debug]
-          if defined?(parent.viewport)
-            $window.draw_rect(self.bounding_box.move(-parent.viewport.x, -parent.viewport.y), Chingu::DEBUG_COLOR, Chingu::DEBUG_ZORDER)
-          else
-            $window.draw_rect(self.bounding_box, Chingu::DEBUG_COLOR, Chingu::DEBUG_ZORDER)
-          end
-        end
-        
+        draw_debug if trait_options[:bounding_box][:debug]
         super
+      end
+      
+      #
+      # Visualises the bounding box as a red rectangle.
+      #
+      def draw_debug
+        if defined?(parent.viewport)
+          $window.draw_rect(self.bounding_box.move(-parent.viewport.x, -parent.viewport.y), Chingu::DEBUG_COLOR, Chingu::DEBUG_ZORDER)
+        else
+          $window.draw_rect(self.bounding_box, Chingu::DEBUG_COLOR, Chingu::DEBUG_ZORDER)
+        end        
       end
       
     end
