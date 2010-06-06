@@ -19,11 +19,12 @@ class Play < Chingu::GameState
   has_trait :timer
 	
   def setup
-    Droid.create(:x => 200, :y => 200, :factor => 10, :alpha => 100)
+    Droid.create(:x => 200, :y => 300, :factor => 4, :alpha => 100)
     every(1000) { Spaceship.create(:x => 10, :y => 300, :velocity_x => 1) }
-    every(1000) { Plane.create(:x => 10, :y => 10, :velocity => [1,1] ) }
-    every(500) { FireBullet.create(:x => 10, :y => 200, :velocity_x => 1) }
+    every(1000) { Plane.create(:x => 10, :y => 350, :velocity => [1,0] ) }
+    every(500) { FireBullet.create(:x => 10, :y => 370, :velocity_x => 1) }
     every(500) { Star.create(:x => 400, :y => 400, :velocity => [-2,-rand*2]) }
+    #every(400) { Heli.create(:x => 10, :y => 10, :velocity_x => 1) }
   end
 
   def update
@@ -38,6 +39,7 @@ class Actor < GameObject
   
   def setup
     @image = Image["#{self.filename}.png"]
+    @zorder = 10
   end
   
 end
@@ -53,7 +55,20 @@ class Droid < Actor
   has_trait :animation, :delay => 200
   
   def update
-    @image = self.animation.next
+    @image = self.animation.next  if self.animation
+  end
+end
+
+#
+# heli.png will be loaded
+# since it doesn't contain any framesize information, chingu will assume same width and height
+#
+class Heli < Actor
+  has_trait :animation, :delay => 200
+  
+  def update
+    @image = self.animation.next  if self.animation
+    p self.animation
   end
 end
 

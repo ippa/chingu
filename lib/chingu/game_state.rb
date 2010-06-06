@@ -57,7 +57,7 @@ module Chingu
     include Chingu::Helpers::ClassInheritableAccessor # adds classmethod class_inheritable_accessor
     
     attr_reader :options
-    attr_accessor :game_state_manager, :game_objects
+    attr_accessor :game_objects, :game_state_manager
     
     class_inheritable_accessor :trait_options
     @trait_options = Hash.new

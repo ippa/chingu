@@ -158,7 +158,7 @@ module Chingu
     #
     # Works as #draw() but takes x/y arguments. Used among others by the edit-game state.
     #
-    def draw_at(x=0, y=0)
+    def draw_at(x, y)
       @image.draw_rot(x, y, @zorder, @angle, @center_x, @center_y, @factor_x, @factor_y, @color, @mode) if @visible
     end
   end  

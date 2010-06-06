@@ -57,11 +57,20 @@ module Chingu
         @height = $2.to_i
       else
         # Assume the shortest side is the width/height for each frame
-        @image = Image.new($window, @file)
+        @image = Gosu::Image.new($window, @file)
         @width = @height = (@image.width < @image.height) ? @image.width : @image.height
       end
-  
+      
       @frames = Gosu::Image.load_tiles($window, @file, @width, @height, true)
+    end
+    
+    #
+    # Remove transparent space from each frame so the actual sprite is touching the border of the image.
+    #
+    def trim
+      @frames.each do |frame|
+        # TODO!
+      end
     end
     
     #

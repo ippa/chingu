@@ -106,7 +106,16 @@ module Chingu
           end
         end
       end
-      
+
+      def first_collision(*klasses)
+        Array(klasses).each do |klass|
+          klass.all.each do |object|
+            return object   if collides?(object)
+          end
+        end
+        return nil
+      end
+
       #
       # Explicit radius-collision
       # Works like each_collsion but with inline-code for speedups
