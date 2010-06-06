@@ -78,10 +78,13 @@ module Chingu
     def save_game_objects(options = {})
       file = options[:file] || "#{self.class.to_s.downcase}.yml"
       game_objects = options[:game_objects]
+      only = options[:only]
       
       require 'yaml'
       objects = []
       game_objects.each do |game_object|
+        next if only and !only.include?(game_object.class)
+        
         objects << {game_object.class.to_s  => 
                       {
                       :x => game_object.x, 
