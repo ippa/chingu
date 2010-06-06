@@ -39,15 +39,6 @@ module Chingu
         @except = options[:except] || []
         @filename = options[:filename]
         
-        unless @filename
-          name = if defined?(previous_game_state.filename)
-            previous_game_state.filename
-          else 
-            "#{previous_game_state.class.to_s.downcase}.yml"
-          end
-          @filename = File.join($window.root, name)
-        end
-        
         @color = Gosu::Color.new(150,0,0,0)
         @selected_game_object = nil        
         self.input =  { :left_mouse_button => :left_mouse_button, 
@@ -80,6 +71,7 @@ module Chingu
             x += 32
           end
         end
+        # @save = Text.create("SAVE", :x => $window.width - 150, :size => 16)
       end
       
       def game_object_classes
@@ -116,20 +108,29 @@ module Chingu
       end
 
       def setup
+        unless @filename
+          name = if defined?(previous_game_state.filename)
+            previous_game_state.filename
+          else 
+            "#{previous_game_state.class.to_s.downcase}.yml"
+          end
+          @filename = File.join($window.root, name)
+        end
+        
         Text.font = "arial"
         Text.size = 15
                 
         @title = Text.create("#{@filename}", :x => 5, :y => 2, :factor => 1)
         @title.text += " - Grid: #{@grid}" if @grid
         #@title2 = Text.create("(1-10) Create object at mouse pos  (DEL) Delete selected object  (S) Save  (E) Save and Quit  (ESC) Quit without saving", :x => 5, :y => 30, :factor => 1)
-        @text = Text.create("", :x => 5, :y => 50, :factor => 1)
+        @text = Text.create("", :x => 100, :y => $window.height-15, :factor => 1)
         
-        @status_text = Text.create("-", :x => 5, :y => $window.height-20, :factor => 1)
+        @status_text = Text.create("-", :x => 5, :y => $window.height-15, :factor => 1)
       end
       
       def create_object_nr(number)
         c = @classes[number].create(:x => x, :y => y, :parent => previous_game_state)  if @classes[number]
-        @text.text = "Created a #{c.class} @ #{c.x} / #{c.y}"
+        #@text.text = "Created a #{c.class} @ #{c.x} / #{c.y}"
       end
       
       def create_object_1; create_object_nr(0); end
@@ -153,8 +154,8 @@ module Chingu
         #
         # Draw an status HUD
         #
-        $window.draw_quad(  0,$window.height - 30,@color,
-                            $window.width,$window.height - 30,@color,
+        $window.draw_quad(  0,$window.height - 20,@color,
+                            $window.width,$window.height - 20,@color,
                             $window.width,$window.height,@color,
                             0,$window.height,@color,10)
 
@@ -164,19 +165,20 @@ module Chingu
         super
         
         #
-        # Draw a red rectangle around all selected game objects
+        # Draw red rectangles/circles around all selected game objects
         #
-        selected_game_objects.each do |game_object|
-          draw_rect(game_object.bounding_box.inflate(2,2), Color::RED, 999)
+        selected_game_objects.each { |game_object| game_object.draw_debug }
+        
+        if @cursor_game_object
+          @cursor_game_object.draw_at($window.mouse_x, $window.mouse_y)
+        else
+          #
+          # draw a simple triagle-shaped cursor
+          #
+          $window.draw_triangle( $window.mouse_x, $window.mouse_y, Color::WHITE, 
+                                $window.mouse_x, $window.mouse_y + 10, Color::WHITE, 
+                                $window.mouse_x + 10, $window.mouse_y + 10, Color::WHITE, 9999)
         end
-        
-        #
-        # draw a simple triagle-shaped cursor
-        #
-        $window.draw_triangle( $window.mouse_x, $window.mouse_y, Color::WHITE, 
-                               $window.mouse_x, $window.mouse_y + 10, Color::WHITE, 
-                               $window.mouse_x + 10, $window.mouse_y + 10, Color::WHITE, 9999)
-        
       end
       
       def update
@@ -193,6 +195,7 @@ module Chingu
         super
         
         if @left_mouse_button && @selected_game_object
+          @text.text = "#{@selected_game_object.class.to_s} @ #{@selected_game_object.x} / #{@selected_game_object.y}"
           @selected_game_object.x = x + @mouse_x_offset
           @selected_game_object.y = y + @mouse_y_offset
           
@@ -227,23 +230,25 @@ module Chingu
           game_object.options[:selected] = false
         end
 
+        if @cursor_game_object && game_object_at(x, y)==nil && game_object_icon_at($window.mouse_x, $window.mouse_y) == nil
+          game_object = @cursor_game_object.class.create(:x => x, :y => y, :parent => previous_game_state)          
+          game_object.options[:selected] = true
+        end
+        
         #
         # Get new object that was clicked at (if any)
         #
         @selected_game_object = game_object_at(x, y)
-
-        if icon = game_object_icon_at($window.mouse_x, $window.mouse_y)
-          game_object = icon.class.create(:x => x, :y => y, :parent => previous_game_state)          
-          @text.text = game_object.class
-          @selected_game_object = game_object
-        end
-                
+        
+        @cursor_game_object = game_object_icon_at($window.mouse_x, $window.mouse_y)
+              
         if @selected_game_object
-          @text.text = "#{@text.text} : #{@selected_game_object.class.to_s}"
           @selected_game_object.options[:selected] = true
           
           @mouse_x_offset = @selected_game_object.x - x
           @mouse_y_offset = @selected_game_object.y - y          
+        else
+          @text.text = ""
         end
         
       end
@@ -255,13 +260,13 @@ module Chingu
 
       def game_object_icon_at(x, y)
         game_objects.select do |game_object| 
-          game_object.respond_to?(:bounding_box) && game_object.bounding_box.collide_point?(x,y)
+          game_object.respond_to?(:collision_at?) && game_object.collision_at?(x,y)
         end.first
       end
 
       def game_object_at(x, y)
         previous_game_state.game_objects.select do |game_object| 
-          game_object.respond_to?(:bounding_box) && game_object.bounding_box.collide_point?(x,y)
+          game_object.respond_to?(:collision_at?) && game_object.collision_at?(x,y)
         end.first
       end
       
