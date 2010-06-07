@@ -1,9 +1,24 @@
 #
-# Conway's game of life in gosu/chingu
+# Conway's game of life in Gosu/Chingu
 # http://toastymofo.blogspot.com/2010/06/conways-game-of-life-in-ruby-gosu.html
 # 
 # Developed by r.kachowski ( http://www.toastymofo.net/ )
 #
+require 'chingu'
+require 'gosu'
+
+class Main < Chingu::Window
+  def initialize
+    super(640,480,false)
+    self.input={:esc=>:exit}    
+    push_game_state(GameOfLife)
+  end
+  def draw
+    super
+    fill_rect([0,0,640,480], 0xffffffff, -2)
+  end
+end
+
 class GameOfLife < Chingu::GameState
   CELL_SIZE = 4
   @@tick =0
@@ -119,3 +134,5 @@ class GameOfLife < Chingu::GameState
     $window.fill_rect([($window.mouse_x/CELL_SIZE).floor*CELL_SIZE,($window.mouse_y/CELL_SIZE).floor*CELL_SIZE,CELL_SIZE,CELL_SIZE],0xaa0000ff,0)
   end
 end
+
+Main.new.show
