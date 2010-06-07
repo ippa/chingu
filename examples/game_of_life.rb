@@ -26,7 +26,7 @@ class GameOfLife < Chingu::GameState
     super
     @grid = generate_grid
     self.input={:left_mouse_button=>:set_grid_block,:space=>:toggle_running,
-      :right_mouse_button=>:unset_grid_block,:z=>:reset}
+      :right_mouse_button=>:unset_grid_block,:z=>:reset,:n=>:update_grid}
     @running = false
     
   end  
@@ -45,6 +45,7 @@ class GameOfLife < Chingu::GameState
   end
   
   private
+
 
   def generate_grid
     width = $window.width/CELL_SIZE
@@ -98,11 +99,12 @@ class GameOfLife < Chingu::GameState
         @grid[minus_x][minus_y] == true ? live_neighbours+=1 : nil
         @grid[plus_x][plus_y] == true ? live_neighbours+=1 : nil
 
-        if live_neighbours == 4 || live_neighbours < 2
-          @new_grid[x][y] = false
+        case live_neighbours
+          when 0..1 then @new_grid[x][y] = false
+          when 2 then @new_grid[x][y] = true if @new_grid[x][y] == true
+          when 3 then @new_grid[x][y] = true
+          when 4..8 then @new_grid[x][y] = false
         end
-        
-        if live_neighbours == 3 then @new_grid[x][y] = true end
 
       end
     end
