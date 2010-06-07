@@ -25,16 +25,37 @@ class GameOfLife < Chingu::GameState
   def initialize
     super
     @grid = generate_grid
-    self.input={:left_mouse_button=>:set_grid_block,:space=>:toggle_running,
-      :right_mouse_button=>:unset_grid_block,:z=>:reset,:n=>:update_grid}
-    @running = false
     
+    self.input={  :left_mouse_button => :start_painting, 
+                  :released_left_mouse_button => :stop_painting,
+                  :right_mouse_button => :start_erasing,
+                  :releasedright_mouse_button => :stop_erasing,
+                  :z=>:reset,
+                  :n=>:update_grid,
+                  :space=>:toggle_running
+                }
+      
+    @painting = false
+    @erasing = false
+    @running = false
+ 
+    # p PATTERNS
   end  
   
   def update
     super
-    update_grid if @running
 
+    x = ($window.mouse_x/CELL_SIZE).floor
+    y = ($window.mouse_y/CELL_SIZE).floor
+
+    if @painting 
+      @grid[x][y] = true
+    elsif @erasing
+      @grid[x][y] = false
+    end
+    
+    update_grid if @running
+    
     $window.caption = "conway generation #{@@tick}"
   end
 
@@ -116,25 +137,39 @@ class GameOfLife < Chingu::GameState
   def toggle_running
     @running = !@running
   end
-
-  def set_grid_block
+  
+  def start_painting;  @painting = true; end
+  def stop_painting;   @painting = false; end  
+  def start_erasing;  @erasing = true; end
+  def stop_erasing;   @erasing = false; end
     
-    x = ($window.mouse_x/CELL_SIZE).floor
-    y = ($window.mouse_y/CELL_SIZE).floor
-    
-    @grid[x][y]=true
-    
-  end
-
-  def unset_grid_block
-    x = ($window.mouse_x/CELL_SIZE).floor
-    y = ($window.mouse_y/CELL_SIZE).floor
-
-    @grid[x][y]=false
-  end
+  #def draw_pattern(pattern = :glider)
+  #  x = ($window.mouse_x/CELL_SIZE).floor
+  #  y = ($window.mouse_y/CELL_SIZE).floor
+  #  
+  #  PATTERNS[pattern].each_line do |line|
+  #  end
+  #end
+  
   def draw_mouse
     $window.fill_rect([($window.mouse_x/CELL_SIZE).floor*CELL_SIZE,($window.mouse_y/CELL_SIZE).floor*CELL_SIZE,CELL_SIZE,CELL_SIZE],0xaa0000ff,0)
   end
 end
+
+PATTERNS = Hash.new
+
+PATTERNS[:glider] = %q{
+---o
+-o-o
+--oo
+}
+
+PATTERNS[:lightweight_spaceship] = %q{
+-oooo
+o---o
+--ooo
+o--o-
+}
+
 
 Main.new.show
