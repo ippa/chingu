@@ -30,39 +30,67 @@ class GameOfLife < Chingu::GameState
                   :released_left_mouse_button => :stop_painting,
                   :right_mouse_button => :start_erasing,
                   :releasedright_mouse_button => :stop_erasing,
-                  :z=>:reset,
-                  :n=>:update_grid,
-                  :space=>:toggle_running
+                  :z => :reset,
+                  :n => :update_grid,
+                  :space => :toggle_running,
+                  :left_arrow => :prev_pattern,
+                  :right_arrow => :next_pattern
                 }
-      
+
+    @pattern = :pixel
+    @pattern_nr = 0
     @painting = false
     @erasing = false
     @running = false
- 
-    # p PATTERNS
   end  
+  
+  def prev_pattern
+    @pattern_nr -= 1
+    @pattern_nr = PATTERNS.keys.size-1 if @pattern_nr < 0
+    @pattern = PATTERNS.keys[@pattern_nr]
+  end
+  
+  def next_pattern
+    @pattern_nr += 1
+    @pattern_nr = 0 if @pattern_nr >= PATTERNS.keys.size
+    @pattern = PATTERNS.keys[@pattern_nr]    
+  end
+  
+  def draw_pattern_at_mouse(pattern = :pixel, to_grid = false)
+    start_x = ($window.mouse_x/CELL_SIZE).floor
+    y = ($window.mouse_y/CELL_SIZE).floor - 1
+    
+    PATTERNS[pattern].each_line do |line|
+      x = start_x
+      line.each_char do |char|
+        @grid[x][y] = true  if char == "o" && to_grid
+        draw_cell(x, y)     if char == "o"
+        x += 1
+      end
+      
+      y += 1
+    end
+  end
   
   def update
     super
-
-    x = ($window.mouse_x/CELL_SIZE).floor
-    y = ($window.mouse_y/CELL_SIZE).floor
-
-    if @painting 
-      @grid[x][y] = true
-    elsif @erasing
-      @grid[x][y] = false
+    
+    if @painting
+      draw_pattern_at_mouse(@pattern, true)
+      @painting = false if  @running           # Only put out pattern Once if game is running
+    else
+      draw_pattern_at_mouse(@pattern)
     end
     
     update_grid if @running
     
-    $window.caption = "conway generation #{@@tick}"
+    $window.caption = "Generation #{@@tick}. Patterns with left/right, current is \"#{@pattern}\". Start/stop w/ Space."
   end
 
   def draw
     super
     draw_grid
-    draw_mouse
+    # draw_mouse
   end
   
   private
@@ -91,7 +119,7 @@ class GameOfLife < Chingu::GameState
 
   def reset
     @grid = generate_grid
-    @@tick =0
+    @@tick = 0
     @running = false
   end
 
@@ -138,25 +166,26 @@ class GameOfLife < Chingu::GameState
     @running = !@running
   end
   
-  def start_painting;  @painting = true; end
-  def stop_painting;   @painting = false; end  
+  def start_painting; @painting = true; end
+  def stop_painting;  @painting = false; end  
   def start_erasing;  @erasing = true; end
   def stop_erasing;   @erasing = false; end
     
-  #def draw_pattern(pattern = :glider)
-  #  x = ($window.mouse_x/CELL_SIZE).floor
-  #  y = ($window.mouse_y/CELL_SIZE).floor
-  #  
-  #  PATTERNS[pattern].each_line do |line|
-  #  end
+  #def draw_mouse
+  #  $window.fill_rect([($window.mouse_x/CELL_SIZE).floor*CELL_SIZE,($window.mouse_y/CELL_SIZE).floor*CELL_SIZE,CELL_SIZE,CELL_SIZE],0xaa0000ff,0)
   #end
   
-  def draw_mouse
-    $window.fill_rect([($window.mouse_x/CELL_SIZE).floor*CELL_SIZE,($window.mouse_y/CELL_SIZE).floor*CELL_SIZE,CELL_SIZE,CELL_SIZE],0xaa0000ff,0)
+  def draw_cell(x, y, color = 0xaaff0000)
+    $window.fill_rect([x*CELL_SIZE,y*CELL_SIZE,CELL_SIZE,CELL_SIZE],0xaa0000ff,1)
   end
+  
 end
 
 PATTERNS = Hash.new
+
+PATTERNS[:pixel] = %q{
+o
+}
 
 PATTERNS[:glider] = %q{
 ---o
@@ -167,8 +196,14 @@ PATTERNS[:glider] = %q{
 PATTERNS[:lightweight_spaceship] = %q{
 -oooo
 o---o
---ooo
+----o
 o--o-
+}
+
+PATTERNS[:acorn] = %q{
+--o-----
+----o---
+-oo--ooo
 }
 
 
