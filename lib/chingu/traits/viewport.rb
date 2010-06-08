@@ -45,21 +45,16 @@ module Chingu
         
         super
       end
-            
-      #
-      # Returns true if object is inside view port, false if outside
-      # TODO: add view port height and width! (and use clip_to when painting?)
-      #
-      # This is a very flawed implementation, it Should take inte account objects 
-      # height,width,factor_x,factor_y,center_x,center_y as well...
-      #
+      
       def inside_viewport?(object)
-        object.x >= @viewport.x && object.x <= (@viewport.x + $window.width) && 
+        puts "Deprecated, use self.viewport.inside?() instead"
+        object.x >= @viewport.x && object.x <= (@viewport.x + $window.width) &&
         object.y >= @viewport.y && object.y <= (@viewport.y + $window.height)
       end
 
       # Returns true object is outside the view port
       def outside_viewport?(object)
+        puts "Deprecated, use self.viewport.outside?() instead"
         not inside_viewport?(object)
       end
       

@@ -324,8 +324,8 @@
     :center_x: 0.5
     :center_y: 0.5
 - StoneWall: 
-    :x: 263.0
-    :y: 479.779755508716
+    :x: 264.0
+    :y: 480.0
     :angle: 0
     :zorder: 100
     :factor_x: 1
@@ -575,15 +575,6 @@
     :factor_y: 1
     :center_x: 0.5
     :center_y: 0.5
-- Star: 
-    :x: 208.0
-    :y: 152.0
-    :angle: 0
-    :zorder: 100
-    :factor_x: 1
-    :factor_y: 1
-    :center_x: 0.5
-    :center_y: 0.5
 - StoneWall: 
     :x: 264.0
     :y: 232.0
@@ -712,7 +703,7 @@
     :center_y: 0.5
 - StoneWall: 
     :x: 424.0
-    :y: 232.0
+    :y: 264.0
     :angle: 0
     :zorder: 100
     :factor_x: 1
@@ -1163,6 +1154,141 @@
 - StoneWall: 
     :x: 1064.0
     :y: 552.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 1
+    :factor_y: 1
+    :center_x: 0.5
+    :center_y: 0.5
+- StoneWall: 
+    :x: 424.0
+    :y: 232.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 1
+    :factor_y: 1
+    :center_x: 0.5
+    :center_y: 0.5
+- StoneWall: 
+    :x: 840.0
+    :y: 432.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 1
+    :factor_y: 1
+    :center_x: 0.5
+    :center_y: 0.5
+- StoneWall: 
+    :x: 872.0
+    :y: 432.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 1
+    :factor_y: 1
+    :center_x: 0.5
+    :center_y: 0.5
+- StoneWall: 
+    :x: 904.0
+    :y: 432.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 1
+    :factor_y: 1
+    :center_x: 0.5
+    :center_y: 0.5
+- StoneWall: 
+    :x: 936.0
+    :y: 432.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 1
+    :factor_y: 1
+    :center_x: 0.5
+    :center_y: 0.5
+- StoneWall: 
+    :x: 936.0
+    :y: 400.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 1
+    :factor_y: 1
+    :center_x: 0.5
+    :center_y: 0.5
+- StoneWall: 
+    :x: 936.0
+    :y: 368.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 1
+    :factor_y: 1
+    :center_x: 0.5
+    :center_y: 0.5
+- StoneWall: 
+    :x: 744.0
+    :y: 584.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 1
+    :factor_y: 1
+    :center_x: 0.5
+    :center_y: 0.5
+- StoneWall: 
+    :x: 744.0
+    :y: 616.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 1
+    :factor_y: 1
+    :center_x: 0.5
+    :center_y: 0.5
+- StoneWall: 
+    :x: 744.0
+    :y: 648.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 1
+    :factor_y: 1
+    :center_x: 0.5
+    :center_y: 0.5
+- StoneWall: 
+    :x: 744.0
+    :y: 680.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 1
+    :factor_y: 1
+    :center_x: 0.5
+    :center_y: 0.5
+- StoneWall: 
+    :x: 744.0
+    :y: 712.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 1
+    :factor_y: 1
+    :center_x: 0.5
+    :center_y: 0.5
+- StoneWall: 
+    :x: 744.0
+    :y: 744.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 1
+    :factor_y: 1
+    :center_x: 0.5
+    :center_y: 0.5
+- StoneWall: 
+    :x: 776.0
+    :y: 744.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 1
+    :factor_y: 1
+    :center_x: 0.5
+    :center_y: 0.5
+- StoneWall: 
+    :x: 808.0
+    :y: 744.0
     :angle: 0
     :zorder: 100
     :factor_x: 1

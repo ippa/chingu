@@ -34,20 +34,15 @@ class Level < GameState
 
     Sound["laser.wav"] # cache sound by accessing it once
     
-    @map = GameObject.create(:image => "background1.png", :factor => $window.factor, :rotation_center => :top_left)
-    self.viewport.x_lag = 0.95	# lag goes from 0 (no lag at all) to 1 (too much lag for viewport to move ;))
-    self.viewport.y_lag = 0.95
-    self.viewport.x_min = 0
-    self.viewport.y_min = 0
-    self.viewport.x_max = @map.image.width * $window.factor - $window.width
-    self.viewport.y_max = @map.image.height * $window.factor - $window.height
+    self.viewport.lag = 0                           # 0 = no lag, 0.99 = a lot of lag.
+    #self.viewport.min = [0,0]
+    #self.viewport.max = [1000,1000]
+    self.viewport.game_area = [0, 0, 1000, 1000]    # Viewport restrictions, full "game world/map/area"
     
     #
-    # Create 40 stars scattered around the map
-    # This is not replaced by load_game_objects()
+    # Create 40 stars scattered around the map. This is now replaced by load_game_objects()
+    # ## 40.times { |nr| Star.create(:x => rand * self.viewport.x_max, :y => rand * self.viewport.y_max) }
     #
-    # 40.times { |nr| Star.create(:x => rand * self.viewport.x_max, :y => rand * self.viewport.y_max) }
-    
     load_game_objects(:file => "example19_game_objects.yml" )
   
     # Create our mechanic star-hunter
@@ -61,18 +56,27 @@ class Level < GameState
   def update    
     super
 
+    # Droid can pick up starts
     @droid.each_collision(Star) do |droid, star|
       star.destroy
       Sound["laser.wav"].play(0.5)
     end
-        
+    
+    # Bullets collide with stone_walls
+    Bullet.each_collision(StoneWall) do |bullet, stone_wall|
+      bullet.die
+      stone_wall.destroy
+    end
+    
+    # Destroy game objects that travels outside the viewport
+    game_objects.destroy_if { |game_object| self.viewport.outside_game_area?(game_object) }
+    
     #
     # Align viewport with the droid in the middle.
     # This will make droid will be in the center of the screen all the time...
     # ...except when hitting outer borders and viewport x_min/max & y_min/max kicks in.
     #
-    self.viewport.x_target = @droid.x - $window.width / 2
-    self.viewport.y_target = @droid.y - $window.height / 2
+    self.viewport.center_around(@droid)
         
     $window.caption = "viewport/edit-trait example. Move with arrows! Press 'E' to Edit. x/y: #{@droid.x.to_i}/#{@droid.y.to_i} - viewport x/y: #{self.viewport.x.to_i}/#{self.viewport.y.to_i} - FPS: #{$window.fps}"
   end
@@ -80,8 +84,8 @@ end
 
 class Droid < Chingu::GameObject
   has_trait :bounding_box, :debug => false
-  has_traits :timer, :collision_detection 
-  attr_accessor :last_x, :last_y
+  has_traits :timer, :collision_detection , :timer
+  attr_accessor :last_x, :last_y, :direction
   
   def setup
     #
@@ -89,39 +93,57 @@ class Droid < Chingu::GameObject
     # Use this by giving an array of symbols to self.input
     #
     self.input = [:holding_left, :holding_right, :holding_up, :holding_down]
+    self.input[:space] = :fire
     
     # Load the full animation from tile-file media/droid.bmp
-    @animations = Chingu::Animation.new(:file => "droid.bmp", :size => [11,16])
+    @animations = Chingu::Animation.new(:file => "droid_11x15.bmp")
     @animations.frame_names = { :scan => 0..5, :up => 6..7, :down => 8..9, :left => 10..11, :right => 12..13 }
     
     # Start out by animation frames 0-5 (contained by @animations[:scan])
     @animation = @animations[:scan]
-    @speed = 2
+    @speed = 3
     @last_x, @last_y = @x, @y
     
     update
   end
     
   def holding_left
-    @x -= @speed
+    move(-@speed, 0)
     @animation = @animations[:left]
   end
 
   def holding_right
-    @x += @speed
+    move(@speed, 0)
     @animation = @animations[:right]
   end
 
   def holding_up
-    @y -= @speed
+    move(0, -@speed)
     @animation = @animations[:up]
   end
 
   def holding_down
-    @y += @speed
+    move(0, @speed)
     @animation = @animations[:down]
   end
 
+  def fire
+    Bullet.create(:x => self.x, :y => self.y, :velocity => @direction)
+  end
+  
+  #
+  # Revert player to last positions when:
+  # - player is outside the viewport
+  # - player is colliding with at least one object of class StoneWall
+  #
+  def move(x,y)
+    @x += x
+    @x = @last_x  if self.parent.viewport.outside_game_area?(self) || self.first_collision(StoneWall)
+
+    @y += y
+    @y = @last_y  if self.parent.viewport.outside_game_area?(self) || self.first_collision(StoneWall)
+  end
+  
   # We don't need to call super() in update().
   # By default GameObject#update is empty since it doesn't contain any gamelogic to speak of.
   def update
@@ -130,20 +152,12 @@ class Droid < Chingu::GameObject
     # @image is drawn by default by GameObject#draw
     @image = @animation.next
     
-    #
-    # If droid stands still, use the scanning animation
-    #
     if @x == @last_x && @y == @last_y
+      # droid stands still, use the scanning animation
       @animation = @animations[:scan]
-    end
-    
-    #
-    # Revert player to last positions when:
-    # - player is outside the viewport
-    # - player is colliding with at least one object of class StoneWall
-    #
-    if self.parent.outside_viewport?(self) || self.first_collision(StoneWall)
-      @x, @y = @last_x, @last_y
+    else
+      # Save the direction to use with bullets when firing
+      @direction = [@x - @last_x, @y - @last_y]
     end
     
     @last_x, @last_y = @x, @y
@@ -175,6 +189,24 @@ class Star < GameObject
     # @image is drawn by default by GameObject#draw
     @image = @animation.next
   end
+end
+
+class Bullet < GameObject
+  has_traits :bounding_circle, :collision_detection, :velocity, :timer
+  
+  def setup
+    @image = Image["fire_bullet.png"]
+    self.factor = 1
+    p self.velocity
+    #self.velocity_x *= 2
+    #self.velocity_y *= 2
+  end
+  
+  def die
+    self.velocity = [0,0]   
+    between(0,50) { self.factor += 0.3; self.alpha -= 10; }.then { destroy }
+  end
+  
 end
 
 class StoneWall < GameObject
