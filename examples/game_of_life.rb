@@ -3,6 +3,7 @@
 # http://toastymofo.blogspot.com/2010/06/conways-game-of-life-in-ruby-gosu.html
 # 
 # Developed by r.kachowski ( http://www.toastymofo.net/ )
+# Additions by ippa ( http://ippa.se/gaming )
 #
 require 'chingu'
 require 'gosu'
@@ -90,11 +91,9 @@ class GameOfLife < Chingu::GameState
   def draw
     super
     draw_grid
-    # draw_mouse
   end
   
   private
-
 
   def generate_grid
     width = $window.width/CELL_SIZE
@@ -170,16 +169,13 @@ class GameOfLife < Chingu::GameState
   def stop_painting;  @painting = false; end  
   def start_erasing;  @erasing = true; end
   def stop_erasing;   @erasing = false; end
-    
-  #def draw_mouse
-  #  $window.fill_rect([($window.mouse_x/CELL_SIZE).floor*CELL_SIZE,($window.mouse_y/CELL_SIZE).floor*CELL_SIZE,CELL_SIZE,CELL_SIZE],0xaa0000ff,0)
-  #end
-  
+      
   def draw_cell(x, y, color = 0xaaff0000)
     $window.fill_rect([x*CELL_SIZE,y*CELL_SIZE,CELL_SIZE,CELL_SIZE],0xaa0000ff,1)
   end
   
 end
+
 
 PATTERNS = Hash.new
 
@@ -187,6 +183,9 @@ PATTERNS[:pixel] = %q{
 o
 }
 
+#
+# Spaceships
+#
 PATTERNS[:glider] = %q{
 ---o
 -o-o
@@ -200,11 +199,84 @@ o---o
 o--o-
 }
 
+#
+# Oscillators
+#
+PATTERNS[:blinker] = %q{
+ooo
+}
+
+PATTERNS[:beacon] = %q{
+-ooo
+ooo-
+}
+
+PATTERNS[:toad] = %q{
+oo--
+o---
+---o
+--oo
+}
+
+PATTERNS[:pulsar] = %q{
+---ooo---ooo--
+--------------
+-o----o-o----o
+-o----o-o----o
+-o----o-o----o
+---ooo---ooo--
+--------------
+---ooo---ooo--
+-o----o-o----o
+-o----o-o----o
+-o----o-o----o
+--------------
+---ooo---ooo--
+}
+
+#
+# Guns
+#
+PATTERNS[:gospel_glider_gun] = %q{
+------------------------o-----------
+----------------------o-o-----------
+------------oo------oo------------oo
+-----------o---o----oo------------oo
+oo--------o-----o---oo--------------
+oo--------o---o-oo----o-o-----------
+----------o-----o-------o-----------
+-----------o---o--------------------
+------------oo----------------------
+}
+
+PATTERNS[:block_laying_switch_engine] = %q{
+----------o-o--
+oo-------o-----
+oo--------o--o-
+------------ooo
+}
+
+
+
+#
+# Long lived patterns
+#
+PATTERNS[:rpentomino] = %q{
+--oo
+-oo
+--o
+}
+
+PATTERNS[:diehard] = %q{
+oo---o-o
+oo----o-
+------o-
+}
+
 PATTERNS[:acorn] = %q{
 --o-----
 ----o---
 -oo--ooo
 }
-
 
 Main.new.show
