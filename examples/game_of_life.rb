@@ -43,18 +43,27 @@ class GameOfLife < Chingu::GameState
     @painting = false
     @erasing = false
     @running = false
+    
+    @pattern_info = Chingu::Text.create(:x => 1, :y => 1, :size => 16, :color => Gosu::Color::BLACK)
+    update_pattern_info
   end  
   
+  def update_pattern_info
+    @pattern_info.text = "Current pattern: #{@pattern}. Change patterns with left/right arrow keys."
+  end
+    
   def prev_pattern
     @pattern_nr -= 1
     @pattern_nr = PATTERNS.keys.size-1 if @pattern_nr < 0
     @pattern = PATTERNS.keys[@pattern_nr]
+    update_pattern_info
   end
   
   def next_pattern
     @pattern_nr += 1
     @pattern_nr = 0 if @pattern_nr >= PATTERNS.keys.size
-    @pattern = PATTERNS.keys[@pattern_nr]    
+    @pattern = PATTERNS.keys[@pattern_nr]
+    update_pattern_info
   end
   
   def draw_pattern_at_mouse(pattern = :pixel, to_grid = false)
@@ -85,7 +94,7 @@ class GameOfLife < Chingu::GameState
     
     update_grid if @running
     
-    $window.caption = "Generation #{@@tick}. Patterns with left/right, current is \"#{@pattern}\". Start/stop w/ Space."
+    $window.caption = "Conway Generation #{@@tick}. Start/Stop with 'Space'. Run 1 generation with 'N'. Reset with 'Z'."
   end
 
   def draw
