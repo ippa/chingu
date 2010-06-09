@@ -43,7 +43,7 @@ class Level < GameState
     # Create 40 stars scattered around the map. This is now replaced by load_game_objects()
     # ## 40.times { |nr| Star.create(:x => rand * self.viewport.x_max, :y => rand * self.viewport.y_max) }
     #
-    load_game_objects(:file => "example19_game_objects.yml" )
+    load_game_objects( :file => "example19_game_objects.yml" )
   
     # Create our mechanic star-hunter
     @droid = Droid.create(:x => 100, :y => 100)    
@@ -92,8 +92,12 @@ class Droid < Chingu::GameObject
     # This shows up the shortened version of input-maps, where each key calls a method of the very same name.
     # Use this by giving an array of symbols to self.input
     #
-    self.input = [:holding_left, :holding_right, :holding_up, :holding_down]
-    self.input[:space] = :fire
+    self.input = {  [:holding_left, :holding_a] => :holding_left, 
+                    [:holding_right, :holding_d] => :holding_right,
+                    [:holding_up, :holding_w] => :holding_up,
+                    [:holding_down, :holding_s] => :holding_down,
+                    :space => :fire
+                  }
     
     # Load the full animation from tile-file media/droid.bmp
     @animations = Chingu::Animation.new(:file => "droid_11x15.bmp")
@@ -197,9 +201,8 @@ class Bullet < GameObject
   def setup
     @image = Image["fire_bullet.png"]
     self.factor = 1
-    p self.velocity
-    #self.velocity_x *= 2
-    #self.velocity_y *= 2
+    self.velocity_x *= 2
+    self.velocity_y *= 2
   end
   
   def die
