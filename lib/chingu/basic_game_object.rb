@@ -20,7 +20,7 @@ module Chingu
     # Adds a trait or traits to a certain game class
     # Executes a standard ruby "include" the specified module
     #
-    def self.has_trait(trait, options = {})
+    def self.trait(trait, options = {})
       
       if trait.is_a?(::Symbol) || trait.is_a?(::String)
         ## puts "has_trait #{trait}, #{options}"
@@ -49,10 +49,12 @@ module Chingu
         end
       end
     end
+    class << self; alias :has_trait :trait;  end
     
-    def self.has_traits(*traits)
+    def self.traits(*traits)
       Array(traits).each { |trait| has_trait trait }
     end
+    class << self; alias :has_traits :traits; end
 		
 		#def self.inherited(subclass)
 		#	subclass.initialize_inherited_trait	if subclass.method_defined?(:initialize_inherited_trait)
