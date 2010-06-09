@@ -57,6 +57,7 @@ module Chingu
       
       require 'yaml'
       
+      puts "* Loading game objects from #{file}" if debug
       if File.exists?(file)
         game_objects = YAML.load_file(file)
         game_objects.each do |game_object|
@@ -75,15 +76,22 @@ module Chingu
       end
     end
     
+    #
+    # Save given game_objects to a file. Hashoptions
+    # 
+    # :file - a String, name of file to write to, default is current game_state class name.
+    # :game_objects - an Array, game objects to save
+    # :classes      - an Array, save only game objects of theese classes
+    #
     def save_game_objects(options = {})
       file = options[:file] || "#{self.class.to_s.downcase}.yml"
       game_objects = options[:game_objects]
-      only = options[:only]
+      classes = options[:classes]
       
       require 'yaml'
       objects = []
       game_objects.each do |game_object|
-        next if only and !only.include?(game_object.class)
+        next if classes and !classes.include?(game_object.class)
         
         objects << {game_object.class.to_s  => 
                       {

@@ -274,7 +274,7 @@ module Chingu
       end
       
       def save
-        save_game_objects(:game_objects => previous_game_state.game_objects, :file => @file, :only => @classes)
+        save_game_objects(:game_objects => previous_game_state.game_objects, :file => @file, :classes => @classes)
       end
       
       def save_and_quit
