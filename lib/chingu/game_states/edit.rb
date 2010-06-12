@@ -37,7 +37,7 @@ module Chingu
         @classes = options[:classes] || []
         @only = options[:only] || []
         @except = options[:except] || []
-        @file = options[:file]
+        @file = options[:file] || "#{previous_game_state.class.to_s.downcase}.yml"
         @zorder = 10000
         
         @hud_color = Gosu::Color.new(150,100,100,100)
@@ -66,39 +66,30 @@ module Chingu
         y = 50
         @classes.each do |klass|
           puts "Creating a #{klass}"
-          game_object = klass.create(:x => x, :y => y, :zorder => @zorder)
-          game_object.rotation_center = :top_left
           
+          # We initialize x,y,zorder,rotation_center after creation
+          # so they're not overwritten by the class initialize/setup or simular
+          game_object = klass.create
+          game_object.x = x
+          game_object.y = y
+          game_object.rotation_center = :top_left
+          game_object.zorder = @zorder
+          
+          # Scale down big objects, don't scale objects under [32, 32]
           if game_object.image
-            game_object.factor_x = 32 / game_object.image.width
-            game_object.factor_y = 32 / game_object.image.height
+            game_object.factor_x = 32 / game_object.image.width   if game_object.image.width > 32
+            game_object.factor_y = 32 / game_object.image.height  if game_object.image.height > 32
           end
           x += 32
         end
-        # @save = Text.create("SAVE", :x => $window.width - 150, :size => 16)
-        
       end
             
-      def setup
-        unless @file
-          name = if defined?(previous_game_state.filename)
-            previous_game_state.filename
-          else 
-            "#{previous_game_state.class.to_s.downcase}.yml"
-          end
-          @file = File.join($window.root, name)
-        end
-        
-        Text.font = "arial"
-        Text.size = 15
-                
+      def setup                        
         @title = Text.create("File: #{@file}", :x => 5, :y => 2, :factor => 1, :size => 16, :zorder => @zorder)
         @title.text += " - Grid: #{@grid}" if @grid
-        
-        #@title2 = Text.create("(1-10) Create object at mouse pos  (DEL) Delete selected object  (S) Save  (E) Save and Quit  (ESC) Quit without saving", :x => 5, :y => 30, :factor => 1)
-        
         @text = Text.create("", :x => 200, :y => 20, :factor => 1, :size => 16, :zorder => @zorder)
         @status_text = Text.create("-", :x => 5, :y => 20, :factor => 1, :size => 16, :zorder => @zorder)
+        #@title2 = Text.create("(1-10) Create object at mouse pos  (DEL) Delete selected object  (S) Save  (E) Save and Quit  (ESC) Quit without saving", :x => 5, :y => 30, :factor => 1)
       end
       
       def create_object_nr(number)
