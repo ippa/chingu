@@ -44,6 +44,8 @@ module Chingu
         @selected_game_object = nil        
         self.input =  { :left_mouse_button => :left_mouse_button, 
                         :released_left_mouse_button => :released_left_mouse_button,
+                        :right_mouse_button => :right_mouse_button, 
+                        :released_right_mouse_button => :released_right_mouse_button,                        
                         :delete => :destroy_selected_game_objects,
                         :backspace => :destroy_selected_game_objects,
                         :e => :save_and_quit,
@@ -165,8 +167,12 @@ module Chingu
       
       def destroy_selected_game_objects
         selected_game_objects.each(&:destroy)
+        previous_game_state.game_objects.sync
       end
        
+      #
+      # CLICKED LEFT MOUSE BUTTON
+      #
       def left_mouse_button
         @left_mouse_button = true
         
@@ -206,7 +212,16 @@ module Chingu
           selected_game_objects.each { |x| x.options[:selected] = nil } unless holding?(:left_ctrl)            
         end
       end
-    
+      
+      def right_mouse_button
+        @cursor_game_object = game_object_at(x, y)
+      end
+      def released_right_mouse_button
+      end
+      
+      #
+      # RELASED LEFT MOUSE BUTTON
+      #
       def released_left_mouse_button
         @left_mouse_button = false
         @selected_game_object = false
