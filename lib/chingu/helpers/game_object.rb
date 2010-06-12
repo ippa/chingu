@@ -106,6 +106,7 @@ module Chingu
                       }
                     }
       end
+
         
       #Marshal.dump(previous_game_state.game_objects, File.open(@filename, "w"))
       File.open(file, 'w') do |out|
