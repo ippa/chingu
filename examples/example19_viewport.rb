@@ -13,7 +13,7 @@ class Game < Chingu::Window
   def setup
     Gosu::enable_undocumented_retrofication
     self.factor = 3
-    self.input = { :escape => :exit }
+    #self.input = { :escape => :exit }
     switch_game_state(Level.new)
   end    
 end
@@ -22,7 +22,7 @@ class Level < GameState
   #
   # This adds accessor 'viewport' to class and overrides draw() to use it.
   #
-  has_trait :viewport
+  trait :viewport
   
   #
   # We create our 3 different game objects in this order: 
@@ -30,13 +30,11 @@ class Level < GameState
   # Since we don't give any zorders Chingu automatically increments zorder between each object created, putting player on top
   #
   def setup
-    self.input = { :e => :edit } 
+    self.input = { :escape => :exit, :e => :edit } 
 
     Sound["laser.wav"] # cache sound by accessing it once
     
     self.viewport.lag = 0                           # 0 = no lag, 0.99 = a lot of lag.
-    #self.viewport.min = [0,0]
-    #self.viewport.max = [1000,1000]
     self.viewport.game_area = [0, 0, 1000, 1000]    # Viewport restrictions, full "game world/map/area"
     
     #
@@ -83,8 +81,8 @@ class Level < GameState
 end
 
 class Droid < Chingu::GameObject
-  has_trait :bounding_box, :debug => false
-  has_traits :timer, :collision_detection , :timer
+  trait :bounding_box, :debug => false
+  traits :timer, :collision_detection , :timer
   attr_accessor :last_x, :last_y, :direction
   
   def setup
@@ -169,8 +167,8 @@ class Droid < Chingu::GameObject
 end
 
 class Star < GameObject
-  has_trait :bounding_circle, :debug => false
-  has_trait :collision_detection
+  trait :bounding_circle, :debug => false
+  trait :collision_detection
   
   def setup    
     @animation = Chingu::Animation.new(:file => "Star.png", :size => 25)
@@ -180,6 +178,7 @@ class Star < GameObject
     self.color.green = rand(255 - 40) + 40
     self.color.blue = rand(255 - 40) + 40
     self.factor = 1
+    #self.rotation_center = :center
     
     #
     # A cached bounding circle will not adapt to changes in size, but it will follow objects X / Y
@@ -195,8 +194,18 @@ class Star < GameObject
   end
 end
 
+class StoneWall < GameObject
+  trait :bounding_box, :debug => false
+  trait :collision_detection
+  
+  def setup
+    @image = Image["stone_wall.bmp"]
+    self.factor = 1
+  end
+end
+
 class Bullet < GameObject
-  has_traits :bounding_circle, :collision_detection, :velocity, :timer
+  traits :bounding_circle, :collision_detection, :velocity, :timer
   
   def setup
     @image = Image["fire_bullet.png"]
@@ -208,16 +217,6 @@ class Bullet < GameObject
   def die
     self.velocity = [0,0]   
     between(0,50) { self.factor += 0.3; self.alpha -= 10; }.then { destroy }
-  end
-  
-end
-
-class StoneWall < GameObject
-  has_traits :bounding_box, :collision_detection
-  
-  def setup
-    @image = Image["stone_wall.bmp"]
-    self.factor = 1
   end
 end
 
