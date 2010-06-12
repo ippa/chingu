@@ -78,50 +78,7 @@ module Chingu
         # @save = Text.create("SAVE", :x => $window.width - 150, :size => 16)
         
       end
-      
-      def setup
-        # Disable input for previous game state (restore on exit)
-        #saved_input_map = previous_game_state.input
-        #previous_game_state.input = {}
-      end
-      
-      def finalize
-        #previous_game_state.input = saved_input_map
-      end
-      
-      def game_object_classes
-        ObjectSpace.enum_for(:each_object, class << GameObject; self; end).to_a.select do |game_class|
-          game_class.instance_methods
-        end
-      end
-      
-      def page_up
-        self.previous_game_state.viewport.y -= $window.height if defined?(self.previous_game_state.viewport)
-      end
-      def page_down
-        self.previous_game_state.viewport.y += $window.height if defined?(self.previous_game_state.viewport)
-      end
-      def scroll_up
-        self.previous_game_state.viewport.y -= 10 if defined?(self.previous_game_state.viewport)
-      end
-      def scroll_down
-        self.previous_game_state.viewport.y += 10 if defined?(self.previous_game_state.viewport)
-      end
-      def scroll_left
-        self.previous_game_state.viewport.x -= 10 if defined?(self.previous_game_state.viewport)
-      end
-      def scroll_right
-        self.previous_game_state.viewport.x += 10 if defined?(self.previous_game_state.viewport)
-      end
-      def x
-        x = $window.mouse_x 
-        x += self.previous_game_state.viewport.x if defined?(self.previous_game_state.viewport)
-      end
-      def y
-        y = $window.mouse_y
-        y += self.previous_game_state.viewport.y if defined?(self.previous_game_state.viewport)
-      end
-
+            
       def setup
         unless @file
           name = if defined?(previous_game_state.filename)
@@ -231,9 +188,7 @@ module Chingu
         #
         # Deselect all objects
         #
-        selected_game_objects.each do |game_object|         
-          game_object.options[:selected] = false
-        end
+        selected_game_objects.each { |x| x.options[:selected] = false} unless holding?(:left_ctrl)
 
         if @cursor_game_object && game_object_at(x, y)==nil && game_object_icon_at($window.mouse_x, $window.mouse_y) == nil
           game_object = @cursor_game_object.class.create(:x => x, :y => y, :parent => previous_game_state, :zorder => @zorder + 10)
@@ -287,7 +242,42 @@ module Chingu
       def quit
         pop_game_state(:setup => false)
       end
+
+      def game_object_classes
+        ObjectSpace.enum_for(:each_object, class << GameObject; self; end).to_a.select do |game_class|
+          game_class.instance_methods
+        end
+      end
       
+      def page_up
+        selected_game_objects.each { |game_object| game_object.zorder += 1 }
+        #self.previous_game_state.viewport.y -= $window.height if defined?(self.previous_game_state.viewport)
+      end
+      def page_down
+        selected_game_objects.each { |game_object| game_object.zorder -= 1 }
+        #self.previous_game_state.viewport.y += $window.height if defined?(self.previous_game_state.viewport)
+      end
+      def scroll_up
+        self.previous_game_state.viewport.y -= 10 if defined?(self.previous_game_state.viewport)
+      end
+      def scroll_down
+        self.previous_game_state.viewport.y += 10 if defined?(self.previous_game_state.viewport)
+      end
+      def scroll_left
+        self.previous_game_state.viewport.x -= 10 if defined?(self.previous_game_state.viewport)
+      end
+      def scroll_right
+        self.previous_game_state.viewport.x += 10 if defined?(self.previous_game_state.viewport)
+      end
+      def x
+        x = $window.mouse_x 
+        x += self.previous_game_state.viewport.x if defined?(self.previous_game_state.viewport)
+      end
+      def y
+        y = $window.mouse_y
+        y += self.previous_game_state.viewport.y if defined?(self.previous_game_state.viewport)
+      end
+
       #
       # If we're editing a game state with automaticly called special methods, 
       # the following takes care of those.
