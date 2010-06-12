@@ -1589,8 +1589,3 @@
     :y: 400.0
     :angle: 0
     :zorder: 100
-- Star: 
-    :x: 160.0
-    :y: 280.0
-    :angle: 0
-    :zorder: 100

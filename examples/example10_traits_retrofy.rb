@@ -33,8 +33,8 @@ class Game < Chingu::Window
 end
 
 class Thing < Chingu::GameObject
-  has_trait :effect
-  has_trait :velocity
+  trait :effect
+  trait :velocity
   
   def initialize(options)
     super

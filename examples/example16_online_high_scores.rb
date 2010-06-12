@@ -57,7 +57,7 @@ end
 # colorful pulsating text...
 #
 class PulsatingText < Text
-  has_traits :timer, :effect
+  traits :timer, :effect
   @@red = Color.new(0xFFFF0000)
   @@green = Color.new(0xFF00FF00)
   @@blue = Color.new(0xFF0000FF)

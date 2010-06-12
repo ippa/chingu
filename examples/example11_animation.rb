@@ -21,7 +21,7 @@ class Game < Chingu::Window
 end
 
 class Droid < Chingu::GameObject
-  has_traits :timer
+  traits :timer
   
   def initialize(options = {})
     super
@@ -33,7 +33,7 @@ class Droid < Chingu::GameObject
     self.input = [:holding_left, :holding_right, :holding_up, :holding_down]
     
     # Load the full animation from tile-file media/droid.bmp
-    @animation = Chingu::Animation.new(:file => "droid_11x16.bmp")
+    @animation = Chingu::Animation.new(:file => "droid_11x15.bmp")
     @animation.frame_names = { :scan => 0..5, :up => 6..7, :down => 8..9, :left => 10..11, :right => 12..13 }
     
     # Start out by animation frames 0-5 (contained by @animation[:scan])

@@ -28,7 +28,7 @@ end
 
 
 class Star < GameObject
-  has_trait :collision_detection
+  trait :collision_detection
   
   def initialize(options={})
     super
@@ -40,7 +40,7 @@ class Star < GameObject
 end
 
 class MovingStar < Star
-	has_trait :velocity
+	trait :velocity
 	
   def initialize(options={})
 		super

@@ -16,7 +16,7 @@ class Game < Chingu::Window
 end
 
 class Stuff < GameState
-  has_trait :timer
+  trait :timer
   
   def initialize(options = {})
     super

@@ -38,8 +38,8 @@ class Game < Chingu::Window
 end
 
 class Player < GameObject
-  has_trait :bounding_circle, :debug => DEBUG
-  has_traits :collision_detection, :effect, :velocity
+  trait :bounding_circle, :debug => DEBUG
+  traits :collision_detection, :effect, :velocity
   
   def initialize(options={})
     super(options)
@@ -73,8 +73,8 @@ class Player < GameObject
 end
 
 class Star < GameObject
-  has_trait :bounding_circle, :debug => DEBUG
-  has_trait :collision_detection
+  trait :bounding_circle, :debug => DEBUG
+  trait :collision_detection
   
   def initialize(options={})
     super(:zorder=>1)

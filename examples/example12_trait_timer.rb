@@ -18,7 +18,7 @@ class Game < Chingu::Window
 end
 
 class Cube < GameObject
-  has_trait :timer
+  trait :timer
   
   def initialize(options)
     super

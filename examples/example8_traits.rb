@@ -19,7 +19,7 @@ class Game < Chingu::Window
 end
 
 class Plasma < Chingu::GameObject
-  has_traits :velocity
+  traits :velocity
   attr_accessor :fade_rate
   
   def setup

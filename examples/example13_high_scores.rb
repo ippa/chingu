@@ -65,7 +65,7 @@ end
 # colorful pulsating text...
 #
 class PulsatingText < Text
-  has_traits :timer, :effect
+  traits :timer, :effect
   
   def initialize(text, options = {})
     super(text, options)

@@ -19,7 +19,7 @@ class Game < Chingu::Window
 end
 
 class FireCube < Chingu::GameObject
-  has_traits :velocity, :collision_detection  
+  traits :velocity, :collision_detection  
   attr_accessor :color, :radius
   
   def initialize(options)

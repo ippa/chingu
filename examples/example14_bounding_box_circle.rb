@@ -64,8 +64,8 @@ class Game < Chingu::Window
 end
 
 class Circle < GameObject
-  has_trait :bounding_circle, :debug => true
-  has_traits :velocity, :collision_detection
+  trait :bounding_circle, :debug => true
+  traits :velocity, :collision_detection
   
   def setup
     @image = Image["circle.png"]
@@ -88,8 +88,8 @@ class Circle < GameObject
 end
 
 class Box < GameObject
-  has_trait :bounding_box, :debug => true
-  has_traits :velocity, :collision_detection
+  trait :bounding_box, :debug => true
+  traits :velocity, :collision_detection
   
   def setup
     @image = Image["rect.png"]

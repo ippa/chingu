@@ -16,7 +16,7 @@ class Game < Chingu::Window
 end
 
 class Play < Chingu::GameState
-  has_trait :timer
+  trait :timer
 	
   def setup
     Droid.create(:x => 200, :y => 300, :factor => 4, :alpha => 100)
@@ -35,7 +35,7 @@ class Play < Chingu::GameState
 end
 	
 class Actor < GameObject
-  has_trait :velocity
+  trait :velocity
   
   def setup
     @image = Image["#{self.filename}.png"]
@@ -52,7 +52,7 @@ class FireBullet < Actor; end # fire_bullet.png will be loaded
 # droid_11x16.png will be loaded and animated with :delay parameter, each frame beeing 11 x 16 pixels
 #
 class Droid < Actor
-  has_trait :animation, :delay => 200
+  trait :animation, :delay => 200
   
   def update
     @image = self.animation.next  if self.animation
@@ -64,7 +64,7 @@ end
 # since it doesn't contain any framesize information, chingu will assume same width and height
 #
 class Heli < Actor
-  has_trait :animation, :delay => 200
+  trait :animation, :delay => 200
   
   def update
     @image = self.animation.next  if self.animation
@@ -78,7 +78,7 @@ end
 # self.animation will point to self.animations[:default]
 #
 class Star < Actor
-  has_trait :animation, :delay => 100
+  trait :animation, :delay => 100
   
   def setup
     self.animations[:explode].loop = false
