@@ -27,18 +27,17 @@ module Chingu
   # Implement use of viewports angle, center_x, center_y, factor_x, factor_y
   #
   class Viewport
-    attr_accessor :x, :y#, :x_min, :x_max, :y_min, :y_max
-		attr_accessor :x_target, :y_target, :x_lag, :y_lag, :game_area
+    attr_accessor :x, :y, :x_target, :y_target, :x_lag, :y_lag, :game_area
     
     def initialize(options = {})
       @x = options[:x] || 0
-      @y = options[:y] || 0
-			@x_target = options[:x_target]
-			@y_target = options[:y_target]
-			@x_lag = options[:x_lag] || 0
-			@y_lag = options[:y_lag] || 0
-      @game_area = Chingu::Rect.new(options[:game_area]||[@x, @y, $window.width, $window.height])      
-		end
+      @y = options[:y] || 0 
+      @x_target = options[:x_target]
+      @y_target = options[:y_target]
+      @x_lag = options[:x_lag] || 0
+      @y_lag = options[:y_lag] || 0
+      @game_area = Chingu::Rect.new(options[:game_area]||[@x, @y, $window.width, $window.height])       
+    end
     
     #
     # Set x_lag and y_lag to value 'lag'
@@ -56,8 +55,24 @@ module Chingu
       self.y = object.y - $window.height / 2
     end
     
+    #
+    # Set a Rect that represents the borders of the game world.
+    # The viewport can only move within this Rect.
+    #
     def game_area=(rect)
       @game_area = Rect.new(rect)
+    end
+    
+    #
+    # Set a game world by giving it a game object
+    # The game objects image will be the rectangle the viewport can move within.
+    #
+    def game_area_object=(game_object)
+      image = (game_object.is_a? Gosu::Image) ? game_object : game_object.image
+      @game_area = Rect.new(0,0,
+                            (image.width*$window.factor) - $window.width, 
+                            (image.height*$window.factor) - $window.height
+                            )
     end
     
     #
@@ -92,10 +107,10 @@ module Chingu
       not inside_game_area?(object)
     end
 
-		#
-		# Modify viewports x and y from target_x / target_y and x_lag / y_lag 
-		# Use this to have the viewport "slide" after the player
-		#
+    #
+    # Modify viewports x and y from target_x / target_y and x_lag / y_lag 
+    # Use this to have the viewport "slide" after the player
+    #
     def move_towards_target			
       if @x_target && @x != @x_target
         x_step = @x_target - @x
@@ -106,17 +121,17 @@ module Chingu
         y_step = @y_target - @y
         self.y = @y + y_step * (1.0 - @y_lag)
       end
-		end
+    end
     
-		#
-		# Viewports X setter with boundschecking
-		#
+    #
+    # Viewports X setter with boundschecking
+    #
     def x=(x)
       @x = x
       if @game_area
         @x = @game_area.x       if @x < @game_area.x
         @x = @game_area.width   if @x > @game_area.width
-      end
+      end 
     end
 
 		#
