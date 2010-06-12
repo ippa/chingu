@@ -18,9 +18,9 @@ class Game < Chingu::Window
   #attr_reader :factor
   
   def initialize
-    super(1000,800,false)
+    super(1000,400,false)
     self.input = { :escape => :exit }
-    self.factor = 2
+    self.factor = 1
 		Gosu::enable_undocumented_retrofication
     switch_game_state(Level)
   end
