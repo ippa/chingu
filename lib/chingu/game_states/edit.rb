@@ -64,8 +64,8 @@ module Chingu
                         :"5" => :create_object_5,
                       }
         
-        x = 10
-        y = 50
+        x = 20
+        y = 60
         @classes.each do |klass|
           puts "Creating a #{klass}"  if @debug
           
@@ -74,7 +74,6 @@ module Chingu
           game_object = klass.create
           game_object.x = x
           game_object.y = y
-          game_object.rotation_center = :top_left
           game_object.zorder = @zorder
           
           # Scale down big objects, don't scale objects under [32, 32]
@@ -82,7 +81,7 @@ module Chingu
             game_object.factor_x = 32 / game_object.image.width   if game_object.image.width > 32
             game_object.factor_y = 32 / game_object.image.height  if game_object.image.height > 32
           end
-          x += 32
+          x += 40
         end
       end
             
@@ -96,6 +95,7 @@ module Chingu
       
       def create_object_nr(number)
         c = @classes[number].create(:x => x, :y => y, :parent => previous_game_state)  if @classes[number]
+        c.update
         #@text.text = "Created a #{c.class} @ #{c.x} / #{c.y}"
       end
       
@@ -137,13 +137,23 @@ module Chingu
       end
       
       def update
-        ## previous_game_state.update
+        # Sync all changes to previous game states game objects list
+        # This is needed since we don't call update on it.
+        previous_game_state.game_objects.sync
         
         super
         
-        if @left_mouse_button && @selected_game_object
+        #
+        # We got a selected game object
+        #
+        if @selected_game_object
           @text.text = "#{@selected_game_object.class.to_s} @ #{@selected_game_object.x} / #{@selected_game_object.y} - zorder: #{@selected_game_object.zorder}"
-                    
+        end
+        
+        #
+        # We got a selected game object and the left mouse button is held down
+        #
+        if @left_mouse_button && @selected_game_object
           selected_game_objects.each do |selected_game_object|            
             selected_game_object.x = self.x + selected_game_object.options[:mouse_x_offset]
             selected_game_object.y = self.y + selected_game_object.options[:mouse_y_offset]
@@ -167,7 +177,6 @@ module Chingu
       
       def destroy_selected_game_objects
         selected_game_objects.each(&:destroy)
-        previous_game_state.game_objects.sync
       end
        
       #
@@ -179,7 +188,6 @@ module Chingu
         if @cursor_game_object && game_object_at(x, y)==nil && game_object_icon_at($window.mouse_x, $window.mouse_y) == nil
           game_object = @cursor_game_object.class.create(:parent => previous_game_state)
           game_object.update
-          previous_game_state.game_objects.sync
           game_object.options[:selected] = true
           game_object.x = x
           game_object.y = y
@@ -197,7 +205,7 @@ module Chingu
           #  --> deselect all objects unless holding left_ctrl
           #
           if @selected_game_object.options[:selected] == nil
-            selected_game_objects.each { |x| x.options[:selected] = nil } unless holding?(:left_ctrl)            
+            selected_game_objects.each { |x| x.options[:selected] = nil } unless holding?(:left_ctrl)
           end
           
           @selected_game_object.options[:selected] = true
@@ -209,12 +217,13 @@ module Chingu
             selected_game_object.options[:mouse_y_offset] = selected_game_object.y - self.y
           end
         else
-          selected_game_objects.each { |x| x.options[:selected] = nil } unless holding?(:left_ctrl)            
+          selected_game_objects.each { |x| x.options[:selected] = nil } unless holding?(:left_ctrl)
         end
       end
       
       def right_mouse_button
         @cursor_game_object = game_object_at(x, y)
+        selected_game_objects.each { |x| x.options[:selected] = nil }
       end
       def released_right_mouse_button
       end
@@ -224,7 +233,6 @@ module Chingu
       #
       def released_left_mouse_button
         @left_mouse_button = false
-        @selected_game_object = false
       end
 
       def game_object_icon_at(x, y)
