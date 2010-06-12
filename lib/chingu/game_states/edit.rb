@@ -38,8 +38,9 @@ module Chingu
         @only = options[:only] || []
         @except = options[:except] || []
         @file = options[:file]
+        @zorder = 10000
         
-        @color = Gosu::Color.new(150,0,0,0)
+        @hud_color = Gosu::Color.new(150,100,100,100)
         @selected_game_object = nil        
         self.input =  { :left_mouse_button => :left_mouse_button, 
                         :released_left_mouse_button => :released_left_mouse_button,
@@ -47,7 +48,7 @@ module Chingu
                         :backspace => :destroy_selected_game_objects,
                         :e => :save_and_quit,
                         :s => :save,
-                        :esc => :quit,
+                        :esc => :save_and_quit,
                         :holding_up_arrow => :scroll_up,
                         :holding_down_arrow => :scroll_down,
                         :holding_left_arrow => :scroll_left,
@@ -61,20 +62,31 @@ module Chingu
                         :"5" => :create_object_5,
                       }
         
-        x = 32
-        y = 70
+        x = 10
+        y = 50
         @classes.each do |klass|
           puts "Creating a #{klass}"
-          game_object = klass.create
+          game_object = klass.create(:x => x, :y => y, :zorder => @zorder)
+          game_object.rotation_center = :top_left
           
           if game_object.image
-            game_object.x = x + game_object.image.width
-            game_object.y = y + game_object.image.height
-            x += 32
+            game_object.factor_x = 32 / game_object.image.width
+            game_object.factor_y = 32 / game_object.image.height
           end
-
+          x += 32
         end
         # @save = Text.create("SAVE", :x => $window.width - 150, :size => 16)
+        
+      end
+      
+      def setup
+        # Disable input for previous game state (restore on exit)
+        #saved_input_map = previous_game_state.input
+        #previous_game_state.input = {}
+      end
+      
+      def finalize
+        #previous_game_state.input = saved_input_map
       end
       
       def game_object_classes
@@ -123,12 +135,13 @@ module Chingu
         Text.font = "arial"
         Text.size = 15
                 
-        @title = Text.create("#{@file}", :x => 5, :y => 2, :factor => 1)
+        @title = Text.create("File: #{@file}", :x => 5, :y => 2, :factor => 1, :size => 16, :zorder => @zorder)
         @title.text += " - Grid: #{@grid}" if @grid
-        #@title2 = Text.create("(1-10) Create object at mouse pos  (DEL) Delete selected object  (S) Save  (E) Save and Quit  (ESC) Quit without saving", :x => 5, :y => 30, :factor => 1)
-        @text = Text.create("", :x => 100, :y => $window.height-15, :factor => 1)
         
-        @status_text = Text.create("-", :x => 5, :y => $window.height-15, :factor => 1)
+        #@title2 = Text.create("(1-10) Create object at mouse pos  (DEL) Delete selected object  (S) Save  (E) Save and Quit  (ESC) Quit without saving", :x => 5, :y => 30, :factor => 1)
+        
+        @text = Text.create("", :x => 200, :y => 20, :factor => 1, :size => 16, :zorder => @zorder)
+        @status_text = Text.create("-", :x => 5, :y => 20, :factor => 1, :size => 16, :zorder => @zorder)
       end
       
       def create_object_nr(number)
@@ -146,26 +159,15 @@ module Chingu
         # Draw prev game state onto screen (the level we're editing)
         previous_game_state.draw
         
+        super
+        
         #
         # Draw an edit HUD
         #
-        $window.draw_quad(  0,0,@color,
-                            $window.width,0,@color,
-                            $window.width,20,@color,
-                            0,20,@color,10)
-
-        #
-        # Draw an status HUD
-        #
-        $window.draw_quad(  0,$window.height - 20,@color,
-                            $window.width,$window.height - 20,@color,
-                            $window.width,$window.height,@color,
-                            0,$window.height,@color,10)
-
-        #
-        # Draw debug Texts etc..
-        #
-        super
+        $window.draw_quad(  0,0,@hud_color,
+                            $window.width,0,@hud_color,
+                            $window.width,100,@hud_color,
+                            0,100,@hud_color, @zorder-1)
         
         #
         # Draw red rectangles/circles around all selected game objects
@@ -180,12 +182,12 @@ module Chingu
           #
           $window.draw_triangle( $window.mouse_x, $window.mouse_y, Color::WHITE, 
                                 $window.mouse_x, $window.mouse_y + 10, Color::WHITE, 
-                                $window.mouse_x + 10, $window.mouse_y + 10, Color::WHITE, 9999)
+                                $window.mouse_x + 10, $window.mouse_y + 10, Color::WHITE, @zorder + 10)
         end
       end
       
       def update
-        previous_game_state.update
+        # previous_game_state.update
         
         # Hacky way of preventing game objects to move
         # While you edit you don't want enemies running around etc etc..
@@ -212,7 +214,7 @@ module Chingu
           end
         end
         
-        @status_text.text = "#{x} / #{y}"
+        @status_text.text = "Mouseposition: #{x} / #{y}"
       end
 
       def selected_game_objects
@@ -234,7 +236,7 @@ module Chingu
         end
 
         if @cursor_game_object && game_object_at(x, y)==nil && game_object_icon_at($window.mouse_x, $window.mouse_y) == nil
-          game_object = @cursor_game_object.class.create(:x => x, :y => y, :parent => previous_game_state)          
+          game_object = @cursor_game_object.class.create(:x => x, :y => y, :parent => previous_game_state, :zorder => @zorder + 10)
           game_object.options[:selected] = true
         end
         
@@ -291,7 +293,9 @@ module Chingu
       # the following takes care of those.
       #
       def method_missing(symbol, *args)
-        previous_game_state.__send__(symbol, *args)
+        if symbol != :button_down || symbol != :button_up
+          previous_game_state.__send__(symbol, *args)
+        end
       end
       
     end
