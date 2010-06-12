@@ -87,15 +87,17 @@ module Chingu
         object.draw_relative(x, y, zorder, angle, center_x, center_y, factor_x, factor_y)
       end
     end
-
-    def update
+    
+    def sync
 			@game_objects += @add_game_objects
 			@add_game_objects.clear
 			
 			@game_objects -= @remove_game_objects
-			@remove_game_objects.clear
-			
-			#@game_objects.select{ |object| not object.paused }.each do |object| 
+			@remove_game_objects.clear      
+    end
+      
+    def update
+      sync
 				
       @game_objects.select{ |object| not object.paused }.each do |object| 
         object.update_trait 

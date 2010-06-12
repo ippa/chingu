@@ -36,7 +36,7 @@ module Chingu
         @grid = options[:grid] || [8,8]
         @classes = options[:classes] || []
         @only = options[:only] || []
-        @except = options[:except] || []
+        @debug = options[:debug]
         @file = options[:file] || "#{previous_game_state.class.to_s.downcase}.yml"
         @zorder = 10000
         
@@ -65,7 +65,7 @@ module Chingu
         x = 10
         y = 50
         @classes.each do |klass|
-          puts "Creating a #{klass}"
+          puts "Creating a #{klass}"  if @debug
           
           # We initialize x,y,zorder,rotation_center after creation
           # so they're not overwritten by the class initialize/setup or simular
@@ -135,6 +135,8 @@ module Chingu
       end
       
       def update
+        ## previous_game_state.update
+        
         super
         
         if @left_mouse_button && @selected_game_object
@@ -148,10 +150,10 @@ module Chingu
           end
           
           # TODO: better cleaner sollution
-          #if @selected_game_object.respond_to?(:bounding_box)
-          #  @selected_game_object.bounding_box.x = @selected_game_object.x
-          #  @selected_game_object.bounding_box.y = @selected_game_object.y
-          #end
+          if @selected_game_object.respond_to?(:bounding_box)
+            @selected_game_object.bounding_box.x = @selected_game_object.x
+            @selected_game_object.bounding_box.y = @selected_game_object.y
+          end
         end
         
         @status_text.text = "Mouseposition: #{x} / #{y}"
@@ -169,9 +171,12 @@ module Chingu
         @left_mouse_button = true
         
         if @cursor_game_object && game_object_at(x, y)==nil && game_object_icon_at($window.mouse_x, $window.mouse_y) == nil
-          game_object = @cursor_game_object.class.create(:x => x, :y => y, :parent => previous_game_state, :zorder => @zorder + 10)
+          game_object = @cursor_game_object.class.create(:parent => previous_game_state)
           game_object.update
+          previous_game_state.game_objects.sync
           game_object.options[:selected] = true
+          game_object.x = x
+          game_object.y = y
         end
         
         # Get editable game object that was clicked at (if any)
