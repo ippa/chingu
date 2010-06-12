@@ -98,11 +98,11 @@ module Chingu
                       :x => game_object.x, 
                       :y => game_object.y,
                       :angle => game_object.angle,
-                      :zorder => game_object.zorder,
-                      :factor_x => game_object.factor_x,
-                      :factor_y => game_object.factor_y,
-                      :center_x => game_object.center_x,
-                      :center_y => game_object.center_y,
+                      #:zorder => game_object.zorder,
+                      #:factor_x => game_object.factor_x,
+                      #:factor_y => game_object.factor_y,
+                      #:center_x => game_object.center_x,
+                      #:center_y => game_object.center_y,
                       }
                     }
       end
