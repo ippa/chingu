@@ -44,6 +44,13 @@ module Chingu
     #
     #
     module InputClient
+      #
+      # Returns true or false depending on if the key is pressed
+      #
+      def holding?(key)
+        $window.button_down?(Chingu::Input::SYMBOL_TO_CONSTANT[key])
+      end
+      
       def input=(input_map)
         @input ||= Hash.new
         #@input = input_map
