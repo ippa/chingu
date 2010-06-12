@@ -144,31 +144,23 @@ module Chingu
       end
       
       def update
-        # previous_game_state.update
-        
-        # Hacky way of preventing game objects to move
-        # While you edit you don't want enemies running around etc etc..
-        # TODO: Solve this in a more general way? Skip call to previous_game_state.update in whole maybe.
-        previous_game_state.game_objects.each do |game_object|
-          game_object.x = game_object.previous_x if defined?(game_object.previous_x)
-          game_object.y = game_object.previous_y if defined?(game_object.previous_y)
-        end
-        
         super
         
         if @left_mouse_button && @selected_game_object
-          @text.text = "#{@selected_game_object.class.to_s} @ #{@selected_game_object.x} / #{@selected_game_object.y}"
-          @selected_game_object.x = x + @mouse_x_offset
-          @selected_game_object.y = y + @mouse_y_offset
-          
-          @selected_game_object.x -= @selected_game_object.x % @grid[0]
-          @selected_game_object.y -= @selected_game_object.y % @grid[1]
+          @text.text = "#{@selected_game_object.class.to_s} @ #{@selected_game_object.x} / #{@selected_game_object.y} - zorder: #{@selected_game_object.zorder}"
+                    
+          selected_game_objects.each do |selected_game_object|            
+            selected_game_object.x = self.x + selected_game_object.options[:mouse_x_offset]
+            selected_game_object.y = self.y + selected_game_object.options[:mouse_y_offset]
+            selected_game_object.x -= selected_game_object.x % @grid[0]
+            selected_game_object.y -= selected_game_object.y % @grid[1]
+          end
           
           # TODO: better cleaner sollution
-          if @selected_game_object.respond_to?(:bounding_box)
-            @selected_game_object.bounding_box.x = @selected_game_object.x
-            @selected_game_object.bounding_box.y = @selected_game_object.y
-          end
+          #if @selected_game_object.respond_to?(:bounding_box)
+          #  @selected_game_object.bounding_box.x = @selected_game_object.x
+          #  @selected_game_object.bounding_box.y = @selected_game_object.y
+          #end
         end
         
         @status_text.text = "Mouseposition: #{x} / #{y}"
@@ -183,37 +175,43 @@ module Chingu
       end
        
       def left_mouse_button
-        @left_mouse_button = true        
+        @left_mouse_button = true
         
-        #
-        # Deselect all objects
-        #
-        selected_game_objects.each { |x| x.options[:selected] = false} unless holding?(:left_ctrl)
-
         if @cursor_game_object && game_object_at(x, y)==nil && game_object_icon_at($window.mouse_x, $window.mouse_y) == nil
           game_object = @cursor_game_object.class.create(:x => x, :y => y, :parent => previous_game_state, :zorder => @zorder + 10)
+          game_object.update
           game_object.options[:selected] = true
         end
         
-        #
-        # Get new object that was clicked at (if any)
-        #
+        # Get editable game object that was clicked at (if any)
         @selected_game_object = game_object_at(x, y)
         
+        # Check if user clicked on anything in the icon-toolbar of available game objects
         @cursor_game_object = game_object_icon_at($window.mouse_x, $window.mouse_y)
               
         if @selected_game_object
-          @selected_game_object.options[:selected] = true
+          #
+          # If clicking on a new object that's wasn't previosly selected
+          #  --> deselect all objects unless holding left_ctrl
+          #
+          if @selected_game_object.options[:selected] == nil
+            selected_game_objects.each { |x| x.options[:selected] = nil } unless holding?(:left_ctrl)            
+          end
           
-          @mouse_x_offset = @selected_game_object.x - x
-          @mouse_y_offset = @selected_game_object.y - y          
+          @selected_game_object.options[:selected] = true
+          #
+          # Re-align all objects x/y offset in relevance to the cursor
+          #
+          selected_game_objects.each do |selected_game_object|
+            selected_game_object.options[:mouse_x_offset] = selected_game_object.x - self.x
+            selected_game_object.options[:mouse_y_offset] = selected_game_object.y - self.y
+          end
         else
-          @text.text = ""
+          selected_game_objects.each { |x| x.options[:selected] = nil } unless holding?(:left_ctrl)            
         end
-        
       end
-      
-      def released_left_mouse_button        
+    
+      def released_left_mouse_button
         @left_mouse_button = false
         @selected_game_object = false
       end
