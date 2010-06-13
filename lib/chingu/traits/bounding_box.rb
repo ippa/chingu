@@ -60,10 +60,16 @@ module Chingu
           width = width * trait_options[:bounding_box][:scale]
           height = height * trait_options[:bounding_box][:scale]
         end
-        
-        x = self.x - (width * self.center_x.abs)
-        y = self.y - (height * self.center_y.abs)
-        
+                
+        x = self.x - width * self.center_x
+        y = self.y - height * self.center_y
+                
+        center_to_factor = { 0 => 1, 0.5 => 0, 1 => -1 }
+        inversion_factor_x = (self.factor_x < 0) ? -1 : 0
+        inversion_factor_y = (self.factor_y < 0) ? -1 : 0
+        x += width * inversion_factor_x * center_to_factor[self.center_x]
+        y += height* inversion_factor_y * center_to_factor[self.center_y]
+                        
         return Rect.new(x, y, width, height)
       end
       alias :bb :bounding_box
