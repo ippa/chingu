@@ -33,6 +33,8 @@ module Chingu
         end
       end
       
+      CENTER_TO_FACTOR = { 0 => -1, 0.5 => 0, 1 => 1 }
+      
       def setup_trait(options)
         @cached_bounding_box = nil
         super
@@ -63,13 +65,9 @@ module Chingu
                 
         x = self.x - width * self.center_x
         y = self.y - height * self.center_y
-                
-        center_to_factor = { 0 => 1, 0.5 => 0, 1 => -1 }
-        inversion_factor_x = (self.factor_x < 0) ? -1 : 0
-        inversion_factor_y = (self.factor_y < 0) ? -1 : 0
-        x += width * inversion_factor_x * center_to_factor[self.center_x]
-        y += height* inversion_factor_y * center_to_factor[self.center_y]
-                        
+        x += width * CENTER_TO_FACTOR[self.center_x]   if self.factor_x < 0
+        y += height * CENTER_TO_FACTOR[self.center_y]  if self.factor_y < 0
+
         return Rect.new(x, y, width, height)
       end
       alias :bb :bounding_box
