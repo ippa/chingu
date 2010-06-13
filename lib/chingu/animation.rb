@@ -66,10 +66,17 @@ module Chingu
     
     #
     # Remove transparent space from each frame so the actual sprite is touching the border of the image.
+    # This requires TexPlay
     #
     def trim
+      
+      traces = [0,0,]
       @frames.each do |frame|
-        # TODO!
+        y = 0
+        x2, y2, color = frame.line 0,y,frame.width,y, :trace => { :while_color => :alpha }
+        puts "final y: #{y}"
+        #frame.image.trace 0,0,image
+        #frame.splice(frame,0,0, :crop => [10, 10, 20, 20])
       end
     end
     
