@@ -95,7 +95,14 @@ class Box < GameObject
     @image = Image["rect.png"]
     self.velocity_x = 3 - rand * 6
     self.velocity_y = 3 - rand * 6
-    self.factor = 2
+    
+    # Test to make sure the bounding_box works with all bellow combos
+    #self.factor = 2
+    #self.factor = -2
+    #self.rotation_center = :left_top
+    #self.rotation_center = :center
+    #self.rotation_center = :right_bottom
+    
     cache_bounding_box
   end
   
