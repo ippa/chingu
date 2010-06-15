@@ -61,8 +61,10 @@ module Chingu
         @selected_game_object = nil        
         self.input =  { :left_mouse_button => :left_mouse_button, 
                         :released_left_mouse_button => :released_left_mouse_button,
-                        :right_mouse_button => :right_mouse_button, 
-                        :released_right_mouse_button => :released_right_mouse_button,                        
+                        :right_mouse_button => :right_mouse_button,
+                        :released_right_mouse_button => :released_right_mouse_button, 
+                        :mouse_wheel_up => :inc_zorder,
+                        :mouse_wheel_down => :dec_zorder,
                         :delete => :destroy_selected_game_objects,
                         :backspace => :destroy_selected_game_objects,
                         :a => :select_all,
@@ -73,8 +75,8 @@ module Chingu
                         :holding_down_arrow => :scroll_down,
                         :holding_left_arrow => :scroll_left,
                         :holding_right_arrow => :scroll_right,
-                        :page_up => :page_up,
-                        :page_down => :page_down,
+                        :page_up => :inc_zorder,
+                        :page_down => :dec_zorder,
                         :"1" => :create_object_1,
                         :"2" => :create_object_2,
                         :"3" => :create_object_3,
@@ -85,6 +87,7 @@ module Chingu
         x = 20
         y = 60
         
+
         @classes.each do |klass|
           puts "Creating a #{klass}"  if @debug
           
@@ -99,8 +102,9 @@ module Chingu
           # Scale down big objects, don't scale objects under [32, 32]
           if game_object.image
             game_object.factor_x = 32.0 / game_object.image.width   if game_object.image.width > 32
-            game_object.factor_y = 32.0 / game_object.image.height  if game_object.image.height > 32
+            game_object.factor_y = 32.0 / game_object.image.height  if game_object.image.height > 3
           end
+          
           x += 40
         end
       end
@@ -259,7 +263,14 @@ module Chingu
             selected_game_objects.each { |x| x.options[:selected] = nil } unless holding?(:left_ctrl)
           end
           
-          @selected_game_object.options[:selected] = true
+    
+          if holding?(:left_ctrl)
+            # Toggle selection
+            @selected_game_object.options[:selected] =  @selected_game_object.options[:selected] == nil ? true : nil
+          else
+            @selected_game_object.options[:selected] = true
+          end
+          
           #
           # Re-align all objects x/y offset in relevance to the cursor
           #
@@ -317,13 +328,17 @@ module Chingu
         pop_game_state(:setup => false)
       end
       
-      def page_up
+      def inc_zorder
         selected_game_objects.each { |game_object| game_object.zorder += 1 }
-        #self.previous_game_state.viewport.y -= $window.height if defined?(self.previous_game_state.viewport)
+      end
+      def dec_zorder
+        selected_game_objects.each { |game_object| game_object.zorder -= 1 }
+      end
+      def page_up
+        self.previous_game_state.viewport.y -= $window.height if defined?(self.previous_game_state.viewport)
       end
       def page_down
-        selected_game_objects.each { |game_object| game_object.zorder -= 1 }
-        #self.previous_game_state.viewport.y += $window.height if defined?(self.previous_game_state.viewport)
+        self.previous_game_state.viewport.y += $window.height if defined?(self.previous_game_state.viewport)
       end
       def scroll_up
         self.previous_game_state.viewport.y -= 10 if defined?(self.previous_game_state.viewport)
