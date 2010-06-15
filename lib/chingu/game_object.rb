@@ -32,7 +32,7 @@ module Chingu
   #
   class GameObject < Chingu::BasicGameObject
     attr_accessor :image, :x, :y, :angle, :center_x, :center_y, :factor_x, :factor_y, :color, :mode, :zorder
-    attr_reader :factor, :center#, :rotation_center
+    attr_reader :factor, :center
     
     include Chingu::Helpers::InputClient        # Adds input and input=
     include Chingu::Helpers::RotationCenter     # Adds easy and verbose modification of @center_x and @center_y
@@ -127,7 +127,7 @@ module Chingu
       not inside_window?(x,y)
     end
     
-    # Calculates the distance from self to a given objevt
+    # Calculates the distance from self to a given object
     def distance_to(object)
       distance(self.x, self.y, object.x, object.y)
     end
