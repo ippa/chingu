@@ -67,7 +67,7 @@ For example, inside game state Menu you call push_game_state(Level). When Level 
 Traits are extensions (or plugins if you so will) to BasicGameObjects included on the class-level.
 The aim is so encapsulate common behavior into modules for easy inclusion in your game classes.
 Making a trait is easy, just an ordinary module with the methods setup_trait(), update_trait() and/or draw_trait().
-It currently has to be namespaced to Chingu::Traits for "has_traits" to work inside GameObject-classes.
+It currently has to be namespaced to Chingu::Traits for "traits" to work inside GameObject-classes.
 
 == OTHER CLASSES / HELPERS
 
@@ -446,6 +446,32 @@ Or Chingus shortcut:
   
 Chingus inputhandler will detect that Menu is a GameState-class, create a new instance and activate it with push_game_state().
 
+=== Premade game states
+Chingu comes with some pre-made game states.
+A simple but usefull one is GameStates::Pause. Once pushed it will draw the previous game state but not update it --
+effectively pausing it.
+
+The biggest and most usable is GameStates::Edit which enables fast 'n easy level-building with game objects.
+Start example19 and press 'E' to get a full example.
+
+Edit commands / shortcuts:
+  1-5: create object 1..5 shown in toolbar at mousecursor
+  DEL: delete selected objects
+  CTRL+A: select all objects (not code-created ones though)
+  S: Save
+  E: Save and Quit
+  Right Mouse Button Click: Copy object that was clicked on for fast duplication
+  Arrows: Scroll within a viewport
+  Page up/down: Modify the zorder of selected game objects
+
+If you're editing game state BigBossLevel the editor will save to big_boss_level.yml by default.
+All the game objects in that file are then easily loaded with the load_game_objects command.
+
+Both Edit.new and load_game_objects take parameters as 
+  :file => "enemies.yml"    # Save edited game objects to file enemies.yml
+  :debug => true            # Will print various debugmsgs to console, usefull if something behaves oddly
+  :except => Player         # Don't edit or load objects based on class Player
+
 === WorkFlow
 (This text is under development)
 
@@ -467,8 +493,6 @@ Compare the 2 snippets below:
     @color = Color::WHITE
   end
   
-  
-
 === Traits
 Traits (sometimes called behaviors in other frameworks) is a way of adding logic to any class inheriting from BasicGameObject / GameObject.
 Chingus trait-implementation is just ordinary ruby modules with 3 special methods:
@@ -479,7 +503,7 @@ Each of those 3 methods must call "super" to continue the trait-chain.
 
 Inside a certian trait-module you can also have a module called ClassMethods, methods inside that module will be added,
 yes you guessed it, as class methods. If initialize_trait is defined inside ClassMethods it will be called class-evaluation time
-(basicly on the has_trait :some_trait line).
+(basicly on the trait :some_trait line).
 
 A simple trait could be:
 
@@ -512,7 +536,7 @@ module Chingu
 end
 
 class Enemy < GameObject
-  has_trait :inspect    # includes Chingu::Trait::Inspect and extends Chingu::Trait::Inspect::ClassMethods
+  trait :inspect    # includes Chingu::Trait::Inspect and extends Chingu::Trait::Inspect::ClassMethods
 end
 10.times { Enemy.create }
 Enemy.inspect           # => "There's 10 active instances of class Enemy"
@@ -522,7 +546,7 @@ Enemy.all.first.inspect # => "Hello I'm a Enemy"
 Example of using traits :velocity and :timer:
 
   class Ogre < Chingu::GameObject
-    has_traits :velocity, :timer
+    traits :velocity, :timer
     
     def initialize(options)
       super
@@ -549,7 +573,7 @@ Example of using traits :velocity and :timer:
   
 The flow for a game object then becomes:
 
-  -- creating a GameObject class X  ( with a "has_trait :bounding_box, :scale => 0.80" )
+  -- creating a GameObject class X  ( with a "trait :bounding_box, :scale => 0.80" )
   1) trait gets merged into X, instance and class methods are added
   2) GameObject.initialize_trait(:scale => 0.80)   (initialize_trait is a class-method!)
   -- creating an instance of X
@@ -576,25 +600,25 @@ They modify x, y as you would expect. *speed / angle will come*
 
 ==== Trait "bounding_box"
 Adds accessor 'bounding_box', which returns a Rect based on current image size,x,y,factor_x,factor_y,center_x,center_y
-You can also scale the calculated rect with has_trait-options:
+You can also scale the calculated rect with trait-options:
 
   # This would return a rect slightly smaller then the image. 
   # Make player think he's better @ dodging bullets then he really is ;)
-  has_trait :bounding_box, :scale => 0.80 
+  trait :bounding_box, :scale => 0.80 
   
   # Make the bounding box bigger then the image
   # :debug => true shows the actual box in red on the screen
-  has_trait :bounding_box, :scale => 1.5, :debug => true
+  trait :bounding_box, :scale => 1.5, :debug => true
 
 ==== Trait "bounding_circle"
 Adds accessor 'radius', which returns a Fixnum based on current image size,factor_x and factor_y
-You can also scale the calculated radius with has_trait-options:
+You can also scale the calculated radius with trait-options:
 
   # This would return a radius slightly bigger then what initialize was calculated
-  has_trait :bounding_circle, :scale => 1.10
+  trait :bounding_circle, :scale => 1.10
 
   # :debug => true shows the actual circle in red on the screen
-  has_trait :bounding_circle, :debug => true
+  trait :bounding_circle, :debug => true
 
 ==== Trait "animation"
 Automatically load animations depending on the class-name.
@@ -612,7 +636,7 @@ Assuming the below code is included in a class FireBall.
   # 
 	# The below example will set the 200ms delay between each frame on all animations loaded.
   #
-  has_trait :automatic_assets, :delay => 200
+  trait :automatic_assets, :delay => 200
 
 ==== Trait "effect"
 Adds accessors rotation_rate, fade_rate and scale_rate to game object.
