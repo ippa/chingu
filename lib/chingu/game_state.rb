@@ -128,6 +128,17 @@ module Chingu
       self.class.to_s
     end
     
+    #
+    # Returns a filename-friendly string from the current class-name
+    #
+    # "Level19" -> "level19"
+    # "BigBossLevel" -> "big_boss_level"
+    #
+    def filename
+      Chingu::Inflector.underscore(self.class.to_s)
+    end
+    
+    
     def setup
       # Your game state setup logic here.
     end
