@@ -63,20 +63,30 @@ module Chingu
                         :released_left_mouse_button => :released_left_mouse_button,
                         :right_mouse_button => :right_mouse_button,
                         :released_right_mouse_button => :released_right_mouse_button, 
-                        :mouse_wheel_up => :inc_zorder,
-                        :mouse_wheel_down => :dec_zorder,
                         :delete => :destroy_selected_game_objects,
                         :backspace => :destroy_selected_game_objects,
-                        :a => :select_all,
+                        :holding_w => :w,
+                        :holding_a => :a,
+                        :holding_s => :s,
+                        :holding_d => :d,
+                        
+                        :s => :try_save,
+                        :a => :try_select_all,
+                        
                         :e => :save_and_quit,
-                        :s => :save,
                         :esc => :save_and_quit,
                         :holding_up_arrow => :scroll_up,
                         :holding_down_arrow => :scroll_down,
                         :holding_left_arrow => :scroll_left,
                         :holding_right_arrow => :scroll_right,
+                        
                         :page_up => :inc_zorder,
                         :page_down => :dec_zorder,
+                        :plus => :scale_up,
+                        :minus => :scale_down,
+                        :mouse_wheel_up => :scale_up,
+                        :mouse_wheel_down => :scale_down,
+                        
                         :"1" => :create_object_1,
                         :"2" => :create_object_2,
                         :"3" => :create_object_3,
@@ -86,8 +96,6 @@ module Chingu
         
         x = 20
         y = 60
-        
-
         @classes.each do |klass|
           puts "Creating a #{klass}"  if @debug
           
@@ -97,14 +105,12 @@ module Chingu
           game_object.x = x
           game_object.y = y
           game_object.zorder = @zorder
-          # game_object.rotation_center = :top_left
           
           # Scale down big objects, don't scale objects under [32, 32]
           if game_object.image
             game_object.factor_x = 32.0 / game_object.image.width   if game_object.image.width > 32
             game_object.factor_y = 32.0 / game_object.image.height  if game_object.image.height > 3
-          end
-          
+          end          
           x += 40
         end
       end
@@ -164,7 +170,7 @@ module Chingu
           @cursor_game_object.draw_at($window.mouse_x, $window.mouse_y)
         else
           #
-          # draw a simple triagle-shaped cursor
+          # draw a simple triangle-shaped cursor
           #
           $window.draw_triangle( $window.mouse_x, $window.mouse_y, Color::WHITE, 
                                 $window.mouse_x, $window.mouse_y + 10, Color::WHITE, 
@@ -309,25 +315,56 @@ module Chingu
         end.first
       end
       
-      def save
-        save_game_objects(:game_objects => editable_game_objects, :file => @file, :classes => @classes)
+      # 
+      #  WASD-keys have multiple meanings depending on CTRL is held down.
+      #
+      #   A - Rotate left   D - Rotate right
+      #   W - Scale Up      S - Scale Down
+      #
+      #   CTRL+A - Select all objects
+      #   CTRL+S - Save
+      #
+      def w
+        scale_up
       end
       
-      def save_and_quit
-        save
-        quit
+      def a
+        selected_game_objects.each { |game_object| game_object.angle -= 1 } unless holding?(:left_ctrl)
       end
-            
-      def select_all
-        if holding?(:left_ctrl)
-          editable_game_objects.each { |x| x.options[:selected] = true }
-        end
+
+      def s
+        scale_down unless holding?(:left_ctrl)
       end
+      
+      def d
+        selected_game_objects.each { |game_object| game_object.angle += 1 }        
+      end
+      
+      def try_select_all
+        editable_game_objects.each { |x| x.options[:selected] = true }  if holding?(:left_ctrl)
+      end
+      
+      def try_save
+        save if holding?(:left_ctrl)
+      end
+
       
       def quit
         pop_game_state(:setup => false)
       end
+      def save 
+        save_game_objects(:game_objects => editable_game_objects, :file => @file, :classes => @classes)
+      end
+      def save_and_quit
+        save; quit
+      end
       
+      def scale_up
+        selected_game_objects.each { |game_object| game_object.scale += 0.01 }
+      end
+      def scale_down
+        selected_game_objects.each { |game_object| game_object.scale -= 0.01 }
+      end
       def inc_zorder
         selected_game_objects.each { |game_object| game_object.zorder += 1 }
       end
