@@ -14,11 +14,11 @@ class Game < Chingu::Window
     Gosu::enable_undocumented_retrofication
     self.factor = 3
     #self.input = { :escape => :exit }
-    switch_game_state(Level.new)
+    switch_game_state(Example19.new)
   end    
 end
 
-class Level < GameState
+class Example19 < GameState
   #
   # This adds accessor 'viewport' to class and overrides draw() to use it.
   #
@@ -41,14 +41,44 @@ class Level < GameState
     # Create 40 stars scattered around the map. This is now replaced by load_game_objects()
     # ## 40.times { |nr| Star.create(:x => rand * self.viewport.x_max, :y => rand * self.viewport.y_max) }
     #
-    load_game_objects( :file => "example19_game_objects.yml" )
+    # load_game_objects( :file => "example19_game_objects.yml" )
+    #
+    
+    # We can skip the :file argument and Level19 will as default load from "level19.yml"
+    load_game_objects
   
     # Create our mechanic star-hunter
     @droid = Droid.create(:x => 100, :y => 100)    
   end
 
   def edit
-    push_game_state(GameStates::Edit.new(:file => "example19_game_objects.yml", :classes => [Star, StoneWall]))
+    #
+    # Manually specify classes in editor
+    #
+    # state = GameStates::Edit.new(:file => "example19_game_objects.yml", :classes => [Star, StoneWall])
+
+    #
+    # Let Edit automatically detect available GameObjects (this includes Text etc)
+    #
+    # state = GameStates::Edit.new(:file => "example19_game_objects.yml")
+    
+    #
+    # Let Edit decide what game objects to paint with + file to save to
+    # With this you can use a clean: self.input = { :e => GameStates::Edit }
+    # 
+    # Watch out though, if you create objects in your code, editor will pick them up and save them.
+    # Next time you start your game, load_game_objects will create those object AND your code will create them.
+    # So use this only if you create All your game objects with load_game_objects
+    #
+    # state = GameStates::Edit
+    #
+    
+    #
+    # This will edit all game objects except Droid-instances
+    #
+    state = GameStates::Edit.new(:except => Droid)
+    
+    push_game_state(state)
   end
   
   def update    
