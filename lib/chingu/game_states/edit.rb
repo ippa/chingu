@@ -50,7 +50,7 @@ module Chingu
       def initialize(options = {})
         super
         @grid = options[:grid] || [8,8]
-        @classes = options[:classes] || game_object_classes
+        @classes = Array(options[:classes]) || game_object_classes
         @except = options[:except] || []
         @classes -= Array(@except)
         
