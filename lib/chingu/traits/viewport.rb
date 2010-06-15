@@ -70,6 +70,7 @@ module Chingu
       #
       def draw
         self.game_objects.draw_relative(-@viewport.x, -@viewport.y)
+        #@viewport.apply { super }
       end      
     end
   end

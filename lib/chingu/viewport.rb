@@ -145,5 +145,9 @@ module Chingu
       end
     end
     
+    def apply(&block)
+      $window.translate(-@x, -@y, &block)
+    end    
+    
   end
 end
