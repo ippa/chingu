@@ -53,10 +53,10 @@ module Chingu
       KbLeftShift   => [:left_shift, :lshift],
       
       
-      KbNumpadAdd       => [:"+", :add],
+      KbNumpadAdd       => [:"+", :add, :plus],
       KbNumpadDivide    => [:"/", :divide],
       KbNumpadMultiply  => [:"*", :multiply],
-      KbNumpadSubtract  => [:"-", :subtract],
+      KbNumpadSubtract  => [:"-", :subtract, :minus],
       KbPageDown        => [:page_down],
       KbPageUp          => [:page_up],
       # KbPause           => [:pause],
