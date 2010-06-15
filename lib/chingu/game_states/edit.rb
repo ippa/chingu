@@ -51,6 +51,7 @@ module Chingu
                         :released_right_mouse_button => :released_right_mouse_button,                        
                         :delete => :destroy_selected_game_objects,
                         :backspace => :destroy_selected_game_objects,
+                        :a => :select_all,
                         :e => :save_and_quit,
                         :s => :save,
                         :esc => :save_and_quit,
@@ -269,6 +270,12 @@ module Chingu
       def save_and_quit
         save
         quit
+      end
+      
+      def select_all
+        if holding?(:left_ctrl)
+          previous_game_state.game_objects.each { |x| x.options[:selected] = true }
+        end
       end
       
       def quit
