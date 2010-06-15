@@ -87,7 +87,7 @@ module Chingu
       end
             
       def setup
-        @file = options[:file] || "#{previous_game_state.class.to_s.downcase}.yml"
+        @file = options[:file] || previous_game_state.filename + ".yml"
         
         @title = Text.create("File: #{@file}", :x => 5, :y => 2, :factor => 1, :size => 16, :zorder => @zorder)
         @title.text += " - Grid: #{@grid}" if @grid
