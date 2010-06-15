@@ -94,11 +94,12 @@ module Chingu
           game_object.x = x
           game_object.y = y
           game_object.zorder = @zorder
+          # game_object.rotation_center = :top_left
           
           # Scale down big objects, don't scale objects under [32, 32]
           if game_object.image
-            game_object.factor_x = 32 / game_object.image.width   if game_object.image.width > 32
-            game_object.factor_y = 32 / game_object.image.height  if game_object.image.height > 32
+            game_object.factor_x = 32.0 / game_object.image.width   if game_object.image.width > 32
+            game_object.factor_y = 32.0 / game_object.image.height  if game_object.image.height > 32
           end
           x += 40
         end
