@@ -34,13 +34,13 @@ module Chingu
       def initialize(options = {})
         super
         @grid = options[:grid] || [8,8]
-        @classes = options[:classes] || []
+        @classes = options[:classes] || game_object_classes
         @only = options[:only] || []
         @debug = options[:debug]
         @file = options[:file] || "#{previous_game_state.class.to_s.downcase}.yml"
         @zorder = 10000
         
-        @hud_color = Gosu::Color.new(150,100,100,100)
+        @hud_color = Gosu::Color.new(180,70,70,70)
         @selected_game_object = nil        
         self.input =  { :left_mouse_button => :left_mouse_button, 
                         :released_left_mouse_button => :released_left_mouse_button,
@@ -66,6 +66,7 @@ module Chingu
         
         x = 20
         y = 60
+        
         @classes.each do |klass|
           puts "Creating a #{klass}"  if @debug
           
@@ -92,6 +93,15 @@ module Chingu
         @status_text = Text.create("-", :x => 5, :y => 20, :factor => 1, :size => 16, :zorder => @zorder)
         #@title2 = Text.create("(1-10) Create object at mouse pos  (DEL) Delete selected object  (S) Save  (E) Save and Quit  (ESC) Quit without saving", :x => 5, :y => 30, :factor => 1)
       end
+      
+      #
+      # Get all classes based on GameObject except Chingus internal classes.
+      #
+      def game_object_classes
+        ObjectSpace.enum_for(:each_object, class << GameObject; self; end).to_a.select do |game_class|
+          game_class.instance_methods && !game_class.to_s.include?("Chingu::")
+        end
+      end      
       
       def create_object_nr(number)
         c = @classes[number].create(:x => x, :y => y, :parent => previous_game_state)  if @classes[number]
@@ -258,12 +268,6 @@ module Chingu
       
       def quit
         pop_game_state(:setup => false)
-      end
-
-      def game_object_classes
-        ObjectSpace.enum_for(:each_object, class << GameObject; self; end).to_a.select do |game_class|
-          game_class.instance_methods
-        end
       end
       
       def page_up
