@@ -30,14 +30,14 @@ module Chingu
     # requires the global $window set to the instance of Gosu::Window (automaticly handled if you use Chingu::Window)
     #
     class Edit < Chingu::GameState
+      attr_accessor :grid, :debug, :file, :hud_color
+      attr_reader :classes
       
       def initialize(options = {})
         super
         @grid = options[:grid] || [8,8]
         @classes = options[:classes] || game_object_classes
-        @only = options[:only] || []
         @debug = options[:debug]
-        @file = options[:file] || "#{previous_game_state.class.to_s.downcase}.yml"
         @zorder = 10000
         
         @hud_color = Gosu::Color.new(180,70,70,70)
@@ -86,7 +86,9 @@ module Chingu
         end
       end
             
-      def setup                        
+      def setup
+        @file = options[:file] || "#{previous_game_state.class.to_s.downcase}.yml"
+        
         @title = Text.create("File: #{@file}", :x => 5, :y => 2, :factor => 1, :size => 16, :zorder => @zorder)
         @title.text += " - Grid: #{@grid}" if @grid
         @text = Text.create("", :x => 200, :y => 20, :factor => 1, :size => 16, :zorder => @zorder)
