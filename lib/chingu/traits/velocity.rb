@@ -107,6 +107,13 @@ module Chingu
       def stopped?
         @velocity_x == 0 && @velocity_y == 0
       end
+
+      #
+      # Did game object move last tick
+      #
+      def moved?
+        @x != @previous_x || @y != @previous_y
+      end
     end
   end
 end
