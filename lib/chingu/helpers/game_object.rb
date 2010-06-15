@@ -60,9 +60,9 @@ module Chingu
       
       puts "* Loading game objects from #{file}" if debug
       if File.exists?(file)
-        game_objects = YAML.load_file(file)
-        game_objects.each do |game_object|
-          game_object.each_pair do |klassname, attributes|
+        objects = YAML.load_file(file)
+        objects.each do |object|
+          object.each_pair do |klassname, attributes|
             begin
               klass = Kernel::const_get(klassname)
               unless klass.class == "GameObject" && !except.include?(klass)
@@ -76,6 +76,7 @@ module Chingu
           end
         end
       end
+      self.game_objects.sync
     end
     
     #
