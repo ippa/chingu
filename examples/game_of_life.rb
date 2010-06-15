@@ -34,8 +34,8 @@ class GameOfLife < Chingu::GameState
                   :z => :reset,
                   :n => :update_grid,
                   :space => :toggle_running,
-                  :left_arrow => :prev_pattern,
-                  :right_arrow => :next_pattern
+                  [:mouse_wheel_up,:left_arrow] => :prev_pattern,
+                  [:mouse_wheel_down,:right_arrow] => :next_pattern
                 }
 
     @pattern = :pixel
@@ -49,7 +49,7 @@ class GameOfLife < Chingu::GameState
   end  
   
   def update_pattern_info
-    @pattern_info.text = "Current pattern: #{@pattern}. Change patterns with left/right arrow keys."
+    @pattern_info.text = "Current pattern: #{@pattern}. Change patterns with mousewheel."
   end
     
   def prev_pattern
