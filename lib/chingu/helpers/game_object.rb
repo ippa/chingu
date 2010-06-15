@@ -52,8 +52,9 @@ module Chingu
     # Creates game objects from a Chingu-spezed game objects file (created with game state 'Edit')
     #
     def load_game_objects(options = {})
-      file = options[:file] || "#{self.class.to_s.downcase}.yml"
+      file = options[:file] || self.filename + ".yml"
       debug = options[:debug]
+      except = Array(options[:except]) || []
       
       require 'yaml'
       
@@ -64,7 +65,7 @@ module Chingu
           game_object.each_pair do |klassname, attributes|
             begin
               klass = Kernel::const_get(klassname)
-              unless klass.class == "GameObject"
+              unless klass.class == "GameObject" && !except.include?(klass)
                 puts "Creating #{klassname.to_s}: #{attributes.to_s}" if debug
                 klass.create(attributes)
               end

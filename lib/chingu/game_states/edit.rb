@@ -31,12 +31,15 @@ module Chingu
     #
     class Edit < Chingu::GameState
       attr_accessor :grid, :debug, :file, :hud_color
-      attr_reader :classes
+      attr_reader :classes, :exclude
       
       def initialize(options = {})
         super
         @grid = options[:grid] || [8,8]
         @classes = options[:classes] || game_object_classes
+        @except = options[:except] || []
+        @classes -= Array(@except)
+        
         @debug = options[:debug]
         @zorder = 10000
         
