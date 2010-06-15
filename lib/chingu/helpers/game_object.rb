@@ -67,7 +67,8 @@ module Chingu
               klass = Kernel::const_get(klassname)
               unless klass.class == "GameObject" && !except.include?(klass)
                 puts "Creating #{klassname.to_s}: #{attributes.to_s}" if debug
-                klass.create(attributes)
+                object = klass.create(attributes)
+                object.options[:created_with_editor] = true if object.options
               end
             rescue
               puts "Couldn't create class '#{klassname}'"

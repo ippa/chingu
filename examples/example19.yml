@@ -1550,13 +1550,13 @@
     :angle: 0
     :zorder: 100
 - StoneWall: 
-    :x: 103.0
-    :y: 159.0
+    :x: 96.0
+    :y: 152.0
     :angle: 0
     :zorder: 100
 - StoneWall: 
-    :x: 242.0
-    :y: 159.0
+    :x: 240.0
+    :y: 152.0
     :angle: 0
     :zorder: 100
 - StoneWall: 
@@ -1587,5 +1587,10 @@
 - StoneWall: 
     :x: 120.0
     :y: 400.0
+    :angle: 0
+    :zorder: 100
+- StoneWall: 
+    :x: 73.0
+    :y: 142.0
     :angle: 0
     :zorder: 100

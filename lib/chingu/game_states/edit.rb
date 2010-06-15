@@ -29,6 +29,20 @@ module Chingu
     #
     # requires the global $window set to the instance of Gosu::Window (automaticly handled if you use Chingu::Window)
     #
+    # Edit will only edit game objects created with the editor itself or that's been loaded with load_game_objects.
+    # This makes mixing of loaded game objects and code create game objects possible, in the game, and in the editor.
+    #
+    # Various shortcuts are available in the editor
+    #
+    # 1-5: create object 1..5 shown in toolbar
+    # DEL: delete selected objects
+    # CTRL+A: select all objects (not code-created ones though)
+    # S: Save
+    # E: Save and Quit
+    # Right Mouse Button Click: Copy object that was clicked on for fast duplication
+    # Arrows: Scroll within a viewport
+    # Page up/down: Modify the zorder of selected game objects
+    #
     class Edit < Chingu::GameState
       attr_accessor :grid, :debug, :file, :hud_color
       attr_reader :classes, :exclude
@@ -111,6 +125,7 @@ module Chingu
       
       def create_object_nr(number)
         c = @classes[number].create(:x => x, :y => y, :parent => previous_game_state)  if @classes[number]
+        c.options[:created_with_editor] = true
         c.update
         #@text.text = "Created a #{c.class} @ #{c.x} / #{c.y}"
       end
@@ -186,11 +201,29 @@ module Chingu
         
         @status_text.text = "Mouseposition: #{x} / #{y}"
       end
-
-      def selected_game_objects
-        previous_game_state.game_objects.select { |o| o.options[:selected] }
+      
+      #
+      # Returns a list of game objects the editor can create. 2 types of object gets this flag:
+      # - An object loaded with load_game_objects
+      # - An object created from within the editor
+      #
+      # This helps us mix code-created with editor-created objects inside the editor and not muck around with
+      # the code-created ones.
+      #
+      def editable_game_objects
+        previous_game_state.game_objects.select { |o| o.options[:created_with_editor] }
       end
       
+      #
+      # Returns a list of selected game objects
+      #
+      def selected_game_objects
+        editable_game_objects.select { |o| o.options[:selected] }
+      end
+      
+      #
+      # Call destroy on all selected game objects
+      #
       def destroy_selected_game_objects
         selected_game_objects.each(&:destroy)
       end
@@ -205,6 +238,7 @@ module Chingu
           game_object = @cursor_game_object.class.create(:parent => previous_game_state)
           game_object.update
           game_object.options[:selected] = true
+          game_object.options[:created_with_editor] = true
           game_object.x = x
           game_object.y = y
         end
@@ -258,23 +292,23 @@ module Chingu
       end
 
       def game_object_at(x, y)
-        previous_game_state.game_objects.select do |game_object| 
+        editable_game_objects.select do |game_object| 
           game_object.respond_to?(:collision_at?) && game_object.collision_at?(x,y)
         end.first
       end
       
       def save
-        save_game_objects(:game_objects => previous_game_state.game_objects, :file => @file, :classes => @classes)
+        save_game_objects(:game_objects => editable_game_objects, :file => @file, :classes => @classes)
       end
       
       def save_and_quit
         save
         quit
       end
-      
+            
       def select_all
         if holding?(:left_ctrl)
-          previous_game_state.game_objects.each { |x| x.options[:selected] = true }
+          editable_game_objects.each { |x| x.options[:selected] = true }
         end
       end
       

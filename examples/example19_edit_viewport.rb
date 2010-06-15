@@ -63,20 +63,16 @@ class Example19 < GameState
     # state = GameStates::Edit.new(:file => "example19_game_objects.yml")
     
     #
-    # Let Edit decide what game objects to paint with + file to save to
+    # Let Edit decide what game objects to paint with + file to save to.
     # With this you can use a clean: self.input = { :e => GameStates::Edit }
-    # 
-    # Watch out though, if you create objects in your code, editor will pick them up and save them.
-    # Next time you start your game, load_game_objects will create those object AND your code will create them.
-    # So use this only if you create All your game objects with load_game_objects
     #
-    # state = GameStates::Edit
+    state = GameStates::Edit
+        
     #
-    
+    # This will show game objects classes except Droid-instances in the toolbar
     #
-    # This will edit all game objects except Droid-instances
+    # state = GameStates::Edit.new(:except => Droid)
     #
-    state = GameStates::Edit.new(:except => Droid)
     
     push_game_state(state)
   end
