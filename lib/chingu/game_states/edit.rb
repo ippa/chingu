@@ -68,12 +68,26 @@ module Chingu
           :delete => :destroy_selected_game_objects,
           :backspace => :reset_selected_game_objects,
                         
-          :holding_numpad_8 => :scale_up,
+          :holding_numpad_7 => :scale_down,
+          :holding_numpad_9 => :scale_up,
           :holding_numpad_4 => :tilt_left,
-          :holding_numpad_5 => :scale_down,
-          :holding_numpad_6 => :tilt_right,
+          :holding_numpad_8 => :tilt_right,
+          :holding_numpad_1 => :dec_alpha,
+          :holding_numpad_3 => :inc_alpha,
+
+          :holding_z => :scale_down,
+          :holding_x => :scale_up,
+          :holding_c => :tilt_left,
+          :holding_v => :tilt_right,
+          :holding_b => :dec_alpha,
+          :holding_n => :inc_alpha,
+
+          :page_up => :inc_zorder,
+          :page_down => :dec_zorder,
+
+
           :tab => :save_and_quit,
-                     
+ 
           :s => :try_save,
           :a => :try_select_all,
     
@@ -85,8 +99,6 @@ module Chingu
           :left_arrow => :move_left,
           :right_arrow => :move_right,
                         
-          :page_up => :inc_zorder,
-          :page_down => :dec_zorder,
           :plus => :scale_up,
           :minus => :scale_down,
           :mouse_wheel_up => :scale_up,
@@ -232,11 +244,11 @@ module Chingu
           game_object.y = self.mouse_y
           
           unless @cursor_game_object.options[:toolbar]
-            game_object.angle = @cursor_game_object.angle
-            game_object.factor_x = @cursor_game_object.factor_x
-            game_object.factor_y = @cursor_game_object.factor_y
-            game_object.color = @cursor_game_object.color
-            game_object.zorder = @cursor_game_object.zorder
+            game_object.angle = @cursor_game_object.angle.dup
+            game_object.factor_x = @cursor_game_object.factor_x.dup
+            game_object.factor_y = @cursor_game_object.factor_y.dup
+            game_object.color = @cursor_game_object.color.dup
+            game_object.zorder = @cursor_game_object.zorder.dup
             @cursor_game_object.update
           end
         end
@@ -414,6 +426,18 @@ module Chingu
       def scale_down
         scale_down_x && scale_down_y
       end
+      def inc_zorder
+        selected_game_objects.each { |game_object| game_object.zorder += 1 }
+      end
+      def dec_zorder
+        selected_game_objects.each { |game_object| game_object.zorder -= 1 }
+      end
+      def inc_alpha
+        selected_game_objects.each { |game_object| game_object.alpha += 1 }
+      end
+      def dec_alpha
+        selected_game_objects.each { |game_object| game_object.alpha -= 1 }
+      end
       def scale_up_x
         selected_game_objects.each { |game_object| game_object.factor_x += grid_factor_x_for(game_object) }
       end
@@ -434,12 +458,6 @@ module Chingu
         @grid[0].to_f / object.image.height.to_f
       end
 
-      def inc_zorder
-        selected_game_objects.each { |game_object| game_object.zorder += 1 }
-      end
-      def dec_zorder
-        selected_game_objects.each { |game_object| game_object.zorder -= 1 }
-      end
       def page_up
         self.previous_game_state.viewport.y -= $window.height if defined?(self.previous_game_state.viewport)
       end
