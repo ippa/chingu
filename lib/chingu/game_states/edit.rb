@@ -206,6 +206,11 @@ module Chingu
             @selected_game_object.bounding_box.x = @selected_game_object.x
             @selected_game_object.bounding_box.y = @selected_game_object.y
           end
+        elsif @left_mouse_button
+          if defined?(self.previous_game_state.viewport)
+            self.previous_game_state.viewport.x = @left_mouse_click_at[0] - $window.mouse_x
+            self.previous_game_state.viewport.y = @left_mouse_click_at[1] - $window.mouse_y
+          end
         end
         
         @status_text.text = "Mouseposition: #{x} / #{y}"
@@ -252,6 +257,11 @@ module Chingu
       #
       def left_mouse_button
         @left_mouse_button = true
+        if defined?(self.previous_game_state.viewport)
+          @left_mouse_click_at = [self.previous_game_state.viewport.x + $window.mouse_x, self.previous_game_state.viewport.y + $window.mouse_y]
+        else
+          @left_mouse_click_at = [$window.mouse_x, $window.mouse_y]
+        end
         
         if @cursor_game_object && game_object_at(x, y)==nil && game_object_icon_at($window.mouse_x, $window.mouse_y) == nil
           game_object = @cursor_game_object.class.create(:parent => previous_game_state)
@@ -277,10 +287,9 @@ module Chingu
             selected_game_objects.each { |x| x.options[:selected] = nil } unless holding?(:left_ctrl)
           end
           
-    
           if holding?(:left_ctrl)
             # Toggle selection
-            @selected_game_object.options[:selected] =  @selected_game_object.options[:selected] == nil ? true : nil
+            @selected_game_object.options[:selected] =  !@selected_game_object.options[:selected]
           else
             @selected_game_object.options[:selected] = true
           end
@@ -326,8 +335,8 @@ module Chingu
       #
       # draw a simple triangle-shaped cursor
       #
-      def draw_cursor_at(x,y, c = Color::WHITE)
-        $window.draw_triangle(x, y, c, x, y + 10, c, x + 10, y + 10, c, @zorder + 10)
+      def draw_cursor_at(x, y, c = Color::WHITE)
+        $window.draw_triangle(x, y, c, x, y+10, c, x+10, y+10, c, @zorder + 10)
       end
 
       # 
