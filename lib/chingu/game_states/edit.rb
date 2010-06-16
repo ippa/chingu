@@ -138,7 +138,7 @@ module Chingu
       end      
       
       def create_object_nr(number)
-        c = @classes[number].create(:x => x, :y => y, :parent => previous_game_state)  if @classes[number]
+        c = @classes[number].create(:x => self.mouse_x, :y => self.mouse_y, :parent => previous_game_state)  if @classes[number]
         c.options[:created_with_editor] = true
         c.update
         #@text.text = "Created a #{c.class} @ #{c.x} / #{c.y}"
@@ -195,8 +195,8 @@ module Chingu
         #
         if @left_mouse_button && @selected_game_object
           selected_game_objects.each do |selected_game_object|            
-            selected_game_object.x = self.x + selected_game_object.options[:mouse_x_offset]
-            selected_game_object.y = self.y + selected_game_object.options[:mouse_y_offset]
+            selected_game_object.x = self.mouse_x + selected_game_object.options[:mouse_x_offset]
+            selected_game_object.y = self.mouse_y + selected_game_object.options[:mouse_y_offset]
             selected_game_object.x -= selected_game_object.x % @grid[0]
             selected_game_object.y -= selected_game_object.y % @grid[1]
           end
@@ -213,7 +213,7 @@ module Chingu
           end
         end
         
-        @status_text.text = "Mouseposition: #{x} / #{y}"
+        @status_text.text = "Mouseposition: #{self.mouse_x} / #{self.mouse_y}"
       end
       
       #
@@ -242,6 +242,15 @@ module Chingu
         selected_game_objects.each(&:destroy)
       end
 
+      def deselect_selected_game_objects
+        selected_game_objects.each { |object| object.options[:selected] = nil }
+      end
+      
+      def empty_area_at_cursor
+        game_object_at(self.mouse_x, self.mouse_y)==nil && 
+        game_object_icon_at($window.mouse_x, $window.mouse_y) == nil
+      end
+
       #
       # Resets selected game objects defaults, angle=0, scale=1.
       #
@@ -263,17 +272,21 @@ module Chingu
           @left_mouse_click_at = [$window.mouse_x, $window.mouse_y]
         end
         
-        if @cursor_game_object && game_object_at(x, y)==nil && game_object_icon_at($window.mouse_x, $window.mouse_y) == nil
+        if @cursor_game_object && empty_area_at_cursor
           game_object = @cursor_game_object.class.create(:parent => previous_game_state)
           game_object.update
           game_object.options[:selected] = true
           game_object.options[:created_with_editor] = true
-          game_object.x = x
-          game_object.y = y
+          game_object.x = self.mouse_x
+          game_object.y = self.mouse_y
+          game_object.angle = @cursor_game_object.angle
+          game_object.factor_x = @cursor_game_object.factor_x
+          game_object.factor_y = @cursor_game_object.factor_y
+          game_object.color = @cursor_game_object.color
         end
         
         # Get editable game object that was clicked at (if any)
-        @selected_game_object = game_object_at(x, y)
+        @selected_game_object = game_object_at(self.mouse_x, self.mouse_y)
         
         # Check if user clicked on anything in the icon-toolbar of available game objects
         @cursor_game_object = game_object_icon_at($window.mouse_x, $window.mouse_y)
@@ -284,7 +297,7 @@ module Chingu
           #  --> deselect all objects unless holding left_ctrl
           #
           if @selected_game_object.options[:selected] == nil
-            selected_game_objects.each { |x| x.options[:selected] = nil } unless holding?(:left_ctrl)
+            selected_game_objects.each { |object| object.options[:selected] = nil } unless holding?(:left_ctrl)
           end
           
           if holding?(:left_ctrl)
@@ -298,21 +311,21 @@ module Chingu
           # Re-align all objects x/y offset in relevance to the cursor
           #
           selected_game_objects.each do |selected_game_object|
-            selected_game_object.options[:mouse_x_offset] = selected_game_object.x - self.x
-            selected_game_object.options[:mouse_y_offset] = selected_game_object.y - self.y
+            selected_game_object.options[:mouse_x_offset] = selected_game_object.x - self.mouse_x
+            selected_game_object.options[:mouse_y_offset] = selected_game_object.y - self.mouse_y
           end
         else
-          selected_game_objects.each { |x| x.options[:selected] = nil } unless holding?(:left_ctrl)
+          deselect_selected_game_objects unless holding?(:left_ctrl)
         end
       end
       
       def right_mouse_button
-        @cursor_game_object = game_object_at(x, y)
-        selected_game_objects.each { |x| x.options[:selected] = nil }
+        @cursor_game_object = game_object_at(self.mouse_x, self.mouse_y)
+        
       end
       def released_right_mouse_button
       end
-      
+            
       #
       # RELASED LEFT MOUSE BUTTON
       #
@@ -411,11 +424,11 @@ module Chingu
       def scroll_right
         self.previous_game_state.viewport.x += 10 if defined?(self.previous_game_state.viewport)
       end
-      def x
-        x = $window.mouse_x 
+      def mouse_x
+        x = $window.mouse_x
         x += self.previous_game_state.viewport.x if defined?(self.previous_game_state.viewport)
       end
-      def y
+      def mouse_y
         y = $window.mouse_y
         y += self.previous_game_state.viewport.y if defined?(self.previous_game_state.viewport)
       end
