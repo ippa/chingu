@@ -122,6 +122,7 @@ module Chingu
       # SETUP
       #
       def setup
+        @scroll_border_thickness = 50
         @file = options[:file] || previous_game_state.filename + ".yml"
         @title = Text.create("File: #{@file}", :x => 5, :y => 2, :factor => 1, :size => 16, :zorder => @zorder)
         @title.text += " - Grid: #{@grid}" if @grid
@@ -168,6 +169,14 @@ module Chingu
             self.previous_game_state.viewport.y = @left_mouse_click_at[1] - $window.mouse_y
           end
         end
+        
+        if inside_window?($window.mouse_x, $window.mouse_y)
+          scroll_right  if $window.mouse_x > $window.width - @scroll_border_thickness
+          scroll_left   if $window.mouse_x < @scroll_border_thickness
+          scroll_up     if $window.mouse_y < @scroll_border_thickness
+          scroll_down   if $window.mouse_y > $window.height - @scroll_border_thickness
+        end
+
         
         @status_text.text = "Mouseposition: #{self.mouse_x} / #{self.mouse_y}"
       end
@@ -425,6 +434,10 @@ module Chingu
       def mouse_y
         y = $window.mouse_y
         y += self.previous_game_state.viewport.y if defined?(self.previous_game_state.viewport)
+      end
+
+      def inside_window?(x = $window.mouse_x, y = $window.mouse_y)
+        x >= 0 && x <= $window.width && y >= 0 && y <= $window.height
       end
 
       #
