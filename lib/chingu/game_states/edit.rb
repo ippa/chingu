@@ -63,8 +63,10 @@ module Chingu
                         :released_left_mouse_button => :released_left_mouse_button,
                         :right_mouse_button => :right_mouse_button,
                         :released_right_mouse_button => :released_right_mouse_button, 
+                        
                         :delete => :destroy_selected_game_objects,
-                        :backspace => :destroy_selected_game_objects,
+                        :backspace => :reset_selected_game_objects,
+                        
                         :holding_w => :w,
                         :holding_a => :a,
                         :holding_s => :s,
@@ -238,7 +240,17 @@ module Chingu
       def destroy_selected_game_objects
         selected_game_objects.each(&:destroy)
       end
-       
+
+      #
+      # Resets selected game objects defaults, angle=0, scale=1.
+      #
+      def reset_selected_game_objects
+        selected_game_objects.each do |game_object|
+          game_object.angle = 0
+          game_object.scale = 1
+        end
+      end
+
       #
       # CLICKED LEFT MOUSE BUTTON
       #
