@@ -228,6 +228,7 @@ module Chingu
       #
       def left_mouse_button
         @left_mouse_button  = true
+        @selected_game_object = false
         
         if defined?(self.previous_game_state.viewport)
           @left_mouse_click_at = [self.previous_game_state.viewport.x + $window.mouse_x, self.previous_game_state.viewport.y + $window.mouse_y]
@@ -235,7 +236,7 @@ module Chingu
           @left_mouse_click_at = [$window.mouse_x, $window.mouse_y]
         end
         
-        if @cursor_game_object && empty_area_at_cursor
+        if @cursor_game_object
           game_object = @cursor_game_object.class.create(:parent => previous_game_state)
           game_object.update
           game_object.options[:selected] = true
@@ -251,13 +252,16 @@ module Chingu
             game_object.zorder = @cursor_game_object.zorder
             @cursor_game_object.update
           end
+          game_object.options[:mouse_x_offset] = game_object.x - self.mouse_x
+          game_object.options[:mouse_y_offset] = game_object.y - self.mouse_y
+          @selected_game_object = game_object
         end
 
         # Check if user clicked on anything in the icon-toolbar of available game objects
         @cursor_game_object = game_object_icon_at($window.mouse_x, $window.mouse_y)
 
         # Get editable game object that was clicked at (if any)
-        @selected_game_object = game_object_at(self.mouse_x, self.mouse_y)
+        @selected_game_object ||= game_object_at(self.mouse_x, self.mouse_y)
         
         if @selected_game_object && defined?(self.previous_game_state.viewport)
           self.previous_game_state.viewport.center_around(@selected_game_object)  if @left_double_click
@@ -378,10 +382,14 @@ module Chingu
         end.first
       end
 
+      #
+      # Get editable object at X/Y .. if there's many objects at the same coordinate..
+      # .. get the one with highest zorder.
+      #
       def game_object_at(x, y)
         editable_game_objects.select do |game_object| 
           game_object.respond_to?(:collision_at?) && game_object.collision_at?(x,y)
-        end.first
+        end.sort {|x,y| y.zorder <=> x.zorder }.first
       end
 
       #
