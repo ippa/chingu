@@ -80,10 +80,10 @@ module Chingu
           :esc => :save_and_quit,
           :q => :quit,
           
-          :holding_up_arrow => :scroll_up,
-          :holding_down_arrow => :scroll_down,
-          :holding_left_arrow => :scroll_left,
-          :holding_right_arrow => :scroll_right,
+          :up_arrow => :move_up,
+          :down_arrow => :move_down,
+          :left_arrow => :move_left,
+          :right_arrow => :move_right,
                         
           :page_up => :inc_zorder,
           :page_down => :dec_zorder,
@@ -399,7 +399,12 @@ module Chingu
         quit
       end
 
-      def tilt_left
+      def move_left;  selected_game_objects.each { |game_object| game_object.x -= 1 };  end
+      def move_right; selected_game_objects.each { |game_object| game_object.x += 1 };  end
+      def move_up;    selected_game_objects.each { |game_object| game_object.y -= 1 };  end
+      def move_down;  selected_game_objects.each { |game_object| game_object.y += 1 };  end
+
+      def tilt_left; 
         selected_game_objects.each { |game_object| game_object.angle -= 1 }
       end
       def tilt_right
