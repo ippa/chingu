@@ -84,13 +84,11 @@ module Chingu
 
           :page_up => :inc_zorder,
           :page_down => :dec_zorder,
-
-
-          :tab => :save_and_quit,
- 
+          
           :s => :try_save,
           :a => :try_select_all,
     
+          :tab => :save_and_quit, 
           :esc => :save_and_quit,
           :q => :quit,
           
@@ -236,27 +234,9 @@ module Chingu
           @left_mouse_click_at = [$window.mouse_x, $window.mouse_y]
         end
         
-        if @cursor_game_object
-          game_object = @cursor_game_object.class.create(:parent => previous_game_state)
-          game_object.update
-          game_object.options[:selected] = true
-          game_object.options[:created_with_editor] = true
-          game_object.x = self.mouse_x
-          game_object.y = self.mouse_y
-          
-          unless @cursor_game_object.options[:toolbar]
-            game_object.angle = @cursor_game_object.angle
-            game_object.factor_x = @cursor_game_object.factor_x
-            game_object.factor_y = @cursor_game_object.factor_y
-            game_object.color = @cursor_game_object.color.dup
-            game_object.zorder = @cursor_game_object.zorder
-            @cursor_game_object.update
-          end
-          game_object.options[:mouse_x_offset] = game_object.x - self.mouse_x
-          game_object.options[:mouse_y_offset] = game_object.y - self.mouse_y
-          @selected_game_object = game_object
-        end
-
+        # Put out a new game object in the editor window and select it right away
+        @selected_game_object = create_new_game_object_from(@cursor_game_object)  if @cursor_game_object
+        
         # Check if user clicked on anything in the icon-toolbar of available game objects
         @cursor_game_object = game_object_icon_at($window.mouse_x, $window.mouse_y)
 
@@ -297,7 +277,6 @@ module Chingu
       
       def right_mouse_button
         @cursor_game_object = game_object_at(self.mouse_x, self.mouse_y)
-        
       end
       def released_right_mouse_button
       end
@@ -496,6 +475,36 @@ module Chingu
       def inside_window?(x = $window.mouse_x, y = $window.mouse_y)
         x >= 0 && x <= $window.width && y >= 0 && y <= $window.height
       end
+
+      def create_new_game_object_from(template)
+        game_object = template.class.create(:parent => previous_game_state)
+        game_object.update
+        game_object.options[:selected] = true
+        game_object.options[:created_with_editor] = true
+        game_object.x = self.mouse_x
+        game_object.y = self.mouse_y
+         
+        unless template.options[:toolbar]
+          game_object.angle = template.angle
+          game_object.factor_x = template.factor_x
+          game_object.factor_y = template.factor_y
+          game_object.color = template.color.dup
+          game_object.zorder = template.zorder
+          game_object.update
+        else
+          # Resize the new game object to fit the grid perfectly!
+          wanted_width = game_object.image.width + @grid[0] - (game_object.image.width % @grid[0])
+          wanted_height = game_object.image.height + @grid[1] - (game_object.image.height % @grid[1])
+          game_object.factor_x = wanted_width.to_f / game_object.image.width.to_f
+          game_object.factor_y = wanted_height.to_f / game_object.image.height.to_f
+          p game_object.factor_x
+          p game_object.factor_y
+        end
+        
+        game_object.options[:mouse_x_offset] = game_object.x - self.mouse_x
+        game_object.options[:mouse_y_offset] = game_object.y - self.mouse_y
+       return game_object
+     end
 
       #
       # If we're editing a game state with automaticly called special methods, 
