@@ -59,42 +59,43 @@ module Chingu
         
         @hud_color = Gosu::Color.new(180,70,70,70)
         @selected_game_object = nil        
-        self.input =  { :left_mouse_button => :left_mouse_button, 
-                        :released_left_mouse_button => :released_left_mouse_button,
-                        :right_mouse_button => :right_mouse_button,
-                        :released_right_mouse_button => :released_right_mouse_button, 
+        self.input =  { 
+          :left_mouse_button => :left_mouse_button, 
+          :released_left_mouse_button => :released_left_mouse_button,
+          :right_mouse_button => :right_mouse_button,
+          :released_right_mouse_button => :released_right_mouse_button, 
                         
-                        :delete => :destroy_selected_game_objects,
-                        :backspace => :reset_selected_game_objects,
+          :delete => :destroy_selected_game_objects,
+          :backspace => :reset_selected_game_objects,
                         
-                        :holding_w => :w,
-                        :holding_a => :a,
-                        :holding_s => :s,
-                        :holding_d => :d,
+          :holding_w => :w,
+          :holding_a => :a,
+          :holding_s => :s,
+          :holding_d => :d,
+                     
+          :s => :try_save,
+          :a => :try_select_all,
                         
-                        :s => :try_save,
-                        :a => :try_select_all,
+          :e => :save_and_quit,
+          :esc => :save_and_quit,
+          :holding_up_arrow => :scroll_up,
+          :holding_down_arrow => :scroll_down,
+          :holding_left_arrow => :scroll_left,
+          :holding_right_arrow => :scroll_right,
                         
-                        :e => :save_and_quit,
-                        :esc => :save_and_quit,
-                        :holding_up_arrow => :scroll_up,
-                        :holding_down_arrow => :scroll_down,
-                        :holding_left_arrow => :scroll_left,
-                        :holding_right_arrow => :scroll_right,
+          :page_up => :inc_zorder,
+          :page_down => :dec_zorder,
+          :plus => :scale_up,
+          :minus => :scale_down,
+          :mouse_wheel_up => :scale_up,
+          :mouse_wheel_down => :scale_down,
                         
-                        :page_up => :inc_zorder,
-                        :page_down => :dec_zorder,
-                        :plus => :scale_up,
-                        :minus => :scale_down,
-                        :mouse_wheel_up => :scale_up,
-                        :mouse_wheel_down => :scale_down,
-                        
-                        :"1" => :create_object_1,
-                        :"2" => :create_object_2,
-                        :"3" => :create_object_3,
-                        :"4" => :create_object_4,
-                        :"5" => :create_object_5,
-                      }
+          :"1" => :create_object_1,
+          :"2" => :create_object_2,
+          :"3" => :create_object_3,
+          :"4" => :create_object_4,
+          :"5" => :create_object_5,
+        }
         
         x = 20
         y = 60
@@ -171,15 +172,10 @@ module Chingu
         if @cursor_game_object
           @cursor_game_object.draw_at($window.mouse_x, $window.mouse_y)
         else
-          #
-          # draw a simple triangle-shaped cursor
-          #
-          $window.draw_triangle( $window.mouse_x, $window.mouse_y, Color::WHITE, 
-                                $window.mouse_x, $window.mouse_y + 10, Color::WHITE, 
-                                $window.mouse_x + 10, $window.mouse_y + 10, Color::WHITE, @zorder + 10)
+          draw_cursor_at($window.mouse_x, $window.mouse_y)
         end
       end
-      
+        
       def update
         # Sync all changes to previous game states game objects list
         # This is needed since we don't call update on it.
@@ -326,7 +322,14 @@ module Chingu
           game_object.respond_to?(:collision_at?) && game_object.collision_at?(x,y)
         end.first
       end
-      
+
+      #
+      # draw a simple triangle-shaped cursor
+      #
+      def draw_cursor_at(x,y, c = Color::WHITE)
+        $window.draw_triangle(x, y, c, x, y + 10, c, x + 10, y + 10, c, @zorder + 10)
+      end
+
       # 
       #  WASD-keys have multiple meanings depending on CTRL is held down.
       #
@@ -338,12 +341,10 @@ module Chingu
       #
       def w
         scale_up
-      end
-      
+      end     
       def a
         selected_game_objects.each { |game_object| game_object.angle -= 1 } unless holding?(:left_ctrl)
       end
-
       def s
         scale_down unless holding?(:left_ctrl)
       end
