@@ -244,11 +244,11 @@ module Chingu
           game_object.y = self.mouse_y
           
           unless @cursor_game_object.options[:toolbar]
-            game_object.angle = @cursor_game_object.angle.dup
-            game_object.factor_x = @cursor_game_object.factor_x.dup
-            game_object.factor_y = @cursor_game_object.factor_y.dup
+            game_object.angle = @cursor_game_object.angle
+            game_object.factor_x = @cursor_game_object.factor_x
+            game_object.factor_y = @cursor_game_object.factor_y
             game_object.color = @cursor_game_object.color.dup
-            game_object.zorder = @cursor_game_object.zorder.dup
+            game_object.zorder = @cursor_game_object.zorder
             @cursor_game_object.update
           end
         end

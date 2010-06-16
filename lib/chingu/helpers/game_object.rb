@@ -102,8 +102,10 @@ module Chingu
                       :y => game_object.y,
                       :angle => game_object.angle,
                       :zorder => game_object.zorder,
-                      #:factor_x => game_object.factor_x,
-                      #:factor_y => game_object.factor_y,
+                      :factor_x => game_object.factor_x,
+                      :factor_y => game_object.factor_y,
+                      :color => game_object.color.argb,
+                      #:color => sprintf("0x%x",game_object.color.argb)
                       #:center_x => game_object.center_x,
                       #:center_y => game_object.center_y,
                       }
