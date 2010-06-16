@@ -68,10 +68,10 @@ module Chingu
           :delete => :destroy_selected_game_objects,
           :backspace => :reset_selected_game_objects,
                         
-          :holding_w => :w,
-          :holding_a => :a,
-          :holding_s => :s,
-          :holding_d => :d,
+          :holding_numpad_8 => :scale_up,
+          :holding_numpad_4 => :tilt_left,
+          :holding_numpad_5 => :scale_down,
+          :holding_numpad_6 => :tilt_right,
                      
           :s => :try_save,
           :a => :try_select_all,
@@ -117,65 +117,21 @@ module Chingu
           x += 40
         end
       end
-            
+      
+      #
+      # SETUP
+      #
       def setup
         @file = options[:file] || previous_game_state.filename + ".yml"
-        
         @title = Text.create("File: #{@file}", :x => 5, :y => 2, :factor => 1, :size => 16, :zorder => @zorder)
         @title.text += " - Grid: #{@grid}" if @grid
         @text = Text.create("", :x => 200, :y => 20, :factor => 1, :size => 16, :zorder => @zorder)
         @status_text = Text.create("-", :x => 5, :y => 20, :factor => 1, :size => 16, :zorder => @zorder)
-        #@title2 = Text.create("(1-10) Create object at mouse pos  (DEL) Delete selected object  (S) Save  (E) Save and Quit  (ESC) Quit without saving", :x => 5, :y => 30, :factor => 1)
       end
-      
+                  
       #
-      # Get all classes based on GameObject except Chingus internal classes.
+      # UPDATE
       #
-      def game_object_classes
-        ObjectSpace.enum_for(:each_object, class << GameObject; self; end).to_a.select do |game_class|
-          game_class.instance_methods && !game_class.to_s.include?("Chingu::")
-        end
-      end      
-      
-      def create_object_nr(number)
-        c = @classes[number].create(:x => self.mouse_x, :y => self.mouse_y, :parent => previous_game_state)  if @classes[number]
-        c.options[:created_with_editor] = true
-        c.update
-        #@text.text = "Created a #{c.class} @ #{c.x} / #{c.y}"
-      end
-      
-      def create_object_1; create_object_nr(0); end
-      def create_object_2; create_object_nr(1); end
-      def create_object_3; create_object_nr(2); end
-      def create_object_4; create_object_nr(3); end
-      def create_object_5; create_object_nr(4); end
-      
-      def draw
-        # Draw prev game state onto screen (the level we're editing)
-        previous_game_state.draw
-        
-        super
-        
-        #
-        # Draw an edit HUD
-        #
-        $window.draw_quad(  0,0,@hud_color,
-                            $window.width,0,@hud_color,
-                            $window.width,100,@hud_color,
-                            0,100,@hud_color, @zorder-1)
-        
-        #
-        # Draw red rectangles/circles around all selected game objects
-        #
-        selected_game_objects.each { |game_object| game_object.draw_debug }
-        
-        if @cursor_game_object
-          @cursor_game_object.draw_at($window.mouse_x, $window.mouse_y)
-        else
-          draw_cursor_at($window.mouse_x, $window.mouse_y)
-        end
-      end
-        
       def update
         # Sync all changes to previous game states game objects list
         # This is needed since we don't call update on it.
@@ -217,55 +173,40 @@ module Chingu
       end
       
       #
-      # Returns a list of game objects the editor can create. 2 types of object gets this flag:
-      # - An object loaded with load_game_objects
-      # - An object created from within the editor
+      # DRAW
       #
-      # This helps us mix code-created with editor-created objects inside the editor and not muck around with
-      # the code-created ones.
-      #
-      def editable_game_objects
-        previous_game_state.game_objects.select { |o| o.options[:created_with_editor] }
-      end
-      
-      #
-      # Returns a list of selected game objects
-      #
-      def selected_game_objects
-        editable_game_objects.select { |o| o.options[:selected] }
-      end
-      
-      #
-      # Call destroy on all selected game objects
-      #
-      def destroy_selected_game_objects
-        selected_game_objects.each(&:destroy)
-      end
-
-      def deselect_selected_game_objects
-        selected_game_objects.each { |object| object.options[:selected] = nil }
-      end
-      
-      def empty_area_at_cursor
-        game_object_at(self.mouse_x, self.mouse_y)==nil && 
-        game_object_icon_at($window.mouse_x, $window.mouse_y) == nil
-      end
-
-      #
-      # Resets selected game objects defaults, angle=0, scale=1.
-      #
-      def reset_selected_game_objects
-        selected_game_objects.each do |game_object|
-          game_object.angle = 0
-          game_object.scale = 1
+      def draw
+        # Draw prev game state onto screen (the level we're editing)
+        previous_game_state.draw
+        
+        super
+        
+        #
+        # Draw an edit HUD
+        #
+        $window.draw_quad(  0,0,@hud_color,
+                            $window.width,0,@hud_color,
+                            $window.width,100,@hud_color,
+                            0,100,@hud_color, @zorder-1)
+        
+        #
+        # Draw red rectangles/circles around all selected game objects
+        #
+        selected_game_objects.each { |game_object| game_object.draw_debug }
+        
+        if @cursor_game_object
+          @cursor_game_object.draw_at($window.mouse_x, $window.mouse_y)
+        else
+          draw_cursor_at($window.mouse_x, $window.mouse_y)
         end
       end
-
+      
       #
       # CLICKED LEFT MOUSE BUTTON
       #
       def left_mouse_button
-        @left_mouse_button = true
+        @left_mouse_button  = true
+        
         if defined?(self.previous_game_state.viewport)
           @left_mouse_click_at = [self.previous_game_state.viewport.x + $window.mouse_x, self.previous_game_state.viewport.y + $window.mouse_y]
         else
@@ -283,14 +224,19 @@ module Chingu
           game_object.factor_x = @cursor_game_object.factor_x
           game_object.factor_y = @cursor_game_object.factor_y
           game_object.color = @cursor_game_object.color
+          game_object.zorder = @cursor_game_object.zorder
         end
-        
+
+        # Check if user clicked on anything in the icon-toolbar of available game objects
+        @cursor_game_object = game_object_icon_at($window.mouse_x, $window.mouse_y)
+
         # Get editable game object that was clicked at (if any)
         @selected_game_object = game_object_at(self.mouse_x, self.mouse_y)
         
-        # Check if user clicked on anything in the icon-toolbar of available game objects
-        @cursor_game_object = game_object_icon_at($window.mouse_x, $window.mouse_y)
-              
+        if @selected_game_object && defined?(self.previous_game_state.viewport)
+          self.previous_game_state.viewport.center_around(@selected_game_object)  if @left_double_click
+        end
+                      
         if @selected_game_object
           #
           # If clicking on a new object that's wasn't previosly selected
@@ -333,6 +279,73 @@ module Chingu
         @left_mouse_button = false
       end
 
+      #
+      # Returns a list of game objects the editor can create. 2 types of object gets this flag:
+      # - An object loaded with load_game_objects
+      # - An object created from within the editor
+      #
+      # This helps us mix code-created with editor-created objects inside the editor and not muck around with
+      # the code-created ones.
+      #
+      def editable_game_objects
+        previous_game_state.game_objects.select { |o| o.options[:created_with_editor] }
+      end
+      
+      #
+      # Returns a list of selected game objects
+      #
+      def selected_game_objects
+        editable_game_objects.select { |o| o.options[:selected] }
+      end
+      
+      #
+      # Call destroy on all selected game objects
+      #
+      def destroy_selected_game_objects
+        selected_game_objects.each(&:destroy)
+      end
+
+      def deselect_selected_game_objects
+        selected_game_objects.each { |object| object.options[:selected] = nil }
+      end
+      
+      def empty_area_at_cursor
+        game_object_at(self.mouse_x, self.mouse_y)==nil && 
+        game_object_icon_at($window.mouse_x, $window.mouse_y) == nil
+      end
+
+      #
+      # Get all classes based on GameObject except Chingus internal classes.
+      #
+      def game_object_classes
+        ObjectSpace.enum_for(:each_object, class << GameObject; self; end).to_a.select do |game_class|
+          game_class.instance_methods && !game_class.to_s.include?("Chingu::")
+        end
+      end      
+      
+      def create_object_nr(number)
+        c = @classes[number].create(:x => self.mouse_x, :y => self.mouse_y, :parent => previous_game_state)  if @classes[number]
+        c.options[:created_with_editor] = true
+        c.update
+        #@text.text = "Created a #{c.class} @ #{c.x} / #{c.y}"
+      end
+      
+      def create_object_1; create_object_nr(0); end
+      def create_object_2; create_object_nr(1); end
+      def create_object_3; create_object_nr(2); end
+      def create_object_4; create_object_nr(3); end
+      def create_object_5; create_object_nr(4); end
+
+      #
+      # Resets selected game objects defaults, angle=0, scale=1.
+      #
+      def reset_selected_game_objects
+        selected_game_objects.each do |game_object|
+          game_object.angle = 0
+          game_object.scale = 1
+        end
+      end
+
       def game_object_icon_at(x, y)
         game_objects.select do |game_object| 
           game_object.respond_to?(:collision_at?) && game_object.collision_at?(x,y)
@@ -352,37 +365,12 @@ module Chingu
         $window.draw_triangle(x, y, c, x, y+10, c, x+10, y+10, c, @zorder + 10)
       end
 
-      # 
-      #  WASD-keys have multiple meanings depending on CTRL is held down.
-      #
-      #   A - Rotate left   D - Rotate right
-      #   W - Scale Up      S - Scale Down
-      #
-      #   CTRL+A - Select all objects
-      #   CTRL+S - Save
-      #
-      def w
-        scale_up
-      end     
-      def a
-        selected_game_objects.each { |game_object| game_object.angle -= 1 } unless holding?(:left_ctrl)
-      end
-      def s
-        scale_down unless holding?(:left_ctrl)
-      end
-      
-      def d
-        selected_game_objects.each { |game_object| game_object.angle += 1 }        
-      end
-      
       def try_select_all
         editable_game_objects.each { |x| x.options[:selected] = true }  if holding?(:left_ctrl)
       end
-      
       def try_save
         save if holding?(:left_ctrl)
       end
-
       
       def quit
         pop_game_state(:setup => false)
@@ -393,7 +381,13 @@ module Chingu
       def save_and_quit
         save; quit
       end
-      
+
+      def tilt_left
+        selected_game_objects.each { |game_object| game_object.angle -= 1 }
+      end
+      def tilt_right
+        selected_game_objects.each { |game_object| game_object.angle += 1 }        
+      end
       def scale_up
         selected_game_objects.each { |game_object| game_object.scale += 0.01 }
       end
