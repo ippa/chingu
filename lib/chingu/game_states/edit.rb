@@ -72,12 +72,14 @@ module Chingu
           :holding_numpad_4 => :tilt_left,
           :holding_numpad_5 => :scale_down,
           :holding_numpad_6 => :tilt_right,
+          :tab => :save_and_quit,
                      
           :s => :try_save,
           :a => :try_select_all,
-                        
-          :e => :save_and_quit,
+    
           :esc => :save_and_quit,
+          :q => :quit,
+          
           :holding_up_arrow => :scroll_up,
           :holding_down_arrow => :scroll_down,
           :holding_left_arrow => :scroll_left,
@@ -108,6 +110,7 @@ module Chingu
           game_object.x = x
           game_object.y = y
           game_object.zorder = @zorder
+          game_object.options[:toolbar] = true
           
           # Scale down big objects, don't scale objects under [32, 32]
           if game_object.image
@@ -143,8 +146,9 @@ module Chingu
         #
         # We got a selected game object
         #
-        if @selected_game_object
-          @text.text = "#{@selected_game_object.class.to_s} @ #{@selected_game_object.x} / #{@selected_game_object.y} - zorder: #{@selected_game_object.zorder}"
+        if s = @selected_game_object
+          @text.text = "#{s.class.to_s} @ #{s.x.to_i} / #{s.y.to_i}"
+          @text.text += " [S: #{sprintf("%.2f", s.factor_x)}/#{sprintf("%.2f", s.factor_y)} A: #{s.angle.to_i} Z: #{s.zorder}]"
         end
         
         #
@@ -176,9 +180,8 @@ module Chingu
           scroll_up     if $window.mouse_y < @scroll_border_thickness
           scroll_down   if $window.mouse_y > $window.height - @scroll_border_thickness
         end
-
         
-        @status_text.text = "Mouseposition: #{self.mouse_x} / #{self.mouse_y}"
+        @status_text.text = "#{self.mouse_x} / #{self.mouse_y}"
       end
       
       #
@@ -229,11 +232,15 @@ module Chingu
           game_object.options[:created_with_editor] = true
           game_object.x = self.mouse_x
           game_object.y = self.mouse_y
-          game_object.angle = @cursor_game_object.angle
-          game_object.factor_x = @cursor_game_object.factor_x
-          game_object.factor_y = @cursor_game_object.factor_y
-          game_object.color = @cursor_game_object.color
-          game_object.zorder = @cursor_game_object.zorder
+          
+          unless @cursor_game_object.options[:toolbar]
+            game_object.angle = @cursor_game_object.angle
+            game_object.factor_x = @cursor_game_object.factor_x
+            game_object.factor_y = @cursor_game_object.factor_y
+            game_object.color = @cursor_game_object.color
+            game_object.zorder = @cursor_game_object.zorder
+            @cursor_game_object.update
+          end
         end
 
         # Check if user clicked on anything in the icon-toolbar of available game objects
@@ -388,7 +395,8 @@ module Chingu
         save_game_objects(:game_objects => editable_game_objects, :file => @file, :classes => @classes)
       end
       def save_and_quit
-        save; quit
+        save unless holding?(:left_ctrl)
+        quit
       end
 
       def tilt_left
@@ -398,10 +406,12 @@ module Chingu
         selected_game_objects.each { |game_object| game_object.angle += 1 }        
       end
       def scale_up
-        selected_game_objects.each { |game_object| game_object.scale += 0.01 }
+        selected_game_objects.each { |game_object| game_object.factor_x += 0.01 }
+        selected_game_objects.each { |game_object| game_object.factor_y += 0.01 }
       end
       def scale_down
-        selected_game_objects.each { |game_object| game_object.scale -= 0.01 }
+        selected_game_objects.each { |game_object| game_object.factor_x -= 0.01 }
+        selected_game_objects.each { |game_object| game_object.factor_y -= 0.01 }
       end
       def inc_zorder
         selected_game_objects.each { |game_object| game_object.zorder += 1 }
