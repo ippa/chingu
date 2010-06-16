@@ -101,7 +101,7 @@ module Chingu
       #
       def each_collision(*klasses)
         Array(klasses).each do |klass|
-          klass.all.each do |object|
+          (klass.respond_to?(:all) ? klass.all : klass).each do |object|
             yield(self, object)   if collides?(object)
           end
         end
@@ -109,7 +109,7 @@ module Chingu
 
       def first_collision(*klasses)
         Array(klasses).each do |klass|
-          klass.all.each do |object|
+          (klass.respond_to?(:all) ? klass.all : klass).each do |object|
             return object   if collides?(object)
           end
         end
@@ -122,7 +122,7 @@ module Chingu
       #
       def each_bounding_circle_collision(*klasses)
         Array(klasses).each do |klass|
-          klass.all.each do |object|
+          (klass.respond_to?(:all) ? klass.all : klass).each do |object|
             yield(self, object) if Gosu.distance(self.x, self.y, object.x, object.y) < self.radius + object.radius
           end
         end
@@ -134,7 +134,7 @@ module Chingu
       #
       def each_bounding_box_collision(*klasses)
         Array(klasses).each do |klass|
-          klass.all.each do |object|
+          (klass.respond_to?(:all) ? klass.all : klass).each do |object|
             yield(self, object) if self.bounding_box.collide_rect?(object.bounding_box)
           end
         end
@@ -147,7 +147,7 @@ module Chingu
         #
         def each_bounding_circle_collision(*klasses)
           Array(klasses).each do |klass|
-            object2_list = klass.all
+            object2_list = (klass.respond_to?(:all) ? klass.all : klass)
             #total_radius = object1.radius + object2.radius  # possible optimization?
             
             self.all.each do |object1|
@@ -164,7 +164,7 @@ module Chingu
         #
         def each_bounding_box_collision(*klasses)
           Array(klasses).each do |klass|
-            object2_list = klass.all
+            object2_list = (klass.respond_to?(:all) ? klass.all : klass)
             self.all.each do |object1|
               object2_list.each do |object2|
                 next  if object1 == object2  # Don't collide objects with themselves
@@ -217,7 +217,7 @@ module Chingu
             #    end
             #  end
             #end
-            object2_list = klass.all
+            object2_list = (klass.respond_to?(:all) ? klass.all : klass)
             self.all.each do |object1|
               object2_list.each do |object2|
                 next  if object1 == object2  # Don't collide objects with themselves
