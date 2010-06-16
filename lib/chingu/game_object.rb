@@ -115,7 +115,19 @@ module Chingu
       value = 255 if value > 255
       @color.alpha = value
     end
-      
+
+    #
+    # Sets angle, normalize it to between 0..360
+    #
+    def angle=(value)
+      if value < 0
+        value = 360+value
+      elsif value > 360
+        value = value-360
+      end
+      @angle = value
+    end
+
 
     # Returns true if object is inside the game window, false if outside
     def inside_window?(x = @x, y = @y)
