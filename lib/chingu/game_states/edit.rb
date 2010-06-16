@@ -143,9 +143,8 @@ module Chingu
         
         super
         
-        #
-        # We got a selected game object
-        #
+        @status_text.text = "#{self.mouse_x} / #{self.mouse_y}"
+        
         if s = @selected_game_object
           @text.text = "#{s.class.to_s} @ #{s.x.to_i} / #{s.y.to_i}"
           @text.text += " [S: #{sprintf("%.2f", s.factor_x)}/#{sprintf("%.2f", s.factor_y)} A: #{s.angle.to_i} Z: #{s.zorder}]"
@@ -181,7 +180,6 @@ module Chingu
           scroll_down   if $window.mouse_y > $window.height - @scroll_border_thickness
         end
         
-        @status_text.text = "#{self.mouse_x} / #{self.mouse_y}"
       end
       
       #
@@ -411,13 +409,31 @@ module Chingu
         selected_game_objects.each { |game_object| game_object.angle += 1 }        
       end
       def scale_up
-        selected_game_objects.each { |game_object| game_object.factor_x += 0.01 }
-        selected_game_objects.each { |game_object| game_object.factor_y += 0.01 }
+        scale_up_x && scale_up_y
       end
       def scale_down
-        selected_game_objects.each { |game_object| game_object.factor_x -= 0.01 }
-        selected_game_objects.each { |game_object| game_object.factor_y -= 0.01 }
+        scale_down_x && scale_down_y
       end
+      def scale_up_x
+        selected_game_objects.each { |game_object| game_object.factor_x += grid_factor_x_for(game_object) }
+      end
+      def scale_up_y
+        selected_game_objects.each { |game_object| game_object.factor_y += grid_factor_x_for(game_object) }
+      end
+      def scale_down_x
+        selected_game_objects.each { |game_object| game_object.factor_x -= grid_factor_y_for(game_object) }
+      end
+      def scale_down_y
+        selected_game_objects.each { |game_object| game_object.factor_y -= grid_factor_y_for(game_object) }
+      end
+      
+      def grid_factor_x_for(object)
+        @grid[0].to_f / object.image.width.to_f
+      end
+      def grid_factor_y_for(object)
+        @grid[0].to_f / object.image.height.to_f
+      end
+
       def inc_zorder
         selected_game_objects.each { |game_object| game_object.zorder += 1 }
       end
