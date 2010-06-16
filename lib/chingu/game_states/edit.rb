@@ -75,12 +75,14 @@ module Chingu
           :holding_numpad_1 => :dec_alpha,
           :holding_numpad_3 => :inc_alpha,
 
-          :holding_z => :scale_down,
-          :holding_x => :scale_up,
-          :holding_c => :tilt_left,
-          :holding_v => :tilt_right,
-          :holding_b => :dec_alpha,
-          :holding_n => :inc_alpha,
+          :r => :scale_up,
+          :f => :scale_down,
+          :t => :tilt_left,
+          :g => :tilt_right,
+          :y => :inc_zorder,
+          :h => :dec_zorder,
+          :u => :inc_alpha,
+          :j => :dec_alpha,
 
           :page_up => :inc_zorder,
           :page_down => :dec_zorder,
@@ -96,11 +98,16 @@ module Chingu
           :down_arrow => :move_down,
           :left_arrow => :move_left,
           :right_arrow => :move_right,
-                        
+          
+          :holding_up_arrow => :try_scroll_up,
+          :holding_down_arrow => :try_scroll_down,
+          :holding_left_arrow => :try_scroll_left,
+          :holding_right_arrow => :try_scroll_right,
+          
           :plus => :scale_up,
           :minus => :scale_down,
-          :mouse_wheel_up => :scale_up,
-          :mouse_wheel_down => :scale_down,
+          :mouse_wheel_up => :mouse_wheel_up,
+          :mouse_wheel_down => :mouse_wheel_down,
                         
           :"1" => :create_object_1,
           :"2" => :create_object_2,
@@ -139,7 +146,7 @@ module Chingu
         @file = options[:file] || previous_game_state.filename + ".yml"
         @title = Text.create("File: #{@file}", :x => 5, :y => 2, :factor => 1, :size => 16, :zorder => @zorder)
         @title.text += " - Grid: #{@grid}" if @grid
-        @text = Text.create("", :x => 200, :y => 20, :factor => 1, :size => 16, :zorder => @zorder)
+        @text = Text.create("", :x => 300, :y => 20, :factor => 1, :size => 16, :zorder => @zorder)
         @status_text = Text.create("-", :x => 5, :y => 20, :factor => 1, :size => 16, :zorder => @zorder)
       end
                   
@@ -157,7 +164,7 @@ module Chingu
         
         if s = @selected_game_object
           @text.text = "#{s.class.to_s} @ #{s.x.to_i} / #{s.y.to_i}"
-          @text.text += " [S: #{sprintf("%.2f", s.factor_x)}/#{sprintf("%.2f", s.factor_y)} A: #{s.angle.to_i} Z: #{s.zorder}]"
+          @text.text += " [Scale: #{sprintf("%.2f", s.factor_x)}/#{sprintf("%.2f", s.factor_y)} Angle: #{s.angle.to_i} Z: #{s.zorder}]"
         end
         
         #
@@ -396,16 +403,56 @@ module Chingu
         quit
       end
 
-      def move_left;  selected_game_objects.each { |game_object| game_object.x -= 1 };  end
-      def move_right; selected_game_objects.each { |game_object| game_object.x += 1 };  end
-      def move_up;    selected_game_objects.each { |game_object| game_object.y -= 1 };  end
-      def move_down;  selected_game_objects.each { |game_object| game_object.y += 1 };  end
+      def move_left
+        scroll_left && return   if selected_game_objects.empty?
+        selected_game_objects.each { |game_object| game_object.x -= 1 }
+      end
+      def move_right
+        scroll_right && return  if selected_game_objects.empty?
+        selected_game_objects.each { |game_object| game_object.x += 1 }
+      end
+      def move_up
+        scroll_up && return     if selected_game_objects.empty?
+        selected_game_objects.each { |game_object| game_object.y -= 1 }
+      end
+      def move_down
+        scroll_down && return   if selected_game_objects.empty?
+        selected_game_objects.each { |game_object| game_object.y += 1 }
+      end
+      
+      def try_scroll_left
+        scroll_left if selected_game_objects.empty?
+      end
+      def try_scroll_right
+        scroll_right if selected_game_objects.empty?
+      end
+      def try_scroll_up
+        scroll_up   if selected_game_objects.empty?
+      end
+      def try_scroll_down
+        scroll_down if selected_game_objects.empty?
+      end
+      
+      def mouse_wheel_up
+        tilt_left && return if holding?(:left_shift)
+        inc_zorder && return if holding?(:left_ctrl)
+        inc_alpha && return if holding?(:left_alt)
+        scale_up
+      end
+
+      def mouse_wheel_down
+        tilt_right && return if holding?(:left_shift)
+        dec_zorder && return if holding?(:left_ctrl)
+        dec_alpha && return if holding?(:left_alt)
+        
+        scale_down
+      end
 
       def tilt_left; 
-        selected_game_objects.each { |game_object| game_object.angle -= 1 }
+        selected_game_objects.each { |game_object| game_object.angle -= 5 }
       end
       def tilt_right
-        selected_game_objects.each { |game_object| game_object.angle += 1 }        
+        selected_game_objects.each { |game_object| game_object.angle += 5 }        
       end
       def scale_up
         scale_up_x && scale_up_y
@@ -479,7 +526,7 @@ module Chingu
       def create_new_game_object_from(template)
         game_object = template.class.create(:parent => previous_game_state)
         game_object.update
-        game_object.options[:selected] = true
+        #game_object.options[:selected] = true
         game_object.options[:created_with_editor] = true
         game_object.x = self.mouse_x
         game_object.y = self.mouse_y
@@ -497,13 +544,11 @@ module Chingu
           wanted_height = game_object.image.height + @grid[1] - (game_object.image.height % @grid[1])
           game_object.factor_x = wanted_width.to_f / game_object.image.width.to_f
           game_object.factor_y = wanted_height.to_f / game_object.image.height.to_f
-          p game_object.factor_x
-          p game_object.factor_y
         end
         
         game_object.options[:mouse_x_offset] = game_object.x - self.mouse_x
         game_object.options[:mouse_y_offset] = game_object.y - self.mouse_y
-       return game_object
+        return game_object
      end
 
       #
