@@ -108,7 +108,6 @@ class Droid < Chingu::GameObject
     self.input = {  [:holding_left, :holding_a] => :holding_left, 
                     [:holding_right, :holding_d] => :holding_right,
                     [:up, :w] => :jump,
-                    :space => :fire
                   }
     
     # Load the full animation from tile-file media/droid.bmp
