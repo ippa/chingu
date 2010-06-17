@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{chingu}
-  s.version = "0.7.5"
+  s.version = "0.7.6"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ippa"]
-  s.date = %q{2010-06-13}
+  s.date = %q{2010-06-17}
   s.description = %q{OpenGL accelerated 2D game framework for Ruby. Builds on Gosu (Ruby/C++) which provides all the core functionality. Chingu adds simple yet powerful game states, prettier input handling, deployment safe asset-handling, a basic re-usable game object and stackable game logic.}
   s.email = %q{ippa@rubylicio.us}
   s.extra_rdoc_files = [
@@ -41,10 +41,12 @@ Gem::Specification.new do |s|
      "examples/example16_online_high_scores.rb",
      "examples/example17_gosu_tutorial.rb",
      "examples/example18_animation_trait.rb",
+     "examples/example19.yml",
      "examples/example19_edit_viewport.rb",
-     "examples/example19_game_objects.yml",
      "examples/example1_basics.rb",
      "examples/example20_trait_inheritence_test.rb",
+     "examples/example21.yml",
+     "examples/example21_sidescroller_with_edit.rb",
      "examples/example2_gamestate_basics.rb",
      "examples/example3_parallax.rb",
      "examples/example4_gamestates.rb",
@@ -63,11 +65,16 @@ Gem::Specification.new do |s|
      "examples/media/Star.png",
      "examples/media/Starfighter.bmp",
      "examples/media/background1.png",
+     "examples/media/battery.png",
+     "examples/media/big_star.png",
+     "examples/media/big_stone_wall.bmp",
+     "examples/media/black_block.png",
      "examples/media/bullet.png",
      "examples/media/bullet_hit.wav",
      "examples/media/circle.png",
      "examples/media/city1.png",
      "examples/media/city2.png",
+     "examples/media/cog_wheel.png",
      "examples/media/droid.bmp",
      "examples/media/droid_11x15.bmp",
      "examples/media/droid_11x15.gal",
@@ -84,11 +91,13 @@ Gem::Specification.new do |s|
      "examples/media/ruby.png",
      "examples/media/saucer.gal",
      "examples/media/saucer.png",
+     "examples/media/saw.png",
      "examples/media/spaceship.png",
      "examples/media/star_25x25_default.png",
      "examples/media/star_25x25_explode.gal",
      "examples/media/star_25x25_explode.png",
      "examples/media/stone_wall.bmp",
+     "examples/media/tube.png",
      "examples/media/video_games.png",
      "examples/media/wood.png",
      "lib/chingu.rb",
@@ -154,6 +163,7 @@ Gem::Specification.new do |s|
      "examples/example19_edit_viewport.rb",
      "examples/example1_basics.rb",
      "examples/example20_trait_inheritence_test.rb",
+     "examples/example21_sidescroller_with_edit.rb",
      "examples/example2_gamestate_basics.rb",
      "examples/example3_parallax.rb",
      "examples/example4_gamestates.rb",
@@ -171,12 +181,12 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<gosu>, [">= 0.7.18"])
+      s.add_runtime_dependency(%q<gosu>, [">= 0.7.22"])
     else
-      s.add_dependency(%q<gosu>, [">= 0.7.18"])
+      s.add_dependency(%q<gosu>, [">= 0.7.22"])
     end
   else
-    s.add_dependency(%q<gosu>, [">= 0.7.18"])
+    s.add_dependency(%q<gosu>, [">= 0.7.22"])
   end
 end
 
