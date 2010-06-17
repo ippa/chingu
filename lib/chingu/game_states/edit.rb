@@ -265,7 +265,11 @@ module Chingu
             selected_game_objects.each { |object| object.options[:selected] = nil } unless holding?(:left_ctrl)
           end
           
-          @selected_game_object.options[:selected] = !@selected_game_object.options[:selected]
+          if holding?(:left_ctrl)
+            @selected_game_object.options[:selected] = !@selected_game_object.options[:selected]
+          else
+            @selected_game_object.options[:selected] = true
+          end
           
           #
           # Re-align all objects x/y offset in relevance to the cursor
