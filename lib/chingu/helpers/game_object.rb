@@ -94,7 +94,8 @@ module Chingu
       require 'yaml'
       objects = []
       game_objects.each do |game_object|
-        next if classes and !classes.include?(game_object.class)
+        # Only save specified classes, if given.
+        next if classes and !classes.empty? and !classes.include?(game_object.class)
         
         objects << {game_object.class.to_s  => 
                       {

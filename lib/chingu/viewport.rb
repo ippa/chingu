@@ -82,14 +82,15 @@ module Chingu
     # This is a very flawed implementation, it Should take inte account objects 
     # height,width,factor_x,factor_y,center_x,center_y as well...
     #
-    def inside?(object)
-      object.x >= @x && object.x <= (@x + $window.width) &&
-      object.y >= @y && object.y <= (@y + $window.height)
+    def inside?(object, y = nil)
+      x, y = y ? [object,y] : [object.x, object.y]
+      x >= @x && x <= (@x + $window.width) &&
+      y >= @y && y <= (@y + $window.height)
     end
 
     # Returns true object is outside the view port
-    def outside?(object)
-      not inside_viewport?(object)
+    def outside?(object, y)
+      not inside?(object, y)
     end
       
     #
