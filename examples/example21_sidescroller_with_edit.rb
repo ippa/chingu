@@ -84,7 +84,7 @@ class Example21 < GameState
         
     self.viewport.center_around(@droid)
         
-    $window.caption = "Haunted Factory. TAB toggles Edit. x/y: #{@droid.x.to_i}/#{@droid.y.to_i} - viewport x/y: #{self.viewport.x.to_i}/#{self.viewport.y.to_i} - FPS: #{$window.fps}"
+    $window.caption = "Haunted Factory. 'E' toggles Edit. x/y: #{@droid.x.to_i}/#{@droid.y.to_i} - viewport x/y: #{self.viewport.x.to_i}/#{self.viewport.y.to_i} - FPS: #{$window.fps}"
   end
 end
 
