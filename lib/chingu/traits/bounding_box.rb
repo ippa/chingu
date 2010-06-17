@@ -26,6 +26,8 @@ module Chingu
     # x, y, factor_x, factor_y and rotation_center
     #
     module BoundingBox
+      CENTER_TO_FACTOR = { 0 => -1, 0.5 => 0, 1 => 1 }
+      attr_accessor :collidable
     
       module ClassMethods
         def initialize_trait(options = {})
@@ -33,10 +35,9 @@ module Chingu
         end
       end
       
-      CENTER_TO_FACTOR = { 0 => -1, 0.5 => 0, 1 => 1 }
-      
       def setup_trait(options)
         @cached_bounding_box = nil
+        @collidable = true
         super
       end
       

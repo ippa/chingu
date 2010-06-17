@@ -33,11 +33,17 @@ module Chingu
     #   radius            - a number
     #
     module CollisionDetection
+      attr_accessor :collidable
       
       module ClassMethods
         def initialize_trait(options = {})
           trait_options[:collision_detection] = options
         end
+      end
+      
+      def setup_trait(options)
+        @collidable = true
+        super
       end
       
       #
@@ -61,6 +67,7 @@ module Chingu
       # Returns true if colliding.
       #
       def bounding_box_collision?(object2)
+        return false  unless self.collidable && object2.collidable
         self.bounding_box.collide_rect?(object2.bounding_box)
       end
       
@@ -69,6 +76,7 @@ module Chingu
       # Returns true if colliding.
       #
       def bounding_circle_collision?(object2)
+        return false  unless self.collidable && object2.collidable
         Gosu.distance(self.x, self.y, object2.x, object2.y) < self.radius + object2.radius
       end
       
@@ -78,6 +86,8 @@ module Chingu
       # http://stackoverflow.com/questions/401847/circle-rectangle-collision-detection-intersection
       #
       def bounding_box_bounding_circle_collision?(object2)
+        return false  unless self.collidable && object2.collidable
+        
         rect = self.respond_to?(:bounding_box) ? self.bounding_box : object2.bounding_box
         circle = self.respond_to?(:radius) ? self : object2
         radius = circle.radius.to_i
@@ -123,6 +133,7 @@ module Chingu
       def each_bounding_circle_collision(*klasses)
         Array(klasses).each do |klass|
           (klass.respond_to?(:all) ? klass.all : klass).each do |object|
+            next  unless self.collidable && object.collidable
             yield(self, object) if Gosu.distance(self.x, self.y, object.x, object.y) < self.radius + object.radius
           end
         end
@@ -135,6 +146,7 @@ module Chingu
       def each_bounding_box_collision(*klasses)
         Array(klasses).each do |klass|
           (klass.respond_to?(:all) ? klass.all : klass).each do |object|
+            return false  unless self.collidable && object.collidable
             yield(self, object) if self.bounding_box.collide_rect?(object.bounding_box)
           end
         end
@@ -153,6 +165,7 @@ module Chingu
             self.all.each do |object1|
               object2_list.each do |object2|
                 next  if object1 == object2  # Don't collide objects with themselves
+                next  unless object1.collidable && object2.collidable
                 yield object1, object2  if Gosu.distance(object1.x, object1.y, object2.x, object2.y) < object1.radius + object2.radius
               end
             end
@@ -168,6 +181,7 @@ module Chingu
             self.all.each do |object1|
               object2_list.each do |object2|
                 next  if object1 == object2  # Don't collide objects with themselves
+                next  unless object1.collidable && object2.collidable
                 yield object1, object2  if object1.bounding_box.collide_rect?(object2.bounding_box)
               end
             end
@@ -189,18 +203,20 @@ module Chingu
           # Make sure klasses is always an array.
           Array(klasses).each do |klass|
             
-            if self.instance_methods.include?(:radius) && klass.instance_methods.include?(:radius)
-              self.each_bounding_circle_collision(klass) do |o1, o2|
-                yield o1, o2
+            if self.respond_to?(:instance_methods) && klass.respond_to?(:instance_methods)
+              if self.instance_methods.include?(:radius) && klass.instance_methods.include?(:radius)
+                self.each_bounding_circle_collision(klass) do |o1, o2|
+                  yield o1, o2
+                end
+                next
               end
-              next
-            end
                 
-            if self.instance_methods.include?(:bounding_box) && klass.instance_methods.include?(:bounding_box)
-              self.each_bounding_box_collision(klass) do |o1, o2|
-                yield o1, o2
+              if self.instance_methods.include?(:bounding_box) && klass.instance_methods.include?(:bounding_box)
+                self.each_bounding_box_collision(klass) do |o1, o2|
+                  yield o1, o2
+                end
+                next
               end
-              next
             end
               
             #

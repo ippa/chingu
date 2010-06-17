@@ -28,6 +28,7 @@ module Chingu
     # ...this usually only makes sense with rotation_center = :center
     #
     module BoundingCircle
+      attr_accessor :collidable
     
       module ClassMethods
         def initialize_trait(options = {})
@@ -37,6 +38,7 @@ module Chingu
       
       def setup_trait(options)
         @cached_radius = nil
+        @collidable = true
         super
       end
       
