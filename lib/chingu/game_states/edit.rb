@@ -91,7 +91,7 @@ module Chingu
           :a => :try_select_all,
     
           :tab => :save_and_quit, 
-          :esc => :deselect_selected_game_objects,
+          :esc => :esc,
           :q => :quit,
           
           :up_arrow => :move_up,
@@ -498,7 +498,11 @@ module Chingu
       def grid_factor_y_for(object)
         @grid[0].to_f / object.image.height.to_f
       end
-
+      
+      def esc
+        deselect_selected_game_objects
+        @cursor_game_object = nil
+      end
       def page_up
         self.previous_game_state.viewport.y -= $window.height if defined?(self.previous_game_state.viewport)
       end
