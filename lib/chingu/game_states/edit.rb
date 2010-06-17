@@ -91,7 +91,7 @@ module Chingu
           :a => :try_select_all,
     
           :tab => :save_and_quit, 
-          :esc => :save_and_quit,
+          :esc => :deselect_selected_game_objects,
           :q => :quit,
           
           :up_arrow => :move_up,
@@ -123,7 +123,7 @@ module Chingu
           
           # We initialize x,y,zorder,rotation_center after creation
           # so they're not overwritten by the class initialize/setup or simular
-          game_object = klass.create
+          game_object = klass.create(:paused => true)
           game_object.x = x
           game_object.y = y
           game_object.zorder = @zorder
@@ -434,18 +434,25 @@ module Chingu
       end
       
       def mouse_wheel_up
-        tilt_left && return if holding?(:left_shift)
-        inc_zorder && return if holding?(:left_ctrl)
-        inc_alpha && return if holding?(:left_alt)
-        scale_up
+        if selected_game_objects.empty?
+          scroll_up(40)
+        else
+          tilt_left && return if holding?(:left_shift)
+          inc_zorder && return if holding?(:left_ctrl)
+          inc_alpha && return if holding?(:left_alt)
+          scale_up
+        end
       end
 
       def mouse_wheel_down
-        tilt_right && return if holding?(:left_shift)
-        dec_zorder && return if holding?(:left_ctrl)
-        dec_alpha && return if holding?(:left_alt)
-        
-        scale_down
+        if selected_game_objects.empty?
+          scroll_down(40)
+        else
+          tilt_right && return if holding?(:left_shift)
+          dec_zorder && return if holding?(:left_ctrl)
+          dec_alpha && return if holding?(:left_alt)
+          scale_down
+        end
       end
 
       def tilt_left; 
@@ -498,17 +505,17 @@ module Chingu
       def page_down
         self.previous_game_state.viewport.y += $window.height if defined?(self.previous_game_state.viewport)
       end
-      def scroll_up
-        self.previous_game_state.viewport.y -= 10 if defined?(self.previous_game_state.viewport)
+      def scroll_up(amount = 10)
+        self.previous_game_state.viewport.y -= amount if defined?(self.previous_game_state.viewport)
       end
-      def scroll_down
-        self.previous_game_state.viewport.y += 10 if defined?(self.previous_game_state.viewport)
+      def scroll_down(amount = 10)
+        self.previous_game_state.viewport.y += amount if defined?(self.previous_game_state.viewport)
       end
-      def scroll_left
-        self.previous_game_state.viewport.x -= 10 if defined?(self.previous_game_state.viewport)
+      def scroll_left(amount = 10)
+        self.previous_game_state.viewport.x -= amount if defined?(self.previous_game_state.viewport)
       end
-      def scroll_right
-        self.previous_game_state.viewport.x += 10 if defined?(self.previous_game_state.viewport)
+      def scroll_right(amount = 10)
+        self.previous_game_state.viewport.x += amount if defined?(self.previous_game_state.viewport)
       end
       def mouse_x
         x = $window.mouse_x
