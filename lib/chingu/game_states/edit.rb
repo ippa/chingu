@@ -134,6 +134,7 @@ module Chingu
           if game_object.image
             game_object.factor_x = 32.0 / game_object.image.width   if game_object.image.width > 32
             game_object.factor_y = 32.0 / game_object.image.height  if game_object.image.height > 3
+            game_object.cache_bounding_box  if game_object.respond_to?(:bounding_box)
           end          
           x += 40
         end
@@ -270,8 +271,8 @@ module Chingu
           # Re-align all objects x/y offset in relevance to the cursor
           #
           selected_game_objects.each do |selected_game_object|
-            selected_game_object.options[:mouse_x_offset] = selected_game_object.x - self.mouse_x
-            selected_game_object.options[:mouse_y_offset] = selected_game_object.y - self.mouse_y
+            selected_game_object.options[:mouse_x_offset] = selected_game_object.x - self.mouse_x + 20
+            selected_game_object.options[:mouse_y_offset] = selected_game_object.y - self.mouse_y + 20
           end
         else
           deselect_selected_game_objects unless holding?(:left_ctrl)
