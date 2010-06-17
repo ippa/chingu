@@ -162,13 +162,13 @@ class Droid < Chingu::GameObject
   def update    
     @image = @animation.next
     self.each_collision(Block.inside_viewport) do |me, stone_wall|
-      if self.velocity_y < 0
+      if self.velocity_y < 0  # Hitting the ceiling
         me.y = stone_wall.bb.bottom + me.image.height * self.factor_y
         self.velocity_y = 0
-      else
+      else  # Land on ground
+        @jumping = false        
         me.y = stone_wall.bb.top-1
       end
-      @jumping = false
     end
     
     @animation = @animations[:scan] unless moved?
