@@ -319,7 +319,7 @@ module Chingu
       # Call destroy on all selected game objects
       #
       def destroy_selected_game_objects
-        selected_game_objects.each(&:destroy)
+        selected_game_objects.each { |game_object| game_object.destroy }
       end
 
       def deselect_selected_game_objects
