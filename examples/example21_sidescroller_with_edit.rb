@@ -52,7 +52,7 @@ class Example21 < GameState
   end
   
   def save_player_position
-    @saved_x, @saved_y = @droid.x, @droid.y   if @droid.velocity_y >= 0 && @droid.collidable
+    @saved_x, @saved_y = @droid.x, @droid.y   if @droid.collidable && !@jumping
   end
 
   def update    
@@ -88,14 +88,6 @@ class Example21 < GameState
   end
 end
 
-#
-#
-class GameFinished < GameState
-  def setup
-    self.input
-    Text.create("MMMM... Battery ACID, YUM!")
-  end
-end
   
 #
 # DROID
@@ -103,6 +95,8 @@ end
 class Droid < Chingu::GameObject
   trait :bounding_box, :scale => 0.80
   traits :timer, :collision_detection , :timer, :velocity
+  
+  attr_reader :jumpign
   
   def setup
     self.input = {  [:holding_left, :holding_a] => :holding_left, 
@@ -116,6 +110,7 @@ class Droid < Chingu::GameObject
     
     @animation = @animations[:scan]
     @speed = 3
+    @jumping = false
     
     self.zorder = 300
     self.factor = 3
@@ -151,7 +146,8 @@ class Droid < Chingu::GameObject
   end
 
   def jump
-    return if self.velocity_y < 0
+    return if @jumping
+    @jumping = true
     self.velocity_y = -10
     @animation = @animations[:up]
   end
@@ -172,6 +168,7 @@ class Droid < Chingu::GameObject
       else
         me.y = stone_wall.bb.top-1
       end
+      @jumping = false
     end
     
     @animation = @animations[:scan] unless moved?
