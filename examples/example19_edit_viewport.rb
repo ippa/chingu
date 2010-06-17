@@ -87,10 +87,10 @@ class Example19 < GameState
     end
     
     # Bullets collide with stone_walls
-    Bullet.each_collision(StoneWall) do |bullet, stone_wall|
-      bullet.die
-      stone_wall.destroy
-    end
+    #Bullet.each_collision(StoneWall) do |bullet, stone_wall|
+    #  bullet.die
+    #  stone_wall.destroy
+    #end
     
     # Destroy game objects that travels outside the viewport
     game_objects.destroy_if { |game_object| self.viewport.outside_game_area?(game_object) }
