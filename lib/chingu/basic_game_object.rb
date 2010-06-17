@@ -60,7 +60,9 @@ module Chingu
 		#	subclass.initialize_inherited_trait	if subclass.method_defined?(:initialize_inherited_trait)
 		#end
 			
-        
+    alias :game_state :parent
+    alias :game_state= :parent=
+    
     #
     # BasicGameObject initialize
     # - call .setup_trait() on all traits that implements it
