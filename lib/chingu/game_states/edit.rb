@@ -50,12 +50,14 @@ module Chingu
       def initialize(options = {})
         super
         @grid = options[:grid] || [8,8]
-        @classes = Array(options[:classes]) || game_object_classes
+        @classes = Array(options[:classes] || game_object_classes)
         @except = options[:except] || []
-        @classes -= Array(@except)
+        @classes -= Array(@except)        
         
         @debug = options[:debug]
         @zorder = 10000
+        
+        # p game_object_classes; exit
         
         @hud_color = Gosu::Color.new(180,70,70,70)
         @selected_game_object = nil        
@@ -90,7 +92,8 @@ module Chingu
           :s => :try_save,
           :a => :try_select_all,
     
-          :tab => :save_and_quit, 
+          :e => :save_and_quit,
+          
           :esc => :esc,
           :q => :quit,
           
@@ -459,7 +462,7 @@ module Chingu
         end
       end
 
-      def tilt_left; 
+      def tilt_left
         selected_game_objects.each { |game_object| game_object.angle -= 5 }
       end
       def tilt_right
