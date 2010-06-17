@@ -488,13 +488,21 @@ module Chingu
         selected_game_objects.each { |game_object| game_object.factor_x += grid_factor_x_for(game_object) }
       end
       def scale_up_y
-        selected_game_objects.each { |game_object| game_object.factor_y += grid_factor_x_for(game_object) }
+        selected_game_objects.each { |game_object| game_object.factor_y +=  grid_factor_x_for(game_object) }
       end
       def scale_down_x
-        selected_game_objects.each { |game_object| game_object.factor_x -= grid_factor_y_for(game_object) }
+        selected_game_objects.each { |game_object| 
+          inc = grid_factor_x_for(game_object)
+          game_object.factor_x -= inc
+          game_object.factor_x = inc if game_object.factor_x <= 0.01
+        }
       end
       def scale_down_y
-        selected_game_objects.each { |game_object| game_object.factor_y -= grid_factor_y_for(game_object) }
+        selected_game_objects.each { |game_object| 
+          inc = grid_factor_y_for(game_object) 
+          game_object.factor_y -= inc
+          game_object.factor_y = inc if game_object.factor_y <= 0.01
+        }
       end
       
       def grid_factor_x_for(object)
