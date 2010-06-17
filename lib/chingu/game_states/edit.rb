@@ -162,7 +162,7 @@ module Chingu
         
         super
         
-        @status_text.text = "#{self.mouse_x} / #{self.mouse_y}"
+        @status_text.text = "#{self.mouse_x.to_i} / #{self.mouse_y.to_i}"
         
         if s = @selected_game_object
           @text.text = "#{s.class.to_s} @ #{s.x.to_i} / #{s.y.to_i}"
