@@ -283,7 +283,11 @@ module Chingu
       end
       
       def right_mouse_button
-        @cursor_game_object = game_object_at(self.mouse_x, self.mouse_y)
+        if @cursor_game_object
+          @cursor_game_object = nil
+        else
+          @cursor_game_object = game_object_at(self.mouse_x, self.mouse_y)
+        end
       end
       def released_right_mouse_button
       end
