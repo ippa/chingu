@@ -133,8 +133,8 @@ module Chingu
           # Scale down big objects, don't scale objects under [32, 32]
           if game_object.image
             game_object.factor_x = 32.0 / game_object.image.width   if game_object.image.width > 32
-            game_object.factor_y = 32.0 / game_object.image.height  if game_object.image.height > 3
-            game_object.cache_bounding_box  if game_object.respond_to?(:bounding_box)
+            game_object.factor_y = 32.0 / game_object.image.height  if game_object.image.height > 32
+            game_object.cache_bounding_box if game_object.respond_to?(:cache_bounding_box)
           end          
           x += 40
         end
@@ -166,6 +166,7 @@ module Chingu
         
         if s = @selected_game_object
           @text.text = "#{s.class.to_s} @ #{s.x.to_i} / #{s.y.to_i}"
+          @text.text = "Size: #{s.width.to_i} x #{s.height.to_i} Ratio: #{sprintf("%.2f",s.width/s.height)}"
           @text.text += " [Scale: #{sprintf("%.2f", s.factor_x)}/#{sprintf("%.2f", s.factor_y)} Angle: #{s.angle.to_i} Z: #{s.zorder}]"
         end
         
@@ -275,8 +276,8 @@ module Chingu
           # Re-align all objects x/y offset in relevance to the cursor
           #
           selected_game_objects.each do |selected_game_object|
-            selected_game_object.options[:mouse_x_offset] = selected_game_object.x - self.mouse_x + 20
-            selected_game_object.options[:mouse_y_offset] = selected_game_object.y - self.mouse_y + 20
+            selected_game_object.options[:mouse_x_offset] = selected_game_object.x - self.mouse_x
+            selected_game_object.options[:mouse_y_offset] = selected_game_object.y - self.mouse_y
           end
         else
           deselect_selected_game_objects unless holding?(:left_ctrl)
@@ -459,7 +460,10 @@ module Chingu
           scale_down
         end
       end
-
+      
+      def recache_bounding_boxes
+        selected_game_objects.each { |game_object| game_object.cache_bounding_box if game_object.respond_to?(:cache_bounding_box)}
+      end
       def tilt_left
         selected_game_objects.each { |game_object| game_object.angle -= 5 }
       end
@@ -468,10 +472,13 @@ module Chingu
       end
       def scale_up
         scale_up_x && scale_up_y
+        recache_bounding_boxes
       end
       def scale_down
         scale_down_x && scale_down_y
+        recache_bounding_boxes
       end
+      
       def inc_zorder
         selected_game_objects.each { |game_object| game_object.zorder += 1 }
       end
@@ -485,33 +492,18 @@ module Chingu
         selected_game_objects.each { |game_object| game_object.alpha -= 1 }
       end
       def scale_up_x
-        selected_game_objects.each { |game_object| game_object.factor_x += grid_factor_x_for(game_object) }
+        selected_game_objects.each { |game_object| game_object.width += grid[0] }
       end
       def scale_up_y
-        selected_game_objects.each { |game_object| game_object.factor_y +=  grid_factor_x_for(game_object) }
+        selected_game_objects.each { |game_object| game_object.height += grid[1] }
       end
       def scale_down_x
-        selected_game_objects.each { |game_object| 
-          inc = grid_factor_x_for(game_object)
-          game_object.factor_x -= inc
-          game_object.factor_x = inc if game_object.factor_x <= 0.01
-        }
+        selected_game_objects.each { |game_object| game_object.width -= grid[0] if game_object.width > grid[0] }
       end
       def scale_down_y
-        selected_game_objects.each { |game_object| 
-          inc = grid_factor_y_for(game_object) 
-          game_object.factor_y -= inc
-          game_object.factor_y = inc if game_object.factor_y <= 0.01
-        }
+        selected_game_objects.each { |game_object| game_object.height -= grid[1] if game_object.height > grid[1] }
       end
-      
-      def grid_factor_x_for(object)
-        @grid[0].to_f / object.image.width.to_f
-      end
-      def grid_factor_y_for(object)
-        @grid[0].to_f / object.image.height.to_f
-      end
-      
+            
       def esc
         deselect_selected_game_objects
         @cursor_game_object = nil
