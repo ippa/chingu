@@ -56,8 +56,7 @@ module Chingu
           return @cached_bounding_box
         end
         
-        width = self.image.width * self.factor_x.abs
-        height = self.image.height * self.factor_y.abs
+        width, height = self.size
         
         if trait_options[:bounding_box][:scale]
           width = width * trait_options[:bounding_box][:scale]
