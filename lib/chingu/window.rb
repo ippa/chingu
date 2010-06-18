@@ -66,6 +66,13 @@ module Chingu
     def setup; end;
     
     #
+    # Make all old and future images use hard borders. Hard borders + scaling = retro feel!
+    #
+    def retrofy
+      Gosu::enable_undocumented_retrofication
+    end
+    
+    #
     # Returns self inside GameState.initialize (a game state is not 'active' inside initialize())
     # Or returns current active game state (as in a switched to or pushed game state)
     # ... Falls back to returning $window

@@ -19,7 +19,6 @@
 #
 #++
 
-
 #
 # Core extensions to GOSU
 # Some of these require the gem 'texplay'
@@ -44,10 +43,19 @@ module Gosu
     # This could be used to make each pixel a sharp 4 pixelblock => retrofeeling.
     #
     def retrofy
-      glBindTexture(GL_TEXTURE_2D, self.gl_tex_info.tex_name)
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+      Gosu::enable_undocumented_retrofication
       self
+      
+      #
+      # The below code depends on the bad opengl gem
+      # And it could affect other images anyhow... 
+      # So let's use Gosu::enable_undocumented_retrofication until further notice.
+      #
+      
+      #glBindTexture(GL_TEXTURE_2D, self.gl_tex_info.tex_name)
+      #glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+      #glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+      #self
     end
   end
 end
