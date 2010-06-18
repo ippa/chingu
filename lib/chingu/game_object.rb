@@ -105,7 +105,7 @@ module Chingu
     
     # Get effective on width by calculating it from image-width and factor
     def width
-      @image.width * @factor_x
+      (@image.width * @factor_x).abs
     end
 
     #
@@ -119,7 +119,7 @@ module Chingu
     
     # Get effective on heightby calculating it from image-width and factor
     def height
-      @image.height.to_f * @factor_y
+      (@image.height.to_f * @factor_y).abs
     end
 
     # Set width and height in one swoop
