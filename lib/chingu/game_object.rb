@@ -60,8 +60,8 @@ module Chingu
       @angle = options[:angle] || 0
       
       self.factor = options[:factor] || options[:scale] || $window.factor || 1.0
-      @factor_x = options[:factor_x] if options[:factor_x]
-      @factor_y = options[:factor_y] if options[:factor_y]
+      @factor_x = options[:factor_x].to_f if options[:factor_x]
+      @factor_y = options[:factor_y].to_f if options[:factor_y]
       
       self.center = options[:center] || 0.5
       
@@ -83,8 +83,8 @@ module Chingu
       @zorder = options[:zorder] || 100
       
       # Set height and with, either from options or by calculating.
-      self.width = options[:width] ? options[:width] : (@image.width.to_f / @factor_x.to_f)
-      self.height = options[:height] ? options[:height] : (@image.height.to_f / @factor_y.to_f)
+      self.width = options[:width]   if options[:width]
+      self.height = options[:height] if options[:height]
 
       ### super ## This crashes
       # Call setup, this class holds an empty setup() to be overriden
@@ -99,8 +99,12 @@ module Chingu
     # Usually better to have a large image and make it smaller then the other way around.
     #
     def width=(width)
-      @width = width
-      self.factor_x = width.to_f / @image.width.to_f
+      @factor_x = width.to_f / @image.width.to_f
+    end
+    
+    # Get effective on width by calculating it from image-width and factor
+    def width
+      @image.width * @factor_x
     end
 
     #
@@ -109,9 +113,14 @@ module Chingu
     # Usually better to have a large image and make it smaller then the other way around.
     #
     def height=(height)
-      @height = height
-      self.factor_y = height.to_f / @image.height.to_f
+      @factor_y = height.to_f / @image.height.to_f
     end
+    
+    # Get effective on heightby calculating it from image-width and factor
+    def height
+      @image.height.to_f * @factor_y
+    end
+
 
     # Quick way of setting both factor_x and factor_y
     def factor=(factor)
