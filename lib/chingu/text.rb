@@ -34,17 +34,19 @@ module Chingu
   #
   class Text < Chingu::GameObject
     attr_accessor :text
-    attr_reader :height, :gosu_font, :line_spacing, :align, :max_width
+    attr_reader :height, :gosu_font, :line_spacing, :align, :max_width, :background
 
     @@size = nil
     @@font = nil
+    @@padding = 5
     def self.font; @@font; end
     def self.font=(value); @@font = value; end
-
     def self.size; @@size; end
     def self.size=(value); @@size = value; end
     def self.height; @@size; end
     def self.height=(value); @@size = value; end
+    def self.padding; @@padding; end
+    def self.padding=(value); @@padding = value; end
     
     #
     # Takes the standard GameObject-hash-arguments but also:
@@ -71,12 +73,22 @@ module Chingu
       @line_spacing = options[:line_spacing] || 1
       @align = options[:align] || :left
       @max_width = options[:max_width]
-    
+      @padding = options[:padding] || @@padding
       self.rotation_center = :top_left
-      
+
       @gosu_font = Gosu::Font.new($window, @font, @height)
-      
       create_image  unless @image
+
+      if options[:background]
+        @background = GameObject.create(:image => options[:background])
+        @background.attributes = self.attributes
+        @background.color = Color::WHITE
+        @background.zorder -= 1
+        @background.x -= @padding
+        @background.y -= @padding
+        @background.width = self.width + @padding * 2
+        @background.height = self.height + @padding * 2
+      end
     end
     
     #
@@ -96,6 +108,14 @@ module Chingu
     #
     def width
       @gosu_font.text_width(@text, @factor_x)
+    end
+    
+    #
+    #
+    #
+    def draw
+      @background.draw  if @background    # draw our background, if any
+      super                               # super -> GameObject#draw which draws out text
     end
     
     private
