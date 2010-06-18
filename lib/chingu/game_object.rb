@@ -82,9 +82,10 @@ module Chingu
       @mode = options[:mode] || :default # :additive is also available.
       @zorder = options[:zorder] || 100
       
-      # Set height and with, either from options or by calculating.
-      self.width = options[:width]   if options[:width]
-      self.height = options[:height] if options[:height]
+      if @image
+        self.width = options[:width]   if options[:width]
+        self.height = options[:height] if options[:height]
+      end
 
       ### super ## This crashes
       # Call setup, this class holds an empty setup() to be overriden
@@ -121,6 +122,16 @@ module Chingu
       @image.height.to_f * @factor_y
     end
 
+    # Set width and height in one swoop
+    def size=(size)
+      self.width, self.height = *size
+    end
+    
+    # Get objects width and height in an array
+    def size
+      [self.width, self.height]
+    end
+      
 
     # Quick way of setting both factor_x and factor_y
     def factor=(factor)
