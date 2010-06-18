@@ -13,7 +13,7 @@ class Game < Chingu::Window
     super(600,400)
     self.caption = "Testing out new module-based traits (SPACE for more spaceships)"
     self.input = { :space => :create_thing, :esc => :exit }
-		Gosu::enable_undocumented_retrofication
+		retrofy
     create_thing(200,200)
   end
 

@@ -14,8 +14,8 @@ class Game < Chingu::Window
     super    
     @factor = 6
     self.input = { :escape => :exit }
-		Gosu::enable_undocumented_retrofication
-    self.caption = "Chingu::Animation / retrofy example. Move with arrows!"
+		self.caption = "Chingu::Animation / retrofy example. Move with arrows!"
+    retrofy
     Droid.create(:x => $window.width/2, :y => $window.height/2)
   end
 end
