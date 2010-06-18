@@ -564,6 +564,8 @@ module Chingu
         
         game_object.options[:mouse_x_offset] = game_object.x - self.mouse_x
         game_object.options[:mouse_y_offset] = game_object.y - self.mouse_y
+        
+        game_object.cache_bounding_box if game_object.respond_to?(:cache_bounding_box)
         return game_object
      end
 
