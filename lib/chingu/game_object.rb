@@ -93,7 +93,24 @@ module Chingu
       setup
       
     end
-    
+   
+    #
+    # Get all settings from a game object in one array.
+    # Complemented by the GameObject#attributes= setter.
+    # Makes it easy to clone a objects x,y,angle etc.
+    #
+    def attributes
+      [@x, @y, @angle, @center_x, @center_y, @factor_x, @factor_y, @color, @mode, @zorder]
+    end
+
+    #
+    # Set all attributes on 1 line
+    # Mainly used in combination with game_object1.attributes = game_object2.attributes
+    #
+    def attributes=(attributes)
+      self.x, self.y, self.angle, self.center_x, self.center_y, self.factor_x, self.factor_y, self.color, self.mode, self.zorder = *attributes
+    end
+
     #
     # Set an effective width for the object on screen.
     # Chingu does this by setting factor_x depending on imge.width and width given.
