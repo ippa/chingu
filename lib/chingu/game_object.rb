@@ -32,7 +32,7 @@ module Chingu
   #
   class GameObject < Chingu::BasicGameObject
     attr_accessor :image, :x, :y, :angle, :center_x, :center_y, :factor_x, :factor_y, :color, :mode, :zorder
-    attr_reader :factor, :center
+    attr_reader :factor, :center, :height, :width
     
     include Chingu::Helpers::InputClient        # Adds input and input=
     include Chingu::Helpers::RotationCenter     # Adds easy and verbose modification of @center_x and @center_y
@@ -82,6 +82,10 @@ module Chingu
       @mode = options[:mode] || :default # :additive is also available.
       @zorder = options[:zorder] || 100
       
+      # Set height and with, either from options or by calculating.
+      self.width = options[:width] ? options[:width] : (@image.width.to_f / @factor_x.to_f)
+      self.height = options[:height] ? options[:height] : (@image.height.to_f / @factor_y.to_f)
+
       ### super ## This crashes
       # Call setup, this class holds an empty setup() to be overriden
       # setup() will be an easier method to override for init-stuff since you don't need to do super etc..
@@ -89,6 +93,26 @@ module Chingu
       
     end
     
+    #
+    # Set an effective width for the object on screen.
+    # Chingu does this by setting factor_x depending on imge.width and width given.
+    # Usually better to have a large image and make it smaller then the other way around.
+    #
+    def width=(width)
+      @width = width
+      self.factor_x = width.to_f / @image.width.to_f
+    end
+
+    #
+    # Set an effective height for the object on screen.
+    # Chingu does this by setting factor_x depending on imge.width and width given.
+    # Usually better to have a large image and make it smaller then the other way around.
+    #
+    def height=(height)
+      @height = height
+      self.factor_y = height.to_f / @image.height.to_f
+    end
+
     # Quick way of setting both factor_x and factor_y
     def factor=(factor)
       @factor = factor
