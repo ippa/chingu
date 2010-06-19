@@ -53,10 +53,11 @@ module Chingu
         @classes = Array(options[:classes] || game_object_classes)
         @except = options[:except] || []
         @classes -= Array(@except)        
-        
         @debug = options[:debug]
         @zorder = 10000
                 
+        p @classes  if @debug
+        
         @hud_color = Gosu::Color.new(180,70,70,70)
         @selected_game_object = nil        
         self.input =  { 
@@ -130,10 +131,9 @@ module Chingu
           game_object.zorder = @zorder
           game_object.options[:toolbar] = true
           
-          # Scale down big objects, don't scale objects under [32, 32]
+          # Scale down object to fit our toolbar
           if game_object.image
-            game_object.factor_x = 32.0 / game_object.image.width   if game_object.image.width > 32
-            game_object.factor_y = 32.0 / game_object.image.height  if game_object.image.height > 32
+            game_object.size = [32,32]
             game_object.cache_bounding_box if game_object.respond_to?(:cache_bounding_box)
           end          
           x += 40
