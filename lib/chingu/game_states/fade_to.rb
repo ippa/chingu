@@ -39,15 +39,13 @@ module Chingu
         @options = {:speed => 3}.merge(options)
         
         @new_game_state = new_game_state
-        @new_game_state = new_game_state.new if new_game_state.is_a? Class
-        
-        #@manager = options[:game_state_manager] || self
-        #@manager = game_state_manager
+        @new_game_state = new_game_state.new if new_game_state.is_a? Class        
+        @new_game_state.game_objects.sync
       end
     
       def setup
         @color = Gosu::Color.new(0,0,0,0)
-        ## if @manager.previous_game_state
+        
         if previous_game_state
           @fading_in = false
           @alpha = 0.0
@@ -55,7 +53,7 @@ module Chingu
           @fading_in = true 
           @alpha = 255.0
         end
-        # @new_game_state.update      # Make sure states game logic is run Once (for a correct draw())
+        
         update                        # Since draw is called before update
       end
     
@@ -77,7 +75,6 @@ module Chingu
           if @fading_in
             @new_game_state.draw
           else
-            ## @manager.previous_game_state.draw
             previous_game_state.draw
           end
       
@@ -88,7 +85,6 @@ module Chingu
         end
         
         if @fading_in && @alpha == 0
-          ##@manager.switch_game_state(@new_game_state, :transitional => false)
           switch_game_state(@new_game_state, :transitional => false)
         end
                             
