@@ -15,8 +15,27 @@ begin
     gemspec.version = Chingu::VERSION
     
     gemspec.add_dependency 'gosu', '>= 0.7.22'
+    gemspec.add_development_dependency 'rspec', '>= 2.0.0.beta.12'
+    gemspec.add_development_dependency 'rcov'
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
   puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"
 end
+
+# Rake RSpec2 task stuff
+gem 'rspec', '>= 2.0.0.beta.12'
+
+require 'rspec/core/rake_task'
+
+desc "Run the specs under spec"
+RSpec::Core::RakeTask.new do |t|
+end
+
+desc "Run the specs with rcov (for some reason always reports wrong code coverage)"
+RSpec::Core::RakeTask.new(:rcov) do |t|
+  t.rcov = true
+  t.rcov_opts = ['-T', '--no-html', '--exclude spec,gem']
+end
+
+task :default => :rcov

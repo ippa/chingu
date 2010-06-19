@@ -51,7 +51,7 @@ module Chingu
     #
     # Takes the standard GameObject-hash-arguments but also:
     #   :text               - a string of text
-    #   :font_name|:font    - Name of a system font, or a filename to a TTF file (must contain ’/’, does not work on Linux). 
+    #   :font_name|:font    - Name of a system font, or a filename to a TTF file (must contain ? does not work on Linux). 
     #   :height|:size       - Height of the font in pixels. 
     #   :line_spacing	      - Spacing between two lines of text in pixels. 
     #   :max_width	        - Width of the bitmap that will be returned. Text will be split into multiple lines to avoid drawing over the right border. When a single word is too long, it will be truncated.
