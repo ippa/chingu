@@ -16,6 +16,7 @@ begin
     
     gemspec.add_dependency 'gosu', '>= 0.7.22'
     gemspec.add_development_dependency 'rspec', '>= 2.0.0.beta.12'
+    gemspec.add_development_dependency 'watchr'
     gemspec.add_development_dependency 'rcov'
   end
   Jeweler::GemcutterTasks.new
