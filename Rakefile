@@ -39,4 +39,4 @@ RSpec::Core::RakeTask.new(:rcov) do |t|
   t.rcov_opts = ['-T', '--no-html', '--exclude spec,gem']
 end
 
-task :default => :rcov
+task :default => :spec
