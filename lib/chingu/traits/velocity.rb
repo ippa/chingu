@@ -58,8 +58,9 @@ module Chingu
       #
       # Sets X and Y velocity with one single call. Takes an Array-argument with 2 values.
       #
-      def velocity=(velocity)
-        @velocity_x, @velocity_y = velocity
+      def velocity=(value)
+        @velocity_x, @velocity_y = value && return    if value.is_a? Array
+        @velocity_x, @velocity_y = value, value
       end
 			
       def velocity; [@velocity_x, @velocity_y]; end
@@ -67,8 +68,9 @@ module Chingu
       #
       # Sets X and Y acceleration with one single call. Takes an Array-argument with 2 values.
       #
-      def acceleration=(acceleration)
-        @acceleration_x, @acceleration_y = acceleration
+      def acceleration=(value)
+        @acceleration_x, @acceleration_y = value && return    if value.is_a? Array
+        @acceleration_x, @acceleration_y = value, value
       end
 	
       def acceleration; [@acceleration_x, @acceleration_y]; end
@@ -76,8 +78,9 @@ module Chingu
       #
       # Sets X and Y acceleration with one single call. Takes an Array-argument with 2 values.
       #
-      def max_velocity=(max_velocity)
-        @max_velocity_x, @max_velocity_y = max_velocity
+      def max_velocity=(value)
+        @max_velocity_x, @max_velocity_y = value && return    if value.is_a? Array
+        @max_velocity_x, @max_velocity_y = value, value
       end
 	
       def max_velocity; [@max_velocity_x, @max_velocity_y]; end
