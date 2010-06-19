@@ -121,7 +121,7 @@ module Chingu
         x = 20
         y = 60
         @classes.each do |klass|
-          puts "Creating a #{klass}"  if @debug
+          p "Creating a #{klass}"  if @debug
           
           # We initialize x,y,zorder,rotation_center after creation
           # so they're not overwritten by the class initialize/setup or simular
@@ -136,8 +136,11 @@ module Chingu
             if game_object.image
               game_object.size = [32,32]
               game_object.cache_bounding_box if game_object.respond_to?(:cache_bounding_box)
+              x += 40
+            else
+              puts "Skipping #{klass} - no image" if @debug
+              game_object.destroy
             end
-            x += 40
           rescue
             puts "Couldn't use #{klass} in editor."
           end
