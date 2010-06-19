@@ -19,40 +19,31 @@ class Game < Chingu::Window
 end
 
 class FireCube < Chingu::GameObject
-  traits :velocity, :collision_detection  
-  attr_accessor :color, :radius
+  traits :velocity, :collision_detection, :bounding_circle
+  attr_accessor :color
   
   def initialize(options)
     super
     @mode = :additive
     
+    @image = Image["circle.png"]
+    
     # initialize with a rightwards velocity with some damping to look more realistic
-    @velocity_x = options[:velocity_x] || 1 + rand(2)
-    @velocity_y = options[:velocity_y] || 1 + rand(2)
+    self.velocity_x = options[:velocity_x] || 1 + rand(2)
+    self.velocity_y = options[:velocity_y] || 1 + rand(2)
+    self.factor = 2
     
-    @box = Rect.new([@x, @y, 10, 10])
-    @radius = 6
+    @color = Color::BLUE
     
-    @blue = Color.new(255,100,255,255)
-    @red = Color.new(255,255,10,10)
-    @color = @blue
-  end
-  
-  def bounding_box
-    @box
-  end
-  
-  def draw
-    $window.fill_rect(@box, @color)
+    cache_bounding_circle # This does a lot for performance
   end
   
   def update
-    @box.x, @box.y = @x, @y
-    @color = @blue
+    @color = Color::BLUE
   end
   
   def die!
-    @color = @red
+    @color = Color::RED
   end
   
 end
@@ -95,8 +86,7 @@ class ParticleState < Chingu::GameState
       cube1.die!
       cube2.die!
     end
-      
-    game_objects.destroy_if { |object| object.color.alpha == 0 }
+    
   end
   
   def draw
