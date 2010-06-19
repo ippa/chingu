@@ -272,6 +272,13 @@ module Chingu
             @selected_game_object.options[:selected] = true
           end
           
+          if holding?(:left_shift)
+            #puts @selected_game_object.class.all.size
+            previous_game_state.game_objects.select { |x| x.class == @selected_game_object.class }.each do |game_object|
+              game_object.options[:selected] = true
+            end
+          end
+            
           #
           # Re-align all objects x/y offset in relevance to the cursor
           #
