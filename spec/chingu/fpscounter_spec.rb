@@ -19,12 +19,13 @@ describe Chingu::FPSCounter do
     end
 
     it "keeps track of the fps" do
-      subject.register_tick
-      Gosu.stub(:milliseconds).and_return(1500)
-      subject.register_tick
-      Gosu.stub(:milliseconds).and_return(2000)
-      subject.register_tick
-      subject.fps.should eq 3 # #register_tick has been called 3 times within 1 second = 3 FPS
+      expect {
+        subject.register_tick
+        Gosu.stub(:milliseconds).and_return(1500)
+        subject.register_tick
+        Gosu.stub(:milliseconds).and_return(2000)
+        subject.register_tick
+      }.to change(subject, :fps).from(0).to(3) # #register_tick has been called 3 times within 1 second = 3 FPS
     end
 
     it "calculates how many milliseconds passed since last game loop iteration and returns that value" do
