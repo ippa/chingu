@@ -47,11 +47,8 @@ module Chingu
       end
       
       def radius
-        return @cached_radius if @cached_radius
-        
-        width = self.image.width * self.factor_x.abs
-        height = self.image.height * self.factor_y.abs
-        radius = (width + height) / 4
+        return @cached_radius if @cached_radius        
+        radius = (self.width + self.height) / 4
         radius = radius * trait_options[:bounding_circle][:scale] if  trait_options[:bounding_circle][:scale]
         return radius
       end
@@ -61,7 +58,6 @@ module Chingu
       end
       
       def cache_bounding_circle
-        @cached_radius = nil
         @cached_radius = self.radius
       end
       
