@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{chingu}
-  s.version = "0.7.6.3"
+  s.version = "0.7.6.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ippa"]
@@ -47,6 +47,7 @@ Gem::Specification.new do |s|
      "examples/example20_trait_inheritence_test.rb",
      "examples/example21.yml",
      "examples/example21_sidescroller_with_edit.rb",
+     "examples/example22_text.rb",
      "examples/example2_gamestate_basics.rb",
      "examples/example3_parallax.rb",
      "examples/example4_gamestates.rb",
@@ -97,6 +98,7 @@ Gem::Specification.new do |s|
      "examples/media/star_25x25_explode.gal",
      "examples/media/star_25x25_explode.png",
      "examples/media/stone_wall.bmp",
+     "examples/media/talk_bubble.png",
      "examples/media/tube.png",
      "examples/media/video_games.png",
      "examples/media/wood.png",
