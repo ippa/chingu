@@ -28,7 +28,7 @@ module Chingu
     # Can be useful for example collision detection
     #
     module Velocity
-      attr_accessor :velocity_x, :velocity_y, :acceleration_x, :acceleration_y, :max_velocity
+      attr_accessor :velocity_x, :velocity_y, :acceleration_x, :acceleration_y, :max_velocity_x, :max_velocity_y
       attr_reader :previous_x, :previous_y
       
       module ClassMethods
@@ -47,8 +47,11 @@ module Chingu
         @acceleration_x = options[:acceleration_x] || 0
         @acceleration_y = options[:acceleration_y] || 0
         self.acceleration = options[:acceleration] if options[:acceleration]
-				
-        @max_velocity = options[:max_velocity] || 1000
+
+        @max_velocity_x = options[:max_velocity_x] || 1000
+        @max_velocity_y = options[:max_velocity_y] || 1000
+        self.max_velocity = options[:max_velocity] if options[:max_velocity]
+        
         super
       end
       
@@ -71,21 +74,30 @@ module Chingu
       def acceleration; [@acceleration_x, @acceleration_y]; end
 
       #
+      # Sets X and Y acceleration with one single call. Takes an Array-argument with 2 values.
+      #
+      def max_velocity=(max_velocity)
+        @max_velocity_x, @max_velocity_y = max_velocity
+      end
+	
+      def max_velocity; [@max_velocity_x, @max_velocity_y]; end
+      
+      #
       # Modifies X & Y of parent
       #
       def update_trait
-        @velocity_y += @acceleration_y  if  (@velocity_y + @acceleration_y).abs < @max_velocity
-        @velocity_x += @acceleration_x  if  (@velocity_x + @acceleration_x).abs < @max_velocity
+        @velocity_x += @acceleration_x  if  (@velocity_x + @acceleration_x).abs < @max_velocity_x
+        @velocity_y += @acceleration_y  if  (@velocity_y + @acceleration_y).abs < @max_velocity_y
         
-        @previous_y = @y
         @previous_x = @x
+        @previous_y = @y
         
         #
         # if option :apply is false, just calculate velocities, don't apply them to x/y
         #
         unless trait_options[:velocity][:apply] == false
-          self.y += @velocity_y
           self.x += @velocity_x
+          self.y += @velocity_y
         end
         
         super
