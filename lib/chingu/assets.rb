@@ -33,7 +33,9 @@ module Gosu
     include Chingu::NamedResource
     
     def self.autoload(name)
-      (path = find_file(name)) ? Gosu::Image.new($window, path, true) : nil
+      ret = (path = find_file(name)) ? Gosu::Image.new($window, path, true) : nil
+      raise "Can't load image \"#{name}\"" if ret.nil?
+      return ret
     end
   end
 
