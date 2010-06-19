@@ -80,7 +80,7 @@ module Chingu
       create_image  unless @image
 
       if options[:background]
-        @background = GameObject.create(:image => options[:background])
+        @background = GameObject.new(:image => options[:background])
         @background.attributes = self.attributes
         @background.color = Color::WHITE
         @background.zorder -= 1
