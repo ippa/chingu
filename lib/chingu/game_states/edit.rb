@@ -125,18 +125,22 @@ module Chingu
           
           # We initialize x,y,zorder,rotation_center after creation
           # so they're not overwritten by the class initialize/setup or simular
-          game_object = klass.create(:paused => true)
-          game_object.x = x
-          game_object.y = y
-          game_object.zorder = @zorder
-          game_object.options[:toolbar] = true
-          
-          # Scale down object to fit our toolbar
-          if game_object.image
-            game_object.size = [32,32]
-            game_object.cache_bounding_box if game_object.respond_to?(:cache_bounding_box)
-          end          
-          x += 40
+          begin
+            game_object = klass.create(:paused => true)
+            game_object.x = x
+            game_object.y = y
+            game_object.zorder = @zorder
+            game_object.options[:toolbar] = true
+            
+            # Scale down object to fit our toolbar
+            if game_object.image
+              game_object.size = [32,32]
+              game_object.cache_bounding_box if game_object.respond_to?(:cache_bounding_box)
+            end
+            x += 40
+          rescue
+            puts "Couldn't use #{klass} in editor."
+          end
         end
       end
       
