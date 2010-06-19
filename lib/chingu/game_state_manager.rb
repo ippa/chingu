@@ -100,6 +100,7 @@ module Chingu
     # .. and finalize() is called on the game state we're switching _from_.
     #
     def switch_game_state(state, options = {})
+      puts state.class
       options = {:setup => true, :finalize => true, :transitional => true}.merge(options)
 
       @previous_game_state = current_game_state

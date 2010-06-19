@@ -49,13 +49,14 @@ class State1 < Chingu::GameState
   # This is another way of achieving the same thing as the out-commeted draw-code
   # Since .create is used, it's automatically updated and drawn
   #
-  def setup
+  def initialize(options = {})
+    super
     Chingu::GameObject.create(:image => "ruby.png", :rotation_center => :top_left)
   end
   
   #def draw
   #  Image["ruby.png"].draw(0,0,0)
-  #end
+  #end  
 end
 
 class State2 < Chingu::GameState 

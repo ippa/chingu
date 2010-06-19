@@ -121,7 +121,7 @@ module Chingu
         x = 20
         y = 60
         @classes.each do |klass|
-          p "Creating a #{klass}"  if @debug
+          puts "Creating a #{klass}"  if @debug
           
           # We initialize x,y,zorder,rotation_center after creation
           # so they're not overwritten by the class initialize/setup or simular
@@ -142,7 +142,7 @@ module Chingu
               game_object.destroy
             end
           rescue
-            puts "Couldn't use #{klass} in editor."
+            puts "Couldn't use #{klass} in editor: #{$!}"
           end
         end
       end
