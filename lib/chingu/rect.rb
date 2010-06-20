@@ -360,10 +360,27 @@ class Rect < Array
 	alias mb midbottom
 	alias mb= midbottom=;
 
-	#--
+   
+   # returns rects for side collision
+   def left_side
+      Rect.new([ x, y, width * 0.25, height ])
+   end
+
+   def right_side
+      Rect.new([ x + (width * 0.75), y, width * 0.25, height ])
+   end
+
+   def top_side
+      Rect.new([ x, y, width, height * 0.25 ])
+   end
+
+   def bottom_side
+      Rect.new([ x, y + (height * 0.75), width, height * 0.25 ])
+   end
+
+   #--
 	# UTILITY METHODS
 	#++
-
 
 	# As #clamp!, but the original caller is not changed.
 	def clamp(rect)
