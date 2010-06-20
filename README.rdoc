@@ -153,7 +153,7 @@ You're probably familiar with this very common Gosu pattern:
   Game.new.show   # Start the Game update/draw loop!
 
 
-Chingu doesn't change the fundamental concept/flow of Gosu, but it will make the above code cleaner:
+Chingu doesn't change the fundamental concept/flow of Gosu, but it will make the above code shorter:
   
   #
   # We use Chingu::Window instead of Gosu::Window
@@ -175,7 +175,7 @@ Chingu doesn't change the fundamental concept/flow of Gosu, but it will make the
   # The accessors image,x,y,zorder,angle,factor_x,factor_y,center_x,center_y,mode,alpha.
   # We also get a default #draw which draws the image to screen with the parameters listed above.
   # You might recognize those from #draw_rot - http://www.libgosu.org/rdoc/classes/Gosu/Image.html#M000023
-  # And in it's core, that's what Chingu::GameObject is, an encapsulation of draw_rot with some extra cheese.
+  # And in it's core, that's what Chingu::GameObject is, an encapsulation of draw_rot with some extras.
   # For example, we get automatic calls to draw/update with Chingu::GameObject, which usually is what you want. 
   # You could stop this by doing: @player = Player.new(:draw => false, :update => false)
   #
@@ -529,40 +529,40 @@ yes you guessed it, as class methods. If initialize_trait is defined inside Clas
 
 A simple trait could be:
 
-module Chingu
-  module Trait
-    module Inspect
+  module Chingu
+    module Trait
+      module Inspect
     
-      #
-      # methods namespaced to ClassMethods get's extended as ... class methods!
-      #
-      module ClassMethods
-        def initialize_trait(options)
+        #
+        # methods namespaced to ClassMethods get's extended as ... class methods!
+        #
+        module ClassMethods
+          def initialize_trait(options)
             # possible initialize stuff here
+          end
+        
+          def inspect
+            "There's {self.size} active instances of class {self.to_s}"
+          end
         end
       
+        #
+        # Namespaced outside ClassMethods get's included as normal instance-methods
+        #
         def inspect
-          "There's {self.size} active instances of class {self.to_s}"
+          "Hello I'm an #{self.class.to_s}"
         end
-      end
       
-      #
-      # Namespaced outside ClassMethods get's included as normal instance-methods
-      #
-      def inspect
-        "Hello I'm an #{self.class.to_s}"
       end
-      
     end
   end
-end
 
-class Enemy < GameObject
-  trait :inspect    # includes Chingu::Trait::Inspect and extends Chingu::Trait::Inspect::ClassMethods
-end
-10.times { Enemy.create }
-Enemy.inspect           # => "There's 10 active instances of class Enemy"
-Enemy.all.first.inspect # => "Hello I'm a Enemy"
+  class Enemy < GameObject
+    trait :inspect    # includes Chingu::Trait::Inspect and extends Chingu::Trait::Inspect::ClassMethods
+  end
+  10.times { Enemy.create }
+  Enemy.inspect           # => "There's 10 active instances of class Enemy"
+  Enemy.all.first.inspect # => "Hello I'm a Enemy"
 
 
 Example of using traits :velocity and :timer:
@@ -621,7 +621,7 @@ Adds accessors velocity_x, velocity_y, acceleration_x, acceleration_y, max_veloc
 They modify x, y as you would expect. *speed / angle will come*
 
 ==== Trait "bounding_box"
-Adds accessor 'bounding_box', which returns a Rect based on current image size,x,y,factor_x,factor_y,center_x,center_y
+Adds accessor 'bounding_box', which returns an instance of class Rect based on current image size,x,y,factor_x,factor_y,center_x,center_y
 You can also scale the calculated rect with trait-options:
 
   # This would return a rect slightly smaller then the image. 
@@ -631,6 +631,8 @@ You can also scale the calculated rect with trait-options:
   # Make the bounding box bigger then the image
   # :debug => true shows the actual box in red on the screen
   trait :bounding_box, :scale => 1.5, :debug => true
+  
+Inside your object you will also get a cache_bounding_box(). After that the bounding_box will be quicker but it will not longer adapt to size-changes.
 
 ==== Trait "bounding_circle"
 Adds accessor 'radius', which returns a Fixnum based on current image size,factor_x and factor_y
@@ -641,6 +643,8 @@ You can also scale the calculated radius with trait-options:
 
   # :debug => true shows the actual circle in red on the screen
   trait :bounding_circle, :debug => true
+
+Inside your object you will also get a cache_bounding_circle(). After that radius() will be quicker but it will not longer adapt to size-changes.
 
 ==== Trait "animation"
 Automatically load animations depending on the class-name.
@@ -658,19 +662,25 @@ Assuming the below code is included in a class FireBall.
   # 
 	# The below example will set the 200ms delay between each frame on all animations loaded.
   #
-  trait :automatic_assets, :delay => 200
+  trait :animation, :delay => 200
 
 ==== Trait "effect"
 Adds accessors rotation_rate, fade_rate and scale_rate to game object.
 They modify angle, alpha and factor_x/factor_y each update. Since this is pretty easy to do yourself this trait might be up for deprecation.
 
-==== (IN DEVELOPMENT) Trait "viewport"
+==== Trait "viewport"
 A game state trait. Adds accessor *viewport*. Set viewport.x and viewport.y to.
 Basically what viewport.x = 10 will do is draw all game objects 10 pixels to the left of their ordinary position.
 Since the viewport has moved 10 pixels to the right, the game objects will be seen "moving" 10 pixels to the left.
-This is great for scrolling games.
+This is great for scrolling games. You also have:
 
-==== (IN DEVELOPMENT) Trait "collision_detection"
+  viewport.game_area = [0,0,1000,400]   # Set scrolling limits, the effective game world if you so will
+  viewport.center_around(object)        # Center viweport around an object which responds to x() and y()
+  
+  viewport.lag      = 0.95              # Set a lag-factor to use in combination with x_target / y_target
+  viewport.x_target = 100               # This will move viewport towards X-coordinate 100, the speed is determined by the lag-parameter.
+
+==== Trait "collision_detection"
 Adds class and instance methods for basic collision detection.
   
   # Class method example
@@ -689,11 +699,16 @@ Adds class and instance methods for basic collision detection.
   # Since You're not explicity telling what collision type to use it might be slighty slower.
   #
   [Player, PlayerBullet].each_collision(Enemy, EnemyBullet) do |friend, foe|
-  
+    # do something
   end
-
-* API isn't stabilized yet! *
-
+  
+  #
+  # You can also give each_collision() an array of objects.
+  #
+  Ball.each_collsion(@array_of_ground_items) do |ball, ground|
+    # do something
+  end
+  
 ==== (IN DEVELOPMENT) Trait "retrofy"
 Providing easier handling of the "retrofy" effect (non-blurry zoom)
 Aims to help out when using zoom-factor to create a retrofeeling with big pixels.
