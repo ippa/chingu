@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{chingu}
-  s.version = "0.7.6.4"
+  s.version = "0.7.6.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ippa"]
-  s.date = %q{2010-06-19}
+  s.date = %q{2010-06-22}
   s.description = %q{OpenGL accelerated 2D game framework for Ruby. Builds on Gosu (Ruby/C++) which provides all the core functionality. Chingu adds simple yet powerful game states, prettier input handling, deployment safe asset-handling, a basic re-usable game object and stackable game logic.}
   s.email = %q{ippa@rubylicio.us}
   s.extra_rdoc_files = [
@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   ]
   s.files = [
     ".gitignore",
+     ".rspec",
      "History.txt",
      "LICENSE",
      "README.rdoc",
@@ -144,7 +145,14 @@ Gem::Specification.new do |s|
      "lib/chingu/traits/velocity.rb",
      "lib/chingu/traits/viewport.rb",
      "lib/chingu/viewport.rb",
-     "lib/chingu/window.rb"
+     "lib/chingu/window.rb",
+     "spec/chingu/fpscounter_spec.rb",
+     "spec/chingu/game_object_spec.rb",
+     "spec/chingu/inflector_spec.rb",
+     "spec/chingu/rect_20x20.png",
+     "spec/chingu/text_spec.rb",
+     "spec/spec_helper.rb",
+     "specs.watchr"
   ]
   s.homepage = %q{http://github.com/ippa/chingu}
   s.rdoc_options = ["--charset=UTF-8"]
@@ -153,7 +161,12 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.7}
   s.summary = %q{OpenGL accelerated 2D game framework for Ruby}
   s.test_files = [
-    "examples/example10_traits_retrofy.rb",
+    "spec/chingu/fpscounter_spec.rb",
+     "spec/chingu/game_object_spec.rb",
+     "spec/chingu/inflector_spec.rb",
+     "spec/chingu/text_spec.rb",
+     "spec/spec_helper.rb",
+     "examples/example10_traits_retrofy.rb",
      "examples/example11_animation.rb",
      "examples/example12_trait_timer.rb",
      "examples/example13_high_scores.rb",
@@ -185,11 +198,20 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<gosu>, [">= 0.7.22"])
+      s.add_development_dependency(%q<rspec>, [">= 2.0.0.beta.12"])
+      s.add_development_dependency(%q<watchr>, [">= 0"])
+      s.add_development_dependency(%q<rcov>, [">= 0"])
     else
       s.add_dependency(%q<gosu>, [">= 0.7.22"])
+      s.add_dependency(%q<rspec>, [">= 2.0.0.beta.12"])
+      s.add_dependency(%q<watchr>, [">= 0"])
+      s.add_dependency(%q<rcov>, [">= 0"])
     end
   else
     s.add_dependency(%q<gosu>, [">= 0.7.22"])
+    s.add_dependency(%q<rspec>, [">= 2.0.0.beta.12"])
+    s.add_dependency(%q<watchr>, [">= 0"])
+    s.add_dependency(%q<rcov>, [">= 0"])
   end
 end
 

@@ -60,6 +60,7 @@ module Chingu
 
     describe "GameObject with an image" do
       before do
+        p Image.autoload_dirs
         subject { GameObject.new(:image => "rect_20x20.png") }
       end
       
