@@ -1,4 +1,5 @@
 class Array
+  
   def each_collision(*args)
     list = (self + args).uniq
     collide_pair = []

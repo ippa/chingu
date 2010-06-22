@@ -31,7 +31,6 @@ module Chingu
       @game_objects = options[:game_objects] || []
 			@add_game_objects = []
 			@remove_game_objects = []
-      #@game_objects_by_class = Hash.new
     end
     
     def to_s
@@ -40,34 +39,24 @@ module Chingu
     
     def of_class(klass)
       @game_objects.select { |game_object| game_object.is_a? klass }
-      #@game_objects_by_class[klass] || []
     end
     
     def destroy_all
       @game_objects.clear
-      #@game_objects_of_class.clear
     end
     alias :clear :destroy_all
     alias :remove_all :destroy_all
     
     def add_game_object(object)
-      #@game_objects.push(object)
 			@add_game_objects.push(object)
-			
-			
-      #(@game_objects_by_class[object.class] ||= []).push(object)
     end
     
     def remove_game_object(object)
-      #@game_objects.delete(object)
 			@remove_game_objects.push(object)	
-			
-      #@game_objects_by_class[object.class].delete(object)
     end
     
     def destroy_if
       @game_objects.reject! { |object| yield(object) }
-      #@game_objects_by_class.delete_if { |klass, object| yield(object) }
     end
     
     def size

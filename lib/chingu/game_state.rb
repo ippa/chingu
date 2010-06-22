@@ -78,7 +78,7 @@ module Chingu
           # Include the module, which will add the containing methods as instance methods
           include mod
                    
-          # Does sub-module "ClessMethods" exists?
+          # Does sub-module "ClassMethods" exists?
           # (eg: Chingu::Traits::Timer::ClassMethods)
           if mod.const_defined?("ClassMethods")
             # Add methods in scope ClassMethods as.. class methods!
