@@ -7,6 +7,10 @@ require 'rspec'
 
 require 'chingu'
 
+def media_path(file)
+  File.join($window.root, "..", "..", "examples", "media", file)
+end
+
 if defined?(Rcov)
 
   # all_app_files = Dir.glob('lib/**/*.rb')
