@@ -46,29 +46,30 @@ module Chingu
     class Edit < Chingu::GameState
       attr_accessor :grid, :debug, :file, :hud_color
       attr_reader :classes, :exclude
-      
+
       def initialize(options = {})
         super
         @grid = options[:grid] || [8,8]
         @classes = Array(options[:classes] || game_object_classes)
         @except = options[:except] || []
-        @classes -= Array(@except)        
+        @classes -= Array(@except)
         @debug = options[:debug]
         @zorder = 10000
-                
+
         p @classes  if @debug
-        
+
         @hud_color = Gosu::Color.new(180,70,70,70)
-        @selected_game_object = nil        
-        self.input =  { 
-          :left_mouse_button => :left_mouse_button, 
+        @selected_game_object = nil
+        self.input =  {
+          :left_mouse_button => :left_mouse_button,
           :released_left_mouse_button => :released_left_mouse_button,
           :right_mouse_button => :right_mouse_button,
-          :released_right_mouse_button => :released_right_mouse_button, 
-                        
-          :delete => :destroy_selected_game_objects,
+          :released_right_mouse_button => :released_right_mouse_button,
+
+          :delete    => :destroy_selected_game_objects,
+          :d         => :destroy_selected_game_objects,
           :backspace => :reset_selected_game_objects,
-                        
+
           :holding_numpad_7 => :scale_down,
           :holding_numpad_9 => :scale_up,
           :holding_numpad_4 => :tilt_left,
@@ -87,37 +88,37 @@ module Chingu
 
           :page_up => :inc_zorder,
           :page_down => :dec_zorder,
-          
+
           :s => :try_save,
           :a => :try_select_all,
-    
+
           :e => :save_and_quit,
-          
+
           :esc => :esc,
           :q => :quit,
-          
+
           :up_arrow => :move_up,
           :down_arrow => :move_down,
           :left_arrow => :move_left,
           :right_arrow => :move_right,
-          
+
           :holding_up_arrow => :try_scroll_up,
           :holding_down_arrow => :try_scroll_down,
           :holding_left_arrow => :try_scroll_left,
           :holding_right_arrow => :try_scroll_right,
-          
+
           :plus => :scale_up,
           :minus => :scale_down,
           :mouse_wheel_up => :mouse_wheel_up,
           :mouse_wheel_down => :mouse_wheel_down,
-                        
+
           :"1" => :create_object_1,
           :"2" => :create_object_2,
           :"3" => :create_object_3,
           :"4" => :create_object_4,
           :"5" => :create_object_5,
         }
-        
+
         x = 20
         y = 60
         @classes.each do |klass|
