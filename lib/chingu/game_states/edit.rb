@@ -123,7 +123,7 @@ module Chingu
         y = 60
         @classes.each do |klass|
           puts "Creating a #{klass}"  if @debug
-          
+
           # We initialize x,y,zorder,rotation_center after creation
           # so they're not overwritten by the class initialize/setup or simular
           begin
@@ -132,9 +132,10 @@ module Chingu
             game_object.y = y
             game_object.zorder = @zorder
             game_object.options[:toolbar] = true
-            
+
             # Scale down object to fit our toolbar
             if game_object.image
+              text = Text.create("#{klass}", :x=>x-16, :y=>y+18, :zorder => @zorder)
               game_object.size = [32,32]
               game_object.cache_bounding_box if game_object.respond_to?(:cache_bounding_box)
               x += 40
@@ -147,7 +148,7 @@ module Chingu
           end
         end
       end
-      
+
       #
       # SETUP
       #
