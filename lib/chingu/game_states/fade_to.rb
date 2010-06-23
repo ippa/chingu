@@ -36,7 +36,7 @@ module Chingu
     class FadeTo < Chingu::GameState
       
       def initialize(new_game_state, options = {})
-        @options = {:speed => 3}.merge(options)
+        @options = {:speed => 3, :zorder => 999999}.merge(options)
         
         @new_game_state = new_game_state
         @new_game_state = new_game_state.new if new_game_state.is_a? Class        
@@ -81,7 +81,7 @@ module Chingu
           $window.draw_quad( 0,0,@color,
                               $window.width,0,@color,
                               $window.width,$window.height,@color,
-                              0,$window.height,@color,999)
+                              0,$window.height,@color,@options[:zorder])
         end
         
         if @fading_in && @alpha == 0
