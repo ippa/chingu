@@ -36,7 +36,7 @@ module Chingu
     class FadeTo < Chingu::GameState
       
       def initialize(new_game_state, options = {})
-        @options = {:speed => 3, :zorder => 999999}.merge(options)
+        @options = {:speed => 3, :zorder => INFINITY}.merge(options)
         
         @new_game_state = new_game_state
         @new_game_state = new_game_state.new if new_game_state.is_a? Class        
