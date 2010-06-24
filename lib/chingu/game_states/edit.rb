@@ -127,6 +127,7 @@ module Chingu
           :"5" => :create_object_5,
         }
 
+        @hud_height = 140
         x = 20
         y = 60
         @classes.each do |klass|
@@ -143,7 +144,7 @@ module Chingu
 
             # Scale down object to fit our toolbar
             if game_object.image
-              Text.create(klass, :size => 13, :x=>x-16, :y=>y+18, :zorder => @zorder)
+              Text.create("#{klass}\n#{game_object.width.to_i}x#{game_object.height.to_i}", :size => 13, :x=>x-16, :y=>y+18, :zorder => @zorder)
               game_object.size = [32,32]
               game_object.cache_bounding_box if game_object.respond_to?(:cache_bounding_box)
               x += 60
@@ -160,11 +161,16 @@ module Chingu
       def draw_grid
         return unless @grid
         
-        (0 .. $window.width).step(@grid.first).each do |x|
-          $window.draw_line(x, 0, @grid_color, x, $window.height, @grid_color, @zorder-10, :additive)
+        start_x = start_y = 0,0
+        if defined?(previous_game_state.viewport)
+          start_x = -previous_game_state.viewport.x % @grid.first
+          start_y = -previous_game_state.viewport.y % @grid.last
         end
-        (0 .. $window.height).step(@grid.last).each do |y|
-          $window.draw_line(0, y, @grid_color, $window.width, y, @grid_color, @zorder-10, :additive)
+        (start_x .. $window.width).step(@grid.first).each do |x|
+          $window.draw_line(x, 1, @grid_color, x, $window.height, @grid_color, @zorder-10, :additive)
+        end
+        (start_y .. $window.height).step(@grid.last).each do |y|
+          $window.draw_line(1, y, @grid_color, $window.width, y, @grid_color, @zorder-10, :additive)
         end
       end
 
@@ -210,10 +216,10 @@ module Chingu
           end
           
           # TODO: better cleaner sollution
-          if @selected_game_object.respond_to?(:bounding_box)
-            @selected_game_object.bounding_box.x = @selected_game_object.x
-            @selected_game_object.bounding_box.y = @selected_game_object.y
-          end
+          #if @selected_game_object.respond_to?(:bounding_box)
+          #  @selected_game_object.bounding_box.x = @selected_game_object.x
+          #  @selected_game_object.bounding_box.y = @selected_game_object.y
+          #end
         elsif @left_mouse_button
           if defined?(self.previous_game_state.viewport)
             self.previous_game_state.viewport.x = @left_mouse_click_at[0] - $window.mouse_x
@@ -239,15 +245,15 @@ module Chingu
         
         super
         
-        draw_grid
+        draw_grid if @draw_grid
         
         #
         # Draw an edit HUD
         #
         $window.draw_quad(  0,0,@hud_color,
                             $window.width,0,@hud_color,
-                            $window.width,100,@hud_color,
-                            0,100,@hud_color, @zorder-1)
+                            $window.width,@hud_height,@hud_color,
+                            0,@hud_height,@hud_color, @zorder-1)
         
         #
         # Draw red rectangles/circles around all selected game objects
