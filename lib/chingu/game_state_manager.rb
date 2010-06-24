@@ -194,8 +194,8 @@ module Chingu
       #
       # Give the soon-to-be-disabled state a chance to clean up by calling finalize() on it.
       #
-      @previous_game_state = current_game_state
       current_game_state.finalize    if current_game_state.respond_to?(:finalize) && options[:finalize]
+      @previous_game_state = current_game_state
 
       #
       # Activate the game state "bellow" current one with a simple Array.pop
