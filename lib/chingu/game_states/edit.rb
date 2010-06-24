@@ -49,7 +49,15 @@ module Chingu
 
       def initialize(options = {})
         super
+        
+        options = {:draw_grid => true, :snap_to_grid => true, :resize_to_grid => true}.merge(options)
+        
         @grid = options[:grid] || [8,8]
+        @grid_color = options[:grid_color] || Color.new(0xFF444444)
+        @draw_grid = options[:draw_grid]
+        @snap_to_grid = options[:snap_to_grid]      # todo
+        @resize_to_grid = options[:resize_to_grid]  # todo
+        
         @classes = Array(options[:classes] || game_object_classes)
         @except = options[:except] || []
         @classes -= Array(@except)
@@ -58,7 +66,7 @@ module Chingu
 
         p @classes  if @debug
 
-        @hud_color = Gosu::Color.new(180,70,70,70)
+        @hud_color = Gosu::Color.new(200,70,70,70)
         @selected_game_object = nil
         self.input =  {
           :left_mouse_button => :left_mouse_button,
@@ -135,10 +143,10 @@ module Chingu
 
             # Scale down object to fit our toolbar
             if game_object.image
-              text = Text.create("#{klass}", :x=>x-16, :y=>y+18, :zorder => @zorder)
+              Text.create(klass, :size => 13, :x=>x-16, :y=>y+18, :zorder => @zorder)
               game_object.size = [32,32]
               game_object.cache_bounding_box if game_object.respond_to?(:cache_bounding_box)
-              x += 40
+              x += 60
             else
               puts "Skipping #{klass} - no image" if @debug
               game_object.destroy
@@ -146,6 +154,17 @@ module Chingu
           rescue
             puts "Couldn't use #{klass} in editor: #{$!}"
           end
+        end
+      end
+      
+      def draw_grid
+        return unless @grid
+        
+        (0 .. $window.width).step(@grid.first).each do |x|
+          $window.draw_line(x, 0, @grid_color, x, $window.height, @grid_color, @zorder-10, :additive)
+        end
+        (0 .. $window.height).step(@grid.last).each do |y|
+          $window.draw_line(0, y, @grid_color, $window.width, y, @grid_color, @zorder-10, :additive)
         end
       end
 
@@ -219,6 +238,8 @@ module Chingu
         previous_game_state.draw
         
         super
+        
+        draw_grid
         
         #
         # Draw an edit HUD
