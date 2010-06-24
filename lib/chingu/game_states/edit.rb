@@ -172,6 +172,7 @@ module Chingu
         (start_y .. $window.height).step(@grid.last).each do |y|
           $window.draw_line(1, y, @grid_color, $window.width, y, @grid_color, @zorder-10, :additive)
         end
+        
       end
 
       #
@@ -184,6 +185,12 @@ module Chingu
         @title.text += " - Grid: #{@grid}" if @grid
         @text = Text.create("", :x => 300, :y => 20, :factor => 1, :size => 16, :zorder => @zorder)
         @status_text = Text.create("-", :x => 5, :y => 20, :factor => 1, :size => 16, :zorder => @zorder)
+        
+        if defined?(previous_game_state.viewport)
+          @game_area_backup = previous_game_state.viewport.game_area.dup
+          previous_game_state.viewport.game_area.x -= @hud_height
+          previous_game_state.viewport.game_area.y -= @hud_height
+        end        
       end
                   
       #
@@ -211,15 +218,18 @@ module Chingu
           selected_game_objects.each do |selected_game_object|            
             selected_game_object.x = self.mouse_x + selected_game_object.options[:mouse_x_offset]
             selected_game_object.y = self.mouse_y + selected_game_object.options[:mouse_y_offset]
-            selected_game_object.x -= selected_game_object.x % @grid[0]
-            selected_game_object.y -= selected_game_object.y % @grid[1]
+            
+            if @snap_to_grid
+              selected_game_object.x -= selected_game_object.x % @grid[0]
+              selected_game_object.y -= selected_game_object.y % @grid[1]
+            end
           end
           
           # TODO: better cleaner sollution
-          #if @selected_game_object.respond_to?(:bounding_box)
-          #  @selected_game_object.bounding_box.x = @selected_game_object.x
-          #  @selected_game_object.bounding_box.y = @selected_game_object.y
-          #end
+          if @selected_game_object.respond_to?(:bounding_box)
+            @selected_game_object.bounding_box.x = @selected_game_object.x
+            @selected_game_object.bounding_box.y = @selected_game_object.y
+          end
         elsif @left_mouse_button
           if defined?(self.previous_game_state.viewport)
             self.previous_game_state.viewport.x = @left_mouse_click_at[0] - $window.mouse_x
@@ -246,7 +256,7 @@ module Chingu
         super
         
         draw_grid if @draw_grid
-        
+                
         #
         # Draw an edit HUD
         #
@@ -452,6 +462,12 @@ module Chingu
         quit
       end
 
+      def finalize
+        if defined?(previous_game_state.viewport)
+          previous_game_state.viewport.game_area = @game_area_backup
+        end
+      end
+      
       def move_left
         scroll_left && return   if selected_game_objects.empty?
         selected_game_objects.each { |game_object| game_object.x -= 1 }
