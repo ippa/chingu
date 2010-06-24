@@ -53,7 +53,7 @@ module Chingu
         options = {:draw_grid => true, :snap_to_grid => true, :resize_to_grid => true}.merge(options)
         
         @grid = options[:grid] || [8,8]
-        @grid_color = options[:grid_color] || Color.new(0xFF444444)
+        @grid_color = options[:grid_color] || Color.new(0xaa222222)
         @draw_grid = options[:draw_grid]
         @snap_to_grid = options[:snap_to_grid]      # todo
         @resize_to_grid = options[:resize_to_grid]  # todo
@@ -467,7 +467,7 @@ module Chingu
           previous_game_state.viewport.game_area = @game_area_backup
         end
       end
-      
+            
       def move_left
         scroll_left && return   if selected_game_objects.empty?
         selected_game_objects.each { |game_object| game_object.x -= 1 }
