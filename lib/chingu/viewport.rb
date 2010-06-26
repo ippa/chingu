@@ -32,8 +32,8 @@ module Chingu
     def initialize(options = {})
       @x = options[:x] || 0
       @y = options[:y] || 0 
-      @x_target = options[:x_target]
-      @y_target = options[:y_target]
+      @x_target = options[:x_target] || @x
+      @y_target = options[:y_target] || @y
       @x_lag = options[:x_lag] || 0
       @y_lag = options[:y_lag] || 0
       @game_area = Chingu::Rect.new(options[:game_area]||[@x, @y, $window.width, $window.height])       
