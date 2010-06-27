@@ -104,11 +104,11 @@ module Chingu
     # Gamepad-buttons 0-15
     (0..15).each do |number|
       CONSTANT_TO_SYMBOL[eval("GpButton#{number.to_s}")] = [
-        "gamepad_button_#{number.to_s}",
-        "gamepad_#{number.to_s}",
-        "pad_button_#{number.to_s}",
-        "pad_#{number.to_s}",
-        "gp_#{number.to_s}"
+        "gamepad_button_#{number.to_s}".to_sym,
+        "gamepad_#{number.to_s}".to_sym,
+        "pad_button_#{number.to_s}".to_sym,
+        "pad_#{number.to_s}".to_sym,
+        "gp_#{number.to_s}".to_sym
       ]
     end
 
