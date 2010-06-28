@@ -146,15 +146,13 @@ module Chingu
 
       # Quick way of setting both factor_x and factor_y
       def factor=(factor)
-        @factor = factor
         @factor_x = @factor_y = factor
       end
       alias scale= factor=
-      alias scale factor
+      # alias scale factor
           
       # Quick way of setting both center_x and center_y
       def center=(center)
-        @center = center
         @center_x = @center_y = center
       end
     

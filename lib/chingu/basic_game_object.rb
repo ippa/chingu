@@ -150,7 +150,6 @@ module Chingu
     def draw_trait; end    
     def update; end
     def draw; end
-    
         
     #
     # Returns an array with all objects of current class.

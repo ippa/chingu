@@ -69,8 +69,8 @@ module Chingu
       # It only draws game objects inside the viewport. (GOSU does no such optimizations)
       #
       def draw
-        self.game_objects.draw_relative(-@viewport.x, -@viewport.y)
-        #@viewport.apply { super }
+        #self.game_objects.draw_relative(-@viewport.x, -@viewport.y)
+        @viewport.apply { super }
       end      
     end
   end
