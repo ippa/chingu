@@ -134,33 +134,12 @@ module Chingu
     end
     
     #
-    # Disable automatic calling of draw and draw_trait each game loop
-    #
-    def hide!
-      @visible = false
-    end
-    
-    #
-    # Enable automatic calling of draw and draw_trait each game loop
-    #
-    def show!
-      @visible = true
-    end
-
-    #
     # Returns true if paused
     #
     def paused?
       @paused == true
     end
-
-    #
-    # Returns true if visible (not hidden)
-    #
-    def visible?
-      @visible == true
-    end
-
+    
     #
     # Empty placeholders to be overridden
     #

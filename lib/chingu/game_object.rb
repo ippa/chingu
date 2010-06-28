@@ -189,6 +189,27 @@ module Chingu
       @angle = value
     end
 
+    #
+    # Disable automatic calling of draw and draw_trait each game loop
+    #
+    def hide!
+      @visible = false
+    end
+    
+    #
+    # Enable automatic calling of draw and draw_trait each game loop
+    #
+    def show!
+      @visible = true
+    end
+    
+    #
+    # Returns true if visible (not hidden)
+    #
+    def visible?
+      @visible == true
+    end    
+
 
     # Returns true if object is inside the game window, false if outside
     def inside_window?(x = @x, y = @y)
