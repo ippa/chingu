@@ -7,12 +7,10 @@ include Chingu
 #
 # Animation / retrofy example
 #
-class Game < Chingu::Window
-  attr_reader :factor
-  
+class Game < Chingu::Window  
   def initialize
     super    
-    @factor = 6
+    self.factor = 6
     self.input = { :escape => :exit }
 		self.caption = "Chingu::Animation / retrofy example. Move with arrows!"
     retrofy
@@ -39,7 +37,6 @@ class Droid < Chingu::GameObject
     # Start out by animation frames 0-5 (contained by @animation[:scan])
     @frame_name = :scan
     
-    self.factor = $window.factor
     @last_x, @last_y = @x, @y
     update
   end

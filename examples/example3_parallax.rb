@@ -16,6 +16,7 @@ class Game < Chingu::Window
 end
 
 class Scroller < Chingu::GameState
+  
   def initialize(options)
     super
     @text_color = Color.new(0xFF000000)
