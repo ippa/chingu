@@ -92,8 +92,8 @@ module Chingu
         @velocity_x += @acceleration_x  if  (@velocity_x + @acceleration_x).abs < @max_velocity_x
         @velocity_y += @acceleration_y  if  (@velocity_y + @acceleration_y).abs < @max_velocity_y
         
-        @previous_x = @x
-        @previous_y = @y
+        @previous_x = self.x
+        @previous_y = self.y
         
         #
         # if option :apply is false, just calculate velocities, don't apply them to x/y
@@ -127,7 +127,7 @@ module Chingu
       # Did game object move last tick
       #
       def moved?
-        @x != @previous_x || @y != @previous_y
+        self.x != @previous_x || self.y != @previous_y
       end
     end
   end

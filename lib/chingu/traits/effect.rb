@@ -65,15 +65,15 @@ module Chingu
       
       # Increase @factor_x and @factor_y at the same time.
       def scale(amount = 0.1)
-        @factor_x += amount
-        @factor_y += amount
+        self.factor_x += amount
+        self.factor_y += amount
       end
       alias :zoom :scale
           
       # Ddecrease @factor_x and @factor_y at the same time.
       def scale_out(amount = 0.1)
-        @factor_x -= amount
-        @factor_y -= amount
+        self.factor_x -= amount
+        self.factor_y -= amount
       end
       alias :zoom_out :scale_out
       

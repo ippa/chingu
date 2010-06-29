@@ -63,7 +63,7 @@ module Chingu
       end      
       
       def draw
-        @image.draw_rot(self.screen_x, self.screen_y, @zorder, @angle, @center_x, @center_y, @factor_x, @factor_y, @color, @mode)
+        self.image.draw_rot(self.screen_x, self.screen_y, self.zorder, self.angle, self.center_x, self.center_y, self.factor_x, self.factor_y, self.color, self.mode)
       end
     end
   end
