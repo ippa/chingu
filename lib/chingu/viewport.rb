@@ -21,7 +21,11 @@
 
 module Chingu
   #
-  # A basic viewport class
+  # A basic viewport class. Coordinates X and Y are relative to game
+  # area that can be specified by any arguments acceptable by
+  # Chingu::Rect#new method. By default, the game_area is the same
+  # as window and thus the vieport has no effect.
+  #
   #
   # TODO:
   # Implement use of viewports angle, center_x, center_y, factor_x, factor_y
@@ -36,7 +40,7 @@ module Chingu
       @y_target = options[:y_target] || @y
       @x_lag = options[:x_lag] || 0
       @y_lag = options[:y_lag] || 0
-      @game_area = Chingu::Rect.new(options[:game_area]||[@x, @y, $window.width, $window.height])       
+      @game_area = Chingu::Rect.new(options[:game_area] || [@x, @y, $window.width, $window.height])       
     end
     
     #
