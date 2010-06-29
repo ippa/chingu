@@ -28,7 +28,7 @@ module Chingu
     class Debug < Chingu::GameState
       def initialize(options)
         super
-        @white = Color.new(255,255,255,255)
+        @white = Gosu::Color.new(255,255,255,255)
         @fade_color = Gosu::Color.new(100,255,255,255)
         
         @font = Gosu::Font.new($window, default_font_name, 15)
