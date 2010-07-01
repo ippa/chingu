@@ -72,11 +72,7 @@ module Chingu
     # The game objects image will be the rectangle the viewport can move within.
     #
     def game_area_object=(game_object)
-      image = (game_object.is_a? Gosu::Image) ? game_object : game_object.image
-      @game_area = Rect.new(0,0,
-                            (image.width*$window.factor) - $window.width, 
-                            (image.height*$window.factor) - $window.height
-                            )
+      @game_area = Rect.new(0, 0, game_object.width, game_object.height)
     end
     
     #
@@ -87,7 +83,7 @@ module Chingu
     # height,width,factor_x,factor_y,center_x,center_y as well...
     #
     def inside?(object, y = nil)
-      x, y = y ? [object,y] : [object.x, object.y]
+      x, y = y ? [object,y] : [object.x, object.y]      
       x >= @x && x <= (@x + $window.width) &&
       y >= @y && y <= (@y + $window.height)
     end
@@ -103,8 +99,8 @@ module Chingu
     # The viewport can't show anything outside the game area
     #
     def inside_game_area?(object)        
-      object.x >= @game_area.x && object.x <= (@game_area.width + $window.width) &&
-      object.y >= @game_area.x && object.y <= (@game_area.height + $window.height)
+      object.x >= @game_area.x && object.x <= @game_area.width &&
+      object.y >= @game_area.x && object.y <= @game_area.height
     end
       
     # Returns true object is outside the game area
@@ -134,8 +130,8 @@ module Chingu
     def x=(x)
       @x = x
       if @game_area
-        @x = @game_area.x       if @x < @game_area.x
-        @x = @game_area.width   if @x > @game_area.width
+        @x = @game_area.x                     if @x < @game_area.x
+        @x = @game_area.width-$window.width   if @x > @game_area.width-$window.width
       end 
     end
 
@@ -145,8 +141,8 @@ module Chingu
     def y=(y)
       @y = y
       if @game_area
-        @y = @game_area.y       if @y < @game_area.y
-        @y = @game_area.height  if @y > @game_area.height
+        @y = @game_area.y                       if @y < @game_area.y
+        @y = @game_area.height-$window.height   if @y > @game_area.height-$window.height
       end
     end
     

@@ -26,11 +26,10 @@ class Example21 < GameState
   
   def setup
     self.input = { :escape => :exit, :e => :edit }
-    self.viewport.game_area = [0, 0, 3000, 1000]    
+    self.viewport.game_area = [0, 0, 3500, 2000]    
     
-    @droid = Droid.create(:x => 100, :y => 300)
-    #@droid = Droid.create(:x => 2500, :y => 1200)
-    #@droid = Droid.create(:x => 500, :y => 1500)
+    @droid = Droid.create(:x => 100, :y => 400)
+    #@droid = Droid.create(:x => 400, :y => 1300)
     
     load_game_objects
     
@@ -58,7 +57,7 @@ class Example21 < GameState
   def update    
     super
     
-    visible_blocks = Block.inside_viewport
+    visible_blocks = Block
     
     FireBall.each_collision(visible_blocks) do |fire_ball, block|
       fire_ball.destroy
@@ -154,14 +153,14 @@ class Droid < Chingu::GameObject
   
   def move(x,y)
     @x += x
-    self.each_collision(Block.inside_viewport) do |me, stone_wall|
+    self.each_collision(Block) do |me, stone_wall|      
       me.x = previous_x
     end
   end
   
   def update    
     @image = @animation.next
-    self.each_collision(Block.inside_viewport) do |me, stone_wall|
+    self.each_collision(Block) do |me, stone_wall|
       if self.velocity_y < 0  # Hitting the ceiling
         me.y = stone_wall.bb.bottom + me.image.height * self.factor_y
         self.velocity_y = 0

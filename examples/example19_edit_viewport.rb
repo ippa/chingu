@@ -14,12 +14,9 @@ class Game < Chingu::Window
     super(300,300,false)    
   end
   
-
-
   def setup
-    Gosu::enable_undocumented_retrofication
+    retrofy
     self.factor = 3
-    #self.input = { :escape => :exit }
     switch_game_state(Example19.new)
   end    
 end
