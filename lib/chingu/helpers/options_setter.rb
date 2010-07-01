@@ -23,7 +23,7 @@ module Chingu
           if self.respond_to?(setter)
             self.send(setter, value)
           else
-            self.instance_variable_set(attr, value)
+            self.instance_variable_set("@#{attr.to_s}", value)
           end
         end
       end
