@@ -29,6 +29,8 @@ module Chingu
     #
     module Sprite
 
+      include Chingu::Helpers::OptionsSetter
+      
       module ClassMethods
         def initialize_trait(options = {})
           trait_options[:sprite] = options
@@ -46,14 +48,7 @@ module Chingu
       }
 
       def setup_trait(object_options = {})
-        options = DEFAULTS.merge(trait_options[:sprite]).merge(object_options)
-
-        options.each do |attr,value|
-          self.send("#{attr}=", value)
-        end
-        
-        self.image = options[:image]
-        self.color = options[:color]
+        set_options(trait_options[:sprite].merge(object_options), DEFAULTS)
         super
       end
 

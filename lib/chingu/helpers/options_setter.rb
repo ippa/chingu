@@ -2,19 +2,10 @@ module Chingu
   module Helpers
 
     #
-    # Provides #set_options and simple #initialize method to
-    # simplify initialization from Hash.
+    # Provides #set_options method to simplify common initialization from Hash.
     #
     module OptionsSetter
 
-      #
-      # Passes supplied options and DEFAULTS (if defined)
-      # to #set_options method.
-      #
-      def initialize(options = {})
-        set_options(options, self.class::DEFAULTS || {})
-      end
-      
       protected
       
       #
