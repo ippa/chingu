@@ -23,15 +23,21 @@ module Chingu
   module GameStates
   
     #
-    # Debug game state (F1 is default key to start/exit debug win, 'p' to pause game)
+    # Debug game state (F1 is default key to start/exit debug win, 'p'
+    # to pause game)
+    #
+    # Usage: 
     #  
     class Debug < Chingu::GameState
-      def initialize(options)
+
+      Z = 999
+      
+      def initialize(options = {})
         super
-        @white = Gosu::Color.new(255,255,255,255)
-        @fade_color = Gosu::Color.new(100,255,255,255)
+        @text = options[:text_color] || Gosu::Color.new(255,255,255,255)
+        @fade_color = options[:fade_color] || Gosu::Color.new(100,255,255,255)
         
-        @font = Gosu::Font.new($window, default_font_name, 15)
+        @font = Gosu::Font.new($window, Gosu::default_font_name, 15)
         @paused = true
         
         self.input = {:p => :pause, :f1 => :return_to_game, :esc => :return_to_game}
@@ -50,7 +56,7 @@ module Chingu
       end
       
       def draw
-        game_state_manager.previous_game_state.draw
+        game_state_manager.previous_game_state.draw if game_state_manager.previous_game_state
 
         $window.draw_quad(  0,0,@fade_color,
                             $window.width,0,@fade_color,
@@ -58,8 +64,17 @@ module Chingu
                             0,$window.height,@fade_color,10)
                        
         text = "DEBUG CONSOLE"
-        @font.draw(text, $window.width - @font.text_width(text), @font.height, 999)
-      end  
+        @font.draw(text, $window.width - @font.text_width(text), @font.height, Z)
+      end
+
+      def print_lines(lines)
+        height = @font.height
+        
+        lines.each_with_index do |line,i|
+          @font.draw(line, @x_offset, @y_offset + height * i, Z,1,1, @text_color)
+        end       
+      end
+      
     end
   end
 end

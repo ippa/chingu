@@ -10,6 +10,12 @@ include Chingu
 # Press 'E' when demo is running to edit the playfield!
 # 
 class Game < Chingu::Window 
+  def initialize()
+    super(300,300,false)    
+  end
+  
+
+
   def setup
     Gosu::enable_undocumented_retrofication
     self.factor = 3

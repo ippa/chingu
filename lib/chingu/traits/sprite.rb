@@ -48,7 +48,7 @@ module Chingu
       def setup_trait(object_options = {})
         options = DEFAULTS.merge(trait_options[:sprite]).merge(object_options)
 
-        DEFAULTS.merge(options).each do |attr,value|
+        options.each do |attr,value|
           self.send("#{attr}=", value)
         end
         
@@ -80,7 +80,7 @@ module Chingu
         @image = if String === image
                    # 1) Try loading the image the normal way
                    # 2) Try looking up the picture using Chingus Image-cache
-                   Gosu::Image.new($window, image) rescue Gosu::Image[image]
+                   Gosu::Image.new($window, image,false) rescue Gosu::Image[image]
                  elsif image.respond_to? :call
                    image.call
                  else

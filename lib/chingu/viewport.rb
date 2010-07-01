@@ -139,9 +139,9 @@ module Chingu
       end 
     end
 
-		#
-		# Viewports Y setter with boundschecking
-		#
+    #
+    # Viewports Y setter with boundschecking
+    #
     def y=(y)
       @y = y
       if @game_area
