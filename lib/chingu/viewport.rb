@@ -152,7 +152,18 @@ module Chingu
     
     def apply(&block)
       $window.translate(-@x, -@y, &block)
-    end    
+    end
+
+    def to_s
+      a = @game_area
+      %/
+Vieport
+ Position: #{@x}, #{y}
+ Game area: #{a.x},#{a.y},#{a.width},#{a.height}"        
+ Target: #{@target_x}, #{@target_y}
+      /
+    end
+    
     
   end
 end

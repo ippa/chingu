@@ -44,7 +44,8 @@ module Chingu
         :x => 0, :y => 0, :angle => 0,
         :factor_x => 1.0, :factor_y => 1.0,
         :zorder => 100, :center_x => 0.5, :center_y => 0.5,
-        :mode => :default
+        :mode => :default,
+        :color => nil
       }
 
       def setup_trait(object_options = {})
