@@ -268,7 +268,11 @@ module Chingu
         #
         # Draw red rectangles/circles around all selected game objects
         #
-        selected_game_objects.each { |game_object| game_object.draw_debug }
+        if defined?(previous_game_state.viewport)
+          previous_game_state.viewport.apply {  selected_game_objects.each { |game_object| game_object.draw_debug } }
+        else
+          selected_game_objects.each { |game_object| game_object.draw_debug }
+        end
         
         if @cursor_game_object
           @cursor_game_object.draw_at($window.mouse_x, $window.mouse_y)
