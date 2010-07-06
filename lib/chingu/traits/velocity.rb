@@ -98,12 +98,17 @@ module Chingu
         #
         # if option :apply is false, just calculate velocities, don't apply them to x/y
         #
-        unless trait_options[:velocity][:apply] == false
-          self.x += @velocity_x
-          self.y += @velocity_y
-        end
+        move(@velocity_x, @velocity_y)  unless trait_options[:velocity][:apply] == false
         
         super
+      end
+      
+      #
+      # Move game object
+      #
+      def move(x, y)
+        self.x += x
+        self.y += y
       end
       
       #
