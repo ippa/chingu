@@ -80,12 +80,7 @@ module Chingu
       # Visualises the bounding circle as a red circle.
       #
       def draw_debug
-        x,y = self.x, self.y          # Do we need to take center_x/center_y into consideration here?
-        if defined?(parent.viewport)
-          $window.draw_circle(x - parent.viewport.x, y - parent.viewport.y, self.radius, Chingu::DEBUG_COLOR)
-        else
-          $window.draw_circle(x, y, self.radius, Chingu::DEBUG_COLOR)
-        end
+        $window.draw_circle(self.x, self.y, self.radius, Chingu::DEBUG_COLOR)
       end
         
     end

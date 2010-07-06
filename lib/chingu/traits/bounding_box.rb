@@ -93,11 +93,7 @@ module Chingu
       # Visualises the bounding box as a red rectangle.
       #
       def draw_debug
-        if defined?(parent.viewport)
-          $window.draw_rect(self.bounding_box.move(-parent.viewport.x, -parent.viewport.y), Chingu::DEBUG_COLOR, Chingu::DEBUG_ZORDER)
-        else
-          $window.draw_rect(self.bounding_box, Chingu::DEBUG_COLOR, Chingu::DEBUG_ZORDER)
-        end        
+        $window.draw_rect(self.bounding_box, Chingu::DEBUG_COLOR, Chingu::DEBUG_ZORDER)
       end
       
     end
