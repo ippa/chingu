@@ -62,6 +62,7 @@ module Chingu
             state = $3.length > 0 ? $3 : "default"            
             animations[state.to_sym] = Chingu::Animation.new(trait_options[:animation].merge(:file => tile_file))
           elsif tile_file =~ /[a-zA-Z\_+]\.(bmp|png)/
+            puts tile_file
             animations[:default] = Chingu::Animation.new(trait_options[:animation].merge(:file => tile_file))
           end
           

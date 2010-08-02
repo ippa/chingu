@@ -114,12 +114,17 @@ class Level < Chingu::GameState
     super
     @title = Chingu::Text.create(:text=>"Level #{options[:level].to_s}. P: pause R:restart", :x=>20, :y=>10, :size=>30)
     @player = Player.create
-    @player.input = { :holding_left => :move_left, 
-                      :holding_right => :move_right, 
-                      :holding_up => :move_up, 
-                      :holding_down => :move_down, 
-                      :space => :fire}
     
+    #
+    # The below code can mostly be replaced with the use of method "holding?" in Level#update
+    # Using holding? in update could be good if you need fine grained controll over when input is dispatched.
+    # 
+    @player.input = {  :holding_left => :move_left, 
+                       :holding_right => :move_right, 
+                       :holding_up => :move_up, 
+                       :holding_down => :move_down, 
+                       :space => :fire }
+
     #
     # The input-handler understands gamestates. P is pressed --> push_gamegate(Pause)
     # You can also give it Procs/Lambdas which it will execute when key is pressed.
@@ -129,6 +134,16 @@ class Level < Chingu::GameState
   
   def update
     super
+    
+    #
+    # Another way of checking input
+    #
+    # @player.move_left   if holding?(:left, :a)
+    # @player.move_right  if holding?(:right, :d)
+    # @player.move_up     if holding?(:up, :w)
+    # @player.move_down   if holding?(:down, :s)
+    # @player.fire        if holding?(:space)
+
     Bullet.destroy_if {|bullet| bullet.outside_window? }
     $window.caption = "FPS: #{$window.fps} - GameObjects: #{game_objects.size} - Bullets: #{Bullet.size}"
   end

@@ -45,16 +45,24 @@ module Chingu
     #
     module InputClient
       #
-      # Returns true or false depending on if the key is pressed
+      # Returns true or false depending if any of the given keys are pressed
       #
-      def holding?(key)
-        $window.button_down?(Chingu::Input::SYMBOL_TO_CONSTANT[key])
+      # Example:
+      #   @player.go_left if holding?(:left, :a)
+      #
+      def holding?(*keys)
+        Array(keys).each do |key|
+          return true if $window.button_down?(Chingu::Input::SYMBOL_TO_CONSTANT[key])
+        end
+        return false
       end
       
+      #
+      # Input-map writer
+      #
       def input=(input_map)
         @input ||= Hash.new
-        #@input = input_map
-
+        
         if input_map.is_a? Array
           #
           # Un-nest input_map [:left, :right, :space]

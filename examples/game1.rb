@@ -21,7 +21,7 @@ class Game < Chingu::Window
     super(1000,400,false)
     self.input = { :escape => :exit }
     self.factor = 1
-		Gosu::enable_undocumented_retrofication
+		retrofy
     switch_game_state(Level)
   end
 end
