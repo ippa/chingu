@@ -29,7 +29,11 @@ class Woff < GameState
     
     #
     # TODO: More text examples!
-    # 
+    #
+    
+    t = Text.create("Scaletest", :x => 10, :y => 100)
+    t.factor_x = 2
+    t.factor_y = 1
   end
   
   def draw

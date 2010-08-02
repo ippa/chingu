@@ -34,7 +34,7 @@ module Chingu
   #
   class Text < Chingu::GameObject
     attr_accessor :text
-    attr_reader :height, :gosu_font, :line_spacing, :align, :max_width, :background
+    attr_reader :size, :gosu_font, :line_spacing, :align, :max_width, :background
 
     @@size = nil
     @@font = nil
@@ -69,14 +69,14 @@ module Chingu
   
       @text = text || options[:text] || "-No text specified-"
       @font =  options[:font] || @@font || Gosu::default_font_name()
-      @height = @size = options[:height] || options[:size] || @@size || 15
+      @size = options[:size] || options[:height] || @@size || 15
       @line_spacing = options[:line_spacing] || 1
       @align = options[:align] || :left
       @max_width = options[:max_width]
       @padding = options[:padding] || @@padding
       self.rotation_center = :top_left
 
-      @gosu_font = Gosu::Font.new($window, @font, @height)
+      @gosu_font = Gosu::Font.new($window, @font, @size)
       create_image  unless @image
 
       if options[:background]
@@ -89,6 +89,8 @@ module Chingu
         @background.width = self.width + @padding * 2
         @background.height = self.height + @padding * 2
       end
+      
+      self.height = options[:height]  if options[:height]
     end
     
     #
@@ -97,10 +99,6 @@ module Chingu
     def text=(text)
       @text = text
       create_image
-    end
-    
-    def size
-      @height
     end
     
     #
@@ -125,9 +123,9 @@ module Chingu
     #
     def create_image
       if @max_width
-        @image = Gosu::Image.from_text($window, @text, @font, @height, @line_spacing, @max_width, @align)
+        @image = Gosu::Image.from_text($window, @text, @font, @size, @line_spacing, @max_width, @align)
       else
-        @image = Gosu::Image.from_text($window, @text, @font, @height)
+        @image = Gosu::Image.from_text($window, @text, @font, @size)
       end
     end
   end
