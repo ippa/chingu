@@ -226,6 +226,7 @@ class Rect < Array
 
 	# Return the x coordinate of the center of the Rect
 	def centerx; return self.at(0)+(self.at(2).div(2)); end
+  alias center_x centerx;
 
 	# Set the x coordinate of the center of the Rect by translating the
 	# Rect (adjusting the x offset).
@@ -236,6 +237,7 @@ class Rect < Array
 
 	# Return the y coordinate of the center of the Rect
 	def centery; return self.at(1)+(self.at(3).div(2)); end
+  alias center_y centery;
 
 	# Set the y coordinate of the center of the Rect by translating the
 	# Rect (adjusting the y offset).
