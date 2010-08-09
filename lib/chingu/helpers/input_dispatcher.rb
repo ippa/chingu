@@ -80,21 +80,26 @@ module Chingu
     # For a given object, dispatch "action".
     # An action can be:
     #
-    # * Symbol (:p, :space), translates into a method-call
-    # * Proc/Lambda, call() it
+    # * Symbol (:p, :space) or String, translates into a method-call
+    # * Proc/Lambda or Method, call() it
     # * GameState-instance, push it on top of stack
     # * GameState-inherited class, create a new instance, cache it and push it on top of stack
     #
     def dispatch_action(action, object)
       # puts "Dispatch Action: #{action} - Objects class: #{object.class.to_s}"
-      if action.is_a? Symbol
+      case action
+      when Symbol, String
         object.send(action)
-      elsif action.is_a? Proc
-        action.call
-      elsif action.is_a? Chingu::GameState
+      when Proc, Method
+        action[]
+      when Chingu::GameState
         push_game_state(action)
-      elsif action.superclass == Chingu::GameState
-        push_game_state(action)
+      when Class
+        if action.ancestors.include?(Chingu::GameState)
+          push_game_state(action)
+        end
+      else
+        # TODO possibly raise an error? This ought to be handled when the input is specified in the first place.
       end
     end
   end
