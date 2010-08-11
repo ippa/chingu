@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{chingu}
-  s.version = "0.7.6.6"
+  s.version = "0.7.6.7"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ippa"]
-  s.date = %q{2010-06-24}
+  s.date = %q{2010-08-11}
   s.description = %q{OpenGL accelerated 2D game framework for Ruby. Builds on Gosu (Ruby/C++) which provides all the core functionality. Chingu adds simple yet powerful game states, prettier input handling, deployment safe asset-handling, a basic re-usable game object and stackable game logic.}
   s.email = %q{ippa@rubylicio.us}
   s.extra_rdoc_files = [
@@ -49,6 +49,7 @@ Gem::Specification.new do |s|
      "examples/example21.yml",
      "examples/example21_sidescroller_with_edit.rb",
      "examples/example22_text.rb",
+     "examples/example23_chipmunk.rb",
      "examples/example2_gamestate_basics.rb",
      "examples/example3_parallax.rb",
      "examples/example4_gamestates.rb",
@@ -111,6 +112,7 @@ Gem::Specification.new do |s|
      "lib/chingu/fpscounter.rb",
      "lib/chingu/game_object.rb",
      "lib/chingu/game_object_list.rb",
+     "lib/chingu/game_object_map.rb",
      "lib/chingu/game_state.rb",
      "lib/chingu/game_state_manager.rb",
      "lib/chingu/game_states/debug.rb",
@@ -124,6 +126,7 @@ Gem::Specification.new do |s|
      "lib/chingu/helpers/gfx.rb",
      "lib/chingu/helpers/input_client.rb",
      "lib/chingu/helpers/input_dispatcher.rb",
+     "lib/chingu/helpers/options_setter.rb",
      "lib/chingu/helpers/rotation_center.rb",
      "lib/chingu/high_score_list.rb",
      "lib/chingu/inflector.rb",
@@ -141,6 +144,7 @@ Gem::Specification.new do |s|
      "lib/chingu/traits/collision_detection.rb",
      "lib/chingu/traits/effect.rb",
      "lib/chingu/traits/retrofy.rb",
+     "lib/chingu/traits/sprite.rb",
      "lib/chingu/traits/timer.rb",
      "lib/chingu/traits/velocity.rb",
      "lib/chingu/traits/viewport.rb",
@@ -148,6 +152,7 @@ Gem::Specification.new do |s|
      "lib/chingu/window.rb",
      "spec/chingu/fpscounter_spec.rb",
      "spec/chingu/game_object_spec.rb",
+     "spec/chingu/helpers/options_setter_spec.rb",
      "spec/chingu/inflector_spec.rb",
      "spec/chingu/rect_20x20.png",
      "spec/chingu/text_spec.rb",
@@ -163,6 +168,7 @@ Gem::Specification.new do |s|
   s.test_files = [
     "spec/chingu/fpscounter_spec.rb",
      "spec/chingu/game_object_spec.rb",
+     "spec/chingu/helpers/options_setter_spec.rb",
      "spec/chingu/inflector_spec.rb",
      "spec/chingu/text_spec.rb",
      "spec/spec_helper.rb",
@@ -180,6 +186,7 @@ Gem::Specification.new do |s|
      "examples/example20_trait_inheritence_test.rb",
      "examples/example21_sidescroller_with_edit.rb",
      "examples/example22_text.rb",
+     "examples/example23_chipmunk.rb",
      "examples/example2_gamestate_basics.rb",
      "examples/example3_parallax.rb",
      "examples/example4_gamestates.rb",
