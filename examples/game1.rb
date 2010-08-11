@@ -1,26 +1,20 @@
 #!/usr/bin/env ruby
 #
 #
-# A "full" simple game in Chingu, using GameState, GameObject, Paralaxx, has_traits etc
+# A simple game in Chingu, using GameState, GameObject, Paralaxx, has_traits etc
 # 
-# TODO: clean up code as Chingu moves along :). Comments. Get it working ;).
-#
 #
 require 'rubygems'
 require File.join(File.dirname($0), "..", "lib", "chingu")
 require 'texplay'     # adds Image#get_pixel
-#require 'opengl'     # adds raw gl stuff so Image#retrofy works (in some setups this seems to be 'gl')
 
 include Gosu
 include Chingu
 
-class Game < Chingu::Window
-  #attr_reader :factor
-  
+class Game < Chingu::Window  
   def initialize
     super(1000,400,false)
     self.input = { :escape => :exit }
-    self.factor = 1
 		retrofy
     switch_game_state(Level)
   end
@@ -37,12 +31,8 @@ class Level < Chingu::GameState
     super
     
     @parallax = Parallax.create(:rotation_center => :top_left)
-		#@parallax = Parallax.create(:rotation_center => :center)
-    @parallax << { :image => "city2.png", :damping => 2}#, :factor => $window.factor }
-    @parallax << { :image => "city1.png", :damping => 1}#, :factor => $window.factor }
-		#@parallax.x = $window.width / 2
-		#@parallax.y = $window.height / 2
-		
+    @parallax << { :image => "city2.png", :damping => 2}
+    @parallax << { :image => "city1.png", :damping => 1}	
     @player = Player.create(:x => 30, :y => 10)
     
     @bg1 = Color.new(0xFFCE28FF)
@@ -71,13 +61,8 @@ class Level < Chingu::GameState
   # The foremost layer in our parallax scroller is the collidable terrain
   #
   def solid_pixel_at?(x, y)
-    begin
-      #pixel = @parallax.layers.last.get_pixel(x/$window.factor, y/$window.factor)
-      #return false  if  pixel.nil?
-      #return 
-      
-      @parallax.layers.last.get_pixel(x * $window.factor, y * $window.factor)[3] != 0
-			#@parallax.layers.last.get_pixel(x, y)[3] != 0
+    begin     
+      @parallax.layers.last.get_pixel(x, y)[3] != 0
     rescue
       puts "Error in get_pixel(#{x}, #{y})"
     end
@@ -96,7 +81,7 @@ class Level < Chingu::GameState
     Bullet.all.select { |o| solid_pixel_at?(o.x, o.y)}.each { |o| o.die }
         
     # Collide player with terrain
-    #push_game_state(GameOver) if solid_pixel_at?(@player.x, @player.y)
+    push_game_state(GameOver) if solid_pixel_at?(@player.x, @player.y)
     
     # Collide player with enemies and enemy bullets
     @player.each_bounding_circle_collision(Enemy) do |player, enemy|
@@ -117,9 +102,7 @@ class Level < Chingu::GameState
       Enemy.create(:x => $window.width, :y => rand(300))
       @total_ticks = 0
     end
-    
-    #push_game_state(Done.new(:score => @player.score)) if @game_steps == 1
-    
+        
     $window.caption = "City Battle! Player x/y: #{@player.x}/#{@player.y} - Score: #{@player.score} - FPS: #{$window.fps} - game objects: #{game_objects.size}"
   end
   
@@ -134,14 +117,13 @@ end
 #
 class Player < GameObject
   has_traits :velocity, :collision_detection, :timer
-  has_trait :bounding_circle, :scale => 0.50, :debug => true 
+  has_trait :bounding_circle, :scale => 0.50, :debug => false
   attr_accessor :score
   
   def setup
     @image = Image["plane.png"]
-    #self.factor = $window.factor
     
-    self.input = { 
+    self.input = {
       :holding_left => :left, 
       :holding_right => :right, 
       :holding_up => :up, 
@@ -179,8 +161,8 @@ class Player < GameObject
     self.velocity_y *= 0.6
     self.velocity_x *= 0.6
     
-    @x = @last_x  if @x < 0 || @x > $window.width#/$window.factor
-    @y = @last_y  if @y < 0 || @y > $window.height#/$window.factor
+    @x = @last_x  if @x < 0 || @x > $window.width
+    @y = @last_y  if @y < 0 || @y > $window.height
     @last_x, @last_y = @x, @y
   end
   
@@ -195,7 +177,6 @@ class Bullet < GameObject
   
   def setup
     @image = Image["bullet.png"]
-    #self.factor = $window.factor
     self.velocity_x = 10
     @status = :default
     @radius = 3
@@ -208,10 +189,6 @@ class Bullet < GameObject
     during(50) { @factor_x += 1; @factor_y += 1; @x -= 1; }.then { self.destroy }
   end
   
-  #def update
-    #return if @status == :dying
-    #@x += self.velocity_x
-  #end
 end
 
 #
@@ -238,7 +215,6 @@ class Explosion < GameObject
     @image = @@image.dup  if @image.nil?
     
     self.rotation_center = :center
-    #self.factor = options[:factor] ? options[:factor] : $window.factor
     during(100) { self.alpha -= 30}.then { destroy }
   end
   
@@ -262,7 +238,6 @@ class Shrapnel < GameObject
     self.velocity_y = 4 - rand(10)
     self.acceleration_y = 0.2 # gravity = downards acceleration
     self.rotation_center = :center
-    #self.factor = $window.factor
     @status = :default
   end
   
@@ -297,10 +272,8 @@ class Enemy < GameObject
     @health = options[:health] || 100
     
     @anim = Animation.new(:file => "media/saucer.png", :size => [32,13], :delay => 100)
-    #  @anim.retrofy
     @image = @anim.first
       
-    #self.factor = $window.factor
     @radius = 5
     @black = Color.new(0xFF000000)
     @status == :default
