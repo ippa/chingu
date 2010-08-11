@@ -21,7 +21,7 @@ class Play < Chingu::GameState
   def setup
     Droid.create(:x => 200, :y => 300, :factor => 4, :alpha => 100)
     every(1000) { Spaceship.create(:x => 10, :y => 300, :velocity_x => 1) }
-    every(1000) { Plane.create(:x => 10, :y => 350, :velocity => [1,0] ) }
+    every(1000) { Plane.create(:x => 10, :y => 350 + rand(20), :velocity => [1,0]) }
     every(500) { FireBullet.create(:x => 10, :y => 370, :velocity_x => 1) }
     every(500) { Star.create(:x => 400, :y => 400, :velocity => [-2,-rand*2]) }
     #every(400) { Heli.create(:x => 10, :y => 10, :velocity_x => 1) }
@@ -38,7 +38,7 @@ class Actor < GameObject
   trait :velocity
   
   def setup
-    @image = Image["#{self.filename}.png"]
+    @image = Image["#{self.filename}.png"] rescue nil
     @zorder = 10
   end
   
