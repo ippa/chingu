@@ -287,6 +287,7 @@ class Block < GameObject
 
   def setup
     @image = Image["black_block.png"]
+    @color = Color.new(0xff808080)
   end
 end
 
