@@ -49,8 +49,6 @@
 # 		union, union!
 # 		union_all, union_all!
 #
-#	class Surface
-#		make_rect
 # 
 #++
 
@@ -105,7 +103,6 @@ class Rect < Array
 	#  3. Elsif it has a +rect+ attribute., perform (1) and (2) on that.
 	#  4. Otherwise, raise TypeError.
 	# 
-	# See also Surface#make_rect()
 	def Rect.new_from_object(object)
 		case(object)
 		when Rect
@@ -620,12 +617,4 @@ class Rect < Array
 end # class Rect
 
 
-class Surface
-	# Return a Rect with the same width and height as the Surface, positioned
-	# at (0,0).
-	def make_rect()
-		return Rect.new(0,0,self.width,self.height)
-	end
-end
-
-end # module Rubygame
+end # module Chingu
