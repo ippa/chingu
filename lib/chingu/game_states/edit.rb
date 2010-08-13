@@ -594,10 +594,12 @@ module Chingu
       def mouse_x
         x = $window.mouse_x
         x += self.previous_game_state.viewport.x if defined?(self.previous_game_state.viewport)
+        return x
       end
       def mouse_y
         y = $window.mouse_y
         y += self.previous_game_state.viewport.y if defined?(self.previous_game_state.viewport)
+        return y
       end
 
       def inside_window?(x = $window.mouse_x, y = $window.mouse_y)
@@ -611,7 +613,7 @@ module Chingu
         game_object.options[:created_with_editor] = true
         game_object.x = self.mouse_x
         game_object.y = self.mouse_y
-         
+                 
         unless template.options[:toolbar]
           game_object.angle = template.angle
           game_object.factor_x = template.factor_x
