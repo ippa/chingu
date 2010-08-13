@@ -49,7 +49,7 @@ module Chingu
 
       def initialize(options = {})
         super
-        
+                
         options = {:draw_grid => true, :snap_to_grid => true, :resize_to_grid => true}.merge(options)
         
         @grid = options[:grid] || [8,8]
@@ -146,7 +146,7 @@ module Chingu
 
             # Scale down object to fit our toolbar
             if game_object.image
-              Text.create("#{klass.to_s[0..9]}\n#{game_object.width.to_i}x#{game_object.height.to_i}", :size => 12, :x=>x-16, :y=>y+18, :zorder => @zorder, :max_width => 55, :rotation_center => :top_left, :align => :center)
+              Text.create("#{klass.to_s[0..9]}\n#{game_object.width.to_i}x#{game_object.height.to_i}", :size => 12, :x=>x-16, :y=>y+18, :zorder => @zorder, :max_width => 55, :rotation_center => :top_left, :align => :center, :factor => 1)
               game_object.size = @toolbar_icon_size
               game_object.cache_bounding_box if game_object.respond_to?(:cache_bounding_box)
               x += 50
@@ -163,7 +163,7 @@ module Chingu
       def draw_grid
         return unless @grid
         
-        start_x = start_y = 0,0
+        start_x, start_y = 0,0
         if defined?(previous_game_state.viewport)
           start_x = -previous_game_state.viewport.x % @grid.first
           start_y = -previous_game_state.viewport.y % @grid.last
@@ -192,7 +192,7 @@ module Chingu
           @game_area_backup = previous_game_state.viewport.game_area.dup
           previous_game_state.viewport.game_area.x -= @hud_height
           previous_game_state.viewport.game_area.y -= @hud_height
-        end        
+        end
       end
                   
       #
@@ -245,7 +245,6 @@ module Chingu
           scroll_up     if $window.mouse_y < @scroll_border_thickness
           scroll_down   if $window.mouse_y > $window.height - @scroll_border_thickness
         end
-        
       end
       
       #
@@ -258,7 +257,7 @@ module Chingu
         super
         
         draw_grid if @draw_grid
-                
+        
         #
         # Draw an edit HUD
         #
@@ -281,6 +280,7 @@ module Chingu
         else
           draw_cursor_at($window.mouse_x, $window.mouse_y)
         end
+        
       end
       
       #
@@ -627,8 +627,8 @@ module Chingu
           game_object.factor_y = wanted_height.to_f / game_object.image.height.to_f
         end
         
-        game_object.options[:mouse_x_offset] = game_object.x - self.mouse_x
-        game_object.options[:mouse_y_offset] = game_object.y - self.mouse_y
+        game_object.options[:mouse_x_offset] = (game_object.x - self.mouse_x) rescue 0
+        game_object.options[:mouse_y_offset] = (game_object.y - self.mouse_y) rescue 0
         
         game_object.cache_bounding_box if game_object.respond_to?(:cache_bounding_box)
         return game_object
