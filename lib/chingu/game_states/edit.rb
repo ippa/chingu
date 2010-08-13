@@ -128,6 +128,7 @@ module Chingu
         }
 
         @hud_height = 140
+        @toolbar_icon_size = [32,32]
         x = 20
         y = 60
         @classes.each do |klass|
@@ -137,17 +138,18 @@ module Chingu
           # so they're not overwritten by the class initialize/setup or simular
           begin
             game_object = klass.create(:paused => true)
-            game_object.x = x
+            game_object.x = x + 10
             game_object.y = y
             game_object.zorder = @zorder
             game_object.options[:toolbar] = true
+            game_object.rotation_center = :center_center
 
             # Scale down object to fit our toolbar
             if game_object.image
-              Text.create("#{klass}\n#{game_object.width.to_i}x#{game_object.height.to_i}", :size => 13, :x=>x-16, :y=>y+18, :zorder => @zorder)
-              game_object.size = [32,32]
+              Text.create("#{klass.to_s[0..9]}\n#{game_object.width.to_i}x#{game_object.height.to_i}", :size => 12, :x=>x-16, :y=>y+18, :zorder => @zorder, :max_width => 55, :rotation_center => :top_left, :align => :center)
+              game_object.size = @toolbar_icon_size
               game_object.cache_bounding_box if game_object.respond_to?(:cache_bounding_box)
-              x += 60
+              x += 50
             else
               puts "Skipping #{klass} - no image" if @debug
               game_object.destroy
