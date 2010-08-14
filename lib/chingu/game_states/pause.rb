@@ -30,7 +30,6 @@ module Chingu
     # requires the global $window set to the instance of Gosu::Window (automaticly handled if you use Chingu::Window)
     #
     class Pause < Chingu::GameState
-      trait :timer
       
       def initialize(options = {})
         super
