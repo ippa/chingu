@@ -57,7 +57,7 @@ module Chingu
     include Chingu::Helpers::ClassInheritableAccessor # adds classmethod class_inheritable_accessor
     
     attr_reader :options
-    attr_accessor :game_objects, :game_state_manager
+    attr_accessor :game_objects, :game_state_manager, :previous_game_state
     
     class_inheritable_accessor :trait_options
     @trait_options = Hash.new
@@ -107,9 +107,14 @@ module Chingu
       @options = options
       @game_objects = GameObjectList.new
       @input_clients = Array.new
-      
-      # Game state mamanger can be run alone
+  
+      # Game state manager can be run alone
       if defined?($window) && $window.respond_to?(:game_state_manager)
+        
+        # Since we place the init of previous_game_state here, game states can use it even 
+        # in initialize() if they call super first.
+        @previous_game_state = $window.game_state_manager.current_game_state
+        
         $window.game_state_manager.inside_state = self
       end
       
