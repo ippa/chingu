@@ -30,16 +30,18 @@ module Chingu
     # requires the global $window set to the instance of Gosu::Window (automaticly handled if you use Chingu::Window)
     #
     class Pause < Chingu::GameState
+      trait :timer
+      
       def initialize(options = {})
         super
         @white = Color.new(255,255,255,255)
         @color = Gosu::Color.new(200,0,0,0)
         @font = Gosu::Font.new($window, default_font_name, 35)
-        @text = "PAUSED - press key to continue"
+        @text = "PAUSED - press ESC to return to game."
       end
     
-      def button_down(id)
-        pop_game_state(:setup => false)    # Return the previous game state, dont call setup()
+      def button_up(id)
+        pop_game_state(:setup => false) if id == Gosu::KbEscape   # Return the previous game state, dont call setup()
       end
       
       def draw
@@ -47,9 +49,9 @@ module Chingu
         $window.draw_quad(  0,0,@color,
                             $window.width,0,@color,
                             $window.width,$window.height,@color,
-                            0,$window.height,@color,10)
+                            0,$window.height,@color, Chingu::DEBUG_ZORDER)
                             
-        @font.draw(@text, ($window.width/2 - @font.text_width(@text)/2), $window.height/2 - @font.height, 999)
+        @font.draw(@text, ($window.width/2 - @font.text_width(@text)/2), $window.height/2 - @font.height, Chingu::DEBUG_ZORDER + 1)
       end  
     end
   end
