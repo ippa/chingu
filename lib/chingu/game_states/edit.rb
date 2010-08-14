@@ -591,11 +591,13 @@ module Chingu
       def scroll_right(amount = 10)
         self.previous_game_state.viewport.x += amount if defined?(self.previous_game_state.viewport)
       end
+      
       def mouse_x
         x = $window.mouse_x
         x += self.previous_game_state.viewport.x if defined?(self.previous_game_state.viewport)
         return x
       end
+      
       def mouse_y
         y = $window.mouse_y
         y += self.previous_game_state.viewport.y if defined?(self.previous_game_state.viewport)
