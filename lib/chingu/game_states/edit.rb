@@ -69,6 +69,7 @@ module Chingu
         @hud_color = Gosu::Color.new(200,70,70,70)
         @selected_game_object = nil
         self.input =  {
+          :f1 => :display_help,
           :left_mouse_button => :left_mouse_button,
           :released_left_mouse_button => :released_left_mouse_button,
           :right_mouse_button => :right_mouse_button,
@@ -158,6 +159,48 @@ module Chingu
             puts "Couldn't use #{klass} in editor: #{$!}"
           end
         end
+      end
+      
+      def display_help
+text = <<END_OF_STRING
+  F1: This help screen
+  ESC: Return to Edit
+  
+  1-5: create object 1..5 shown in toolbar at mousecursor
+  CTRL+A: select all objects (not in-code-created ones though)
+  CTRL+S: Save
+  E: Save and Quit
+  Q: Quit (without saving)
+  ESC: Deselect all objects
+  Right Mouse Button Click: Copy object bellow cursor for fast duplication
+  Arrow-keys (with selected objects): Move objects 1 pixel at the time
+  Arrow-keys (with no selected objects): Scroll within a viewport
+  
+
+  Bellow keys operates on all currently selected game objects
+  -----------------------------------------------------------------------------------
+  DEL: delete selected objects
+  BACKSPACE: reset angle and scale to default values
+  Page Up: Increase zorder
+  Page Down: Decrease zorder
+  
+  R: scale up
+  F: scale down
+  T: tilt left
+  G: tilt right
+  Y: inc zorder
+  H: dec zorder
+  U: less transparency
+  J: more transparencty
+
+  Mouse Wheel (with no selected objects): Scroll viewport up/down
+  Mouse Wheel: Scale up/down
+  SHIFT + Mouse Wheel: Tilt left/right
+  CTRL + Mouse Wheel: Zorder up/down
+  ALT + Mouse Wheel: Transparency less/more
+END_OF_STRING
+        
+        push_game_state( GameStates::Popup.new(:text => text) )
       end
       
       def draw_grid
@@ -265,7 +308,7 @@ module Chingu
                             $window.width,0,@hud_color,
                             $window.width,@hud_height,@hud_color,
                             0,@hud_height,@hud_color, @zorder-1)
-        
+                
         #
         # Draw red rectangles/circles around all selected game objects
         #
