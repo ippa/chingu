@@ -456,33 +456,39 @@ The biggest and most usable is GameStates::Edit which enables fast 'n easy level
 Start example19 and press 'E' to get a full example.
 
 Edit commands / shortcuts:
+  F1: Help screen
   1-5: create object 1..5 shown in toolbar at mousecursor
-  DEL: delete selected objects
-  BACKSPACE: reset selected objects to default values 
-  CTRL+A: select all objects (not code-created ones though)
+  CTRL+A: select all objects (not in-code-created ones though)
   CTRL+S: Save
   E: Save and Quit
+  Q: Quit (without saving)
   ESC: Deselect all objects
-  Right Mouse Button Click: Copy object that was clicked on for fast duplication
+  Right Mouse Button Click: Copy object bellow cursor for fast duplication
   Arrow-keys (with selected objects): Move objects 1 pixel at the time
   Arrow-keys (with no selected objects): Scroll within a viewport
-  Page up/down: Modify the zorder of selected game objects
   
-  # The bellow keys works on all selected game objects
-  r: scale up
-  f: scale down
-  t: tilt left
-  g: tilt right
-  y: inc zorder
-  h: dec zorder
-  u: less transparency
-  j: more transparencty
+
+  Bellow keys operates on all currently selected game objects
+  -----------------------------------------------------------------------------------
+  DEL: delete selected objects
+  BACKSPACE: reset angle and scale to default values
+  Page Up: Increase zorder
+  Page Down: Decrease zorder
   
+  R: scale up
+  F: scale down
+  T: tilt left
+  G: tilt right
+  Y: inc zorder
+  H: dec zorder
+  U: less transparency
+  J: more transparencty
+
   Mouse Wheel (with no selected objects): Scroll viewport up/down
   Mouse Wheel: Scale up/down
   SHIFT + Mouse Wheel: Tilt left/right
   CTRL + Mouse Wheel: Zorder up/down
-  ALT + Mouse Wheel: Transperency less/more
+  ALT + Mouse Wheel: Transparency less/more
   
 Move mouse cursor close to the window border to scroll a viewport if your game state has one.
 
