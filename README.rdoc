@@ -482,7 +482,7 @@ Edit commands / shortcuts:
   Y: inc zorder
   H: dec zorder
   U: less transparency
-  J: more transparencty
+  J: more transparency
 
   Mouse Wheel (with no selected objects): Scroll viewport up/down
   Mouse Wheel: Scale up/down
