@@ -53,7 +53,7 @@ module Chingu
         options = {:draw_grid => true, :snap_to_grid => true, :resize_to_grid => true}.merge(options)
         
         @grid = options[:grid] || [8,8]
-        @grid_color = options[:grid_color] || Color.new(0xaa222222)
+        @grid_color = options[:grid_color] || Gosu::Color.new(0xaa222222)
         @draw_grid = options[:draw_grid]
         @snap_to_grid = options[:snap_to_grid]      # todo
         @resize_to_grid = options[:resize_to_grid]  # todo
