@@ -116,7 +116,7 @@ class Level < Chingu::GameState
     @player = Player.create
     
     #
-    # The below code can mostly be replaced with the use of method "holding?" in Level#update
+    # The below code can mostly be replaced with the use of methods "holding?", "holding_all?" or "holding_any?" in Level#update
     # Using holding? in update could be good if you need fine grained controll over when input is dispatched.
     # 
     @player.input = {  :holding_left => :move_left, 
@@ -138,10 +138,10 @@ class Level < Chingu::GameState
     #
     # Another way of checking input
     #
-    # @player.move_left   if holding?(:left, :a)
-    # @player.move_right  if holding?(:right, :d)
-    # @player.move_up     if holding?(:up, :w)
-    # @player.move_down   if holding?(:down, :s)
+    # @player.move_left   if holding_any?(:left, :a)
+    # @player.move_right  if holding_any?(:right, :d)
+    # @player.move_up     if holding_any?(:up, :w)
+    # @player.move_down   if holding_any?(:down, :s)
     # @player.fire        if holding?(:space)
 
     Bullet.destroy_if {|bullet| bullet.outside_window? }
