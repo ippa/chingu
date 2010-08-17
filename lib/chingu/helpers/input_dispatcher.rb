@@ -86,8 +86,7 @@ module Chingu
     # * GameState-inherited class, create a new instance, cache it and push it on top of stack
     #
     def dispatch_action(action, object)
-      #puts "Dispatch Action: #{action} - Objects class: #{object.class.to_s}"
-      
+      # puts "Dispatch Action: #{action} - Objects class: #{object.class.to_s}"
       case action
       when Symbol, String
         object.send(action)
