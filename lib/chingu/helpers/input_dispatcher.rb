@@ -21,88 +21,72 @@
 
 module Chingu
   module Helpers
-  
   #
   # Methods for parsing and dispatching Chingus input-maps
   # Mixed into Chingu::Window and Chingu::GameState
   #
   module InputDispatcher
     attr_reader :input_clients
-    
+
+    # Called by input_clients to add themselves from forwarding.
     def add_input_client(object)
       @input_clients << object    unless @input_clients.include?(object)
     end
-    
+
+    # Called by input_clients to remove themselves from forwarding.
     def remove_input_client(object)
       @input_clients.delete(object)
     end
 
+    # Dispatch button press to one of your clients.
     def dispatch_button_down(id, object)
-      return if(object.nil? || object.input.nil?)
-      
-      object.input.each do |symbol, action|
-        if Input::SYMBOL_TO_CONSTANT[symbol] == id
-          dispatch_action(action, object)
-        end        
+      if action = object.input[Input::CONSTANT_TO_SYMBOL[id].first]
+        dispatch_action(action)
       end
     end
-    
+
+    # Dispatch button release to one of your clients.
     def dispatch_button_up(id, object)
-      return if object.nil? || object.input.nil?
-      
-      object.input.each do |symbol, action|
-        if symbol.to_s.include? "released_"
-          symbol = symbol.to_s.sub("released_", "").to_sym
-          if Input::SYMBOL_TO_CONSTANT[symbol] == id
-            dispatch_action(action, object)
-          end
-        end
+      if action = object.input[:"released_#{Input::CONSTANT_TO_SYMBOL[id].first}"]
+        dispatch_action(action)
       end
     end
-    
+
     #
     # Dispatches input-mapper for any given object
     #
     def dispatch_input_for(object, prefix = "holding_")
-      return if object.nil? || object.input.nil?
-      
+      pattern = /^#{prefix}/
       object.input.each do |symbol, action|
-        if symbol.to_s.include? prefix
-          symbol = symbol.to_s.sub(prefix, "").to_sym
-          if $window.button_down?(Input::SYMBOL_TO_CONSTANT[symbol])
-            dispatch_action(action, object)
-          end
+        if symbol =~ pattern and $window.button_down?(Input::SYMBOL_TO_CONSTANT[$'.to_sym])
+          dispatch_action(action)
         end
       end
     end
-    
+
     #
     # For a given object, dispatch "action".
     # An action can be:
     #
-    # * Symbol (:p, :space) or String, translates into a method-call
     # * Proc/Lambda or Method, call() it
     # * GameState-instance, push it on top of stack
     # * GameState-inherited class, create a new instance, cache it and push it on top of stack
     #
-    def dispatch_action(action, object)
+    protected
+    def dispatch_action(action)
       # puts "Dispatch Action: #{action} - Objects class: #{object.class.to_s}"
       case action
-      when Symbol, String
-        object.send(action)
-      when Proc, Method
-        action[]
-      when Chingu::GameState
-        push_game_state(action)
-      when Class
-        if action.ancestors.include?(Chingu::GameState)
+        when Proc, Method
+          action[]
+        when Chingu::GameState, Class
+          # Don't need to check if the Class is a GameState, since that is already checked.
           push_game_state(action)
-        end
-      else
-        # TODO possibly raise an error? This ought to be handled when the input is specified in the first place.
+        else
+          raise ArgumentError, "Unexpected action #{action}"
       end
+      # Other types will already have been resolved to one of these, so no need for checking.
     end
   end
-  
+
   end
 end
