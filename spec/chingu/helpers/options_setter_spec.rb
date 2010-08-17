@@ -16,7 +16,7 @@ module Chingu
   module Helpers   
     describe OptionsSetter do
       
-      describe "using without defaults" do
+      context "using without defaults" do
         before do
           @car = Car.new(:angle => 44)
         end
