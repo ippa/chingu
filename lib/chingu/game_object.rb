@@ -100,7 +100,7 @@ module Chingu
     # Makes it easy to clone a objects x,y,angle etc.
     #
     def attributes
-      [@x, @y, @angle, @center_x, @center_y, @factor_x, @factor_y, @color, @mode, @zorder]
+      [@x, @y, @angle, @center_x, @center_y, @factor_x, @factor_y, @color.dup, @mode, @zorder]
     end
 
     #
