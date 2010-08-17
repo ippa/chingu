@@ -204,7 +204,7 @@ module Chingu
       # Backwards compatibility function. Use on_inputs or on_input instead.
       def input=(input_list)
         @input = nil
-        input_list.is_a?(Array) ? on_inputs(*input_list) : on_inputs(input_list)
+        input_list.is_a?(Array) ? add_inputs(*input_list) : add_inputs(input_list)
       end
 
       # Adds an event handler for a key or any of a list of keys. This is an alternative to input=, which sets all
