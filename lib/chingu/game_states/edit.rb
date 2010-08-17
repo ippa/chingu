@@ -501,7 +501,7 @@ END_OF_STRING
       end
       
       def quit
-        pop_game_state(:setup => false)
+        pop_game_state
       end
       def save 
         save_game_objects(:game_objects => editable_game_objects, :file => @file, :classes => @classes)
