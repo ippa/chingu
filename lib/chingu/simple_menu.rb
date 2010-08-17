@@ -24,9 +24,7 @@ module Chingu
   # 
   #
   class SimpleMenu < BasicGameObject
-    include Chingu::Helpers::InputClient
-    include Chingu::Helpers::InputDispatcher
-    
+    include Chingu::Helpers::InputClient    
     attr_accessor :menu_items
     
     def initialize(options = {})
@@ -45,7 +43,7 @@ module Chingu
         item = if key.is_a? String
           Text.new(key, options.dup)
         elsif key.is_a? Image
-          GameObject.new(:image => key)
+          GameObject.new(options.merge!(:image => key))
         elsif key.is_a? GameObject
           menu_item.options.merge!(options.dup)
           menu_item
@@ -95,6 +93,27 @@ module Chingu
       @items.each { |item| item.draw }
     end
     
+    private
+    
+    #
+    # TODO - DRY this up with input dispatcher somehow 
+    #
+    def dispatch_action(action, object)
+      case action
+      when Symbol, String
+        object.send(action)
+      when Proc, Method
+        action[]
+      when Chingu::GameState
+        push_game_state(action)
+      when Class
+        if action.ancestors.include?(Chingu::GameState)
+          push_game_state(action)
+        end
+      else
+        # TODO possibly raise an error? This ought to be handled when the input is specified in the first place.
+      end
+    end    
   end
 end
  
