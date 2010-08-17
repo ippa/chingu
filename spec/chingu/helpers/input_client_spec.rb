@@ -60,6 +60,20 @@ module Chingu
       end
     end
 
+    describe "#input=" do
+      it "should set the input hash" do
+        @subject.input = { :a => GameStates::Pause, :b => GameState }
+        @subject.input.should == { :a => [GameStates::Pause], :b => [GameState] }
+      end
+
+      it "should set the input array" do
+        @subject.stub!(:a)
+        @subject.stub!(:b)
+        @subject.input = [:a, :b]
+        @subject.input.should == { :a => [@subject.method(:a)], :b => [@subject.method(:b)] }
+      end
+    end
+
     describe "#add_inputs" do
       it "should set the input hash" do
         @subject.add_inputs :a => GameStates::Pause, :b => GameState
