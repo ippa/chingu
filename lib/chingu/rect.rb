@@ -619,13 +619,4 @@ class Rect < Array
 
 end # class Rect
 
-
-class Surface
-	# Return a Rect with the same width and height as the Surface, positioned
-	# at (0,0).
-	def make_rect()
-		return Rect.new(0,0,self.width,self.height)
-	end
-end
-
-end # module Rubygame
+end # module Chingu
