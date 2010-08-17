@@ -24,7 +24,7 @@ module Chingu
   # 
   #
   class SimpleMenu < BasicGameObject
-    include Chingu::Helpers::InputClient    
+    include Chingu::Helpers::InputClient
     attr_accessor :menu_items
     
     def initialize(options = {})

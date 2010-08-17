@@ -63,6 +63,10 @@ module Chingu
       @game_objects.size
     end
     
+    def empty?
+      @game_objects.empty?
+    end
+    
     def draw
       @game_objects.each{ |object| object.visible }.each do |object| 
         object.draw_trait
