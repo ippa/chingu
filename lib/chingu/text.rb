@@ -109,11 +109,11 @@ module Chingu
     end
     
     #
-    #
+    # Draws @background if present + our text in @image
     #
     def draw
       @background.draw  if @background    # draw our background, if any
-      super                               # super -> GameObject#draw which draws out text
+      super                               # super -> GameObject#draw which draws out text in form of @image
     end
     
     private

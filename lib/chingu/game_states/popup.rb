@@ -23,20 +23,20 @@ module Chingu
   module GameStates
   
     #
-    # Premade game state for chingu - A simple pause state.
-    # Pause whenever with: 
-    #   push_game_state(Chingu::GameStates::Pause)
+    # Premade game state for chingu - A simple way if pausing the game + displaying a text.
+    # Usage:
+    #   push_game_state(Chingu::GameStates::Popup.new(:text => "bla bla bla"))
     #
-    # requires the global $window set to the instance of Gosu::Window (automaticly handled if you use Chingu::Window)
+    # TODO: Use Gosu's new flush() instead of mucking around with ZORDER + 1000...
     #
-    class Pause < Chingu::GameState
+    class Popup < Chingu::GameState
       
       def initialize(options = {})
         super
         @white = Color.new(255,255,255,255)
         @color = Gosu::Color.new(200,0,0,0)
-        @font = Gosu::Font.new($window, default_font_name, 35)
-        @text = "PAUSED - press ESC to return to game."
+        @string = options[:text] || "Press ESC to return."
+        @text = Text.new(@string, :x => 20, :y => 10, :align => :left, :zorder => Chingu::DEBUG_ZORDER + 1001, :factor => 1)
       end
     
       def button_up(id)
@@ -44,13 +44,12 @@ module Chingu
       end
       
       def draw
-        previous_game_state.draw    # Draw prev game state onto screen (in this case our level)
+        previous_game_state.draw          # Draw prev game state
         $window.draw_quad(  0,0,@color,
                             $window.width,0,@color,
                             $window.width,$window.height,@color,
-                            0,$window.height,@color, Chingu::DEBUG_ZORDER)
-                            
-        @font.draw(@text, ($window.width/2 - @font.text_width(@text)/2), $window.height/2 - @font.height, Chingu::DEBUG_ZORDER + 1)
+                            0,$window.height,@color, Chingu::DEBUG_ZORDER + 1000)                            
+        @text.draw
       end  
     end
   end

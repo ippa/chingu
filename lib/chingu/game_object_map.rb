@@ -34,7 +34,7 @@ module Chingu
   # ** This class is under heavy development, API will most likely change! **
   #
   class GameObjectMap
-    attr_reader :map
+    attr_reader :map, :game_object_positions
     
     def initialize(options = {})
       @game_objects = options[:game_objects]
@@ -49,15 +49,26 @@ module Chingu
     #
     def create_map
       @map = []
+      @game_object_positions = {}
+            
       @game_objects.each do |game_object|
         puts "#{game_object.class} @ #{game_object.x} / #{game_object.y}" if @debug
-        
+                
         start_x = (game_object.bb.left / @grid[0]).to_i
-        stop_x =  (game_object.bb.right / @grid[0]).to_i
-          
+        stop_x =  ( (game_object.bb.right-1) / @grid[0] ).to_i
+        
+        #if game_object.zorder == 80
+        #  puts "x: #{game_object.x}, y: #{game_object.y}"
+        #  puts "width: #{game_object.width}, height: #{game_object.height}"
+        #  puts "start_x: #{start_x}, stop_x: #{stop_x}"
+        #end
+        
+        
         (start_x .. stop_x).each do |x|
-          start_y = (game_object.bb.top / @grid[1]).to_i
-          stop_y =  (game_object.bb.bottom / @grid[1]).to_i
+          start_y = (game_object.bb.top / @grid[1] ).to_i
+          stop_y =  ( (game_object.bb.bottom-1) / @grid[1] ).to_i
+          
+          @game_object_positions[game_object] = [(start_x .. stop_x), (start_y .. stop_y)]
           
           @map[x] ||= []
           (start_y .. stop_y).each do |y|
@@ -67,6 +78,28 @@ module Chingu
       end
     end
     
+    #
+    # Removes a specific game object from the map
+    #
+    def clear_game_object(game_object)
+      range_x, range_y = @game_object_positions[game_object]
+      
+      range_x.each do |x|
+        range_y.each do |y|
+          @map[x][y] = nil
+        end
+      end
+    end
+      
+    #
+    # Clear game object from the array-map on a certain X/Y
+    #
+    def clear_at(x, y)
+      lookup_x = (x / @grid[0]).to_i
+      lookup_y = (y / @grid[1]).to_i
+      @map[lookup_x][lookup_y] = nil
+    end
+
     #
     # Gets a game object from the array-map on a certain X/Y
     #

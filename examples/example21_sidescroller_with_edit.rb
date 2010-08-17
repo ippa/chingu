@@ -59,9 +59,12 @@ class Example21 < GameState
     
     visible_blocks = Block
     
-    FireBall.each_collision(visible_blocks) do |fire_ball, block|
-      fire_ball.destroy
-    end
+    #
+    # Eating a lot of CPU cause our crude collision detection, just kill fireballs after 3 secs instead.
+    #
+    # FireBall.each_collision(visible_blocks) do |fire_ball, block|
+    #   fire_ball.destroy
+    # end
     
     # Makes all saw pendle up and down between Y-coordinate 1000 - 1500
     # TODO: Not a very flexible sollution, how about setting out circle,rects,lines in editor..
@@ -77,9 +80,7 @@ class Example21 < GameState
       
     @droid.each_collision(Battery) do |player, battery|
       battery.die
-      #after(3000) { push_game_state(GameFinished) }
     end
-  
         
     self.viewport.center_around(@droid)
         
@@ -152,14 +153,18 @@ class Droid < Chingu::GameObject
   end
   
   def move(x,y)
-    @x += x
-    self.each_collision(Block) do |me, stone_wall|      
-      me.x = previous_x
+    self.x += x
+    self.each_collision(Block) do |me, stone_wall|
+      self.x = previous_x
+      break
     end
+    
+    self.y += y
   end
   
-  def update    
+  def update 
     @image = @animation.next
+    
     self.each_collision(Block) do |me, stone_wall|
       if self.velocity_y < 0  # Hitting the ceiling
         me.y = stone_wall.bb.bottom + me.image.height * self.factor_y
@@ -216,7 +221,7 @@ end
 # A FIREBALL
 #
 class FireBall < GameObject
-  traits :velocity, :collision_detection
+  traits :velocity, :collision_detection, :timer
   trait :bounding_circle, :scale => 0.7
   
   def setup
@@ -227,6 +232,7 @@ class FireBall < GameObject
     self.velocity_y = 1
     self.zorder = 200
     self.rotation_center = :center
+    after(3000) { self.destroy }
   end
   
   def update
@@ -287,6 +293,7 @@ class Block < GameObject
 
   def setup
     @image = Image["black_block.png"]
+    @color = Color.new(0xff808080)
   end
 end
 

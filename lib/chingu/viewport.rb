@@ -146,8 +146,11 @@ module Chingu
       end
     end
     
+    #
+    # Apply the X/Y viewport-translation, used by trait "viewport"
+    #
     def apply(&block)
-      $window.translate(-@x, -@y, &block)
+      $window.translate(-@x.to_i, -@y.to_i, &block)
     end
 
     def to_s

@@ -34,37 +34,30 @@ module Chingu
     end
     
     def push_game_state(state, options = {})
-      #$window.game_state_manager.push_game_state(state, options)
       game_state_manager.push_game_state(state, options)
     end
   
     def pop_game_state(options = {})
-      #$window.game_state_manager.pop_game_state(options)
       game_state_manager.pop_game_state(options)
     end
 
     def switch_game_state(state, options = {})
-      #$window.game_state_manager.switch_game_state(state, options)
       game_state_manager.switch_game_state(state, options)
     end
 
     def transitional_game_state(state, options = {})
-      ##$window.game_state_manager.transitional_game_state(state, options)
       game_state_manager.transitional_game_state(state, options)
     end
 
     def current_game_state
-      ##$window.game_state_manager.current_game_state
       game_state_manager.current_game_state
     end
 
-    def previous_game_state
-      ##$window.game_state_manager.previous_game_state
-      game_state_manager.previous_game_state
-    end
+    #def previous_game_state
+    #  game_state_manager.previous_game_state
+    #end
     
     def clear_game_states
-      #$window.game_state_manager.clear_game_states
       game_state_manager.clear_game_states
     end
   end

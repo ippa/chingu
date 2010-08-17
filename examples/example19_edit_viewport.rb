@@ -11,7 +11,7 @@ include Chingu
 # 
 class Game < Chingu::Window 
   def initialize()
-    super(300,300,false)    
+    super(500,600,false)    
   end
   
   def setup

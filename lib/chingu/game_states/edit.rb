@@ -49,11 +49,11 @@ module Chingu
 
       def initialize(options = {})
         super
-        
+                
         options = {:draw_grid => true, :snap_to_grid => true, :resize_to_grid => true}.merge(options)
         
         @grid = options[:grid] || [8,8]
-        @grid_color = options[:grid_color] || Color.new(0xaa222222)
+        @grid_color = options[:grid_color] || Gosu::Color.new(0xaa222222)
         @draw_grid = options[:draw_grid]
         @snap_to_grid = options[:snap_to_grid]      # todo
         @resize_to_grid = options[:resize_to_grid]  # todo
@@ -69,6 +69,7 @@ module Chingu
         @hud_color = Gosu::Color.new(200,70,70,70)
         @selected_game_object = nil
         self.input =  {
+          :f1 => :display_help,
           :left_mouse_button => :left_mouse_button,
           :released_left_mouse_button => :released_left_mouse_button,
           :right_mouse_button => :right_mouse_button,
@@ -128,6 +129,7 @@ module Chingu
         }
 
         @hud_height = 140
+        @toolbar_icon_size = [32,32]
         x = 20
         y = 60
         @classes.each do |klass|
@@ -137,17 +139,18 @@ module Chingu
           # so they're not overwritten by the class initialize/setup or simular
           begin
             game_object = klass.create(:paused => true)
-            game_object.x = x
+            game_object.x = x + 10
             game_object.y = y
             game_object.zorder = @zorder
             game_object.options[:toolbar] = true
+            game_object.rotation_center = :center_center
 
             # Scale down object to fit our toolbar
             if game_object.image
-              Text.create("#{klass}\n#{game_object.width.to_i}x#{game_object.height.to_i}", :size => 13, :x=>x-16, :y=>y+18, :zorder => @zorder)
-              game_object.size = [32,32]
+              Text.create("#{klass.to_s[0..9]}\n#{game_object.width.to_i}x#{game_object.height.to_i}", :size => 12, :x=>x-16, :y=>y+18, :zorder => @zorder, :max_width => 55, :rotation_center => :top_left, :align => :center, :factor => 1)
+              game_object.size = @toolbar_icon_size
               game_object.cache_bounding_box if game_object.respond_to?(:cache_bounding_box)
-              x += 60
+              x += 50
             else
               puts "Skipping #{klass} - no image" if @debug
               game_object.destroy
@@ -158,10 +161,52 @@ module Chingu
         end
       end
       
+      def display_help
+text = <<END_OF_STRING
+  F1: This help screen
+  ESC: Return to Edit
+  
+  1-5: create object 1..5 shown in toolbar at mousecursor
+  CTRL+A: select all objects (not in-code-created ones though)
+  CTRL+S: Save
+  E: Save and Quit
+  Q: Quit (without saving)
+  ESC: Deselect all objects
+  Right Mouse Button Click: Copy object bellow cursor for fast duplication
+  Arrow-keys (with selected objects): Move objects 1 pixel at the time
+  Arrow-keys (with no selected objects): Scroll within a viewport
+  
+
+  Bellow keys operates on all currently selected game objects
+  -----------------------------------------------------------------------------------
+  DEL: delete selected objects
+  BACKSPACE: reset angle and scale to default values
+  Page Up: Increase zorder
+  Page Down: Decrease zorder
+  
+  R: scale up
+  F: scale down
+  T: tilt left
+  G: tilt right
+  Y: inc zorder
+  H: dec zorder
+  U: less transparency
+  J: more transparencty
+
+  Mouse Wheel (with no selected objects): Scroll viewport up/down
+  Mouse Wheel: Scale up/down
+  SHIFT + Mouse Wheel: Tilt left/right
+  CTRL + Mouse Wheel: Zorder up/down
+  ALT + Mouse Wheel: Transparency less/more
+END_OF_STRING
+        
+        push_game_state( GameStates::Popup.new(:text => text) )
+      end
+      
       def draw_grid
         return unless @grid
         
-        start_x = start_y = 0,0
+        start_x, start_y = 0,0
         if defined?(previous_game_state.viewport)
           start_x = -previous_game_state.viewport.x % @grid.first
           start_y = -previous_game_state.viewport.y % @grid.last
@@ -190,7 +235,7 @@ module Chingu
           @game_area_backup = previous_game_state.viewport.game_area.dup
           previous_game_state.viewport.game_area.x -= @hud_height
           previous_game_state.viewport.game_area.y -= @hud_height
-        end        
+        end
       end
                   
       #
@@ -243,7 +288,6 @@ module Chingu
           scroll_up     if $window.mouse_y < @scroll_border_thickness
           scroll_down   if $window.mouse_y > $window.height - @scroll_border_thickness
         end
-        
       end
       
       #
@@ -256,7 +300,7 @@ module Chingu
         super
         
         draw_grid if @draw_grid
-                
+        
         #
         # Draw an edit HUD
         #
@@ -264,7 +308,7 @@ module Chingu
                             $window.width,0,@hud_color,
                             $window.width,@hud_height,@hud_color,
                             0,@hud_height,@hud_color, @zorder-1)
-        
+                
         #
         # Draw red rectangles/circles around all selected game objects
         #
@@ -279,6 +323,7 @@ module Chingu
         else
           draw_cursor_at($window.mouse_x, $window.mouse_y)
         end
+        
       end
       
       #
@@ -589,13 +634,17 @@ module Chingu
       def scroll_right(amount = 10)
         self.previous_game_state.viewport.x += amount if defined?(self.previous_game_state.viewport)
       end
+      
       def mouse_x
         x = $window.mouse_x
         x += self.previous_game_state.viewport.x if defined?(self.previous_game_state.viewport)
+        return x
       end
+      
       def mouse_y
         y = $window.mouse_y
         y += self.previous_game_state.viewport.y if defined?(self.previous_game_state.viewport)
+        return y
       end
 
       def inside_window?(x = $window.mouse_x, y = $window.mouse_y)
@@ -609,7 +658,7 @@ module Chingu
         game_object.options[:created_with_editor] = true
         game_object.x = self.mouse_x
         game_object.y = self.mouse_y
-         
+                 
         unless template.options[:toolbar]
           game_object.angle = template.angle
           game_object.factor_x = template.factor_x
@@ -625,8 +674,8 @@ module Chingu
           game_object.factor_y = wanted_height.to_f / game_object.image.height.to_f
         end
         
-        game_object.options[:mouse_x_offset] = game_object.x - self.mouse_x
-        game_object.options[:mouse_y_offset] = game_object.y - self.mouse_y
+        game_object.options[:mouse_x_offset] = (game_object.x - self.mouse_x) rescue 0
+        game_object.options[:mouse_y_offset] = (game_object.y - self.mouse_y) rescue 0
         
         game_object.cache_bounding_box if game_object.respond_to?(:cache_bounding_box)
         return game_object

@@ -49,8 +49,8 @@ class Player < GameObject
   end
   
   def accelerate
-    self.velocity_x = Gosu::offset_x(self.angle, 0.5)*self.max_velocity
-    self.velocity_y = Gosu::offset_y(self.angle, 0.5)*self.max_velocity
+    self.velocity_x = Gosu::offset_x(self.angle, 0.5)*self.max_velocity_x
+    self.velocity_y = Gosu::offset_y(self.angle, 0.5)*self.max_velocity_y
   end
   
   def turn_right
