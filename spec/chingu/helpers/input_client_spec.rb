@@ -1,19 +1,12 @@
 require "spec_helper"
 
-class InputClientTest
-  include Chingu::Helpers::InputClient
-end
-
-class TestState < Chingu::GameState
-end
-
 module Chingu
-  describe Chingu::Helpers::InputClient do
+  describe Helpers::InputClient do
     before :each do
       $window = mock Gosu::Window
       $window.stub!(:button_down?).and_return(false)
 
-      @subject = InputClientTest.new
+      @subject = Object.new.extend described_class
       @subject.stub!(:handler1).and_return(nil)
       @handler1 = @subject.method :handler1
       @subject.stub!(:handler2).and_return(nil)
@@ -67,12 +60,17 @@ module Chingu
       end
     end
 
-
-    describe "#input=" do
+    describe "#add_inputs" do
       it "should set the input hash" do
-        input = { :a => lambda {}, :b => Chingu::GameState }
-        @subject.input = input
-        @subject.input.should == input
+        @subject.add_inputs :a => GameStates::Pause, :b => GameState
+        @subject.input.should == { :a => [GameStates::Pause], :b => [GameState] }
+      end
+
+      it "should set the input array" do
+        @subject.stub!(:a)
+        @subject.stub!(:b)
+        @subject.add_inputs :a, :b
+        @subject.input.should == { :a => [@subject.method(:a)], :b => [@subject.method(:b)] }
       end
 
       # Not bothering with all the options, since it is tested fully, though indirectly, in #on_input already.
@@ -82,33 +80,56 @@ module Chingu
 
     describe "#on_input" do
       it "should add a handler that is given as a block" do
-        block = lambda { p "hello world" }
-        lambda { @subject.on_input :a, &block }.should change(@subject, :input).from({}).to({:a => block})
+        block = lambda { }
+        @subject.on_input :a, &block
+        @subject.input.should == { :a => [block] }
       end
 
       it "should add a handler that is given as a method" do
-        lambda { @subject.on_input :a, @handler1 }.should change(@subject, :input).from({}).to({:a => @handler1})
+        @subject.on_input :a, @handler1
+        @subject.input.should == { :a => [@handler1] }
       end
 
       it "should add a handler that is given as a proc" do
         proc = lambda { puts "Hello" }
-        lambda { @subject.on_input :a, proc }.should change(@subject, :input).from({}).to({:a => proc})
+        @subject.on_input :a, proc
+        @subject.input.should == { :a => [proc] }
       end
 
-      it "should add a handler that is given as a string or symbol" do
-        [:handler1, "handler1"].each do |handler|
-          @subject.instance_variable_set("@input", nil)
-          lambda { @subject.on_input :a, handler }.should change(@subject, :input).from({}).to({:a => @handler1})
+      [:handler1, "handler1"].each do |handler|
+        it "should add a handler that is given as a #{handler.class}" do
+          @subject.on_input :a, handler
+          @subject.input.should == { :a => [@handler1] }
         end
       end
 
+      it "should add multiple handlers for the same event" do
+        @subject.on_input :a, @handler1
+        @subject.on_input :a, @handler2
+        @subject.input.should == { :a => [@handler1, @handler2] }
+      end
+
+      it "should automatically handle to a method if only the input is given" do
+        @subject.stub!(:a)
+        @subject.on_input :a
+        @subject.input.should == { :a => [ @subject.method(:a) ] }
+      end
+
+      it "should add multiple handlers for the same event, even if given different key names" do
+        @subject.on_input :left, @handler1
+        @subject.on_input :left_arrow, @handler2
+        @subject.input.should == { :left_arrow => [@handler1, @handler2] }
+      end
+
       it "should add a handler that is given as a Chingu::GameState class" do
-        lambda { @subject.on_input :a, TestState }.should change(@subject, :input).from({}).to({:a => TestState})
+        @subject.on_input :a, GameStates::Pause
+        @subject.input.should == { :a => [GameStates::Pause] }
       end
 
       it "should add a handler that is given as a Chingu::GameState instance" do
-        state = TestState.new
-        lambda { @subject.on_input :a, state }.should change(@subject, :input).from({}).to({:a => state})
+        state = GameState.new
+        @subject.on_input :a, state
+        @subject.input.should == { :a => [state] }
       end
 
       it "should raise an error if given an unknown key" do
@@ -119,23 +140,21 @@ module Chingu
         lambda { @subject.on_input :a, 47 }.should raise_error ArgumentError
       end
 
-      it "should add a new handler if one already exists" do
+      it "should add a new handler if one already exists for that input" do
         @subject.on_input :a, @handler1
-        lambda { @subject.on_input :b, @handler2 }.should change(@subject, :input).from({:a => @handler1}).to({:a => @handler1,:b => @handler2})
-      end
-
-      it "should overwrite existing handlers" do
-        @subject.on_input :a, @handler1
-        lambda { @subject.on_input :a, @handler2 }.should change(@subject, :input).from({:a => @handler1}).to({:a => @handler2})
+        @subject.on_input :b, @handler2
+        @subject.input.should == { :a => [@handler1], :b => [@handler2] }
       end
 
       it "should consider all key synonyms the same" do
         @subject.on_input :left, @handler1
-        lambda { @subject.on_input :left_arrow, @handler2 }.should change(@subject, :input).from({:left_arrow => @handler1}).to({:left_arrow => @handler2})
+        @subject.on_input :left_arrow, @handler2
+        @subject.input.should == { :left_arrow => [@handler1, @handler2] }
       end
 
       it "should split up and standardise key arrays" do
-        lambda { @subject.on_input([:space, :left], @handler1) }.should change(@subject, :input).from({}).to({:" " => @handler1, :left_arrow => @handler1})
+        @subject.on_input([:space, :left], @handler1)
+        @subject.input.should == { :" " => [@handler1], :left_arrow => [@handler1] }
       end
 
       it "should raise an error if both an action and a hander are given" do

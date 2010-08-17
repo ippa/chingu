@@ -40,15 +40,15 @@ module Chingu
 
     # Dispatch button press to one of your clients.
     def dispatch_button_down(id, object)
-      if action = object.input[Input::CONSTANT_TO_SYMBOL[id].first]
-        dispatch_action(action)
+      if actions = object.input[Input::CONSTANT_TO_SYMBOL[id].first]
+        dispatch_actions(actions)
       end
     end
 
     # Dispatch button release to one of your clients.
     def dispatch_button_up(id, object)
-      if action = object.input[:"released_#{Input::CONSTANT_TO_SYMBOL[id].first}"]
-        dispatch_action(action)
+      if actions = object.input[:"released_#{Input::CONSTANT_TO_SYMBOL[id].first}"]
+        dispatch_actions(actions)
       end
     end
 
@@ -57,32 +57,34 @@ module Chingu
     #
     def dispatch_input_for(object, prefix = "holding_")
       pattern = /^#{prefix}/
-      object.input.each do |symbol, action|
+      object.input.each do |symbol, actions|
         if symbol =~ pattern and $window.button_down?(Input::SYMBOL_TO_CONSTANT[$'.to_sym])
-          dispatch_action(action)
+          dispatch_actions(actions)
         end
       end
     end
 
     #
     # For a given object, dispatch "action".
-    # An action can be:
+    # An action can be an array containing any of:
     #
     # * Proc/Lambda or Method, call() it
     # * GameState-instance, push it on top of stack
     # * GameState-inherited class, create a new instance, cache it and push it on top of stack
     #
     protected
-    def dispatch_action(action)
+    def dispatch_actions(actions)
       # puts "Dispatch Action: #{action} - Objects class: #{object.class.to_s}"
-      case action
-        when Proc, Method
-          action[]
-        when Chingu::GameState, Class
-          # Don't need to check if the Class is a GameState, since that is already checked.
-          push_game_state(action)
-        else
-          raise ArgumentError, "Unexpected action #{action}"
+      actions.each do |action|
+        case action
+          when Proc, Method
+            action[]
+          when Chingu::GameState, Class
+            # Don't need to check if the Class is a GameState, since that is already checked.
+            push_game_state(action)
+          else
+            raise ArgumentError, "Unexpected action #{action}"
+        end
       end
       # Other types will already have been resolved to one of these, so no need for checking.
     end

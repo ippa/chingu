@@ -47,7 +47,7 @@ module Chingu
       # The current input handlers. This may contain data which is different to the input set,
       # but it will be equivalent in function [Hash].
       def input
-        @input ||= {}
+        @input ||= Hash.new { |hash, key| hash[key] = [] }
       end
 
       # Is a particular key being held down at this moment?
@@ -148,37 +148,41 @@ module Chingu
             "Input action must be a Method, Proc, String, Symbol, Chingu::GameState or a class inheriting from Chingu::GameState (Received a #{action.class})"
         end
 
-        raise ArgumentError, "(For input #{key}) #{message}" if message
+        raise ArgumentError, "(For input #{key.inspect}) #{message}" if message
 
         [key, action]
       end
 
-      # Set input handlers all at once. This is an alternative to on_input, which sets input handlers individually.
+      # Add input handlers all at once. This is an alternative to on_input, which sets input handlers individually.
       #
       # === Parameters
       # +input_list+:: [Hash or Array]
       #
       # === Examples
       # As a hash (Will call move_left or move_right methods when keys pressed):
-      #   self.input = { :left_arrow => :move_left,
-      #                  :right_arrow => :move_right }
+      #   add_inputs :left_arrow => :move_left,
+      #             :right_arrow => :move_right
       #
       # As an array (Will call left_arrow or right_arrow methods when keys pressed):
-      #   self.input = [ :left_arrow, :right_arrow ]
+      #   add_inputs :left_arrow, :right_arrow
+
+      # :call-seq:
+      #   add_inputs(input [, input]*] -> self
+      #   add_inputs(input => action [, input => action]*) -> self
       #
       public
-      def input=(input_list)
-        new_input = Hash.new
+      def add_inputs(*input_list)
+        raise "Need to provide inputs as either parameters or hashed parameters" if input_list.empty?
+        input_list = input_list[0] if input_list[0].is_a? Hash
 
         case input_list
           when Array
             #
             # Un-nest input_map [:left, :right, :space]
-            # Into: { :left => :left, :right => :right, :space => :space}
+            # Into: { :left => :left, :right => :right, :space => :space }
             #
-            input_list.each do |symbol|
-              new_input[symbol] = symbol
-            end
+            input_list.each { |symbol| on_input(symbol) }
+            
           when Hash
             #
             # Un-nest input:  { [:pad_left, :arrow_left, :a] => :move_left }
@@ -187,44 +191,34 @@ module Chingu
             input_list.each_pair do |possible_array, action|
               case possible_array
                 when Array
-                  possible_array.each do |symbol|
-                    new_input[symbol] = action
-                  end
+                  possible_array.each { |symbol| on_input(symbol, action) }
                 when Symbol
-                  new_input[possible_array] = action
+                  on_input(possible_array, action)
               end
           end
         end
 
-        # Ensure that the new input array is reasonable.
-        @input = Hash.new
-        new_input.each_pair do |symbol, action|
-          standardised_symbol, action = validate_input(symbol, action)
-          @input[standardised_symbol] = action
-        end
+        self
+      end
 
-        if @parent
-          if @input.empty?
-            @parent.remove_input_client(self)
-          else
-            @parent.add_input_client(self)
-          end
-        end
-
-        @input
+      # Backwards compatibility function. Use on_inputs or on_input instead.
+      def input=(input_list)
+        @input = nil
+        input_list.is_a?(Array) ? on_inputs(*input_list) : on_inputs(input_list)
       end
 
       # Adds an event handler for a key or any of a list of keys. This is an alternative to input=, which sets all
       # handlers at once.
       #
       # === Parameters
-      # +key+:: Chingu key code(s) [Symbol or Array of Symbols]
+      # +input+:: Chingu input code(s) [Symbol or Array of Symbols]
       # +action+:: [Method/Proc/String/Symbol/Class/Chingu::GameState]
       #
       # Returns: self
       #
       # === Examples
       # Using actions:
+      #   on_input(:space) # Will call the space method when input detected.
       #   on_input(:space, :fire_laser)
       #   on_input([:left, :a], method(:go_left))
       #
@@ -237,14 +231,34 @@ module Chingu
       #   end
       #
       # :call-seq:
-      #    on_input(key) { }     -> self
-      #    on_input(key, action) -> self
+      #    on_input(input)         -> self
+      #    on_input(input) { }     -> self
+      #    on_input(input, action) -> self
       #
       public
-      def on_input(key, action = nil, &block)
-        raise ArgumentError, "#{self.class}#on_input takes an action OR block" if action and block
-        # This is pretty inefficient, but it doesn't really matter.
-        self.input = self.input.merge(key => action ? action : block)
+      def on_input(input, action = nil, &block)
+        raise ArgumentError, "#{self.class}#on_input takes either an input OR an input and action OR an input with a block" if action and block
+
+        inputs = input.is_a?(Array) ? input : [input]  # Can be a single input or an array of them.
+        action = block if block
+        action = input unless action
+
+        @input ||= Hash.new { |hash, key| hash[key] = [] }
+
+        # Ensure that the new input array is reasonable.
+        inputs.each do |input|
+          standardised_symbol, action = validate_input(input, action)
+          @input[standardised_symbol] << action
+        end
+
+        if @parent
+          if @input.empty?
+            @parent.remove_input_client(self)
+          else
+            @parent.add_input_client(self)
+          end
+        end
+        
         self
       end
     end
