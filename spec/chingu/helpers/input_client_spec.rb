@@ -67,8 +67,17 @@ module Chingu
       end
     end
 
+
     describe "#input=" do
-      it "should do stuff"
+      it "should set the input hash" do
+        input = { :a => lambda {}, :b => Chingu::GameState }
+        @subject.input = input
+        @subject.input.should == input
+      end
+
+      # Not bothering with all the options, since it is tested fully, though indirectly, in #on_input already.
+      # I suspect it might be better to put the logic in on_input rather than in input too. Mmm.
+      it "should do other stuff"
     end
 
     describe "#on_input" do
