@@ -654,26 +654,14 @@ END_OF_STRING
       def create_new_game_object_from(template)
         game_object = template.class.create(:parent => previous_game_state)
         game_object.update
-        #game_object.options[:selected] = true
-        game_object.options[:created_with_editor] = true
+        
+        # If we don't create it from the toolbar, we're cloning another object
+        # When cloning we wan't the cloned objects attributes
+        game_object.attributes = template.attributes  unless template.options[:toolbar]       
         game_object.x = self.mouse_x
         game_object.y = self.mouse_y
-                 
-        unless template.options[:toolbar]
-          game_object.angle = template.angle
-          game_object.factor_x = template.factor_x
-          game_object.factor_y = template.factor_y
-          game_object.color = template.color.dup
-          game_object.zorder = template.zorder
-          game_object.update
-        else
-          # Resize the new game object to fit the grid perfectly!
-          wanted_width = game_object.image.width + @grid[0] - (game_object.image.width % @grid[0])
-          wanted_height = game_object.image.height + @grid[1] - (game_object.image.height % @grid[1])
-          game_object.factor_x = wanted_width.to_f / game_object.image.width.to_f
-          game_object.factor_y = wanted_height.to_f / game_object.image.height.to_f
-        end
-        
+        game_object.options[:created_with_editor] = true
+                
         game_object.options[:mouse_x_offset] = (game_object.x - self.mouse_x) rescue 0
         game_object.options[:mouse_y_offset] = (game_object.y - self.mouse_y) rescue 0
         
