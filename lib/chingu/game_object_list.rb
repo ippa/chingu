@@ -112,6 +112,7 @@ module Chingu
     def pause!
       @game_objects.each { |object| object.pause! }
     end
+    alias :pause :pause!
     
     #
     # Enable automatic calling of update() and update_trait() each game loop for all game objects
@@ -119,6 +120,7 @@ module Chingu
     def unpause!
       @game_objects.each { |object| object.unpause! }
     end
+    alias :unpause :unpause!
     
     #
     # Disable automatic calling of draw and draw_trait each game loop for all game objects
@@ -126,6 +128,7 @@ module Chingu
     def hide!
       @game_objects.each { |object| object.hide! }
     end
+    alias :hide :hide!
     
     #
     # Enable automatic calling of draw and draw_trait each game loop for all game objects
@@ -133,5 +136,7 @@ module Chingu
     def show!
       @game_objects.each { |object| object.show! }
     end
+    alias :show :show!
+    
   end  
 end

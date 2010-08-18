@@ -195,6 +195,7 @@ module Chingu
     def hide!
       @visible = false
     end
+    alias :hide :hide!
     
     #
     # Enable automatic calling of draw and draw_trait each game loop
@@ -202,6 +203,7 @@ module Chingu
     def show!
       @visible = true
     end
+    alias :show :show!
     
     #
     # Returns true if visible (not hidden)

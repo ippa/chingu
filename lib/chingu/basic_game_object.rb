@@ -125,6 +125,7 @@ module Chingu
     def pause!
       @paused = true
     end
+    alias :pause :pause!
         
     #
     # Enable automatic calling of update() and update_trait() each game loop
@@ -132,6 +133,7 @@ module Chingu
     def unpause!
       @paused = false
     end
+    alias :unpause :unpause!
     
     #
     # Returns true if paused
