@@ -133,7 +133,7 @@ module Chingu
       #
       # Dispatch input for all input-clients handled by to main window (game objects with input created in main win)
       #
-      @input_clients.each { |game_object| dispatch_input_for(game_object) }
+      @input_clients.each { |game_object| dispatch_input_for(game_object) unless game_object.paused? }
       
       
       #
@@ -176,7 +176,7 @@ module Chingu
     #
     def button_up(id)
       dispatch_button_up(id, self)
-      @input_clients.each { |object| dispatch_button_up(id, object) }
+      @input_clients.each { |object| dispatch_button_up(id, object) unless object.paused? }
       @game_state_manager.button_up(id)
     end
     
@@ -186,7 +186,7 @@ module Chingu
     #
     def button_down(id)
       dispatch_button_down(id, self)
-      @input_clients.each { |object| dispatch_button_down(id, object) }
+      @input_clients.each { |object| dispatch_button_down(id, object) unless object.paused? }
       @game_state_manager.button_down(id)
     end
   end
