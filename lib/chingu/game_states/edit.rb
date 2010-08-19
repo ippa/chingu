@@ -490,6 +490,8 @@ END_OF_STRING
       # draw a simple triangle-shaped cursor
       #
       def draw_cursor_at(x, y, c = Color::WHITE)
+        c2 = Color::BLACK
+        $window.draw_triangle(x-2, y-4, c2, x-2, y+12, c2, x+14, y+12, c2, @zorder + 5)
         $window.draw_triangle(x, y, c, x, y+10, c, x+10, y+10, c, @zorder + 10)
       end
 
