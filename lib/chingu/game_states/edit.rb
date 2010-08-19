@@ -224,7 +224,7 @@ END_OF_STRING
       # SETUP
       #
       def setup
-        @scroll_border_thickness = 50
+        @scroll_border_thickness = 30
         @file = options[:file] || previous_game_state.filename + ".yml"
         @title = Text.create("File: #{@file}", :x => 5, :y => 2, :factor => 1, :size => 16, :zorder => @zorder)
         @title.text += " - Grid: #{@grid}" if @grid
