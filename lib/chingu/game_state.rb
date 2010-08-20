@@ -153,7 +153,7 @@ module Chingu
     #
     def button_down(id)
       dispatch_button_down(id, self)
-      @input_clients.each { |object| dispatch_button_down(id, object) } if @input_clients
+      @input_clients.each { |object| dispatch_button_down(id, object) unless object.paused? } if @input_clients
     end
     
     #
@@ -161,7 +161,7 @@ module Chingu
     #
     def button_up(id)
       dispatch_button_up(id, self)
-      @input_clients.each { |object| dispatch_button_up(id, object) }   if @input_clients
+      @input_clients.each { |object| dispatch_button_up(id, object) unless object.paused? }   if @input_clients
     end
         
     #
@@ -170,7 +170,7 @@ module Chingu
     def update
       dispatch_input_for(self)
       
-      @input_clients.each { |game_object| dispatch_input_for(game_object) }      
+      @input_clients.each { |game_object| dispatch_input_for(game_object) unless game_object.paused? }      
       
       @game_objects.update
     end

@@ -3,7 +3,7 @@ require 'spec_helper'
 module Chingu
 
   describe GameObject do
-    
+
     before(:all) do 
       @game = Chingu::Window.new
     end
@@ -59,30 +59,28 @@ module Chingu
     end
 
     describe "GameObject with an image" do
-      before do
-        p Image.autoload_dirs
-        subject { GameObject.new(:image => "rect_20x20.png") }
-      end
-      
+
+      let(:game_object) { GameObject.new(:image => "rect_20x20.png") }
+
       it "should have width,height & size" do
-        subject.height.should == 20
-        subject.width.should == 20
-        subject.size.should == [20,20]
+        game_object.height.should == 20
+        game_object.width.should == 20
+        game_object.size.should == [20,20]
       end
       
       it "should adapt width,height & size to scaling" do
-        subject.factor = 2
-        subject.height.should == 40
-        subject.width.should == 40
-        subject.size.should == [40,40]
+        game_object.factor = 2
+        game_object.height.should == 40
+        game_object.width.should == 40
+        game_object.size.should == [40,40]
       end
 
       it "should adapt factor_x/factor_y to new size" do
-        subject.size = [10,40]  # half the width, double the height
-        subject.height.should == 10
-        subject.width.should == 40
-        subject.factor_x.should == 0.5
-        subject.factor_y.should == 2
+        game_object.size = [10,40]  # half the width, double the height
+        game_object.width.should == 10
+        game_object.height.should == 40
+        game_object.factor_x.should == 0.5
+        game_object.factor_y.should == 2
       end
       
     end

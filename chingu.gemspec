@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{chingu}
-  s.version = "0.7.6.8"
+  s.version = "0.7.7.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ippa"]
-  s.date = %q{2010-08-15}
+  s.date = %q{2010-08-20}
   s.description = %q{OpenGL accelerated 2D game framework for Ruby. Builds on Gosu (Ruby/C++) which provides all the core functionality. Chingu adds simple yet powerful game states, prettier input handling, deployment safe asset-handling, a basic re-usable game object and stackable game logic.}
   s.email = %q{ippa@rubylicio.us}
   s.extra_rdoc_files = [
@@ -138,6 +138,7 @@ Gem::Specification.new do |s|
      "lib/chingu/particle.rb",
      "lib/chingu/rect.rb",
      "lib/chingu/require_all.rb",
+     "lib/chingu/simple_menu.rb",
      "lib/chingu/text.rb",
      "lib/chingu/traits/animation.rb",
      "lib/chingu/traits/bounding_box.rb",
@@ -153,7 +154,10 @@ Gem::Specification.new do |s|
      "lib/chingu/window.rb",
      "spec/chingu/fpscounter_spec.rb",
      "spec/chingu/game_object_spec.rb",
+     "spec/chingu/helpers/input_client_spec.rb",
+     "spec/chingu/helpers/input_dispatcher_spec.rb",
      "spec/chingu/helpers/options_setter_spec.rb",
+     "spec/chingu/images/rect_20x20.png",
      "spec/chingu/inflector_spec.rb",
      "spec/chingu/rect_20x20.png",
      "spec/chingu/text_spec.rb",
@@ -169,6 +173,8 @@ Gem::Specification.new do |s|
   s.test_files = [
     "spec/chingu/fpscounter_spec.rb",
      "spec/chingu/game_object_spec.rb",
+     "spec/chingu/helpers/input_client_spec.rb",
+     "spec/chingu/helpers/input_dispatcher_spec.rb",
      "spec/chingu/helpers/options_setter_spec.rb",
      "spec/chingu/inflector_spec.rb",
      "spec/chingu/text_spec.rb",

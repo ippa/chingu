@@ -100,7 +100,7 @@ module Chingu
     # Makes it easy to clone a objects x,y,angle etc.
     #
     def attributes
-      [@x, @y, @angle, @center_x, @center_y, @factor_x, @factor_y, @color, @mode, @zorder]
+      [@x, @y, @angle, @center_x, @center_y, @factor_x, @factor_y, @color.dup, @mode, @zorder]
     end
 
     #
@@ -195,6 +195,7 @@ module Chingu
     def hide!
       @visible = false
     end
+    alias :hide :hide!
     
     #
     # Enable automatic calling of draw and draw_trait each game loop
@@ -202,6 +203,7 @@ module Chingu
     def show!
       @visible = true
     end
+    alias :show :show!
     
     #
     # Returns true if visible (not hidden)

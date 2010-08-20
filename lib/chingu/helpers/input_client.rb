@@ -102,7 +102,7 @@ module Chingu
         prefix_used = ""
         ["holding_", "released_"].each do |prefix|
           break if base_key
-          if key =~ /^#{prefix}(.*)$/
+          if key.to_s =~ /^#{prefix}(.*)$/
             base_key = Chingu::Input::SYMBOL_TO_CONSTANT.has_key?($1.to_sym) ? $1.to_sym : nil
             prefix_used = prefix
           end

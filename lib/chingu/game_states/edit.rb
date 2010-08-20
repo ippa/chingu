@@ -224,7 +224,7 @@ END_OF_STRING
       # SETUP
       #
       def setup
-        @scroll_border_thickness = 50
+        @scroll_border_thickness = 30
         @file = options[:file] || previous_game_state.filename + ".yml"
         @title = Text.create("File: #{@file}", :x => 5, :y => 2, :factor => 1, :size => 16, :zorder => @zorder)
         @title.text += " - Grid: #{@grid}" if @grid
@@ -253,7 +253,7 @@ END_OF_STRING
         if s = @selected_game_object
           @text.text = "#{s.class.to_s} @ #{s.x.to_i} / #{s.y.to_i}"
           @text.text = "Size: #{s.width.to_i} x #{s.height.to_i} Ratio: #{sprintf("%.2f",s.width/s.height)}"
-          @text.text += " [Scale: #{sprintf("%.2f", s.factor_x)}/#{sprintf("%.2f", s.factor_y)} Angle: #{s.angle.to_i} Z: #{s.zorder}]"
+          @text.text += " [Scale: #{sprintf("%.2f", s.factor_x)}/#{sprintf("%.2f", s.factor_y)} Angle: #{s.angle.to_i} Z: #{s.zorder} Alpha: #{s.alpha}]"
         end
         
         #
@@ -490,6 +490,8 @@ END_OF_STRING
       # draw a simple triangle-shaped cursor
       #
       def draw_cursor_at(x, y, c = Color::WHITE)
+        c2 = Color::BLACK
+        $window.draw_triangle(x-2, y-4, c2, x-2, y+12, c2, x+14, y+12, c2, @zorder + 5)
         $window.draw_triangle(x, y, c, x, y+10, c, x+10, y+10, c, @zorder + 10)
       end
 
@@ -501,7 +503,7 @@ END_OF_STRING
       end
       
       def quit
-        pop_game_state(:setup => false)
+        pop_game_state
       end
       def save 
         save_game_objects(:game_objects => editable_game_objects, :file => @file, :classes => @classes)
@@ -654,26 +656,14 @@ END_OF_STRING
       def create_new_game_object_from(template)
         game_object = template.class.create(:parent => previous_game_state)
         game_object.update
-        #game_object.options[:selected] = true
-        game_object.options[:created_with_editor] = true
+        
+        # If we don't create it from the toolbar, we're cloning another object
+        # When cloning we wan't the cloned objects attributes
+        game_object.attributes = template.attributes  unless template.options[:toolbar]       
         game_object.x = self.mouse_x
         game_object.y = self.mouse_y
-                 
-        unless template.options[:toolbar]
-          game_object.angle = template.angle
-          game_object.factor_x = template.factor_x
-          game_object.factor_y = template.factor_y
-          game_object.color = template.color.dup
-          game_object.zorder = template.zorder
-          game_object.update
-        else
-          # Resize the new game object to fit the grid perfectly!
-          wanted_width = game_object.image.width + @grid[0] - (game_object.image.width % @grid[0])
-          wanted_height = game_object.image.height + @grid[1] - (game_object.image.height % @grid[1])
-          game_object.factor_x = wanted_width.to_f / game_object.image.width.to_f
-          game_object.factor_y = wanted_height.to_f / game_object.image.height.to_f
-        end
-        
+        game_object.options[:created_with_editor] = true
+                
         game_object.options[:mouse_x_offset] = (game_object.x - self.mouse_x) rescue 0
         game_object.options[:mouse_y_offset] = (game_object.y - self.mouse_y) rescue 0
         

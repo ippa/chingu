@@ -33,7 +33,7 @@ require_all "#{CHINGU_ROOT}/chingu/traits"
 require_all "#{CHINGU_ROOT}/chingu"
 
 module Chingu
-  VERSION = "0.7.6.8"
+  VERSION = "0.7.7.3"
   
   DEBUG_COLOR = Gosu::Color.new(0xFFFF0000)
   DEBUG_ZORDER = 9999

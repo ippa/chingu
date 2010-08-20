@@ -5,7 +5,7 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 # encoding: utf-8
 require 'rubygems'
 require 'rspec'
-require 'require_all'
+require 'chingu/require_all'
 
 require 'chingu'
 require 'chingu/helpers/options_setter'

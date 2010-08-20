@@ -40,6 +40,7 @@ module Chingu
 
     # Dispatch button press to one of your clients.
     def dispatch_button_down(id, object)
+      return unless Input::CONSTANT_TO_SYMBOL[id]
       if actions = object.input[Input::CONSTANT_TO_SYMBOL[id].first]
         dispatch_actions(actions)
       end
@@ -47,6 +48,7 @@ module Chingu
 
     # Dispatch button release to one of your clients.
     def dispatch_button_up(id, object)
+      return unless Input::CONSTANT_TO_SYMBOL[id]
       if actions = object.input[:"released_#{Input::CONSTANT_TO_SYMBOL[id].first}"]
         dispatch_actions(actions)
       end
@@ -58,7 +60,7 @@ module Chingu
     def dispatch_input_for(object, prefix = "holding_")
       pattern = /^#{prefix}/
       object.input.each do |symbol, actions|
-        if symbol =~ pattern and $window.button_down?(Input::SYMBOL_TO_CONSTANT[$'.to_sym])
+        if symbol.to_s =~ pattern and $window.button_down?(Input::SYMBOL_TO_CONSTANT[$'.to_sym])
           dispatch_actions(actions)
         end
       end
