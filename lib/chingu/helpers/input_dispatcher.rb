@@ -60,7 +60,7 @@ module Chingu
     def dispatch_input_for(object, prefix = "holding_")
       pattern = /^#{prefix}/
       object.input.each do |symbol, actions|
-        if symbol =~ pattern and $window.button_down?(Input::SYMBOL_TO_CONSTANT[$'.to_sym])
+        if symbol.to_s =~ pattern and $window.button_down?(Input::SYMBOL_TO_CONSTANT[$'.to_sym])
           dispatch_actions(actions)
         end
       end
