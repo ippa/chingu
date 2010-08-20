@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
-require 'rubygems'
-require File.join(File.expand_path(__FILE__), "..", "..", "lib", "chingu")
+require 'rubygems' rescue nil
+$LOAD_PATH.unshift File.join(File.expand_path(__FILE__), "..", "..", "lib")
+require 'chingu'
 include Gosu
 
 # Show the user which Gosu codes and Chingu symbols that each key maps to.

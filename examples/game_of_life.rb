@@ -5,8 +5,9 @@
 # Developed by r.kachowski ( http://www.toastymofo.net/ )
 # Additions by ippa ( http://ippa.se/gaming )
 #
+require 'rubygems' rescue nil
+$LOAD_PATH.unshift File.join(File.expand_path(__FILE__), "..", "..", "lib")
 require 'chingu'
-require 'gosu'
 
 class Main < Chingu::Window
   def initialize
@@ -30,7 +31,7 @@ class GameOfLife < Chingu::GameState
     self.input={  :left_mouse_button => :start_painting, 
                   :released_left_mouse_button => :stop_painting,
                   :right_mouse_button => :start_erasing,
-                  :releasedright_mouse_button => :stop_erasing,
+                  :released_right_mouse_button => :stop_erasing,
                   :z => :reset,
                   :n => :update_grid,
                   :space => :toggle_running,
