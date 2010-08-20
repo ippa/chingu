@@ -51,6 +51,7 @@ module Chingu
       KbLeftAlt     => [:left_alt, :lalt],
       KbLeftControl => [:left_control, :left_ctrl, :lctrl],
       KbLeftShift   => [:left_shift, :lshift],
+      KbLeftMeta    => [:left_meta, :lmeta],
       
       
       KbNumpadAdd       => [:"+", :add, :plus],
@@ -65,6 +66,7 @@ module Chingu
       KbRightAlt        => [:right_alt, :ralt],
       KbRightControl    => [:right_control, :right_ctrl, :rctrl],
       KbRightShift      => [:right_shift, :rshift],
+      KbRightMeta       => [:right_meta, :rmeta],
       KbSpace           => [:" ", :space],
       KbTab             => [:tabulator, :tab],
       KbUp              => [:up_arrow, :up],
