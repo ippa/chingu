@@ -121,7 +121,7 @@ module Chingu
           # If we have a transitional, switch to that instead, with new_state as first argument
           transitional_game_state = @transitional_game_state.new(new_state, @transitional_game_state_options)
           transitional_game_state.game_state_manager = self
-          self.switch_game_state(transitional_game_state, :transitional => false)
+          self.push_game_state(transitional_game_state, :transitional => false)
         else
           if current_game_state.nil?
             @game_states << new_state
@@ -166,7 +166,7 @@ module Chingu
           # If we have a transitional, push that instead, with new_state as first argument
           transitional_game_state = @transitional_game_state.new(new_state, @transitional_game_state_options)
           transitional_game_state.game_state_manager = self
-          self.switch_game_state(transitional_game_state, :transitional => false)
+          self.push_game_state(transitional_game_state, :transitional => false)
         else
           # Push new state on top of stack and therefore making it active
           @game_states.push(new_state)
