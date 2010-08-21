@@ -114,6 +114,7 @@ module Chingu
         # Since we place the init of previous_game_state here, game states can use it even 
         # in initialize() if they call super first.
         @previous_game_state = $window.game_state_manager.current_game_state
+        p "initialized @previous_game_state to #{@previous_game_state.class.to_s}"
         
         $window.game_state_manager.inside_state = self
       end

@@ -49,7 +49,6 @@ module Chingu
       @game_states = []
       @transitional_game_state = nil
       @transitional_game_state_options = {}
-      @previous_game_state = nil
     end
     
     #
@@ -101,8 +100,6 @@ module Chingu
     #
     def switch_game_state(state, options = {})
       options = {:setup => true, :finalize => true, :transitional => true}.merge(options)
-
-      @previous_game_state = current_game_state
       
       new_state = game_state_instance(state)
       
@@ -147,8 +144,6 @@ module Chingu
     #
     def push_game_state(state, options = {})
       options = {:setup => true, :finalize => true, :transitional => true}.merge(options)
-
-      @previous_game_state = current_game_state
       
       new_state = game_state_instance(state)
             
@@ -171,7 +166,7 @@ module Chingu
           # If we have a transitional, push that instead, with new_state as first argument
           transitional_game_state = @transitional_game_state.new(new_state, @transitional_game_state_options)
           transitional_game_state.game_state_manager = self
-          self.push_game_state(transitional_game_state, :transitional => false)
+          self.switch_game_state(transitional_game_state, :transitional => false)
         else
           # Push new state on top of stack and therefore making it active
           @game_states.push(new_state)
@@ -195,7 +190,6 @@ module Chingu
       # Give the soon-to-be-disabled state a chance to clean up by calling finalize() on it.
       #
       current_game_state.finalize    if current_game_state.respond_to?(:finalize) && options[:finalize]
-      @previous_game_state = current_game_state
 
       #
       # Activate the game state "bellow" current one with a simple Array.pop
@@ -213,7 +207,7 @@ module Chingu
         # If we have a transitional, push that instead, with new_state as first argument
         transitional_game_state = @transitional_game_state.new(current_game_state, @transitional_game_state_options)
         transitional_game_state.game_state_manager = self
-        self.switch_game_state(transitional_game_state, :transitional => false)
+        self.push_game_state(transitional_game_state, :transitional => false)
       end
       
       ## MOVED: self.inside_state = current_game_state
@@ -225,7 +219,7 @@ module Chingu
     # Returns the previous game state. Shortcut: "previous"
     #
     def previous_game_state
-      @previous_game_state
+      current_game_state.previous_game_state
     end
     alias :previous previous_game_state
     

@@ -52,10 +52,6 @@ module Chingu
     def current_game_state
       game_state_manager.current_game_state
     end
-
-    #def previous_game_state
-    #  game_state_manager.previous_game_state
-    #end
     
     def clear_game_states
       game_state_manager.clear_game_states
