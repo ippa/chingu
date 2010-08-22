@@ -125,9 +125,9 @@ module Chingu
       #
       # Stop timer with name 'name'
       #
-      def stop_timer(name)
-        @_timers.reject! { |name, start_time, end_time, block| name == name }
-        @_repeating_timers.reject! { |name, start_time, end_time, block| name == name }
+      def stop_timer(timer_name)
+        @_timers.reject! { |name, start_time, end_time, block| timer_name == name }
+        @_repeating_timers.reject! { |name, start_time, end_time, block| timer_name == name }
       end
       
       #
