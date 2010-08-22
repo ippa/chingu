@@ -157,6 +157,9 @@ module Chingu
         #
         # Yield all objects of this class that is colliding with point x,y
         #
+        # Example:
+        #   Enemy.each_at(sword.x, sword.y) { |enemy| enemy.die }
+        #
         def each_at(x,y)
           self.all.each do |object|
             next  unless object.collidable
