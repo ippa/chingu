@@ -62,7 +62,7 @@ module Chingu
       @selected = options[:selected] || 0
       step(0)
       
-      self.input = {:up => lambda{step(-1)}, :down => lambda{step(1)}, [:return, :space, :right] => :select}
+      self.input = {:up => lambda{step(-1)}, :down => lambda{step(1)}, [:return, :space] => :select}
     end
     
     def step(value)
