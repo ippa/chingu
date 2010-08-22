@@ -155,6 +155,17 @@ module Chingu
       
       module ClassMethods
         #
+        # Yield all objects of this class that is colliding with point x,y
+        #
+        def each_at(x,y)
+          self.all.each do |object|
+            next  unless object.collidable
+            yield object if object.respond_to?(:bb) && object.bb.collide_point?(x,y)
+            yield object if object.respond_to?(:radius) && Gosu.distance(object.x, object.y, x, y) < object.radius
+          end
+        end
+      
+        #
         # Works like each_collision but with inline-code for speedups
         #
         def each_bounding_circle_collision(*klasses)
