@@ -160,10 +160,11 @@ module Chingu
     # Resets the animation, re-starts it at frame 0
     # returns itself.
     #
-    def reset!
+    def reset
       @index = 0
       self
     end
+    alias :reset! :reset
 		
     #
     # Returns a new animation with the frames from the original animation.
