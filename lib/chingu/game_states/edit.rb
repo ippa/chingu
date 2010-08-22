@@ -655,8 +655,6 @@ END_OF_STRING
 
       def create_new_game_object_from(template)
         game_object = template.class.create(:parent => previous_game_state)
-        game_object.update
-        
         # If we don't create it from the toolbar, we're cloning another object
         # When cloning we wan't the cloned objects attributes
         game_object.attributes = template.attributes  unless template.options[:toolbar]       

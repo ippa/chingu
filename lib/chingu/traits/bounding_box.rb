@@ -61,7 +61,7 @@ module Chingu
         if scale = trait_options[:bounding_box][:scale]
           width_scale, height_scale = scale, scale
           width_scale, height_scale = scale[0], scale[1]  if scale.is_a? Array
-          width *= width_scale
+          width  *= width_scale
           height *= height_scale
         end
                 
