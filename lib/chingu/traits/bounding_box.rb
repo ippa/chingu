@@ -58,9 +58,11 @@ module Chingu
         
         width, height = self.size
         
-        if trait_options[:bounding_box][:scale]
-          width = width * trait_options[:bounding_box][:scale]
-          height = height * trait_options[:bounding_box][:scale]
+        if scale = trait_options[:bounding_box][:scale]
+          width_scale, height_scale = scale, scale
+          width_scale, height_scale = scale[0], scale[1]  if scale.is_a? Array
+          width *= width_scale
+          height *= height_scale
         end
                 
         x = self.x - width * self.center_x
