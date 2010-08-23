@@ -63,13 +63,7 @@ module Chingu
     def insert(game_object)
       start_x = ( game_object.bb.left / @grid[0] ).to_i
       stop_x =  ( (game_object.bb.right) / @grid[0] ).to_i
-        
-      #if game_object.zorder == 80
-      #  puts "x: #{game_object.x}, y: #{game_object.y}"
-      #  puts "width: #{game_object.width}, height: #{game_object.height}"
-      #  puts "start_x: #{start_x}, stop_x: #{stop_x}"
-      #end
-        
+      
       (start_x ... stop_x).each do |x|
         start_y = (game_object.bb.top / @grid[1] ).to_i
         stop_y =  ( (game_object.bb.bottom) / @grid[1] ).to_i
