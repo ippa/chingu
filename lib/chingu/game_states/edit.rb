@@ -62,7 +62,6 @@ module Chingu
         @except = options[:except] || []
         @classes -= Array(@except)
         @debug = options[:debug]
-        @zorder = 10000
 
         #
         # Turn on cursor + turn it back to its original value in finalize()
@@ -147,13 +146,12 @@ module Chingu
             game_object = klass.create(:paused => true)
             game_object.x = x + 10
             game_object.y = y
-            game_object.zorder = @zorder
             game_object.options[:toolbar] = true
             game_object.rotation_center = :center_center
 
             # Scale down object to fit our toolbar
             if game_object.image
-              Text.create("#{klass.to_s[0..9]}\n#{game_object.width.to_i}x#{game_object.height.to_i}", :size => 12, :x=>x-16, :y=>y+18, :zorder => @zorder, :max_width => 55, :rotation_center => :top_left, :align => :center, :factor => 1)
+              Text.create("#{klass.to_s[0..9]}\n#{game_object.width.to_i}x#{game_object.height.to_i}", :size => 12, :x=>x-16, :y=>y+18, :max_width => 55, :rotation_center => :top_left, :align => :center, :factor => 1)
               game_object.size = @toolbar_icon_size
               game_object.cache_bounding_box if game_object.respond_to?(:cache_bounding_box)
               x += 50
@@ -218,10 +216,10 @@ END_OF_STRING
           start_y = -previous_game_state.viewport.y % @grid.last
         end
         (start_x .. $window.width).step(@grid.first).each do |x|
-          $window.draw_line(x, 1, @grid_color, x, $window.height, @grid_color, @zorder-10, :additive)
+          $window.draw_line(x, 1, @grid_color, x, $window.height, @grid_color, 0, :additive)
         end
         (start_y .. $window.height).step(@grid.last).each do |y|
-          $window.draw_line(1, y, @grid_color, $window.width, y, @grid_color, @zorder-10, :additive)
+          $window.draw_line(1, y, @grid_color, $window.width, y, @grid_color, 0, :additive)
         end
         
       end
@@ -232,10 +230,10 @@ END_OF_STRING
       def setup
         @scroll_border_thickness = 30
         @file = options[:file] || previous_game_state.filename + ".yml"
-        @title = Text.create("File: #{@file}", :x => 5, :y => 2, :factor => 1, :size => 16, :zorder => @zorder)
+        @title = Text.create("File: #{@file}", :x => 5, :y => 2, :factor => 1, :size => 16)
         @title.text += " - Grid: #{@grid}" if @grid
-        @text = Text.create("", :x => 300, :y => 20, :factor => 1, :size => 16, :zorder => @zorder)
-        @status_text = Text.create("-", :x => 5, :y => 20, :factor => 1, :size => 16, :zorder => @zorder)
+        @text = Text.create("", :x => 300, :y => 20, :factor => 1, :size => 16)
+        @status_text = Text.create("-", :x => 5, :y => 20, :factor => 1, :size => 16)
         
         if defined?(previous_game_state.viewport)
           @game_area_backup = previous_game_state.viewport.game_area.dup
@@ -303,17 +301,22 @@ END_OF_STRING
         # Draw prev game state onto screen (the level we're editing)
         previous_game_state.draw
         
-        super
+        # Restart z-ordering, everything after this will be drawn on top
+        $window.flush
+        
         
         draw_grid if @draw_grid
         
         #
         # Draw an edit HUD
         #
-        $window.draw_quad(  0,0,@hud_color,
-                            $window.width,0,@hud_color,
-                            $window.width,@hud_height,@hud_color,
-                            0,@hud_height,@hud_color, @zorder-1)
+        $window.draw_quad(  0,0,@hud_color, $window.width,0,@hud_color,
+                            $window.width,@hud_height,@hud_color,0,@hud_height,@hud_color)
+             
+        #
+        # Draw gameobjects
+        #
+        super
                 
         #
         # Draw red rectangles/circles around all selected game objects
