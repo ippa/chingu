@@ -64,6 +64,12 @@ module Chingu
         @debug = options[:debug]
         @zorder = 10000
 
+        #
+        # Turn on cursor + turn it back to its original value in finalize()
+        #
+        @original_cursor = $window.cursor
+        $window.cursor = true
+        
         p @classes  if @debug
 
         @hud_color = Gosu::Color.new(200,70,70,70)
@@ -318,12 +324,7 @@ END_OF_STRING
           selected_game_objects.each { |game_object| game_object.draw_debug }
         end
         
-        if @cursor_game_object
-          @cursor_game_object.draw_at($window.mouse_x, $window.mouse_y)
-        else
-          draw_cursor_at($window.mouse_x, $window.mouse_y)
-        end
-        
+        @cursor_game_object.draw_at($window.mouse_x, $window.mouse_y)   if @cursor_game_object
       end
       
       #
@@ -486,15 +487,6 @@ END_OF_STRING
         end.sort {|x,y| y.zorder <=> x.zorder }.first
       end
 
-      #
-      # draw a simple triangle-shaped cursor
-      #
-      def draw_cursor_at(x, y, c = Color::WHITE)
-        c2 = Color::BLACK
-        $window.draw_triangle(x-2, y-4, c2, x-2, y+12, c2, x+14, y+12, c2, @zorder + 5)
-        $window.draw_triangle(x, y, c, x, y+10, c, x+10, y+10, c, @zorder + 10)
-      end
-
       def try_select_all
         editable_game_objects.each { |x| x.options[:selected] = true }  if holding?(:left_ctrl)
       end
@@ -517,6 +509,7 @@ END_OF_STRING
         if defined?(previous_game_state.viewport)
           previous_game_state.viewport.game_area = @game_area_backup
         end
+        $window.cursor = @original_cursor
       end
             
       def move_left
