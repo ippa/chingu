@@ -62,11 +62,11 @@ module Chingu
     #
     def insert(game_object)
       start_x = ( game_object.bb.left / @grid[0] ).to_i
-      stop_x =  ( (game_object.bb.right) / @grid[0] ).to_i
+      stop_x =  ( game_object.bb.right / @grid[0] ).to_i
       
       (start_x ... stop_x).each do |x|
-        start_y = (game_object.bb.top / @grid[1] ).to_i
-        stop_y =  ( (game_object.bb.bottom) / @grid[1] ).to_i
+        start_y = ( game_object.bb.top / @grid[1] ).to_i
+        stop_y =  ( game_object.bb.bottom / @grid[1] ).to_i
           
         @game_object_positions[game_object] = [(start_x ... stop_x), (start_y ... stop_y)]
           
@@ -113,11 +113,11 @@ module Chingu
       start_x = (game_object.bb.left / @grid[0]).to_i
       stop_x =  (game_object.bb.right / @grid[0]).to_i
       
-      (start_x ... stop_x).each do |x|
+      (start_x .. stop_x).each do |x|
         start_y = (game_object.bb.top / @grid[1]).to_i
         stop_y =  (game_object.bb.bottom / @grid[1]).to_i
           
-        (start_y ... stop_y).each do |y|
+        (start_y .. stop_y).each do |y|
           return @map[x][y]   if @map[x] && @map[x][y]
         end
         
