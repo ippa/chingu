@@ -153,7 +153,6 @@ module Chingu
             if game_object.image
               Text.create("#{klass.to_s[0..9]}\n#{game_object.width.to_i}x#{game_object.height.to_i}", :size => 12, :x=>x-16, :y=>y+18, :max_width => 55, :rotation_center => :top_left, :align => :center, :factor => 1)
               game_object.size = @toolbar_icon_size
-              game_object.cache_bounding_box if game_object.respond_to?(:cache_bounding_box)
               x += 50
             else
               puts "Skipping #{klass} - no image" if @debug
@@ -273,12 +272,6 @@ END_OF_STRING
               selected_game_object.y -= selected_game_object.y % @grid[1]
             end
           end
-          
-          # TODO: better cleaner sollution
-          if @selected_game_object.respond_to?(:bounding_box)
-            @selected_game_object.bounding_box.x = @selected_game_object.x
-            @selected_game_object.bounding_box.y = @selected_game_object.y
-          end
         elsif @left_mouse_button
           if defined?(self.previous_game_state.viewport)
             self.previous_game_state.viewport.x = @left_mouse_click_at[0] - $window.mouse_x
@@ -302,9 +295,8 @@ END_OF_STRING
         previous_game_state.draw
         
         # Restart z-ordering, everything after this will be drawn on top
-        $window.flush
-        
-        
+        # $window.flush
+                
         draw_grid if @draw_grid
         
         #
@@ -321,14 +313,21 @@ END_OF_STRING
         #
         # Draw red rectangles/circles around all selected game objects
         #
-        if defined?(previous_game_state.viewport)
-          previous_game_state.viewport.apply {  selected_game_objects.each { |game_object| game_object.draw_debug } }
-        else
-          selected_game_objects.each { |game_object| game_object.draw_debug }
-        end
+        #if defined?(previous_game_state.viewport)
+        #  previous_game_state.viewport.apply {  selected_game_objects.each { |game_object| game_object.draw_debug } }
+        #else
+        #  selected_game_objects.each { |game_object| game_object.draw_debug }
+        #end        
+        
+        #if defined?(previous_game_state.viewport)
+        #  previous_game_state.viewport.apply { selected_game_objects.each { |game_object| draw_rect bounding_box(game_object), Color::RED } }
+        #else
+        #  selected_game_objects.each { |game_object| draw_rect bounding_box(game_object), Color::RED }  
+        #end
         
         @cursor_game_object.draw_at($window.mouse_x, $window.mouse_y)   if @cursor_game_object
       end
+      
       
       #
       # CLICKED LEFT MOUSE BUTTON
@@ -476,7 +475,8 @@ END_OF_STRING
 
       def game_object_icon_at(x, y)
         game_objects.select do |game_object| 
-          game_object.respond_to?(:collision_at?) && game_object.collision_at?(x,y)
+          bounding_box(game_object).collide_point?(x,y)
+          #game_object.respond_to?(:collision_at?) && game_object.collision_at?(x,y)
         end.first
       end
 
@@ -486,7 +486,8 @@ END_OF_STRING
       #
       def game_object_at(x, y)
         editable_game_objects.select do |game_object| 
-          game_object.respond_to?(:collision_at?) && game_object.collision_at?(x,y)
+          bounding_box(game_object).collide_point?(x,y)
+          ##game_object.respond_to?(:collision_at?) && game_object.collision_at?(x,y)
         end.sort {|x,y| y.zorder <=> x.zorder }.first
       end
 
@@ -496,7 +497,6 @@ END_OF_STRING
       def try_save
         save if holding?(:left_ctrl)
       end
-      
       def quit
         pop_game_state
       end
@@ -567,9 +567,6 @@ END_OF_STRING
         end
       end
       
-      def recache_bounding_boxes
-        selected_game_objects.each { |game_object| game_object.cache_bounding_box if game_object.respond_to?(:cache_bounding_box)}
-      end
       def tilt_left
         selected_game_objects.each { |game_object| game_object.angle -= 5 }
       end
@@ -578,11 +575,9 @@ END_OF_STRING
       end
       def scale_up
         scale_up_x && scale_up_y
-        recache_bounding_boxes
       end
       def scale_down
         scale_down_x && scale_down_y
-        recache_bounding_boxes
       end
       
       def inc_zorder
@@ -661,10 +656,25 @@ END_OF_STRING
         game_object.options[:mouse_x_offset] = (game_object.x - self.mouse_x) rescue 0
         game_object.options[:mouse_y_offset] = (game_object.y - self.mouse_y) rescue 0
         
-        game_object.cache_bounding_box if game_object.respond_to?(:cache_bounding_box)
         return game_object
-     end
-
+      end
+      
+      CENTER_TO_FACTOR = { 0 => -1, 0.5 => 0, 1 => 1 }
+      #
+      # Returns a bounding box (Rect-class) for any gameobject
+      # It will take into considerations rotation_center and scaling
+      #      
+      def bounding_box(game_object)
+        width, height = game_object.width, game_object.height
+        x = game_object.x - width * game_object.center_x
+        y = game_object.y - height * game_object.center_y
+        x += width * CENTER_TO_FACTOR[game_object.center_x]   if game_object.factor_x < 0
+        y += height * CENTER_TO_FACTOR[game_object.center_y]  if game_object.factor_y < 0
+        return Rect.new(x, y, width, height)
+      end
+      alias :bb :bounding_box
+        
+      
       #
       # If we're editing a game state with automaticly called special methods, 
       # the following takes care of those.
