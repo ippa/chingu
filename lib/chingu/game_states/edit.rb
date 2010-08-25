@@ -325,6 +325,8 @@ END_OF_STRING
         #  selected_game_objects.each { |game_object| draw_rect bounding_box(game_object), Color::RED }  
         #end
         
+        selected_game_objects.each { |game_object| draw_rect(bounding_box(game_object), Color::RED, 10000) }
+        
         @cursor_game_object.draw_at($window.mouse_x, $window.mouse_y)   if @cursor_game_object
       end
       
@@ -371,7 +373,6 @@ END_OF_STRING
           end
           
           if holding?(:left_shift)
-            #puts @selected_game_object.class.all.size
             previous_game_state.game_objects.select { |x| x.class == @selected_game_object.class }.each do |game_object|
               game_object.options[:selected] = true
             end
@@ -474,9 +475,9 @@ END_OF_STRING
       end
 
       def game_object_icon_at(x, y)
-        game_objects.select do |game_object| 
+        game_objects.select do |game_object|
+          next if game_object.is_a? Text
           bounding_box(game_object).collide_point?(x,y)
-          #game_object.respond_to?(:collision_at?) && game_object.collision_at?(x,y)
         end.first
       end
 
@@ -485,9 +486,9 @@ END_OF_STRING
       # .. get the one with highest zorder.
       #
       def game_object_at(x, y)
-        editable_game_objects.select do |game_object| 
+        editable_game_objects.select do |game_object|
+          next if game_object.is_a? Text
           bounding_box(game_object).collide_point?(x,y)
-          ##game_object.respond_to?(:collision_at?) && game_object.collision_at?(x,y)
         end.sort {|x,y| y.zorder <=> x.zorder }.first
       end
 
