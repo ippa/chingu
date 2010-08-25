@@ -312,24 +312,22 @@ END_OF_STRING
                 
         #
         # Draw red rectangles/circles around all selected game objects
-        #
-        #if defined?(previous_game_state.viewport)
-        #  previous_game_state.viewport.apply {  selected_game_objects.each { |game_object| game_object.draw_debug } }
-        #else
-        #  selected_game_objects.each { |game_object| game_object.draw_debug }
-        #end        
-        
-        #if defined?(previous_game_state.viewport)
-        #  previous_game_state.viewport.apply { selected_game_objects.each { |game_object| draw_rect bounding_box(game_object), Color::RED } }
-        #else
-        #  selected_game_objects.each { |game_object| draw_rect bounding_box(game_object), Color::RED }  
-        #end
-        
-        selected_game_objects.each { |game_object| draw_rect(bounding_box(game_object), Color::RED, 10000) }
+        #        
+        if defined?(previous_game_state.viewport)
+          previous_game_state.viewport.apply { draw_selections }
+        else
+          draw_selections
+        end
         
         @cursor_game_object.draw_at($window.mouse_x, $window.mouse_y)   if @cursor_game_object
       end
       
+      #
+      # Draw a red rectangle around all selected objects
+      #
+      def draw_selections
+        selected_game_objects.each { |game_object| draw_rect(bounding_box(game_object), Color::RED, 10000) }
+      end
       
       #
       # CLICKED LEFT MOUSE BUTTON
