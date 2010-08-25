@@ -29,7 +29,6 @@ module Chingu
   module GameObject
   
     def add_game_object(object)
-      # puts "#{self.to_s} add_game_object(#{object.to_s})"
       @game_objects.add_game_object(object)
     end
     
@@ -108,14 +107,9 @@ module Chingu
         objects << {game_object.class.to_s => attr_hash}
       end
 
-        
-      #Marshal.dump(previous_game_state.game_objects, File.open(@filename, "w"))
-      File.open(file, 'w') do |out|
-        YAML.dump(objects, out)
-      end
+      File.open(file, 'w') { |out| YAML.dump(objects, out) }
     end
     
-  
   end
 
   end
