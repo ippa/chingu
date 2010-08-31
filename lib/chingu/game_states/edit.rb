@@ -389,11 +389,7 @@ END_OF_STRING
       end
       
       def right_mouse_button
-        if @cursor_game_object
-          @cursor_game_object = nil
-        else
-          @cursor_game_object = game_object_at(self.mouse_x, self.mouse_y)
-        end
+        @cursor_game_object = @cursor_game_object ?  nil : game_object_at(mouse_x, mouse_y)
       end
       def released_right_mouse_button
       end
