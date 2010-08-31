@@ -254,8 +254,8 @@ END_OF_STRING
         @status_text.text = "#{self.mouse_x.to_i} / #{self.mouse_y.to_i}"
         
         if s = @selected_game_object
-          @text.text = "#{s.class.to_s} @ #{s.x.to_i} / #{s.y.to_i}"
-          @text.text = "Size: #{s.width.to_i} x #{s.height.to_i} Ratio: #{sprintf("%.2f",s.width/s.height)}"
+          @text.text = "#{s.class.to_s} @ #{s.x.to_i} / #{s.y.to_i} "
+          @text.text += "Size: #{s.width.to_i} x #{s.height.to_i} Ratio: #{sprintf("%.2f",s.width/s.height)}"
           @text.text += " [Scale: #{sprintf("%.2f", s.factor_x)}/#{sprintf("%.2f", s.factor_y)} Angle: #{s.angle.to_i} Z: #{s.zorder} Alpha: #{s.alpha}]"
         end
         
