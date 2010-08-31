@@ -18,6 +18,8 @@ begin
     gemspec.add_development_dependency 'rspec', '>= 2.0.0.beta.12'
     gemspec.add_development_dependency 'watchr'
     gemspec.add_development_dependency 'rcov'
+    gemspec.add_development_dependency 'rest_client'
+    gemspec.add_development_dependency 'crack'
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
