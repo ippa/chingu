@@ -343,7 +343,7 @@ END_OF_STRING
         end
         
         # Put out a new game object in the editor window and select it right away
-        @selected_game_object = create_new_game_object_from(@cursor_game_object)  if @cursor_game_object
+        @selected_game_object = copy_game_object(@cursor_game_object)  if @cursor_game_object
         
         # Check if user clicked on anything in the icon-toolbar of available game objects
         @cursor_game_object = game_object_icon_at($window.mouse_x, $window.mouse_y)
@@ -639,7 +639,7 @@ END_OF_STRING
         x >= 0 && x <= $window.width && y >= 0 && y <= $window.height
       end
 
-      def create_new_game_object_from(template)
+      def copy_game_object(template)
         game_object = template.class.create(:parent => previous_game_state)
         # If we don't create it from the toolbar, we're cloning another object
         # When cloning we wan't the cloned objects attributes
