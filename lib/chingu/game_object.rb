@@ -93,7 +93,14 @@ module Chingu
       setup
       
     end
-   
+    
+    def to_s
+      "#{self.class.to_s} @ #{x.to_i} / #{y.to_i} " <<
+      "(#{width.to_i} x #{height.to_i}) " <<
+      #"- ratio: #{sprintf("%.2f",s.width/s.height)}"
+      " [scale: #{sprintf("%.2f", factor_x)}/#{sprintf("%.2f", factor_y)} angle: #{angle.to_i} zorder: #{zorder} alpha: #{alpha}]"
+    end
+    
     #
     # Get all settings from a game object in one array.
     # Complemented by the GameObject#attributes= setter.
