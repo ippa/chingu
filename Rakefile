@@ -14,7 +14,7 @@ begin
     gemspec.rubyforge_project = "chingu"
     gemspec.version = Chingu::VERSION
     
-    gemspec.add_dependency 'gosu', '>= 0.7.23'
+    gemspec.add_dependency 'gosu', '>= 0.7.24'
     gemspec.add_development_dependency 'rspec', '>= 2.0.0.beta.12'
     gemspec.add_development_dependency 'watchr'
     gemspec.add_development_dependency 'rcov'

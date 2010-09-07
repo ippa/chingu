@@ -12,6 +12,7 @@ class Game < Chingu::Window
     super(640,400)
     self.input = {:esc => :exit, :q => :decrease_size, :w => :increase_size, :a => :decrease_speed, :s => :increase_speed}
     
+    self.factor = 4
     20.times { Circle.create(:x => width/2, :y => height/2) }
     20.times { Box.create(:x => width/2, :y => height/2) }
     @blue = Color.new(0xFF0000FF)
@@ -71,7 +72,7 @@ class Circle < GameObject
     @image = Image["circle.png"]
     self.velocity_x = 3 - rand * 6
     self.velocity_y = 3 - rand * 6
-    self.factor = 2
+    #self.factor = 3
     self.input = [:holding_left, :holding_right, :holding_down, :holding_up]  # NOTE: giving input an Array, not a Hash 
     cache_bounding_circle
   end
