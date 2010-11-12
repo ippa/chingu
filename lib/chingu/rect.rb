@@ -189,7 +189,8 @@ class Rect < Array
 	end
 
 	# Return the x coordinate of the right side of the Rect.
-	def right; return self.at(0)+self.at(2)-1; end
+  # def right; return self.at(0)+self.at(2)-1; end
+	def right; return self.at(0)+self.at(2); end
 
 	# Set the x coordinate of the right side of the Rect by translating the
 	# Rect (adjusting the x offset).
@@ -199,7 +200,8 @@ class Rect < Array
 	alias r= right=;
 
 	# Return the y coordinate of the bottom side of the Rect.
-	def bottom; return self.at(1)+self.at(3)-1; end
+  #def bottom; return self.at(1)+self.at(3)-1; end
+	def bottom; return self.at(1)+self.at(3); end
 
 	# Set the y coordinate of the bottom side of the Rect by translating the
 	# Rect (adjusting the y offset).

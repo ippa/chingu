@@ -1,0 +1,625 @@
+--- 
+- Block: 
+    :x: 32.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 96.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 160.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 224.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 288.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 352.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 416.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 480.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 544.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 608.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 32.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 96.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 160.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 224.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 288.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 352.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 416.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 480.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 544.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 608.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 32.0
+    :y: 480.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 32.0
+    :y: 416.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 32.0
+    :y: 352.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 32.0
+    :y: 288.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 32.0
+    :y: 224.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 32.0
+    :y: 160.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 672.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 736.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 800.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 864.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 928.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 672.0
+    :y: 416.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 384.0
+    :y: 384.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 192.0
+    :y: 320.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 928.0
+    :y: 480.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 928.0
+    :y: 416.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 928.0
+    :y: 352.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 928.0
+    :y: 288.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 928.0
+    :y: 224.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 32.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 96.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 160.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 224.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 288.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 352.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 416.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 480.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 544.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 608.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 32.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 96.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 160.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 224.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 288.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 352.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 416.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 480.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 544.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 608.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 32.0
+    :y: 480.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 32.0
+    :y: 416.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 32.0
+    :y: 352.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 32.0
+    :y: 288.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 32.0
+    :y: 224.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 32.0
+    :y: 160.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 672.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 736.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 800.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 864.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 928.0
+    :y: 544.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 672.0
+    :y: 416.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 384.0
+    :y: 384.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 192.0
+    :y: 320.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 928.0
+    :y: 480.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 928.0
+    :y: 416.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 928.0
+    :y: 352.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 928.0
+    :y: 288.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255
+- Block: 
+    :x: 928.0
+    :y: 224.0
+    :angle: 0
+    :zorder: 100
+    :factor_x: 0.13901345291479816
+    :factor_y: 0.13901345291479816
+    :alpha: 255

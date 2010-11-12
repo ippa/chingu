@@ -15,7 +15,7 @@ begin
     gemspec.version = Chingu::VERSION
     
     gemspec.add_dependency 'gosu', '>= 0.7.24'
-    gemspec.add_development_dependency 'rspec', '>= 2.0.0.beta.12'
+    gemspec.add_development_dependency 'rspec', '>= 2.0.0'
     gemspec.add_development_dependency 'watchr'
     gemspec.add_development_dependency 'rcov'
     gemspec.add_development_dependency 'rest_client'

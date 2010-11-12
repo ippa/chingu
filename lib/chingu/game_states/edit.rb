@@ -291,7 +291,7 @@ END_OF_STRING
         previous_game_state.draw
         
         # Restart z-ordering, everything after this will be drawn on top
-        # $window.flush
+        $window.flush
                 
         draw_grid if @draw_grid
         
