@@ -618,5 +618,4 @@ class Rect < Array
 
 end # class Rect
 
-
 end # module Chingu

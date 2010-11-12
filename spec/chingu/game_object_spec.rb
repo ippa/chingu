@@ -3,9 +3,11 @@ require 'spec_helper'
 module Chingu
 
   describe GameObject do
-
-    before(:all) do 
+    before :all do
       @game = Chingu::Window.new
+      
+      # Gosu uses the paths based on where rspec is, not where this file is, so we need to do it manually!
+      Gosu::Image::autoload_dirs.unshift File.join(File.dirname(File.expand_path(__FILE__)), 'images')
     end
 
     it { should respond_to(:x) }
@@ -19,11 +21,7 @@ module Chingu
     it { should respond_to(:mode) }
     it { should respond_to(:color) }
 
-    describe "a newly created GameObject" do
-      before do
-        subject { GameObject.new }
-      end
-      
+    context "when created with defaults" do
       it "should have default values" do
         subject.angle.should == 0
         subject.x.should == 0
@@ -55,32 +53,34 @@ module Chingu
         subject.alpha = 1000
         subject.alpha.should == 255
       end
-      
     end
 
-    describe "GameObject with an image" do
+    it "should raise an exception if the image fails to load" do
+      lambda { described_class.new(:image => "monkey_with_a_nuclear_tail.png") }.should raise_error Exception
+    end
 
-      let(:game_object) { GameObject.new(:image => "rect_20x20.png") }
+    context "when created with an image named in a string" do
+      subject { described_class.new(:image => "rect_20x20.png") }
 
       it "should have width,height & size" do
-        game_object.height.should == 20
-        game_object.width.should == 20
-        game_object.size.should == [20,20]
+        subject.height.should == 20
+        subject.width.should == 20
+        subject.size.should == [20,20]
       end
       
       it "should adapt width,height & size to scaling" do
-        game_object.factor = 2
-        game_object.height.should == 40
-        game_object.width.should == 40
-        game_object.size.should == [40,40]
+        subject.factor = 2
+        subject.height.should == 40
+        subject.width.should == 40
+        subject.size.should == [40,40]
       end
 
       it "should adapt factor_x/factor_y to new size" do
-        game_object.size = [10,40]  # half the width, double the height
-        game_object.width.should == 10
-        game_object.height.should == 40
-        game_object.factor_x.should == 0.5
-        game_object.factor_y.should == 2
+        subject.size = [10,40]  # half the width, double the height
+        subject.width.should == 10
+        subject.height.should == 40
+        subject.factor_x.should == 0.5
+        subject.factor_y.should == 2
       end
       
     end

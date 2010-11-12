@@ -4,8 +4,9 @@
 # A simple game in Chingu, using GameState, GameObject, Paralaxx, has_traits etc
 # 
 #
-require 'rubygems'
-require File.join(File.dirname($0), "..", "lib", "chingu")
+require 'rubygems' rescue nil
+$LOAD_PATH.unshift File.join(File.expand_path(__FILE__), "..", "..", "lib")
+require 'chingu'
 require 'texplay'     # adds Image#get_pixel
 
 include Gosu
