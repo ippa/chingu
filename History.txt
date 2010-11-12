@@ -1,6 +1,6 @@
 === 0.6 / 2009-11-21
 More traits, better input, fixes
-This file is kind of deprecated -- see github commit-history instead!
+This file is deprecated -- see github commit-history instead!
 
 === 0.5.7 / 2009-10-15
 See github commithistory.

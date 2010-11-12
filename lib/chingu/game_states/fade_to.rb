@@ -36,6 +36,7 @@ module Chingu
     class FadeTo < Chingu::GameState
       
       def initialize(new_game_state, options = {})
+        super(options)
         @options = {:speed => 3, :zorder => INFINITY}.merge(options)
         
         @new_game_state = new_game_state
@@ -45,11 +46,12 @@ module Chingu
     
       def setup
         @color = Gosu::Color.new(0,0,0,0)
-        
         if previous_game_state
+          p "* Setup: fading out"   if options[:debug]
           @fading_in = false
           @alpha = 0.0
         else
+          p "* Setup: fading in"    if options[:debug]
           @fading_in = true 
           @alpha = 255.0
         end
@@ -62,7 +64,11 @@ module Chingu
         @alpha = 0    if @alpha < 0
         @alpha = 255  if @alpha > 255
         
-        @fading_in = true   if @alpha == 255
+        if @alpha == 255
+          @fading_in = true
+          p "* Update: fading in"    if options[:debug]
+        end
+        
         @color.alpha = @alpha.to_i
         @drawn = false
       end

@@ -15,7 +15,7 @@ class Game < Chingu::Window
     switch_game_state(State1)
     self.input = {:space => :push, :return => :switch, :esc => :exit}
     self.caption = "Example of transitional game state FadeTo when switchin between two game states"
-    transitional_game_state(Chingu::GameStates::FadeTo, :speed => 10)
+    transitional_game_state(Chingu::GameStates::FadeTo, {:speed => 5, :debug => true})
   end
   
   def push

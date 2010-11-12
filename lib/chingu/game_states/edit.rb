@@ -62,8 +62,13 @@ module Chingu
         @except = options[:except] || []
         @classes -= Array(@except)
         @debug = options[:debug]
-        @zorder = 10000
 
+        #
+        # Turn on cursor + turn it back to its original value in finalize()
+        #
+        @original_cursor = $window.cursor
+        $window.cursor = true
+        
         p @classes  if @debug
 
         @hud_color = Gosu::Color.new(200,70,70,70)
@@ -141,15 +146,13 @@ module Chingu
             game_object = klass.create(:paused => true)
             game_object.x = x + 10
             game_object.y = y
-            game_object.zorder = @zorder
             game_object.options[:toolbar] = true
             game_object.rotation_center = :center_center
 
             # Scale down object to fit our toolbar
             if game_object.image
-              Text.create("#{klass.to_s[0..9]}\n#{game_object.width.to_i}x#{game_object.height.to_i}", :size => 12, :x=>x-16, :y=>y+18, :zorder => @zorder, :max_width => 55, :rotation_center => :top_left, :align => :center, :factor => 1)
+              Text.create("#{klass.to_s[0..9]}\n#{game_object.width.to_i}x#{game_object.height.to_i}", :size => 12, :x=>x-16, :y=>y+18, :max_width => 55, :rotation_center => :top_left, :align => :center, :factor => 1)
               game_object.size = @toolbar_icon_size
-              game_object.cache_bounding_box if game_object.respond_to?(:cache_bounding_box)
               x += 50
             else
               puts "Skipping #{klass} - no image" if @debug
@@ -212,10 +215,10 @@ END_OF_STRING
           start_y = -previous_game_state.viewport.y % @grid.last
         end
         (start_x .. $window.width).step(@grid.first).each do |x|
-          $window.draw_line(x, 1, @grid_color, x, $window.height, @grid_color, @zorder-10, :additive)
+          $window.draw_line(x, 1, @grid_color, x, $window.height, @grid_color, 0, :additive)
         end
         (start_y .. $window.height).step(@grid.last).each do |y|
-          $window.draw_line(1, y, @grid_color, $window.width, y, @grid_color, @zorder-10, :additive)
+          $window.draw_line(1, y, @grid_color, $window.width, y, @grid_color, 0, :additive)
         end
         
       end
@@ -226,10 +229,10 @@ END_OF_STRING
       def setup
         @scroll_border_thickness = 30
         @file = options[:file] || previous_game_state.filename + ".yml"
-        @title = Text.create("File: #{@file}", :x => 5, :y => 2, :factor => 1, :size => 16, :zorder => @zorder)
+        @title = Text.create("File: #{@file}", :x => 5, :y => 2, :factor => 1, :size => 16)
         @title.text += " - Grid: #{@grid}" if @grid
-        @text = Text.create("", :x => 300, :y => 20, :factor => 1, :size => 16, :zorder => @zorder)
-        @status_text = Text.create("-", :x => 5, :y => 20, :factor => 1, :size => 16, :zorder => @zorder)
+        @text = Text.create("", :x => 300, :y => 20, :factor => 1, :size => 16)
+        @status_text = Text.create("-", :x => 5, :y => 20, :factor => 1, :size => 16)
         
         if defined?(previous_game_state.viewport)
           @game_area_backup = previous_game_state.viewport.game_area.dup
@@ -249,12 +252,8 @@ END_OF_STRING
         super
         
         @status_text.text = "#{self.mouse_x.to_i} / #{self.mouse_y.to_i}"
-        
-        if s = @selected_game_object
-          @text.text = "#{s.class.to_s} @ #{s.x.to_i} / #{s.y.to_i}"
-          @text.text = "Size: #{s.width.to_i} x #{s.height.to_i} Ratio: #{sprintf("%.2f",s.width/s.height)}"
-          @text.text += " [Scale: #{sprintf("%.2f", s.factor_x)}/#{sprintf("%.2f", s.factor_y)} Angle: #{s.angle.to_i} Z: #{s.zorder} Alpha: #{s.alpha}]"
-        end
+    
+        @text.text = @selected_game_object.to_s
         
         #
         # We got a selected game object and the left mouse button is held down
@@ -268,12 +267,6 @@ END_OF_STRING
               selected_game_object.x -= selected_game_object.x % @grid[0]
               selected_game_object.y -= selected_game_object.y % @grid[1]
             end
-          end
-          
-          # TODO: better cleaner sollution
-          if @selected_game_object.respond_to?(:bounding_box)
-            @selected_game_object.bounding_box.x = @selected_game_object.x
-            @selected_game_object.bounding_box.y = @selected_game_object.y
           end
         elsif @left_mouse_button
           if defined?(self.previous_game_state.viewport)
@@ -297,33 +290,39 @@ END_OF_STRING
         # Draw prev game state onto screen (the level we're editing)
         previous_game_state.draw
         
-        super
-        
+        # Restart z-ordering, everything after this will be drawn on top
+        # $window.flush
+                
         draw_grid if @draw_grid
         
         #
         # Draw an edit HUD
         #
-        $window.draw_quad(  0,0,@hud_color,
-                            $window.width,0,@hud_color,
-                            $window.width,@hud_height,@hud_color,
-                            0,@hud_height,@hud_color, @zorder-1)
+        $window.draw_quad(  0,0,@hud_color, $window.width,0,@hud_color,
+                            $window.width,@hud_height,@hud_color,0,@hud_height,@hud_color)
+             
+        #
+        # Draw gameobjects
+        #
+        super
                 
         #
         # Draw red rectangles/circles around all selected game objects
-        #
+        #        
         if defined?(previous_game_state.viewport)
-          previous_game_state.viewport.apply {  selected_game_objects.each { |game_object| game_object.draw_debug } }
+          previous_game_state.viewport.apply { draw_selections }
         else
-          selected_game_objects.each { |game_object| game_object.draw_debug }
+          draw_selections
         end
         
-        if @cursor_game_object
-          @cursor_game_object.draw_at($window.mouse_x, $window.mouse_y)
-        else
-          draw_cursor_at($window.mouse_x, $window.mouse_y)
-        end
-        
+        @cursor_game_object.draw_at($window.mouse_x, $window.mouse_y)   if @cursor_game_object
+      end
+      
+      #
+      # Draw a red rectangle around all selected objects
+      #
+      def draw_selections
+        selected_game_objects.each { |game_object| draw_rect(bounding_box(game_object), Color::RED, 10000) }
       end
       
       #
@@ -340,7 +339,7 @@ END_OF_STRING
         end
         
         # Put out a new game object in the editor window and select it right away
-        @selected_game_object = create_new_game_object_from(@cursor_game_object)  if @cursor_game_object
+        @selected_game_object = copy_game_object(@cursor_game_object)  if @cursor_game_object
         
         # Check if user clicked on anything in the icon-toolbar of available game objects
         @cursor_game_object = game_object_icon_at($window.mouse_x, $window.mouse_y)
@@ -368,7 +367,6 @@ END_OF_STRING
           end
           
           if holding?(:left_shift)
-            #puts @selected_game_object.class.all.size
             previous_game_state.game_objects.select { |x| x.class == @selected_game_object.class }.each do |game_object|
               game_object.options[:selected] = true
             end
@@ -387,11 +385,7 @@ END_OF_STRING
       end
       
       def right_mouse_button
-        if @cursor_game_object
-          @cursor_game_object = nil
-        else
-          @cursor_game_object = game_object_at(self.mouse_x, self.mouse_y)
-        end
+        @cursor_game_object = @cursor_game_object ?  nil : game_object_at(mouse_x, mouse_y)
       end
       def released_right_mouse_button
       end
@@ -471,8 +465,9 @@ END_OF_STRING
       end
 
       def game_object_icon_at(x, y)
-        game_objects.select do |game_object| 
-          game_object.respond_to?(:collision_at?) && game_object.collision_at?(x,y)
+        game_objects.select do |game_object|
+          next if game_object.is_a? Text
+          bounding_box(game_object).collide_point?(x,y)
         end.first
       end
 
@@ -481,18 +476,10 @@ END_OF_STRING
       # .. get the one with highest zorder.
       #
       def game_object_at(x, y)
-        editable_game_objects.select do |game_object| 
-          game_object.respond_to?(:collision_at?) && game_object.collision_at?(x,y)
+        editable_game_objects.select do |game_object|
+          next if game_object.is_a? Text
+          bounding_box(game_object).collide_point?(x,y)
         end.sort {|x,y| y.zorder <=> x.zorder }.first
-      end
-
-      #
-      # draw a simple triangle-shaped cursor
-      #
-      def draw_cursor_at(x, y, c = Color::WHITE)
-        c2 = Color::BLACK
-        $window.draw_triangle(x-2, y-4, c2, x-2, y+12, c2, x+14, y+12, c2, @zorder + 5)
-        $window.draw_triangle(x, y, c, x, y+10, c, x+10, y+10, c, @zorder + 10)
       end
 
       def try_select_all
@@ -501,7 +488,6 @@ END_OF_STRING
       def try_save
         save if holding?(:left_ctrl)
       end
-      
       def quit
         pop_game_state
       end
@@ -517,6 +503,7 @@ END_OF_STRING
         if defined?(previous_game_state.viewport)
           previous_game_state.viewport.game_area = @game_area_backup
         end
+        $window.cursor = @original_cursor
       end
             
       def move_left
@@ -571,9 +558,6 @@ END_OF_STRING
         end
       end
       
-      def recache_bounding_boxes
-        selected_game_objects.each { |game_object| game_object.cache_bounding_box if game_object.respond_to?(:cache_bounding_box)}
-      end
       def tilt_left
         selected_game_objects.each { |game_object| game_object.angle -= 5 }
       end
@@ -582,11 +566,9 @@ END_OF_STRING
       end
       def scale_up
         scale_up_x && scale_up_y
-        recache_bounding_boxes
       end
       def scale_down
         scale_down_x && scale_down_y
-        recache_bounding_boxes
       end
       
       def inc_zorder
@@ -653,10 +635,8 @@ END_OF_STRING
         x >= 0 && x <= $window.width && y >= 0 && y <= $window.height
       end
 
-      def create_new_game_object_from(template)
+      def copy_game_object(template)
         game_object = template.class.create(:parent => previous_game_state)
-        game_object.update
-        
         # If we don't create it from the toolbar, we're cloning another object
         # When cloning we wan't the cloned objects attributes
         game_object.attributes = template.attributes  unless template.options[:toolbar]       
@@ -667,10 +647,25 @@ END_OF_STRING
         game_object.options[:mouse_x_offset] = (game_object.x - self.mouse_x) rescue 0
         game_object.options[:mouse_y_offset] = (game_object.y - self.mouse_y) rescue 0
         
-        game_object.cache_bounding_box if game_object.respond_to?(:cache_bounding_box)
         return game_object
-     end
-
+      end
+      
+      CENTER_TO_FACTOR = { 0 => -1, 0.5 => 0, 1 => 1 }
+      #
+      # Returns a bounding box (Rect-class) for any gameobject
+      # It will take into considerations rotation_center and scaling
+      #      
+      def bounding_box(game_object)
+        width, height = game_object.width, game_object.height
+        x = game_object.x - width * game_object.center_x
+        y = game_object.y - height * game_object.center_y
+        x += width * CENTER_TO_FACTOR[game_object.center_x]   if game_object.factor_x < 0
+        y += height * CENTER_TO_FACTOR[game_object.center_y]  if game_object.factor_y < 0
+        return Rect.new(x, y, width, height)
+      end
+      alias :bb :bounding_box
+        
+      
       #
       # If we're editing a game state with automaticly called special methods, 
       # the following takes care of those.

@@ -39,7 +39,7 @@ module Chingu
     include Chingu::Helpers::InputClient        # Window has its own inputmap
     
     attr_reader :root, :game_state_manager, :game_objects, :milliseconds_since_last_tick
-    attr_accessor :factor
+    attr_accessor :factor, :cursor
     
     def initialize(width = 800, height = 600, fullscreen = false, update_interval = 16.666666)
       fullscreen ||= ARGV.include?("--fullscreen")
@@ -59,8 +59,17 @@ module Chingu
       @game_state_manager = GameStateManager.new
       @milliseconds_since_last_tick = 0
       @factor = 1
+      @cursor = false
       
       setup
+    end
+    
+    #
+    # If this returns true, GOSU will show a cursor
+    # Chingu solves this with the $window.cursor = [true|false] accessor
+    #
+    def needs_cursor?
+      @cursor
     end
     
     # Placeholder to be overwritten

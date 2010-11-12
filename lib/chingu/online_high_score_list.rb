@@ -26,7 +26,7 @@ module Chingu
   # - fetch high scores, add new ones
   # - Iterate through highscores with each and each_with_index
   #
-  # Requires gems 'crack' and 'rest_client', included on initialize.
+  # This class is the reason for the 'crack' and 'rest_client' dependencies.
   #
   class OnlineHighScoreList
     attr_reader :resource, :high_scores
@@ -37,9 +37,6 @@ module Chingu
       @login = options[:login] || options[:user]
       @password = options[:password]
       @game_id = options[:game_id]
-
-      require 'rest_client'
-      require 'crack/xml'
       @resource = RestClient::Resource.new("http://api.gamercv.com/games/#{@game_id}/high_scores", 
                                               :user => @login, :password => @password, :timeout => 20, :open_timeout => 5)
                                               

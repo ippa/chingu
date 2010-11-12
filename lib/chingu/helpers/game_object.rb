@@ -29,7 +29,6 @@ module Chingu
   module GameObject
   
     def add_game_object(object)
-      # puts "#{self.to_s} add_game_object(#{object.to_s})"
       @game_objects.add_game_object(object)
     end
     
@@ -86,10 +85,16 @@ module Chingu
     # :game_objects - an Array, game objects to save
     # :classes      - an Array, save only game objects of theese classes
     #
+    # NOTE: To save a color do:  :color => game_object.color.argb
+    #
     def save_game_objects(options = {})
+      #
+      # TODO: Move this to GameObjectList#save ?
+      #
       file = options[:file] || "#{self.class.to_s.downcase}.yml"
       game_objects = options[:game_objects]
       classes = options[:classes]
+      attributes = options[:attributes] || [:x, :y, :angle, :zorder, :factor_x, :factor_y, :alpha]
       
       require 'yaml'
       objects = []
@@ -97,30 +102,14 @@ module Chingu
         # Only save specified classes, if given.
         next if classes and !classes.empty? and !classes.include?(game_object.class)
         
-        objects << {game_object.class.to_s  => 
-                      {
-                      :x => game_object.x, 
-                      :y => game_object.y,
-                      :angle => game_object.angle,
-                      :zorder => game_object.zorder,
-                      :factor_x => game_object.factor_x,
-                      :factor_y => game_object.factor_y,
-                      :color => game_object.color.argb,
-                      #:color => sprintf("0x%x",game_object.color.argb)
-                      #:center_x => game_object.center_x,
-                      #:center_y => game_object.center_y,
-                      }
-                    }
+        attr_hash = {}
+        attributes.each { |attr| attr_hash[attr] = game_object.send(attr) }
+        objects << {game_object.class.to_s => attr_hash}
       end
 
-        
-      #Marshal.dump(previous_game_state.game_objects, File.open(@filename, "w"))
-      File.open(file, 'w') do |out|
-        YAML.dump(objects, out)
-      end
+      File.open(file, 'w') { |out| YAML.dump(objects, out) }
     end
     
-  
   end
 
   end
