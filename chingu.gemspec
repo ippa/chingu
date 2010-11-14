@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{chingu}
-  s.version = "0.7.7.5"
+  s.version = "0.8rc1"
 
-  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
+  s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["ippa"]
-  s.date = %q{2010-08-23}
+  s.date = %q{2010-11-14}
   s.description = %q{OpenGL accelerated 2D game framework for Ruby. Builds on Gosu (Ruby/C++) which provides all the core functionality. Chingu adds simple yet powerful game states, prettier input handling, deployment safe asset-handling, a basic re-usable game object and stackable game logic.}
   s.email = %q{ippa@rubylicio.us}
   s.extra_rdoc_files = [
@@ -50,6 +50,10 @@ Gem::Specification.new do |s|
      "examples/example21_sidescroller_with_edit.rb",
      "examples/example22_text.rb",
      "examples/example23_chipmunk.rb",
+     "examples/example24_enter_name.rb",
+     "examples/example24_input_codes.rb",
+     "examples/example25.yml",
+     "examples/example25_fibers_state_machine.rb",
      "examples/example2_gamestate_basics.rb",
      "examples/example3_parallax.rb",
      "examples/example4_gamestates.rb",
@@ -117,6 +121,7 @@ Gem::Specification.new do |s|
      "lib/chingu/game_state_manager.rb",
      "lib/chingu/game_states/debug.rb",
      "lib/chingu/game_states/edit.rb",
+     "lib/chingu/game_states/enter_name.rb",
      "lib/chingu/game_states/fade_to.rb",
      "lib/chingu/game_states/pause.rb",
      "lib/chingu/game_states/popup.rb",
@@ -159,7 +164,7 @@ Gem::Specification.new do |s|
      "spec/chingu/helpers/options_setter_spec.rb",
      "spec/chingu/images/rect_20x20.png",
      "spec/chingu/inflector_spec.rb",
-     "spec/chingu/rect_20x20.png",
+     "spec/chingu/input_spec.rb",
      "spec/chingu/text_spec.rb",
      "spec/spec_helper.rb",
      "specs.watchr"
@@ -177,6 +182,7 @@ Gem::Specification.new do |s|
      "spec/chingu/helpers/input_dispatcher_spec.rb",
      "spec/chingu/helpers/options_setter_spec.rb",
      "spec/chingu/inflector_spec.rb",
+     "spec/chingu/input_spec.rb",
      "spec/chingu/text_spec.rb",
      "spec/spec_helper.rb",
      "examples/example10_traits_retrofy.rb",
@@ -194,6 +200,9 @@ Gem::Specification.new do |s|
      "examples/example21_sidescroller_with_edit.rb",
      "examples/example22_text.rb",
      "examples/example23_chipmunk.rb",
+     "examples/example24_enter_name.rb",
+     "examples/example24_input_codes.rb",
+     "examples/example25_fibers_state_machine.rb",
      "examples/example2_gamestate_basics.rb",
      "examples/example3_parallax.rb",
      "examples/example4_gamestates.rb",
@@ -211,21 +220,27 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<gosu>, [">= 0.7.22"])
-      s.add_development_dependency(%q<rspec>, [">= 2.0.0.beta.12"])
+      s.add_runtime_dependency(%q<gosu>, [">= 0.7.24"])
+      s.add_development_dependency(%q<rspec>, [">= 2.0.0"])
       s.add_development_dependency(%q<watchr>, [">= 0"])
       s.add_development_dependency(%q<rcov>, [">= 0"])
+      s.add_development_dependency(%q<rest_client>, [">= 0"])
+      s.add_development_dependency(%q<crack>, [">= 0"])
     else
-      s.add_dependency(%q<gosu>, [">= 0.7.22"])
-      s.add_dependency(%q<rspec>, [">= 2.0.0.beta.12"])
+      s.add_dependency(%q<gosu>, [">= 0.7.24"])
+      s.add_dependency(%q<rspec>, [">= 2.0.0"])
       s.add_dependency(%q<watchr>, [">= 0"])
       s.add_dependency(%q<rcov>, [">= 0"])
+      s.add_dependency(%q<rest_client>, [">= 0"])
+      s.add_dependency(%q<crack>, [">= 0"])
     end
   else
-    s.add_dependency(%q<gosu>, [">= 0.7.22"])
-    s.add_dependency(%q<rspec>, [">= 2.0.0.beta.12"])
+    s.add_dependency(%q<gosu>, [">= 0.7.24"])
+    s.add_dependency(%q<rspec>, [">= 2.0.0"])
     s.add_dependency(%q<watchr>, [">= 0"])
     s.add_dependency(%q<rcov>, [">= 0"])
+    s.add_dependency(%q<rest_client>, [">= 0"])
+    s.add_dependency(%q<crack>, [">= 0"])
   end
 end
 
