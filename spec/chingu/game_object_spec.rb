@@ -141,17 +141,17 @@ module Chingu
       end
     end
     
-    context "when there's a global factor/scale" do
-      $window = Chingu::Window.new
-      $window.factor = 2
-      subject { described_class.new(:image => "rect_20x20.png") }
-      it "should use global factor/scale" do
-        subject.factor_x.should == 2
-        subject.factor_y.should == 2
-        subject.width.should == 40
-        subject.height.should == 40
-      end
-    end
+    #context "when there's a global factor/scale" do
+    #  $window = Chingu::Window.new
+    #  $window.factor = 2
+    #  subject { described_class.new(:image => "rect_20x20.png") }
+    #  it "should use global factor/scale" do
+    #    subject.factor_x.should == 2
+    #    subject.factor_y.should == 2
+    #    subject.width.should == 40
+    #    subject.height.should == 40
+    #  end
+    #end
 
     after(:all) do
       $window.close
