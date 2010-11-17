@@ -20,6 +20,10 @@ module Chingu
     it { should respond_to(:zorder) }
     it { should respond_to(:mode) }
     it { should respond_to(:color) }
+    it { should respond_to(:attributes) }
+    it { should respond_to(:draw) }
+    it { should respond_to(:draw_at) }
+    it { should respond_to(:draw_relative) }
 
     context "when created with defaults" do
       it "should have default values" do
@@ -54,9 +58,41 @@ module Chingu
         subject.alpha.should == 255
       end
     end
+    
+    it "should have the same value for self.alpha as self.color.alpha" do
+      subject.alpha.should == subject.color.alpha
+    end
+    
+    it "should have a corrent filename created from class name" do
+      subject.filename.should == "game_object"
+    end
 
     it "should raise an exception if the image fails to load" do
       lambda { described_class.new(:image => "monkey_with_a_nuclear_tail.png") }.should raise_error Exception
+    end
+    
+    context "position" do
+      it "inside_window?" do
+        subject.x = 1
+        subject.y = 1
+        subject.inside_window?.should == true
+        subject.outside_window?.should == false
+      end
+      it "outside_window?" do
+        subject.x = @game.width + 1
+        subject.y = @game.height + 1
+        subject.inside_window?.should == false
+        subject.outside_window?.should == true
+      end
+    end
+    
+    context "visibility" do
+      it "should hide/show object on self.hide! and self.show!" do
+        subject.hide!
+        subject.visible?.should == false
+        subject.show!
+        subject.visible?.should == true
+      end
     end
 
     context "when created with an image named in a string" do
