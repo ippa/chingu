@@ -18,7 +18,7 @@ class Game < Chingu::Window
     @gosu_inputs = input_names.inject({}) {|hash, name| hash[Gosu.const_get name] = name; hash }
 
     # Get all possible key codes.
-    @key_codes = (Gosu::KbRangeBegin..Gosu::KbRangeEnd).to_a# + (Gosu::GpRangeBegin..Gosu::GpRangeEnd).to_a + (Gosu::MsRangeBegin..Gosu::MsRangeEnd).to_a
+    @key_codes = (Gosu::KbRangeBegin..Gosu::KbRangeEnd).to_a + (Gosu::GpRangeBegin..Gosu::GpRangeEnd).to_a + (Gosu::MsRangeBegin..Gosu::MsRangeEnd).to_a
   end
 
   def update

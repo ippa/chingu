@@ -78,7 +78,7 @@ module Chingu
       @padding = options[:padding] || @@padding
       self.rotation_center = :top_left
 
-      @gosu_font = Gosu::Font.new($window, @font, @size)
+      @gosu_font = Gosu::Font[@font, @size]
       create_image  unless @image
 
       if options[:background]

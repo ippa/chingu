@@ -35,7 +35,7 @@ module Chingu
         super
         @white = Color.new(255,255,255,255)
         @color = Gosu::Color.new(200,0,0,0)
-        @font = Gosu::Font.new($window, default_font_name, 35)
+        @font = Gosu::Font[35]
         @text = "PAUSED - press ESC to return to game."
       end
     

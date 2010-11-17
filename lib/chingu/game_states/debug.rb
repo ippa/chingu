@@ -49,7 +49,7 @@ module Chingu
         set_options(options, DEFAULTS)
 
         # it fails when setup in DEFAULTS as it needs existing $window
-        @font ||= Gosu::Font.new($window, Gosu::default_font_name, 16)
+        @font ||= Gosu::Font[16]
         
         self.input = {:p => :pause, :f1 => :return_to_game, :esc => :return_to_game}
       end

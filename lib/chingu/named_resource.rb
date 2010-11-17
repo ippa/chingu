@@ -86,6 +86,10 @@ module Chingu
       #  An Array of paths to check for files. See #find_file.
       attr_accessor :autoload_dirs
 
+      # Clear all the cached assets
+      def clear
+        @resources.clear
+      end
 
       #  call-seq:
       #    MyClass[ name ]  ->  instance or nil
