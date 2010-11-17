@@ -16,8 +16,8 @@ class Main < Chingu::Window
     push_game_state(GameOfLife)
   end
   def draw
-    super
     fill_rect([0,0,640,480], 0xffffffff, -2)
+    super
   end
 end
 
@@ -85,6 +85,16 @@ class GameOfLife < Chingu::GameState
   
   def update
     super
+        
+    update_grid if @running
+    
+    $window.caption = "Conway Generation #{@@tick}. Start/Stop with 'Space'. Run 1 generation with 'N'. Reset with 'Z'."
+  end
+
+  def draw
+    super
+    
+    draw_grid
     
     if @painting
       draw_pattern_at_mouse(@pattern, true)
@@ -93,14 +103,6 @@ class GameOfLife < Chingu::GameState
       draw_pattern_at_mouse(@pattern)
     end
     
-    update_grid if @running
-    
-    $window.caption = "Conway Generation #{@@tick}. Start/Stop with 'Space'. Run 1 generation with 'N'. Reset with 'Z'."
-  end
-
-  def draw
-    super
-    draw_grid
   end
   
   private
