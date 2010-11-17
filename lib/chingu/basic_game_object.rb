@@ -88,7 +88,9 @@ module Chingu
 
       # This will call #setup_trait on the latest trait mixed in
       # which then will pass it on to the next setup_trait() with a super-call.
-      setup_trait(options)      
+      setup_trait(options)
+      
+      setup if respond_to?(:setup)
     end
 
     #

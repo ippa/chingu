@@ -14,8 +14,8 @@ begin
     gemspec.rubyforge_project = "chingu"
     gemspec.version = Chingu::VERSION
     
-    gemspec.add_dependency 'gosu', '>= 0.7.24'
-    gemspec.add_development_dependency 'rspec', '>= 2.0.0'
+    gemspec.add_dependency 'gosu', '>= 0.7.25'
+    gemspec.add_development_dependency 'rspec', '>= 2.1.0'
     gemspec.add_development_dependency 'watchr'
     gemspec.add_development_dependency 'rcov'
     gemspec.add_development_dependency 'rest_client'
@@ -27,7 +27,7 @@ rescue LoadError
 end
 
 # Rake RSpec2 task stuff
-gem 'rspec', '>= 2.0.0'
+gem 'rspec', '>= 2.1.0'
 
 require 'rspec/core/rake_task'
 
