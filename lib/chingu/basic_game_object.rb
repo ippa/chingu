@@ -1,4 +1,5 @@
 require_rel 'helpers/class_inheritable_accessor'
+require_rel 'inflector'
 module Chingu
   #
   # BasicGameObject. Resonating with 1.9.1, this is our most basic class that all game objects ultimate should build on.
@@ -45,7 +46,7 @@ module Chingu
             end
           end
         rescue
-          puts $!
+          puts "Error in 'trait #{trait}': " + $!.to_s
         end
       end
     end
@@ -141,7 +142,16 @@ module Chingu
     def paused?
       @paused == true
     end
-    
+
+    #
+    # Returns a filename-friendly string from the current class-name
+    #
+    # "FireBall" -> "fire_ball"
+    #
+    def filename
+      Chingu::Inflector.underscore(Chingu::Inflector.demodulize(self.class.to_s))
+    end
+
     #
     # Empty placeholders to be overridden
     #
