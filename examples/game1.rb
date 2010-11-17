@@ -31,9 +31,9 @@ class Level < Chingu::GameState
   def initialize(options = {})
     super
     
-    @parallax = Parallax.create(:rotation_center => :top_left)
-    @parallax << { :image => "city2.png", :damping => 2}
-    @parallax << { :image => "city1.png", :damping => 1}	
+    @parallax = Parallax.create(:rotation_center => :top_left, :zorder => 200)
+    @parallax << { :image => "city2.png", :damping => 2, :zorder => 200}
+    @parallax << { :image => "city1.png", :damping => 1, :zorder => 200}	
     @player = Player.create(:x => 30, :y => 10)
     
     @bg1 = Color.new(0xFFCE28FF)
@@ -109,6 +109,7 @@ class Level < Chingu::GameState
   
   def draw
     fill_gradient(:from => @bg2, :to => @bg1)
+    @parallax.draw
     super    
   end
 end

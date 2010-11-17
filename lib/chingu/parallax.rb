@@ -123,8 +123,6 @@ module Chingu
     #
     def draw
       @layers.each do |layer|
-        #layer.draw
-        
         save_x, save_y = layer.x, layer.y
         
         # If layer lands inside our window and repeat_x is true (defaults to true), draw it until window ends
@@ -183,13 +181,17 @@ module Chingu
           :zorder => (@@zorder_counter+=1)
       }.merge(options)
       
-      
       @repeat_x = options[:repeat_x]
       @repeat_y = options[:repeat_y]
-      
+            
       super(options)
       
       @damping = options[:damping] || 1
+    end
+    
+    def draw
+      super
+      #p "draw @ #{x} / #{y}: #{image} - #{zorder} - #{color}"
     end
     
     #

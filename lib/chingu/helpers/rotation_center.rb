@@ -75,8 +75,7 @@ module Chingu
       # those 2 words basicly have the same meaning and are both understandable.
       #
       def rotation_center(alignment = nil)
-        #return @rotation_center unless alignment
-        #@rotation_center = alignment
+        return unless alignment
         @center_x, @center_y = @@rotation_centers[alignment.to_sym]
       end
       

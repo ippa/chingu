@@ -18,21 +18,18 @@ end
 
 class Scroller < Chingu::GameState
   
-  def initialize(options)
-    super
+  def initialize(options = {})
+    super(options)
     @text_color = Color.new(0xFF000000)
-  end
-  
-  def setup
     self.input =  { :holding_left => :camera_left, 
                     :holding_right => :camera_right, 
                     :holding_up => :camera_up,
                     :holding_down => :camera_down,
                     :space => :next_game_state,
                     :escape => :exit
-                  }
+                  }    
   end
-  
+    
   def next_game_state
     if current_game_state.class == Wood
       switch_game_state(Jungle)
@@ -63,9 +60,8 @@ class Scroller < Chingu::GameState
 end
 
 class Wood < Scroller
-  def initialize(options = {})
-    super
-    @parallax = Chingu::Parallax.create(:x => 0, :y => 0, :rotation_center => :top_left)
+  def setup
+    @parallax = Chingu::Parallax.create(:x => 150, :y => 150, :rotation_center => :top_left)
     @parallax << { :image => "wood.png", :repeat_x => true, :repeat_y => true}
     Chingu::Text.create("82x64 image with repeat_x and repeat_y set to TRUE", :x => 0, :y => 0, :size => 30, :color => @text_color)
   end
