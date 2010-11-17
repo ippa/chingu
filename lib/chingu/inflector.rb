@@ -34,6 +34,13 @@ module Chingu
       end
     end
 		
+    #
+    # "Chingu::GameObject" -> "GameObject"
+    #
+    def Inflector.demodulize(class_name_in_module)
+      class_name_in_module.to_s.gsub(/^.*::/, '')
+    end
+    
 		#
 		# "FireBall" -> "fire_ball"
 		#
