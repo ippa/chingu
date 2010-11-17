@@ -240,7 +240,7 @@ module Chingu
     # "FireBall" -> "fire_ball"
     #
     def filename
-      Chingu::Inflector.underscore(self.class.to_s)
+      Chingu::Inflector.underscore(Chingu::Inflector.demodulize(self.class.to_s))
     end
 
     #
