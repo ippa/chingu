@@ -13,6 +13,10 @@ module Chingu
       @handler2 = @subject.method :handler2
     end
 
+    after :each do
+      $window = nil
+    end
+
     describe "#holding?" do
       it "should be true if that key is being held down" do
         $window.should_receive(:button_down?).with(Gosu::KbSpace).and_return(true)

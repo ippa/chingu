@@ -33,6 +33,10 @@ describe Chingu::Helpers::InputDispatcher do
       $window.stub!(:button_down?).and_return(false)
     end
 
+    after :each do
+      $window = nil
+    end
+
     it "should dispatch if a key is being held" do
       @client.should_receive(:handler).with(no_args)
       $window.stub!(:button_down?).with(Gosu::KbA).and_return(true)

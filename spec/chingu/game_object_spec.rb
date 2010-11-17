@@ -3,11 +3,15 @@ require 'spec_helper'
 module Chingu
 
   describe GameObject do
-    before :all do
+    before :each do
       @game = Chingu::Window.new
       
       # Gosu uses the paths based on where rspec is, not where this file is, so we need to do it manually!
       Gosu::Image::autoload_dirs.unshift File.join(File.dirname(File.expand_path(__FILE__)), 'images')
+    end
+
+    after :each do
+      @game.close
     end
 
     it { should respond_to(:x) }
@@ -141,22 +145,20 @@ module Chingu
       end
     end
     
-    #context "when there's a global factor/scale" do
-    #  $window = Chingu::Window.new
-    #  $window.factor = 2
-    #  subject { described_class.new(:image => "rect_20x20.png") }
-    #  it "should use global factor/scale" do
-    #    subject.factor_x.should == 2
-    #    subject.factor_y.should == 2
-    #    subject.width.should == 40
-    #    subject.height.should == 40
-    #  end
-    #end
+    context "when there's a global factor/scale" do
+      before :each do
+        $window.factor = 2
+      end
+      
+      subject { described_class.new(:image => "rect_20x20.png") }
 
-    after(:all) do
-      $window.close
+      it "should use global factor/scale" do
+        subject.factor_x.should == 2
+        subject.factor_y.should == 2
+        subject.width.should == 40
+        subject.height.should == 40
+      end
     end
-    
   end
 
 end
