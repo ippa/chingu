@@ -86,6 +86,19 @@ module Chingu
       end
     end
     
+    context "setters" do
+      it "factor should set both factor_x and factor_y" do
+        subject.factor = 4
+        subject.factor_x.should == 4
+        subject.factor_y.should == 4
+      end
+      
+      it "scale should work as alias for factor" do
+        subject.scale = 5
+        subject.factor.should == 5
+      end
+    end
+    
     context "visibility" do
       it "should hide/show object on self.hide! and self.show!" do
         subject.hide!
@@ -117,8 +130,27 @@ module Chingu
         subject.height.should == 40
         subject.factor_x.should == 0.5
         subject.factor_y.should == 2
+      end      
+    end
+    
+    context "when created with multiple arguments" do
+      subject { described_class.new(:image => "rect_20x20.png", :size => [10, 10]) }
+      it "should initialize values correclty" do
+        subject.width.should == 10
+        subject.height.should == 10
       end
-      
+    end
+    
+    context "when there's a global factor/scale" do
+      $window = Chingu::Window.new
+      $window.factor = 2
+      subject { described_class.new(:image => "rect_20x20.png") }
+      it "should use global factor/scale" do
+        subject.factor_x.should == 2
+        subject.factor_y.should == 2
+        subject.width.should == 40
+        subject.height.should == 40
+      end
     end
 
     after(:all) do

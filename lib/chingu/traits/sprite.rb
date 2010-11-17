@@ -40,18 +40,20 @@ module Chingu
       attr_accessor :x, :y, :angle, :factor_x, :factor_y, :center_x, :center_y, :zorder, :mode, :visible, :color
       attr_reader :factor, :center, :height, :width, :image     
 
-      # default settings for all variables unless set in constructor
-      DEFAULTS = {
-        :x => 0, :y => 0, :angle => 0,
-        :factor_x => 1.0, :factor_y => 1.0,
-        :zorder => 100, :center_x => 0.5, :center_y => 0.5,
-        :mode => :default,
-        :color => nil
-      }
-
-      def setup_trait(object_options = {})
+      def setup_trait(object_options = {})        
+        # default settings for all variables unless set in constructor
+        defaults = {
+          :x => 0, :y => 0, :angle => 0,
+          :factor => ($window.factor||1.0),
+          :zorder => 100, :center_x => 0.5, :center_y => 0.5,
+          :mode => :default, :color => nil
+        }
+        
+        # if user specs :image take care of it first since width, height etc depends on it.
         self.image = object_options.delete(:image)  if object_options[:image]
-        set_options(trait_options[:sprite].merge(object_options), DEFAULTS)
+        
+        set_options(trait_options[:sprite].merge(object_options), defaults)
+        
         super
       end
 
@@ -141,14 +143,13 @@ module Chingu
         [self.width, self.height]
       end
       
-
       # Quick way of setting both factor_x and factor_y
       def factor=(factor)
-        @factor_x = @factor_y = factor
+        @factor = @factor_x = @factor_y = factor
       end
       alias scale= factor=
-      # alias scale factor
-          
+      alias scale factor
+      
       # Quick way of setting both center_x and center_y
       def center=(center)
         @center_x = @center_y = center
