@@ -65,11 +65,13 @@ module Chingu
         text = nil
       end
      
+      # We remove the :size param so it doesn't get to GameObject where it means something else
+      @size = options.delete(:size) || options.delete(:height) || @@size || 15
+     
       super(options)
   
       @text = text || options[:text] || "-No text specified-"
       @font =  options[:font] || @@font || Gosu::default_font_name()
-      @size = options[:size] || options[:height] || @@size || 15
       @line_spacing = options[:line_spacing] || 1
       @align = options[:align] || :left
       @max_width = options[:max_width]
