@@ -30,7 +30,7 @@ module Chingu
   #
   # If you wan't a invisible object but with traits, use BasicGameObject.
   #
-  class GameObject < Chingu::BasicGameObject
+  class ClassicGameObject < Chingu::BasicGameObject
     attr_accessor :image, :x, :y, :angle, :center_x, :center_y, :factor_x, :factor_y, :color, :mode, :zorder
     attr_reader :factor, :center, :height, :width
     
