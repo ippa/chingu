@@ -27,7 +27,7 @@ rescue LoadError
 end
 
 # Rake RSpec2 task stuff
-gem 'rspec', '>= 2.0.0.beta.12'
+gem 'rspec', '>= 2.0.0'
 
 require 'rspec/core/rake_task'
 
