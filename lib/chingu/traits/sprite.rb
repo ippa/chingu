@@ -28,8 +28,8 @@ module Chingu
     #  :x, :y, :angle, :factor_x, :factor_y, :center_x, :center_y, :zorder, :mode, :visible
     #
     module Sprite
-
       include Chingu::Helpers::OptionsSetter
+      include Chingu::Helpers::RotationCenter    # Adds easy and verbose modification of @center_x and @center_y
       
       module ClassMethods
         def initialize_trait(options = {})
@@ -37,7 +37,8 @@ module Chingu
         end
       end
       
-      attr_accessor :x, :y, :angle, :factor_x, :factor_y, :center_x, :center_y, :zorder, :mode, :visible
+      attr_accessor :x, :y, :angle, :factor_x, :factor_y, :center_x, :center_y, :zorder, :mode, :visible, :color
+      attr_reader :factor, :center, :height, :width, :image     
 
       # default settings for all variables unless set in constructor
       DEFAULTS = {
