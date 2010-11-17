@@ -30,6 +30,5 @@ module Chingu
   class GameObject < Chingu::BasicGameObject
     trait :sprite
     include Chingu::Helpers::InputClient        # Adds input and input=
-    include Chingu::Helpers::RotationCenter     # Adds easy and verbose modification of @center_x and @center_y
   end
 end
