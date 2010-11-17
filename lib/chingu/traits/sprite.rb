@@ -50,6 +50,7 @@ module Chingu
       }
 
       def setup_trait(object_options = {})
+        self.image = object_options.delete(:image)  if object_options[:image]
         set_options(trait_options[:sprite].merge(object_options), DEFAULTS)
         super
       end
