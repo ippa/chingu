@@ -42,6 +42,8 @@ module Chingu
     attr_accessor :factor, :cursor
     
     def initialize(width = 800, height = 600, fullscreen = false, update_interval = 16.666666)
+      raise "Cannot create a new #{self.class} before the old one has been closed" if $window
+
       fullscreen ||= ARGV.include?("--fullscreen")
       $window = super(width, height, fullscreen, update_interval)
 			
@@ -51,6 +53,7 @@ module Chingu
       Gosu::Image.autoload_dirs   += [".", File.join(@root, "images"), File.join(@root, "gfx"), File.join(@root, "media")]
       Gosu::Sample.autoload_dirs  += [".", File.join(@root, "sounds"), File.join(@root, "sfx"), File.join(@root, "media")]
       Gosu::Song.autoload_dirs    += [".", File.join(@root, "songs"), File.join(@root, "sounds"), File.join(@root, "sfx"), File.join(@root, "media")]
+      Gosu::Font.autoload_dirs    += [".", File.join(@root, "fonts"), File.join(@root, "media")]
       			
       @game_objects = GameObjectList.new
       @input_clients = Array.new
@@ -197,6 +200,20 @@ module Chingu
       dispatch_button_down(id, self)
       @input_clients.each { |object| dispatch_button_down(id, object) unless object.paused? }
       @game_state_manager.button_down(id)
+    end
+	
+    #
+    # Close the window when it is no longer required. Ensure this is done before a new window is initialized.
+    #
+    def close
+      super
+
+      # Clear out all assets, tied to this $window, so that a new instance can create more.
+      [Gosu::Image, Gosu::Song, Gosu::Font, Gosu::Sample].each do |asset|
+        asset.clear
+      end
+
+      $window = nil
     end
   end
 end
