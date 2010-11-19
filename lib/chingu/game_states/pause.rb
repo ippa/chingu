@@ -33,7 +33,7 @@ module Chingu
       
       def initialize(options = {})
         super
-        @white = Color.new(255,255,255,255)
+        @white = Gosu::Color.new(255,255,255,255)
         @color = Gosu::Color.new(200,0,0,0)
         @font = Gosu::Font[35]
         @text = "PAUSED - press ESC to return to game."
