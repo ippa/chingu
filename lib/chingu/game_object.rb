@@ -30,10 +30,5 @@ module Chingu
   class GameObject < Chingu::BasicGameObject
     trait :sprite
     include Chingu::Helpers::InputClient        # Adds input and input=
-    
-    #def initialize(options = {})
-    #  super
-    #  setup
-    #end
   end
 end
