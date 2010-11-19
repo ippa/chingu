@@ -3,7 +3,7 @@ http://github.com/ippa/chingu/tree/master
 
 DOCUMENTATION: http://rdoc.info/projects/ippa/chingu
 
-Ruby 1.9.1 is recommended. Should also work with 1.8.7+.
+Ruby 1.9.2 is recommended. Should also work with 1.8.7+.
 
 Chingu has started to settle down, thouch core classes and naming can still change for good reasons.
 
@@ -553,10 +553,18 @@ A simple trait could be:
         end
       
         #
-        # Namespaced outside ClassMethods get's included as normal instance-methods
+        # Since it's namespaced outside ClassMethods it becomes a normal instance-method
         #
         def inspect
           "Hello I'm an #{self.class.to_s}"
+        end
+        
+        #
+        # setup_trait is called when a object is created from a class that included the trait
+        # you most likely want to put all the traits settings and option parsing here
+        #
+        def setup_trait(options)
+          @long_inspect = true
         end
       
       end
@@ -614,6 +622,11 @@ The flow for a game object then becomes:
   6) GameObject#update
 
 There's a couple of traits included as default in Chingu:
+
+==== Trait "sprite"
+This trait fuels GameObject. A GameObject is a BasicGameObject + the sprite-trait.
+Adds accessors :x, :y, :angle, :factor_x, :factor_y, :center_x, :center_y, :zorder, :mode, :visible, :color.
+See documentation for GameObject for how it works.
 
 ==== Trait "timer"
 Adds timer functionality to your game object
@@ -798,6 +811,8 @@ As far as possible, use correct rubyfied english game_objects, not gameobjects. 
 * Don't separate too much from Gosus core-naming
 
 == CREDITS:
+* Spooner (input-work, tests and various other patches)
+* Jacob Huzak (sprite-trait, tests etc)
 * Jacius of Rubygame (For doing cool stuff that's well documented as re-usable). So far rect.rb and named_resource.rb is straight outta Rubygame.
 * Banister (of texplay fame) for general feedeback and help with ruby-internals and building the trait-system
 * Jduff for input / commits
