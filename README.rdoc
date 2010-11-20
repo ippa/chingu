@@ -599,13 +599,14 @@ A simple trait could be:
   Enemy.all.first.inspect # => "Hello I'm a Enemy"
 
 
-Example of using traits :velocity and :timer:
+Example of using traits :velocity and :timer.
+We also use GameObject#setup which will automtically be called ad the end of GameObject#initialize.
+It's often a little bit cleaner to use setup() then to override initialize().
 
   class Ogre < Chingu::GameObject
     traits :velocity, :timer
-    
-    def initialize(options)
-      super
+
+    def setup
       @red = Gosu::Color.new(0xFFFF0000)
       @white = Gosu::Color.new(0xFFFFFFFF)
       
