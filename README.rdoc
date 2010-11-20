@@ -17,6 +17,26 @@ Builds on the awesome Gosu (Ruby/C++) which provides all the core functionality.
 It adds simple yet powerful game states, pretty input handling, deployment safe asset-handling, a basic re-usable game object and automation of common task.
 
 
+== PROJECTS USING CHINGU
+Links to some of the projects using/depending on Chingu:
+  https://github.com/Spooner/fidgit GUI-lib 
+  https://github.com/Spooner/sidney Sleep Is Death remake in ruby
+  https://github.com/ippa/the_light_at_the_end_of_the_tunnel  An LD entry 
+  https://github.com/ippa/gnorf Another LD entry, decent minigame with online highscores!
+  https://github.com/ippa/holiday_droid Work in progess platformer
+  https://github.com/ippa/pixel_pang Work in progress remake of the classic Pang
+  https://github.com/ippa/whygone A odd little platformer-puzzle-game for _why day
+  https://github.com/erisdiscord/gosu-tmx a TMX map loader
+  https://github.com/rkachowski/tmxtilemap Another TMX-class
+  https://github.com/erisdiscord/gosu-ring Secret of Mana-style ring menu
+  https://github.com/deps/Berzerk remake of the classic
+  https://github.com/rkachowski/tigjamuk10 "sillyness from tigjamuk - CB2 bistro in Cambridge, January 2010"
+  https://github.com/zukunftsalick/ruby-raid Remake of ataris river raid, unsure of the status
+  https://github.com/edward/spacewar a small game, unsure of status
+  https://github.com/jstorimer/zig-zag 2D scrolling game, unsure of status
+
+
+
 == THE STORY
 The last years I've dabbled around a lot with game development.
 I've developed games in both Rubygame and Gosu. I've looked at gamebox.
