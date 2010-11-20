@@ -773,11 +773,14 @@ Chingu solves this problem behind the scenes for the most common assets. The 2 l
 You also have:
   Sound["shot.wav"]
   Song["intromusic.ogg"]
-
+  Font["arial"]          
+  Font["verdana", 16]     # 16 is the size of the font
+  
 The default settings are like this:
   Image["image.png"] -- searches directories ".", "images", "gfx" and "media"
   Sample["sample.wav"] -- searches directories ".", "sounds", "sfx" and "media"
   Song["song.ogg"] -- searches directories ".", "songs", "sounds", "sfx" and "media"
+  Font["verdana"] -- searches directories ".", "fonts", "media"
 
 Add your own searchpaths like this:
   Gosu::Image.autoload_dirs << File.join(ROOT, "gfx")
@@ -786,9 +789,6 @@ Add your own searchpaths like this:
 This will add \path\to\your\game\gfx and \path\to\your\game\samples  to Image and Sound.
   
 Thanks to Jacious of rubygame-fame (http://rubygame.org/) for his named resource code powering this.
-
-Tiles and fonts are trickier since they require extra parameters so you'll have to do those the ordinary way.
-You have $window.root (equivalent to ROOT_PATH above) for free though which points to the dir containing the game.
 
 === Text
 Text is a class to give the use of Gosu::Font more rubyish feel and fit it better into Chingu.
