@@ -4,8 +4,7 @@ http://github.com/ippa/chingu/tree/master
 DOCUMENTATION: http://rdoc.info/projects/ippa/chingu
 
 Ruby 1.9.2 is recommended. Should also work with 1.8.7+.
-
-Chingu has started to settle down, thouch core classes and naming can still change for good reasons.
+Chingu development is mostly conducted using Win7 / Ruby 1.9.2.
 
 == INSTALL
   gem install chingu
@@ -19,21 +18,21 @@ It adds simple yet powerful game states, pretty input handling, deployment safe 
 
 == PROJECTS USING CHINGU
 Links to some of the projects using/depending on Chingu:
-  https://github.com/Spooner/fidgit GUI-lib 
-  https://github.com/Spooner/sidney Sleep Is Death remake in ruby
-  https://github.com/ippa/the_light_at_the_end_of_the_tunnel  An LD entry 
-  https://github.com/ippa/gnorf Another LD entry, decent minigame with online highscores!
-  https://github.com/ippa/holiday_droid Work in progess platformer
-  https://github.com/ippa/pixel_pang Work in progress remake of the classic Pang
-  https://github.com/ippa/whygone A odd little platformer-puzzle-game for _why day
-  https://github.com/erisdiscord/gosu-tmx a TMX map loader
-  https://github.com/rkachowski/tmxtilemap Another TMX-class
-  https://github.com/erisdiscord/gosu-ring Secret of Mana-style ring menu
-  https://github.com/deps/Berzerk remake of the classic
-  https://github.com/rkachowski/tigjamuk10 "sillyness from tigjamuk - CB2 bistro in Cambridge, January 2010"
-  https://github.com/zukunftsalick/ruby-raid Remake of ataris river raid, unsure of the status
-  https://github.com/edward/spacewar a small game, unsure of status
-  https://github.com/jstorimer/zig-zag 2D scrolling game, unsure of status
+https://github.com/Spooner/fidgit  (GUI-lib )
+https://github.com/Spooner/sidney  (Sleep Is Death remake in ruby)
+https://github.com/ippa/the_light_at_the_end_of_the_tunnel (LD#16 game compo entry)
+https://github.com/ippa/gnorf  (LD#18 game compo entry. Decent minigame with online highscores.)
+https://github.com/ippa/holiday_droid  (Work in progess platformer)
+https://github.com/ippa/pixel_pang  (Work in progress remake of the classic Pang)
+https://github.com/ippa/whygone  (An odd little platformer-puzzle-game for _why day)
+https://github.com/erisdiscord/gosu-tmx  (a TMX map loader)
+https://github.com/rkachowski/tmxtilemap  (Another TMX-class)
+https://github.com/erisdiscord/gosu-ring  (Secret of Mana-style ring menu for chingu/gosu)
+https://github.com/deps/Berzerk  (remake of the classic game. comes with robots.)
+https://github.com/rkachowski/tigjamuk10  ("sillyness from tigjamuk - CB2 bistro in Cambridge, January 2010")
+https://github.com/zukunftsalick/ruby-raid  (Remake of Ataris river raid, unsure of status)
+https://github.com/edward/spacewar  (a small game, unsure of status)
+https://github.com/jstorimer/zig-zag  (2D scrolling game, unsure of status)
 
 
 
@@ -104,6 +103,9 @@ A class for easy parallaxscrolling. Add layers with different damping, move the 
 
 === Chingu::HighScoreList
 A class to keep track of high scores, limit the list, automatic sorting on score, save/load to disc. See example13.rb for more.
+
+=== Chingu::OnlineHighScoreList
+A class to keep/sync online highscores to http://gamercv.com/. A lot more fun competing with others for positions then a local list.
 
 === Various Helpers
 Both $window and game states gets some new graphical helpers, currently only 3, but quite useful:
@@ -824,7 +826,7 @@ As far as possible, use correct rubyfied english game_objects, not gameobjects. 
 * Plain Gosu is very minimalistic, perfect to build some higher level logic on!
 * Deployment and asset handling should be simple
 * Managing game states/scenes (intros, menus, levels etc) should be simple
-* There are patterns in game development
+* There are a lot patterns in game development
 
 == OPINIONS
 * Less code is usually better
@@ -841,11 +843,11 @@ As far as possible, use correct rubyfied english game_objects, not gameobjects. 
 * Ariel Pillet for codesuggestions and cleanups
 * Deps for making the first real full game with Chingu (and making it better in the process)
 * Thanks to http://github.com/tarcieri for require_all code, good stuff
+.. Did I forget anyone here? Msg me on github.
 
 == REQUIREMENTS:
-* Gosu latest version
+* Gosu, preferable the latest version
 * Ruby 1.9.1+ or 1.8.7+
-* gem 'opengl' if you want to use Image#retrofy, not needed otherwise
 * gem 'texplay' for some bonus Image-pixel operations, not needed otherwise
 
 == TODO - this list is Discontinued and no longer updated!
