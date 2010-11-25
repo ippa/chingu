@@ -159,7 +159,6 @@ module Chingu
   # put the last layer added on top of the rest.
   #
   class ParallaxLayer < Chingu::GameObject    
-    @@zorder_counter = 0
     attr_reader :damping
     attr_accessor :repeat_x, :repeat_y
     
@@ -178,9 +177,9 @@ module Chingu
       options = {
           :repeat_x => true, 
           :repeat_y => false, 
-          :zorder => (@@zorder_counter+=1)
+          :zorder   => @parallax ? (@parallax.zorder + @parallax.layers.count) : 100
       }.merge(options)
-      
+            
       @repeat_x = options[:repeat_x]
       @repeat_y = options[:repeat_y]
             
@@ -188,12 +187,7 @@ module Chingu
       
       @damping = options[:damping] || 1
     end
-    
-    def draw
-      super
-      #p "draw @ #{x} / #{y}: #{image} - #{zorder} - #{color}"
-    end
-    
+        
     #
     # Gets pixel from layers image
     # The pixel is from the window point of view, so coordinates are converted:
