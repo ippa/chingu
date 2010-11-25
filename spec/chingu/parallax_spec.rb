@@ -29,6 +29,15 @@ module Chingu
         subject.layers[1].zorder.should equal (subject.layers[0].zorder + 1)
         subject.layers[2].zorder.should equal (subject.layers[0].zorder + 2)
       end
+      
+      it "should start incrementing zorder in layers from Parallax-instance zorder if available" do
+        parallax = Parallax.new(:zorder => 2000)
+        3.times { parallax.add_layer(:image => "rect_20x20.png") }
+        parallax.layers[0].zorder.should == 2000
+        parallax.layers[1].zorder.should == 2001
+        parallax.layers[2].zorder.should == 2002
+      end
+      
     end
   end
 end

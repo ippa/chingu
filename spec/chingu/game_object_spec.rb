@@ -34,6 +34,7 @@ module Chingu
         subject.angle.should == 0
         subject.x.should == 0
         subject.y.should == 0
+        subject.zorder.should == 100
         subject.factor_x.should == 1
         subject.factor_y.should == 1
         subject.center_x.should == 0.5
