@@ -10,7 +10,7 @@ module Chingu
   # Is autodetection of width / height possible? 
   #
   class Animation
-    attr_accessor :frames, :delay, :step, :loop, :bounce, :step
+    attr_accessor :frames, :delay, :step, :loop, :bounce, :step, :index
     
     #
     # Create a new Animation. 
@@ -119,6 +119,13 @@ module Chingu
     def last
       @frames.last
     end
+    
+    #
+    # [width, height] for each frame in the animation
+    #
+    def size
+      [@width, @height]
+    end
 		
 		#
 		# Returns true if the current frame is the last
@@ -186,7 +193,7 @@ module Chingu
     #
     def next(recursion = true)
         
-      if (@dt += $window.milliseconds_since_last_tick) > @delay
+      if (@dt += $window.milliseconds_since_last_tick) >= @delay
         @dt = 0
         @previous_index = @index
         @index += @step
@@ -195,6 +202,7 @@ module Chingu
         if (@index >= @frames.size || @index < 0)
           if @bounce
             @step *= -1   # invert number
+            @index += @step
             @index += @step
           elsif @loop
             @index = 0	
