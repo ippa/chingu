@@ -6,15 +6,23 @@ DOCUMENTATION: http://rdoc.info/projects/ippa/chingu
 Ruby 1.9.2 is recommended. Should also work with 1.8.7+.
 Chingu development is mostly conducted using Win7 / Ruby 1.9.2.
 
-== INSTALL
-  gem install chingu
-
 
 == DESCRIPTION
 OpenGL accelerated 2D game framework for Ruby.
 Builds on the awesome Gosu (Ruby/C++) which provides all the core functionality.
 It adds simple yet powerful game states, pretty input handling, deployment safe asset-handling, a basic re-usable game object and automation of common task.
 
+
+== INSTALL
+  gem install chingu
+
+
+== QUICK START (TRY OUT THE EXAMPLES)
+Chingu comes with 25+ examples demonstrating various parts of Chingu. 
+Please browse the examples-directory in the Chingu root directory.
+The examples start out very simple. Watch out for instructions in the windows titlebar.
+Could be how to move the onscreen player or how to move the example forward. Usually it's arrowkeys and space.
+There's also more complex examples, like a clone of Conways game of life (http://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) game_of_life.rb and example21_sidescroller_with_edit.rb where You can switch between playing and editing the level itself.
 
 == PROJECTS USING CHINGU
 Links to some of the projects using/depending on Chingu:
@@ -34,6 +42,7 @@ Links to some of the projects using/depending on Chingu:
 * https://github.com/edward/spacewar  (a small game, unsure of status)
 * https://github.com/jstorimer/zig-zag  (2D scrolling game, unsure of status)
 
+... miss your Chingu project? Msg me on github and I'll add it to the list!
 
 == THE STORY
 The last years I've dabbled around a lot with game development.
