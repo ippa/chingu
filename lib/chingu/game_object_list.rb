@@ -68,7 +68,7 @@ module Chingu
     end
     
     def draw
-      @game_objects.each{ |object| object.visible }.each do |object| 
+      @game_objects.each{ |object| object.visible }.each do |object|
         object.draw_trait
         object.draw
       end

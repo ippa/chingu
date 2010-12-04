@@ -107,14 +107,14 @@ module Chingu
     end
     
     #
-    # Returns first frame (GOSU::Image) from animation
+    # Returns the first frame (Gosu::Image) from animation
     #
     def first
       @frames.first
     end
 
     #
-    # Returns last frame (GOSU::Image) from animation
+    # Returns the last frame (Gosu::Image) from animation
     #
     def last
       @frames.last
@@ -158,7 +158,7 @@ module Chingu
     end
 
     #
-    # Get the current frame (a Gosu#Image)
+    # Get the current frame (a Gosu::Image)
     #
     def image
       @frames[@index]

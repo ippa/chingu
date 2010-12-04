@@ -128,7 +128,7 @@ module Chingu
       # Without this self.fps would return an incorrect value.
       # If you override this in your Chingu::Window class, make sure to call super.
       #
-      @milliseconds_since_last_tick = @fps_counter.register_tick      
+      @milliseconds_since_last_tick = @fps_counter.register_tick
       
       intermediate_update
     end

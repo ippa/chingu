@@ -43,10 +43,9 @@ module Chingu
       def setup_trait(object_options = {})        
         # default settings for all variables unless set in constructor
         defaults = {
-          :x => 0, :y => 0, :angle => 0,
-          :factor => ($window.factor||1.0),
+          :x => 0, :y => 0, :angle => 0, :factor => ($window.factor||1.0),
           :zorder => 100, :center_x => 0.5, :center_y => 0.5,
-          :mode => :default, :color => nil
+          :mode => :default, :color => nil, :visible => true
         }
         
         # if user specs :image take care of it first since width, height etc depends on it.
@@ -58,7 +57,7 @@ module Chingu
       end
 
       def color=(color)
-        @color = color.is_a?(Gosu::Color) ? color : Gosu::Color.new(color ||  0xFFFFFFFF)
+        @color = color.is_a?(Gosu::Color) ? color : Gosu::Color.new(color || 0xFFFFFFFF)
       end
 
       #

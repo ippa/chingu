@@ -10,7 +10,7 @@ module Chingu
   class BasicGameObject
     include Chingu::Helpers::ClassInheritableAccessor # adds classmethod class_inheritable_accessor
     
-    attr_reader :options, :paused, :visible
+    attr_reader :options, :paused#, :visible
     attr_accessor :parent
     
     class_inheritable_accessor :trait_options
@@ -75,16 +75,13 @@ module Chingu
       #
       # A GameObject either belong to a GameState or our mainwindow ($window)
       #
-      #if !@parent && $window && $window.respond_to?(:game_state_manager)
-      #  @parent = $window.game_state_manager.inside_state || $window
-      #end
       @parent = $window.current_scope if !@parent && $window
       
       # if true, BasicGameObject#update will be called
-      @paused = options[:paused] || false
+      @paused = options[:paused] || options[:pause] || false
       
       # if true, BasicGameObject#draw will be called
-      @visible = options[:visible] || true
+      ## @visible = options[:visible] || true
 
       # This will call #setup_trait on the latest trait mixed in
       # which then will pass it on to the next setup_trait() with a super-call.
@@ -94,14 +91,14 @@ module Chingu
     end
 
     #
-    # Creates a new object from class just as new() but also:
-    # - adds game object to current game state
-    # - or $window if no game state exists
+    # Works just as BasicGameObject#new with the addition that Chingu will keep track of the new object.
+    # The object will be assigned to a game_objects list. If created within a game state it will be added to that_game_state.game_objects.
+    # Otherwise it will be added to $window.game_objects list.
+    # The naming is inspired from ActiveRecord#create which will persist the object in the database right away.
     #
-    # Use create() instead of new() if you want to keep track of your objects through
-    # Chingus "game_objects" which is available in all game states and the main window.
+    # Chingu will automatically call update() and draw() on stored game objects.
+    # Often in a smaller game this is exaclty what you want. If not, use the normal new().
     #
-    #def self.create(options = {})
     def self.create(*options, &block)
       instance = self.new(*options, &block)
       
@@ -113,15 +110,7 @@ module Chingu
       
       return instance
     end
-
-    #
-    # This ruby callback is called each time someone subclasses BasicGameObject or GameObject
-    # We hook into it to keep track of all game object classes (just as we keep track of game objects instances)
-    #
-    ## def self.inherited(klass)
-    ##   instance.parent.add_game_object_class(klass) if instance.parent
-    ## end
-
+    
     #
     # Disable automatic calling of update() and update_trait() each game loop
     #
@@ -176,7 +165,7 @@ module Chingu
     end
     
     #
-    # Returns
+    # Returns the total amount of game objects based on this class
     #
     def self.size
       $window.current_scope.game_objects.of_class(self).size
