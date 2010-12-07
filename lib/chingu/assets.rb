@@ -101,7 +101,7 @@ module Gosu
     include Chingu::NamedResource
 		
     def self.autoload(name)
-      (path = find_file(name)) ? Gosu::Song.new($window, path) : nil
+      (path = find_file(name)) ? Gosu::Song.new(path) : nil
     end
   end
   
@@ -109,7 +109,7 @@ module Gosu
     include Chingu::NamedResource
     
     def self.autoload(name)
-      (path = find_file(name)) ? Gosu::Sample.new($window, path) : nil
+      (path = find_file(name)) ? Gosu::Sample.new(path) : nil
     end
   end
   Sound = Sample  # Gosu uses Sample, but Sound makes sense too.
