@@ -104,7 +104,7 @@ module Chingu
       when Proc, Method
         action[]
       when Chingu::GameState
-        push_game_state(action)
+        game_state.push_game_state(action)
       when Class
         if action.ancestors.include?(Chingu::GameState)
           game_state.push_game_state(action)
