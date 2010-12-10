@@ -107,7 +107,7 @@ module Chingu
         push_game_state(action)
       when Class
         if action.ancestors.include?(Chingu::GameState)
-          push_game_state(action)
+          game_state.push_game_state(action)
         end
       else
         # TODO possibly raise an error? This ought to be handled when the input is specified in the first place.
