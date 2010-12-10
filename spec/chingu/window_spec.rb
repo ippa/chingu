@@ -50,8 +50,6 @@ module Chingu
         @game.game_objects.first.visible?.should == false
         @game.draw
       end
-
     end
-    
   end
 end
