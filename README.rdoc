@@ -847,7 +847,7 @@ As far as possible, use correct rubyfied english game_objects, not gameobjects. 
 * Jacius of Rubygame (For doing cool stuff that's well documented as re-usable). So far rect.rb and named_resource.rb is straight outta Rubygame.
 * Banister (of texplay fame) for general feedeback and help with ruby-internals and building the trait-system
 * Jduff for input / commits
-* Jlnr,Philymore,Shawn24,JamesKilton for constructive feedback/discussions
+* Jlnr,Philomory,Shawn24,JamesKilton for constructive feedback/discussions
 * Ariel Pillet for codesuggestions and cleanups
 * Deps for making the first real full game with Chingu (and making it better in the process)
 * Thanks to http://github.com/tarcieri for require_all code, good stuff
