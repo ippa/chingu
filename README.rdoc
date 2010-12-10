@@ -646,6 +646,7 @@ The flow for a game object then becomes:
   -- creating an instance of X
   1) GameObject#initialize(options)
   2) GameObject#setup_trait(options)
+  3) GameObject#setup(options)
   -- each game iteration
   3) GameObject#draw_trait
   4) GameObject#draw

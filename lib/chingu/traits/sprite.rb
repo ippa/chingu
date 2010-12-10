@@ -215,7 +215,7 @@ module Chingu
       # Our encapsulation of GOSU's image.draw_rot, uses the objects variables to draw it on screen if @visible is true
       #
       def draw
-        draw_relative
+        @image.draw_rot(@x, @y, @zorder, @angle, @center_x, @center_y, @factor_x, @factor_y, @color, @mode)  if @image
       end
 
       #
