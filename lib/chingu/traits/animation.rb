@@ -25,7 +25,7 @@ module Chingu
     # A chingu trait providing automatic loading of tile-animations
     #
     # For example:
-    # 	class FireBall; has_traits :animation; end;
+    # 	class FireBall; traits :animation; end;
     #
     # Will automatically load:
     # - fire_ball.png into self.animations[:default]
@@ -59,13 +59,11 @@ module Chingu
         Dir[glob].each do |tile_file|
           puts tile_file if trait_options[:animation][:debug]
           if tile_file =~ /[a-zA-Z\_+]_*(\d+)x(\d+)_*([a-zA-Z]*)\.(bmp|png)/
-            state = $3.length > 0 ? $3 : "default"            
+            state = $3.length > 0 ? $3 : "default"
             animations[state.to_sym] = Chingu::Animation.new(trait_options[:animation].merge(:file => tile_file))
           elsif tile_file =~ /[a-zA-Z\_+]\.(bmp|png)/
-            puts tile_file
             animations[:default] = Chingu::Animation.new(trait_options[:animation].merge(:file => tile_file))
           end
-          
         end
         return animations
       end
