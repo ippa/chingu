@@ -244,11 +244,7 @@ END_OF_STRING
       #
       # UPDATE
       #
-      def update
-        # Sync all changes to previous game states game objects list
-        # This is needed since we don't call update on it.
-        previous_game_state.game_objects.sync
-        
+      def update        
         super
         
         @status_text.text = "#{self.mouse_x.to_i} / #{self.mouse_y.to_i}"

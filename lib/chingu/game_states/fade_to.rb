@@ -41,7 +41,6 @@ module Chingu
         
         @new_game_state = new_game_state
         @new_game_state = new_game_state.new if new_game_state.is_a? Class        
-        @new_game_state.game_objects.sync
       end
     
       def setup

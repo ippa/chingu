@@ -75,7 +75,6 @@ module Chingu
           end
         end
       end
-      self.game_objects.sync
     end
     
     #
