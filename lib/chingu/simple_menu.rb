@@ -25,21 +25,20 @@ module Chingu
   #
   class SimpleMenu < BasicGameObject
     include Chingu::Helpers::InputClient
-    attr_accessor :menu_items
+    attr_accessor :menu_items, :visible
     
     def initialize(options = {})
       super
       
-      @menu_items = options.delete(:menu_items)# || {"Exit" => :exit}
-      
+      @menu_items = options.delete(:menu_items)     # || {"Exit" => :exit}
       @x = options.delete(:x) || $window.width/2
-      @y = options.delete(:x) || 100
-      @spacing = options.delete(:x) || 100
+      @y = options.delete(:y) || 100
+      @spacing = options.delete(:spacing) || 100
       @items = []
+      @visible = true
   
       y = @spacing
       menu_items.each do |key, value|
-        
         item = if key.is_a? String
           Text.new(key, options.dup)
         elsif key.is_a? Image
