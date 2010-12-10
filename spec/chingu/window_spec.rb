@@ -43,11 +43,15 @@ module Chingu
       
       it "$window.draw() should call draw() on all visible game objects" do
         GameObject.create.should_receive(:draw)
-        GameObject.create(:visible => false).should_not_receive(:draw)
-        @game.update
         @game.draw
       end
       
+      it "$window.draw() should not call draw() on invisible game objects" do
+        GameObject.create(:visible => false).should_not_receive(:draw)
+        @game.game_objects.first.visible?.should == false
+        @game.draw
+      end
+
     end
     
   end
