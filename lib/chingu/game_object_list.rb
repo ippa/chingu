@@ -80,7 +80,7 @@ module Chingu
     end
           
     def update
-      @game_objects.select{ |object| not object.paused }.each do |object| 
+      @game_objects.select { |object| not object.paused }.each do |object| 
         object.update_trait 
         object.update
       end

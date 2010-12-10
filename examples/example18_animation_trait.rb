@@ -25,7 +25,7 @@ class Play < Chingu::GameState
     every(1000) { Plane.create(:x => 10, :y => 350 + rand(20), :velocity => [1,0]) }
     every(500) { FireBullet.create(:x => 10, :y => 370, :velocity_x => 1) }
     every(500) { Star.create(:x => 400, :y => 400, :velocity => [-2,-rand*2]) }
-    #every(400) { Heli.create(:x => 10, :y => 10, :velocity_x => 1) }
+    every(1400) { Heli.create(:x => 40, :y => 40, :velocity_x => 1) }
   end
 
   def update
@@ -33,27 +33,32 @@ class Play < Chingu::GameState
     game_objects.select { |game_object| game_object.outside_window? }.each(&:destroy)
     $window.caption = "game_objects: #{game_objects.size}"
   end
+  
+  def draw
+    fill(Gosu::Color::GRAY)
+    super
+  end
 end
 	
 class Actor < GameObject
   trait :velocity
   
   def setup
-    @image = Image["#{self.filename}.png"] rescue nil
+    @image = Image["#{self.filename}.png"]
     @zorder = 10
   end
   
 end
-
 class Spaceship < Actor; end  # spaceship.png will be loaded
 class Plane < Actor; end      # plane.png will be loaded
 class FireBullet < Actor; end # fire_bullet.png will be loaded
 
 #
-# droid_11x16.png will be loaded and animated with :delay parameter, each frame beeing 11 x 16 pixels
+# droid_11x15.png will be loaded and animated with :delay parameter, each frame beeing 11 x 15 pixels
 #
-class Droid < Actor
-  trait :animation, :delay => 200
+class Droid < GameObject
+  trait :velocity
+  trait :animation, :delay => 200, :size => [11,15]
   
   def update
     @image = self.animation.next  if self.animation
@@ -64,12 +69,12 @@ end
 # heli.png will be loaded
 # since it doesn't contain any framesize information, chingu will assume same width and height
 #
-class Heli < Actor
-  trait :animation, :delay => 200
+class Heli < GameObject
+  trait :velocity
+  trait :animation, :delay => 200, :size => [32,32]
   
   def update
     @image = self.animation.next  if self.animation
-    p self.animation
   end
 end
 
