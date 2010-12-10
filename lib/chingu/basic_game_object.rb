@@ -10,7 +10,7 @@ module Chingu
   class BasicGameObject
     include Chingu::Helpers::ClassInheritableAccessor # adds classmethod class_inheritable_accessor
     
-    attr_reader :options, :paused#, :visible
+    attr_reader :options, :paused
     attr_accessor :parent
     
     class_inheritable_accessor :trait_options
@@ -24,7 +24,6 @@ module Chingu
     def self.trait(trait, options = {})
       
       if trait.is_a?(::Symbol) || trait.is_a?(::String)
-        ## puts "trait #{trait}, #{options}"
         begin
           # Convert user-given symbol (eg. :timer) to a Module (eg. Chingu::Traits::Timer)
           mod = Chingu::Traits.const_get(Chingu::Inflector.camelize(trait))
@@ -56,11 +55,7 @@ module Chingu
       Array(traits).each { |trait_name| trait trait_name }
     end
     class << self; alias :has_traits :traits; end
-		
-		#def self.inherited(subclass)
-		#	subclass.initialize_inherited_trait	if subclass.method_defined?(:initialize_inherited_trait)
-		#end
-			
+					
     alias :game_state :parent
     alias :game_state= :parent=
     
@@ -80,9 +75,6 @@ module Chingu
       # if true, BasicGameObject#update will be called
       @paused = options[:paused] || options[:pause] || false
       
-      # if true, BasicGameObject#draw will be called
-      ## @visible = options[:visible] || true
-
       # This will call #setup_trait on the latest trait mixed in
       # which then will pass it on to the next setup_trait() with a super-call.
       setup_trait(options)
