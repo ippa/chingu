@@ -29,8 +29,6 @@ module Chingu
         
     def initialize(options = {})
       @game_objects = options[:game_objects] || []
-			@add_game_objects = []
-			@remove_game_objects = []
     end
     
     def to_s
@@ -48,11 +46,11 @@ module Chingu
     alias :remove_all :destroy_all
     
     def add_game_object(object)
-			@add_game_objects.push(object)
+      @game_objects.push(object)
     end
     
     def remove_game_object(object)
-			@remove_game_objects.push(object)	
+      @game_objects.delete(object)	
     end
     
     def destroy_if
@@ -68,30 +66,20 @@ module Chingu
     end
     
     def draw
-      @game_objects.each{ |object| object.visible }.each do |object|
+      @game_objects.select { |object| object.visible? }.each do |object|
         object.draw_trait
         object.draw
       end
     end
 
     def draw_relative(x=0, y=0, zorder=0, angle=0, center_x=0, center_y=0, factor_x=0, factor_y=0)
-      @game_objects.each{ |object| object.visible }.each do |object| 
+      @game_objects.select { |object| object.visible }.each do |object| 
         object.draw_trait
         object.draw_relative(x, y, zorder, angle, center_x, center_y, factor_x, factor_y)
       end
     end
-    
-    def sync
-			@game_objects += @add_game_objects
-			@add_game_objects.clear
-			
-			@game_objects -= @remove_game_objects
-			@remove_game_objects.clear      
-    end
-      
+          
     def update
-      sync
-				
       @game_objects.select{ |object| not object.paused }.each do |object| 
         object.update_trait 
         object.update
@@ -99,13 +87,25 @@ module Chingu
     end
     
     def each
-      @game_objects.each { |object| yield object }
+      @game_objects.dup.each { |object| yield object }
+    end
+    
+    def each_with_index
+      @game_objects.dup.each_with_index { |object, index| yield object, index }
     end
     
     def select
-      @game_objects.select { |object| yield object }
+      @game_objects.dup.select { |object| yield object }
     end
     
+    def first
+      @game_objects.first
+    end
+
+    def last
+      @game_objects.last
+    end
+
     #
     # Disable automatic calling of update() and update_trait() each game loop for all game objects
     #
