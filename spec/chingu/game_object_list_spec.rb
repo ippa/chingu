@@ -11,7 +11,6 @@ module Chingu
       @game.close
     end
     
-    it "should initialize properly"
     it { should respond_to :draw }
     it { should respond_to :update }
     it { should respond_to :each }

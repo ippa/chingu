@@ -11,7 +11,6 @@ module Chingu
       @game.close
     end
     
-    it "should initialize properly"
     it { @game.should respond_to :close }
     it { @game.should respond_to :fps }
     it { @game.should respond_to :update }
