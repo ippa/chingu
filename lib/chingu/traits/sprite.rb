@@ -110,7 +110,7 @@ module Chingu
       # Usually better to have a large image and make it smaller then the other way around.
       #
       def width=(width)
-        @factor_x = width.to_f / @image.width.to_f
+        @factor_x = width.to_f / @image.width.to_f  if @image
       end
     
       # Get effective on width by calculating it from image-width and factor
@@ -124,7 +124,7 @@ module Chingu
       # Usually better to have a large image and make it smaller then the other way around.
       #
       def height=(height)
-        @factor_y = height.to_f / @image.height.to_f
+        @factor_y = height.to_f / @image.height.to_f  if @image
       end
     
       # Get effective on heightby calculating it from image-width and factor
