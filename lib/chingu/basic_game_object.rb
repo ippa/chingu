@@ -157,6 +157,22 @@ module Chingu
     end
     
     #
+    # Iterates through all obejcts of the current class
+    #
+    def self.each
+      all.each { |object| yield object }
+    end
+
+    #
+    # Iterates through all obejcts of the current class
+    # yields object and index
+    #
+    def self.each_with_index
+      all.each_with_index { |object, index| yield object, index }
+    end
+    
+    
+    #
     # Returns the total amount of game objects based on this class
     #
     def self.size
