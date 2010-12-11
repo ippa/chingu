@@ -157,18 +157,24 @@ module Chingu
     end
     
     #
-    # Iterates through all obejcts of the current class
+    # As Array.each on the instances of the current class
     #
     def self.each
       all.each { |object| yield object }
     end
 
     #
-    # Iterates through all obejcts of the current class
-    # yields object and index
+    # As Array.each_with_index on the instances of the current class
     #
     def self.each_with_index
       all.each_with_index { |object, index| yield object, index }
+    end
+
+    #
+    # As Array.select but on the instances of current class
+    #
+    def self.select
+      all.select { |object| yield object }
     end
     
     
