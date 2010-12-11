@@ -111,7 +111,7 @@ module Chingu
       #
       def each_collision(*klasses)
         Array(klasses).each do |klass|
-          klass.each do |object|
+          (klass.respond_to?(:all) ? klass.all : Array(klass)).each do |object|
             yield(self, object)   if collides?(object)
           end
         end
@@ -119,7 +119,7 @@ module Chingu
 
       def first_collision(*klasses)
         Array(klasses).each do |klass|
-          klass.each do |object|            
+          (klass.respond_to?(:all) ? klass.all : Array(klass)).each do |object|
             return object   if collides?(object)
           end
         end
@@ -132,7 +132,7 @@ module Chingu
       #
       def each_bounding_circle_collision(*klasses)
         Array(klasses).each do |klass|
-          klass.each do |object|            
+          (klass.respond_to?(:all) ? klass.all : Array(klass)).each do |object|
             next  unless self.collidable && object.collidable
             yield(self, object) if Gosu.distance(self.x, self.y, object.x, object.y) < self.radius + object.radius
           end
@@ -145,7 +145,7 @@ module Chingu
       #
       def each_bounding_box_collision(*klasses)
         Array(klasses).each do |klass|
-          klass.each do |object|
+          (klass.respond_to?(:all) ? klass.all : Array(klass)).each do |object|
             return false  unless self.collidable && object.collidable
             yield(self, object) if self.bounding_box.collide_rect?(object.bounding_box)
           end
@@ -161,7 +161,7 @@ module Chingu
         #   Enemy.each_at(sword.x, sword.y) { |enemy| enemy.die }
         #
         def each_at(x,y)
-          self.each do |object|
+          self.all.each do |object|
             next  unless object.collidable
             yield object if object.respond_to?(:bb) && object.bb.collide_point?(x,y)
             yield object if object.respond_to?(:radius) && Gosu.distance(object.x, object.y, x, y) < object.radius
@@ -172,9 +172,12 @@ module Chingu
         # Works like each_collision but with inline-code for speedups
         #
         def each_bounding_circle_collision(*klasses)
-          Array(klasses).each do |klass|            
-            self.each do |object1|
-              klass.each do |object2|
+          Array(klasses).each do |klass|
+            object2_list = (klass.respond_to?(:all) ? klass.all : Array(klass))
+            #total_radius = object1.radius + object2.radius  # possible optimization?
+            
+            self.all.each do |object1|
+              object2_list.each do |object2|
                 next  if object1 == object2  # Don't collide objects with themselves
                 next  unless object1.collidable && object2.collidable
                 yield object1, object2  if Gosu.distance(object1.x, object1.y, object2.x, object2.y) < object1.radius + object2.radius
@@ -188,8 +191,9 @@ module Chingu
         #
         def each_bounding_box_collision(*klasses)
           Array(klasses).each do |klass|
-            self.each do |object1|
-              klass.each do |object2|
+            object2_list = (klass.respond_to?(:all) ? klass.all : Array(klass))
+            self.all.each do |object1|
+              object2_list.each do |object2|
                 next  if object1 == object2  # Don't collide objects with themselves
                 next  unless object1.collidable && object2.collidable
                 yield object1, object2  if object1.bounding_box.collide_rect?(object2.bounding_box)
@@ -243,9 +247,9 @@ module Chingu
             #    end
             #  end
             #end
-            
-            self.each do |object1|
-              klass.each do |object2|
+            object2_list = (klass.respond_to?(:all) ? klass.all : Array(klass))
+            self.all.each do |object1|
+              object2_list.each do |object2|
                 next  if object1 == object2  # Don't collide objects with themselves
                 yield object1, object2  if object1.collides?(object2)
               end
