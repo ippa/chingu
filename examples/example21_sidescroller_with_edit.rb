@@ -26,14 +26,14 @@ end
 class Example21 < GameState
   traits :viewport, :timer
   
-  def setup
+  def initialize(options = {})
+    super
+    
     self.input = { :escape => :exit, :e => :edit }
     self.viewport.game_area = [0, 0, 3500, 2000]    
     
-    @droid = Droid.create(:x => 100, :y => 400)
-    #@droid = Droid.create(:x => 400, :y => 1300)
-    
     load_game_objects
+    @droid = Droid.create(:x => 100, :y => 400)
     
     # Reverse the cog wheels in relation to eachother
     CogWheel.each_collision(CogWheel) do |cog_wheel, cog_wheel_2|
@@ -45,7 +45,7 @@ class Example21 < GameState
   end
   
   def edit
-    push_game_state(GameStates::Edit.new(:grid => [32,32], :classes => [Tube, CogWheel, Block, Saw, Battery]))
+    push_game_state(GameStates::Edit.new(:grid => [32,32], :classes => [Droid, Tube, CogWheel, Block, Saw, Battery]))
   end
   
   def restore_player_position
@@ -62,7 +62,7 @@ class Example21 < GameState
     # Makes all saw pendle up and down between Y-coordinate 1000 - 1500
     # TODO: Not a very flexible sollution, how about setting out circle,rects,lines in editor..
     # .. when then can be used for this kind of stuff?
-    Saw.all.select {|saw| saw.y < 1300 || saw.y > 1550 }.each do |saw|
+    Saw.select {|saw| saw.y < 1300 || saw.y > 1550 }.each do |saw|
       saw.velocity_y = -saw.velocity_y
       saw.y += saw.velocity_y * saw.factor_y 
     end
