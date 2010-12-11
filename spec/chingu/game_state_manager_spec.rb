@@ -60,7 +60,7 @@ module Chingu
     describe "switch_game_state" do
       before :each do
         @game.push_game_state(Chingu::GameStates::Pause)
-        @game.switch_game_state(Chingu::GameStates::Edit)        
+        @game.switch_game_state(Chingu::GameStates::Edit)
       end
       
       it "should replace current game state" do
@@ -71,7 +71,7 @@ module Chingu
         @game.game_states.count.should == 1
       end
     end
-  
+      
     describe "clear_game_states" do
       it "should clear all game states" do
         @game.push_game_state(Chingu::GameStates::Pause)
@@ -80,5 +80,26 @@ module Chingu
         @game.game_states.count.should == 0
       end
     end
+    
+    describe "transitional_game_state" do
+      before :each do
+        @game.transitional_game_state(Chingu::GameStates::FadeTo)
+        @game.push_game_state(Chingu::GameStates::Pause)
+        @game.push_game_state(Chingu::GameStates::Edit)
+      end
+      
+      #it "should get back to the last game state after popping" do
+      #  @game.pop_game_state
+      #  @game.update
+      #  sleep 4
+      #  @game.update
+      #  @game.current_game_state.class.should == Chingu::GameStates::Pause
+      #end
+      
+      it "keep track of amount of created game states" do
+        @game.game_states.count.should == 2
+      end
+    end
+    
   end
 end

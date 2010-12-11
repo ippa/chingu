@@ -160,6 +160,39 @@ module Chingu
         subject.height.should == 40
       end
     end
+    
+    context "when there's missing parts" do
+      it "should return nil on width and height if there's no image available" do
+        game_object = GameObject.new
+        game_object.width.should == nil
+        game_object.height.should == nil
+      end
+    end
+    
+    context "class methods" do
+      it "should go through all instances of class on #each" do
+        go1 = GameObject.create
+        go2 = GameObject.create
+        
+        index = 0
+        GameObject.each do |game_object|
+          game_object.should == go1 if index==0
+          game_object.should == go2 if index==1
+          index += 1
+        end
+      end
+
+      it "should go through all instances of class on #each_with_index" do
+        go1 = GameObject.create
+        go2 = GameObject.create
+        
+        GameObject.each_with_index do |game_object, index|
+          game_object.should == go1 if index==0
+          game_object.should == go2 if index==1
+        end
+      end
+
+    end
   end
 
 end
