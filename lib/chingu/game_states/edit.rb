@@ -463,6 +463,7 @@ END_OF_STRING
       def game_object_icon_at(x, y)
         game_objects.select do |game_object|
           next if game_object.is_a? Text
+          next unless game_object.image
           bounding_box(game_object).collide_point?(x,y)
         end.first
       end
