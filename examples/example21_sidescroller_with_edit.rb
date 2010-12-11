@@ -8,14 +8,15 @@ include Chingu
 #
 # Press 'E' when demo is running to edit the playfield!
 # 
-class Game < Chingu::Window 
+class Game < Chingu::Window
   def initialize
-    super(1000,700)
+    #super(1000,700)
+    super(1024,768, true)
   end
   
   def setup
-    Gosu::enable_undocumented_retrofication
-    switch_game_state(Example21.new)
+    retrofy
+    switch_game_state(Example21)
   end    
 end
 
@@ -57,15 +58,6 @@ class Example21 < GameState
 
   def update    
     super
-    
-    visible_blocks = Block
-    
-    #
-    # Eating a lot of CPU cause our crude collision detection, just kill fireballs after 3 secs instead.
-    #
-    # FireBall.each_collision(visible_blocks) do |fire_ball, block|
-    #   fire_ball.destroy
-    # end
     
     # Makes all saw pendle up and down between Y-coordinate 1000 - 1500
     # TODO: Not a very flexible sollution, how about setting out circle,rects,lines in editor..
@@ -124,7 +116,7 @@ class Droid < Chingu::GameObject
   
   def die
     self.collidable = false
-    @color = Color::RED
+    @color = Color::RED.dup
     between(1,600) { self.velocity_y = 0; self.scale += 0.2; self.alpha -= 5; }.then { resurrect }
   end
     
@@ -132,7 +124,7 @@ class Droid < Chingu::GameObject
     self.alpha = 255
     self.factor = 3
     self.collidable = true
-    @color = Color::WHITE
+    @color = Color::WHITE.dup
     game_state.restore_player_position
   end
 
