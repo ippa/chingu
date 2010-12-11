@@ -62,7 +62,7 @@ class ParticleState < Chingu::GameState
   def update
     super
     
-    FireCube.all.each do |particle|
+    FireCube.each do |particle|
       if particle.x < 0 || particle.x > $window.width
         particle.velocity_x = -particle.velocity_x
       end

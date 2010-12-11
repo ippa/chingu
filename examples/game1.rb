@@ -79,7 +79,7 @@ class Level < Chingu::GameState
     game_objects.destroy_if { |game_object| game_object.respond_to?("outside_window?") && game_object.outside_window? }
 
     # Collide bullets with terrain
-    Bullet.all.select { |o| solid_pixel_at?(o.x, o.y)}.each { |o| o.die }
+    Bullet.select { |o| solid_pixel_at?(o.x, o.y)}.each { |o| o.die }
         
     # Collide player with terrain
     push_game_state(GameOver) if solid_pixel_at?(@player.x, @player.y)

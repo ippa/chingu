@@ -63,9 +63,8 @@ class Particles < Chingu::GameState
     Plasma.create(:x => 0, :y => 50 + rand(5), :color => Color.new(0xFF86EFFF), :velocity_x => 14)
     Plasma.create(:x => 0, :y => 100 + rand(5), :color => Color.new(0xFF86EFFF), :velocity_x => 7)
     Plasma.create(:x => 0, :y => 200 + rand(5), :color => Color.new(0xFF86EFFF), :velocity_x => 6)
-    #p pl.mode
         
-    Plasma.all.each do |particle|
+    Plasma.each do |particle|
       #
       # +1 fps
       #

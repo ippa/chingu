@@ -157,8 +157,6 @@ class Level < Chingu::GameState
   #
   def setup
     # Destroy all created objects of class Bullet
-    #p Bullet.size
-    #puts Bullet.all
     Bullet.destroy_all
     
     # Place player in a good starting position
