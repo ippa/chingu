@@ -33,7 +33,9 @@ class Example19 < GameState
   # 1) map 2) stars 3) player
   # Since we don't give any zorders Chingu automatically increments zorder between each object created, putting player on top
   #
-  def setup
+  def initialize(options = {})
+    super
+    
     self.input = { :escape => :exit, :e => :edit } 
 
     Sound["laser.wav"] # cache sound by accessing it once
