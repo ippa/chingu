@@ -34,7 +34,7 @@ class Game < Chingu::Window
       x.report('ObjectZ.each') { ObjectZ.all.each { |z| } }
       
       p game_objects.size
-      x.report('ObjectX destroy') { ObjectX.all.each { |x| x.destroy }; game_objects.sync; }
+      x.report('ObjectX destroy') { ObjectX.each_with_index { |x, i| x.destroy if i%2==0 }; game_objects.sync; }
       p game_objects.size
     end
     

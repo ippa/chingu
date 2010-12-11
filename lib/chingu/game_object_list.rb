@@ -29,6 +29,8 @@ module Chingu
         
     def initialize(options = {})
       @game_objects = options[:game_objects] || []
+      @add_game_objects = []
+      @remove_game_objects = []      
     end
     
     def to_s
@@ -47,12 +49,14 @@ module Chingu
     
     def add_game_object(object)
       @game_objects.push(object)
+      #@add_game_objects.push(object)
     end
     
     def remove_game_object(object)
-      @game_objects.delete(object)	
+      @game_objects.delete(object)
+      #@remove_game_objects.push(object)
     end
-    
+        
     def destroy_if
       @game_objects.reject! { |object| yield(object) }
     end
@@ -138,5 +142,14 @@ module Chingu
     end
     alias :show :show!
     
+    private
+    
+    def sync
+      @game_objects += @add_game_objects
+      @add_game_objects.clear
+      
+      @game_objects -= @remove_game_objects
+      @remove_game_objects.clear      
+    end    
   end  
 end
