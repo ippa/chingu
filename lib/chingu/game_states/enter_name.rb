@@ -36,21 +36,24 @@ module Chingu
         on_input([:holding_left, :holding_a, :holding_gamepad_left], :left)
         on_input([:holding_right, :holding_d, :holding_gamepad_right], :right)
         on_input([:space, :x, :enter, :gamepad_button_1, :return], :action)
+        on_input(:esc, :pop_game_state)
         
         @callback = options[:callback]
         
         @string = []
         @texts = []
-        @start_y = 200
+        @start_y = 100
         @start_x = 0
-        @index  = 0
+        @index  = 1
         #@letters = %w[ A B C D E F G H I J K L M N O P Q R S T U V W X Y Z ! " # % & ( ) [ ] = * _ < GO! ]
         @letters = %w[ A B C D E F G H I J K L M N O P Q R S T U V W X Y Z ! _ < GO! ]
         x = @start_x
         
+        @letter_spacing = 20
+        
         @letters.each do |letter|
-          @texts << Text.create(letter, :x => x, :y => @start_y, :rotation_center => :bottom_left, :size => 25)
-          x += 25
+          @texts << Text.create(letter, :x => x, :y => @start_y, :rotation_center => :bottom_left, :size => 22)
+          x += @letter_spacing
         end
       
         @selected_color = Color::RED
@@ -66,7 +69,8 @@ module Chingu
       # Move cursor any given value (positive or negative). Used by left() and right()
       def move_cursor(amount = 1)
         @index += amount
-        @index = 0  if @index >= @letters.size
+        @index = 1                if @index >= @letters.size
+        @index = @letters.size-1  if @index < 0
         sleep(0.1)
       end
   
@@ -83,13 +87,14 @@ module Chingu
       end
     
       def draw
-        @rect = Rect.new(@start_x + (25 * @index), @start_y+25, @texts[@index].width, 10)
+        @rect = Rect.new(@start_x + (@letter_spacing * @index), @start_y+@letter_spacing, @texts[@index].width, 10)
         fill_rect(@rect, @selected_color, 0)
         super
       end
   
       def go
-        pop_game_state(:name => @string.join)
+        @callback.call(@string.join)
+        pop_game_state
       end
       
     end

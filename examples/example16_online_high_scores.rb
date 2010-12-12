@@ -13,8 +13,15 @@ include Chingu
 class Game < Chingu::Window
   def initialize
     super(640,400)
-    self.input = {:esc => :exit, :a => :add, :r => :add_random}
     self.caption = "OnlineHighScoreList example. Press 'A' to add a top-score, 'R' to add a random."
+    push_game_state(HighScore)
+  end
+end
+
+class HighScore < GameState
+  
+  def setup
+    self.input = {:esc => :exit, :a => :enter_name, :r => :add_random}
     
     @title = PulsatingText.create("class OnlineHighScoreList & www.gamvercv.com", :x => $window.width/2, :y => 50, :size => 30)
     
@@ -24,10 +31,16 @@ class Game < Chingu::Window
     @high_score_list = OnlineHighScoreList.load(:game_id => 1, :login => "chingu", :password => "chingu", :limit => 10)
 
     create_text
-  end  
+  end
   
-  def add
-    data = {:name => "NEW", :score => (@high_score_list[0][:score].to_i + 10), :text => "Hello from Chingus example16.rb"}
+  def enter_name
+    push_game_state GameStates::EnterName.new(:callback => method(:add) )
+  end
+    
+  def add(name = nil)
+    return unless name
+    return unless name.size > 0
+    data = {:name => name, :score => (@high_score_list[0][:score].to_i + 10), :text => "Hello from Chingus example16.rb"}
     position = @high_score_list.add(data)
     puts "Got position: #{position.to_s}"
     create_text
@@ -51,7 +64,7 @@ class Game < Chingu::Window
       Text.create(high_score[:name], :x => 200, :y => y, :size => 20)
       Text.create(high_score[:score], :x => 400, :y => y, :size => 20)
     end
-  end
+  end  
 end
 
 #
