@@ -479,7 +479,21 @@ Chingus inputhandler will detect that Menu is a GameState-class, create a new in
 === Premade game states
 Chingu comes with some pre-made game states.
 A simple but usefull one is GameStates::Pause. Once pushed it will draw the previous game state but not update it --
-effectively pausing it.
+effectively pausing it. Some others are:
+
+== GameStates::EnterName
+A gamestate where a gamer can select letters from a A-Z list, contructing his alias. When he's done he selects "GO!" and a 
+developer-specified callback will be called with the name/alias as argument.
+
+  push_game_state GameStates::EnterName.new(:callback => method(:add))
+  
+  def add(name)
+    puts "User entered name #{name}"
+  end
+
+Combine GameStates::EnterName with class OnlineHighScoreList, a free acount @ www.gamercv.com and you have a premade stack to 
+provide your 48h gamecompo entry with online high scores that adds an extra dimension to your game. See example16 for a full working example of this.
+
 
 == GameStates::Edit
 The biggest and most usable is GameStates::Edit which enables fast 'n easy level-building with game objects.
