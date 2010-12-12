@@ -67,16 +67,17 @@ module Chingu
      
       # We remove the :size param so it doesn't get to GameObject where it means something else
       @size = options.delete(:size) || options.delete(:height) || @@size || 15
-     
+      
+      options = {:rotation_center => :top_left}.merge(options) 
+      
       super(options)
-  
+        
       @text = text || options[:text] || "-No text specified-"
       @font =  options[:font] || @@font || Gosu::default_font_name()
       @line_spacing = options[:line_spacing] || 1
       @align = options[:align] || :left
       @max_width = options[:max_width]
       @padding = options[:padding] || @@padding
-      self.rotation_center = :top_left
 
       @gosu_font = Gosu::Font[@font, @size]
       create_image  unless @image

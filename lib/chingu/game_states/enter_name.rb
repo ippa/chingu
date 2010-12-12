@@ -31,33 +31,39 @@ module Chingu
       def initialize(options = {})
         super
     
-        Text.create("Please enter your name:", :x => 0, :y => 0, :size => 40)
-    
+        Text.create("<u>Please enter your name</u>", :rotation_center => :top_center, :x => $window.width/2, :y => 10, :size => 40)
+
+        on_input([:holding_up, :holding_w, :holding_gamepad_up], :up)
+        on_input([:holding_down, :holding_s, :holding_gamepad_down], :down)
         on_input([:holding_left, :holding_a, :holding_gamepad_left], :left)
         on_input([:holding_right, :holding_d, :holding_gamepad_right], :right)
         on_input([:space, :x, :enter, :gamepad_button_1, :return], :action)
         on_input(:esc, :pop_game_state)
         
         @callback = options[:callback]
+        @columns = options[:columns] || 10
         
         @string = []
         @texts = []
-        @start_y = 100
-        @start_x = 0
-        @index  = 1
-        #@letters = %w[ A B C D E F G H I J K L M N O P Q R S T U V W X Y Z ! " # % & ( ) [ ] = * _ < GO! ]
-        @letters = %w[ A B C D E F G H I J K L M N O P Q R S T U V W X Y Z ! _ < GO! ]
-        x = @start_x
+        @index = 1
+        @letter_size = 30
+        @letters = %w[ A B C D E F G H I J K L M N O P Q R S T U V W X Y Z ! " # % & ( ) [ ] / \\ - = * SPACE DEL ENTER ]
+
+        @y = 140
+        @x = ($window.width - 350)/2
         
-        @letter_spacing = 20
-        
-        @letters.each do |letter|
-          @texts << Text.create(letter, :x => x, :y => @start_y, :rotation_center => :bottom_left, :size => 22)
-          x += @letter_spacing
+        @letters.each_with_index do |letter, index|
+          @texts << Text.create(letter, :x => @x, :y => @y, :size => @letter_size)
+          @x += @texts.last.width + 20
+          
+          if (index+1) % @columns == 0
+            @y += @letter_size
+            @x = @texts.first.x
+          end
         end
       
         @selected_color = Color::RED
-        @signature = Text.create("", :x => $window.width/2, :y => $window.height/2, :size => 80, :align => :center)
+        @name = Text.create("", :rotaion_center => :top_center, :x => $window.width/2, :y => 60, :size => 80)
       end
     
       # Move cursor 1 step to the left
@@ -65,35 +71,39 @@ module Chingu
       
       # Move cursor 1 step to the right
       def right; move_cursor(1); end
+
+      # Move cursor 1 step to the left
+      def up; move_cursor(-@columns); end
       
+      # Move cursor 1 step to the right
+      def down; move_cursor(@columns); end
+
       # Move cursor any given value (positive or negative). Used by left() and right()
       def move_cursor(amount = 1)
         @index += amount
-        @index = 1                if @index >= @letters.size
+        @index = 0                if @index >= @letters.size
         @index = @letters.size-1  if @index < 0
+        
+        @texts.each { |text| text.color = Color::WHITE }
+        @texts[@index].color = Color::RED
+        
         sleep(0.1)
       end
   
       def action
         case @letters[@index]
-          when "<"    then  @string.pop
-          when "_"    then  @string << " "
-          when "GO!"  then  go
-          else              @string << @letters[@index]
+          when "DEL"      then  @string.pop
+          when "SPACE"    then  @string << " "
+          when "ENTER"    then  go
+          else            @string << @letters[@index]
         end
-    
-        @signature.text = @string.join
-        @signature.x = $window.width/2 - @signature.width/2
+        
+        @name.text = @string.join
+        @name.x = $window.width/2 - @name.width/2
       end
-    
-      def draw
-        @rect = Rect.new(@start_x + (@letter_spacing * @index), @start_y+@letter_spacing, @texts[@index].width, 10)
-        fill_rect(@rect, @selected_color, 0)
-        super
-      end
-  
+      
       def go
-        @callback.call(@string.join)
+        @callback.call(@name.text)
         pop_game_state
       end
       
