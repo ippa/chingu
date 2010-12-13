@@ -18,7 +18,7 @@ begin
     gemspec.add_development_dependency 'rspec', '>= 2.1.0'
     gemspec.add_development_dependency 'watchr'
     gemspec.add_development_dependency 'rcov'
-    gemspec.add_development_dependency 'rest_client'
+    gemspec.add_development_dependency 'rest-client'
     gemspec.add_development_dependency 'crack'
   end
   Jeweler::GemcutterTasks.new
