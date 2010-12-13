@@ -23,7 +23,9 @@ class HighScore < GameState
   def setup
     self.input = {:esc => :exit, :a => :enter_name, :r => :add_random}
     
-    @title = PulsatingText.create("class OnlineHighScoreList & www.gamvercv.com", :x => $window.width/2, :y => 50, :size => 30)
+    PulsatingText.create("class OnlineHighScoreList & www.gamvercv.com", :x => $window.width/2, :y => 50, :size => 30)
+    Text.create("Syncs from/to http://www.gamercv.com/games/1-test", :x => $window.width/2, :y => 80, :size => 24, :rotation_center => :center)
+    
     
     #
     # Load a remote high score list
