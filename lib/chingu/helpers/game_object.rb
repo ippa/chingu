@@ -102,7 +102,13 @@ module Chingu
         next if classes and !classes.empty? and !classes.include?(game_object.class)
         
         attr_hash = {}
-        attributes.each { |attr| attr_hash[attr] = game_object.send(attr) }
+        attributes.each do |attr| 
+          begin
+          attr_hash[attr] = game_object.send(attr)
+          rescue NoMethodError
+            # silently ignore attributes that doesn't exist on the particular game object
+          end
+        end
         objects << {game_object.class.to_s => attr_hash}
       end
 
