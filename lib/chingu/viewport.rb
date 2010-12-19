@@ -54,6 +54,8 @@ module Chingu
     # Center the viewport around the given object (it must respont to x/y)
     # Center will fail if object is in the corners of the game area
     #
+    # TODO: Add support for x,y here!
+    #
     def center_around(object)
       self.x = object.x - $window.width / 2
       self.y = object.y - $window.height / 2

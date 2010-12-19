@@ -55,6 +55,15 @@ module Chingu
         
         super
       end
+      
+      #
+      # Let's have some useful information in to_s()
+      #
+      def to_s
+        "#{self.class.to_s} @ #{x.to_i} / #{y.to_i} " <<
+        "(#{width.to_i} x #{height.to_i}) - " <<
+        " ratio: #{sprintf("%.2f",width/height)} scale: #{sprintf("%.2f", factor_x)}/#{sprintf("%.2f", factor_y)} angle: #{angle.to_i} zorder: #{zorder} alpha: #{alpha}"
+      end
 
       def color=(color)
         @color = color.is_a?(Gosu::Color) ? color : Gosu::Color.new(color || 0xFFFFFFFF)
