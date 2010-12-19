@@ -62,6 +62,7 @@ module Chingu
         @except = options[:except] || []
         @classes -= Array(@except)
         @debug = options[:debug]
+        @attributes = options[:attributes] || [:x, :y, :angle, :zorder, :factor_x, :factor_y, :alpha]
 
         #
         # Turn on cursor + turn it back to its original value in finalize()
@@ -489,7 +490,7 @@ END_OF_STRING
         pop_game_state
       end
       def save 
-        save_game_objects(:game_objects => editable_game_objects, :file => @file, :classes => @classes)
+        save_game_objects(:game_objects => editable_game_objects, :file => @file, :classes => @classes, :attributes => @attributes)
       end
       def save_and_quit
         save unless holding?(:left_ctrl)
