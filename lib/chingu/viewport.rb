@@ -91,7 +91,7 @@ module Chingu
     end
 
     # Returns true object is outside the view port
-    def outside?(object, y)
+    def outside?(object, y = nil)
       not inside?(object, y)
     end
       
