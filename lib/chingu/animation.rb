@@ -30,8 +30,6 @@ module Chingu
       @loop = options[:loop]
       @bounce = options[:bounce]
       @file = options[:file]
-      @height = options[:height]
-      @width = options[:width]
       @index = options[:index]
       @delay = options[:delay]
       @step = options[:step] || 1
@@ -53,7 +51,10 @@ module Chingu
       #
       # Various ways of determening the framesize
       #
-      if options[:size] && options[:size].is_a?(Array)
+      if options[:height] && options[:width]
+        @height = options[:height]
+        @width = options[:width]
+      elsif options[:size] && options[:size].is_a?(Array)
         @width = options[:size][0]
         @height = options[:size][1]
       elsif options[:size]
