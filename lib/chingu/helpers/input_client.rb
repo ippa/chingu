@@ -202,8 +202,10 @@ module Chingu
       end
 
       # Backwards compatibility function. Use on_inputs or on_input instead.
+      # On object.input = nil we make object not respond to any key.
       def input=(input_list)
         @input = nil
+        return if input_list == nil
         input_list.is_a?(Array) ? add_inputs(*input_list) : add_inputs(input_list)
       end
 
