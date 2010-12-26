@@ -39,7 +39,16 @@ module Chingu
       
       @sub_animations = {}
       @frame_actions = []
-      @file = media_path(@file)  if @file && !File.exist?(@file)
+      
+      unless File.exists?(@file)
+        Gosu::Image.autoload_dirs.each do |autoload_dir|
+          full_path = File.join(autoload_dir, @file)
+          if File.exists?(full_path)
+            @file = full_path
+            break
+          end
+        end
+      end
       
       #
       # Various ways of determening the framesize

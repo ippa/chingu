@@ -5,6 +5,7 @@ module Chingu
     before :each do
       @game = Chingu::Window.new
       @test_dir = File.join(File.dirname(File.expand_path(__FILE__)), 'images')
+      Gosu::Image.autoload_dirs << @test_dir
       @animation_clean = Animation.new(:file => File.join(@test_dir, "droid_11x15.bmp"))
       @animation = Animation.new(:file => File.join(@test_dir, "droid_11x15.bmp"), :delay => 0)
     end
@@ -20,6 +21,17 @@ module Chingu
         @animation_clean.delay.should == 100
         @animation_clean.index.should == 0
         @animation_clean.step.should == 1
+      end
+      
+      it "should find single filename in Image.autoload_dirs" do
+        @anim = Animation.new(:file => "droid_11x15.bmp")
+        @anim.frames.count.should == 14
+      end
+      
+      it "should find relative filename path" do
+        Dir.chdir(File.dirname(File.expand_path(__FILE__)))
+        @anim = Animation.new(:file => "images/droid_11x15.bmp")
+        @anim.frames.count.should == 14
       end
     end
 
