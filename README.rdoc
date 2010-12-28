@@ -26,6 +26,8 @@ There's also more complex examples, like a clone of Conways game of life (http:/
 
 == PROJECTS USING CHINGU
 Links to some of the projects using/depending on Chingu:
+* http://ippa.se/games/unexpected_outcome.zip (LD#19 game compo entry by ippa)
+* https://bitbucket.org/philomory/ld19/ (LD#19 game compo entry by philomory)
 * https://github.com/Spooner/fidgit  (GUI-lib )
 * https://github.com/Spooner/sidney  (Sleep Is Death remake in ruby)
 * https://github.com/ippa/the_light_at_the_end_of_the_tunnel (LD#16 game compo entry)
