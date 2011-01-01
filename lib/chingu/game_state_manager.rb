@@ -269,10 +269,8 @@ module Chingu
     #
     def update(options = {})
       puts current_game_state.to_s  if options[:debug]
-      if current_game_state
-        current_game_state.update_trait
-        current_game_state.update
-      end
+      current_game_state.update_trait if current_game_state
+      current_game_state.update       if current_game_state
     end
 
     #

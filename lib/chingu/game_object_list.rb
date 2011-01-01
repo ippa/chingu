@@ -56,7 +56,7 @@ module Chingu
       @game_objects.delete(object)
       #@remove_game_objects.push(object)
     end
-        
+    
     def destroy_if
       @game_objects.reject! { |object| yield(object) }
     end
@@ -101,7 +101,11 @@ module Chingu
     def select
       @game_objects.dup.select { |object| yield object }
     end
-    
+
+    def map
+      @game_objects.map { |object| yield object }
+    end
+
     def first
       @game_objects.first
     end
