@@ -50,6 +50,12 @@ module Chingu
         @game.game_objects.first.visible?.should == false
         @game.draw
       end
+      
+      it "should increment $window.ticks" do
+        @game.ticks.should == 0
+        @game.update
+        @game.ticks.should == 1
+      end
     end
   end
 end
