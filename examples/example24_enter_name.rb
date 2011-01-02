@@ -9,10 +9,12 @@ class Game < Chingu::Window
     super(800,400,false)              # leave it blank and it will be 800,600,non fullscreen
     self.input = { :escape => :exit } # exits example on Escape    
     self.caption = "Demonstration of GameStates::EnterName"
-    push_game_state(GameStates::EnterName.new(:callback => :got_name))
+    push_game_state(GameStates::EnterName.new(:callback => method(:got_name)))
   end
   
-  def got_name
+  def got_name(name)
+    puts "Got name: #{name}"
+    exit
   end
 end
 
