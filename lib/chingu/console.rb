@@ -31,6 +31,7 @@ module Chingu
     attr_reader :root, :game_state_manager, :game_objects, :milliseconds_since_last_tick, :factor
     
     def initialize(update_interval = 16.666666)			
+      $window = self
       @update_interval = update_interval
       @root = File.dirname(File.expand_path($0))
       @game_objects = GameObjectList.new      
@@ -38,8 +39,6 @@ module Chingu
       @game_state_manager = GameStateManager.new
       @milliseconds_since_last_tick = 0
       @factor = 1
-      $window = self
-      
       setup
     end
             

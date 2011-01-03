@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{chingu}
-  s.version = "0.8.0.4"
+  s.version = "0.8.0.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ippa"]
-  s.date = %q{2011-01-02}
+  s.date = %q{2011-01-03}
   s.description = %q{OpenGL accelerated 2D game framework for Ruby. Builds on Gosu (Ruby/C++) which provides all the core functionality. Chingu adds simple yet powerful game states, prettier input handling, deployment safe asset-handling, a basic re-usable game object and stackable game logic.}
   s.email = %q{ippa@rubylicio.us}
   s.extra_rdoc_files = [
@@ -54,6 +54,7 @@ Gem::Specification.new do |s|
     "examples/example25.yml",
     "examples/example25_fibers_state_machine.rb",
     "examples/example26_splash_screen.rb",
+    "examples/example27_console.rb",
     "examples/example2_gamestate_basics.rb",
     "examples/example3_parallax.rb",
     "examples/example4_gamestates.rb",
@@ -114,6 +115,7 @@ Gem::Specification.new do |s|
     "lib/chingu/assets.rb",
     "lib/chingu/basic_game_object.rb",
     "lib/chingu/classic_game_object.rb",
+    "lib/chingu/console.rb",
     "lib/chingu/core_ext/array.rb",
     "lib/chingu/fpscounter.rb",
     "lib/chingu/game_object.rb",
@@ -162,6 +164,7 @@ Gem::Specification.new do |s|
     "spec/chingu/animation_spec.rb",
     "spec/chingu/assets_spec.rb",
     "spec/chingu/basic_game_object_spec.rb",
+    "spec/chingu/console_spec.rb",
     "spec/chingu/fpscounter_spec.rb",
     "spec/chingu/game_object_list_spec.rb",
     "spec/chingu/game_object_spec.rb",
@@ -203,6 +206,7 @@ Gem::Specification.new do |s|
     "examples/example24_enter_name.rb",
     "examples/example25_fibers_state_machine.rb",
     "examples/example26_splash_screen.rb",
+    "examples/example27_console.rb",
     "examples/example2_gamestate_basics.rb",
     "examples/example3_parallax.rb",
     "examples/example4_gamestates.rb",
@@ -217,6 +221,7 @@ Gem::Specification.new do |s|
     "spec/chingu/animation_spec.rb",
     "spec/chingu/assets_spec.rb",
     "spec/chingu/basic_game_object_spec.rb",
+    "spec/chingu/console_spec.rb",
     "spec/chingu/fpscounter_spec.rb",
     "spec/chingu/game_object_list_spec.rb",
     "spec/chingu/game_object_spec.rb",
