@@ -8,6 +8,8 @@ module Chingu
   # It will also acts as a container for the trait-system of chingu.
   #
   class BasicGameObject
+    class << self; attr_accessor :instances end
+    
     include Chingu::Helpers::ClassInheritableAccessor # adds classmethod class_inheritable_accessor
     
     attr_reader :options, :paused
@@ -16,7 +18,7 @@ module Chingu
     class_inheritable_accessor :trait_options
     @trait_options = Hash.new
     def trait_options; self.class.trait_options; end
-            
+                
     #
     # Adds a trait or traits to a certain game class
     # Executes a standard ruby "include" the specified module
@@ -66,6 +68,9 @@ module Chingu
     def initialize(options = {})
       @options = options
       @parent = options[:parent]
+      
+      self.class.instances ||= Array.new
+      self.class.instances << self
       
       #
       # A GameObject either belong to a GameState or our mainwindow ($window)
@@ -153,8 +158,12 @@ module Chingu
     #   Bullet.all.each do {}  # Iterate through all bullets in current game state
     #
     def self.all
-      $window.current_scope.game_objects.of_class(self).dup
+      instances.dup
     end
+    #def self.old_all
+    #  $window.current_scope.game_objects.of_class(self).dup
+    #end
+    
     
     #
     # As Array.each on the instances of the current class
@@ -177,12 +186,11 @@ module Chingu
       all.select { |object| yield object }
     end
     
-    
     #
     # Returns the total amount of game objects based on this class
     #
     def self.size
-      $window.current_scope.game_objects.of_class(self).size
+      instances.size
     end
     
     #
@@ -200,7 +208,8 @@ module Chingu
     #   Bullet.destroy_all    # Removes all Bullet objects from the game
     #
     def self.destroy_all
-      self.all.each { |object| object.destroy! }
+      all.each { |game_object| game_object.parent.remove_game_object(game_object) }
+      instances.clear
     end
 
     #
@@ -208,7 +217,8 @@ module Chingu
     # If the object isn't being managed by Chingu (ie. you're doing manual update/draw calls) the object is only frozen, not removed from any updae cycle (because you are controlling that).
     #
     def destroy
-      @parent.remove_game_object(self) if @parent
+      @parent.remove_game_object(self)  if @parent
+      self.class.instances.delete(self)
     end
     alias :destroy! :destroy
   end
