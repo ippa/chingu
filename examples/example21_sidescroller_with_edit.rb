@@ -89,7 +89,7 @@ class Droid < Chingu::GameObject
   trait :bounding_box, :scale => 0.80
   traits :timer, :collision_detection , :timer, :velocity
   
-  attr_reader :jumpign
+  attr_reader :jumping
   
   def setup
     self.input = {  [:holding_left, :holding_a] => :holding_left, 
@@ -110,8 +110,9 @@ class Droid < Chingu::GameObject
     self.acceleration_y = 0.5
     self.max_velocity = 10
     self.rotation_center = :bottom_center
-
+    
     update
+    cache_bounding_box
   end
   
   def die
@@ -287,6 +288,7 @@ class Block < GameObject
   def setup
     @image = Image["black_block.png"]
     @color = Color.new(0xff808080)
+    cache_bounding_box
   end
 end
 
