@@ -6,7 +6,8 @@ include Gosu
 include Chingu
 
 # This includes trait :sprite
-class MyGameObject < GameObject
+class SimpleGameObject < BasicGameObject
+  trait :simple_sprite
 end
 
 class ObjectX < GameObject
@@ -28,12 +29,11 @@ class Game < Chingu::Window
 		self.input = { :esc => :exit }    
     
     Benchmark.bm(22) do |x|
+      #x.report('GameObject.destroy_all') { GameObject.destroy_all }     # SLOW!
+      x.report('SimpleameObject.create') { 50000.times { SimpleGameObject.create } }      
       x.report('GameObject.create') { 50000.times { GameObject.create } }
-      #x.report('GameObject.destroy_all') { GameObject.destroy_all }
       x.report('GameObject.create') { 50000.times { GameObject.create } }
-      #x.report('GameObject.destroy_all') { GameObject.destroy_all }
       x.report('GameObject.create') { 50000.times { GameObject.create } }
-      #x.report('GameObject.destroy_all') { GameObject.destroy_all }      
     end
     
   end

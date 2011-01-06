@@ -68,7 +68,10 @@ module Chingu
     def initialize(options = {})
       @options = options
       @parent = options[:parent]
-            
+       
+      self.class.instances ||= Array.new
+      self.class.instances << self
+
       #
       # A GameObject either belong to a GameState or our mainwindow ($window)
       #
@@ -105,8 +108,8 @@ module Chingu
       # Keep track of instances in class-variable
       # Used for quick access to all isntances of a certain class, for example Enemy.all
       #
-      self.class.instances ||= Array.new
-      self.class.instances << instance
+      #instances ||= Array.new
+      #instances << instance
       
       return instance
     end
