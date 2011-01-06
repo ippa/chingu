@@ -29,24 +29,32 @@ module Chingu
     #
     module Retrofy
     
-      def setup_trait(options)
-        @retrofy_options = {:debug => false}.merge(options)        
-        super
-      end
-      
-      def screen_width
-        (self.image.width * self.factor).to_i
+      #def setup_trait(options)
+      #  @retrofy_options = {:debug => false}.merge(options)        
+      #  super
+      #end
+
+      def retrofied_x=(x)
+        self.x = x / self.factor
       end
 
-      def screen_height
-        (self.image.heigt * self.factor).to_i
+      def retrofied_y=(y)
+        self.y = y / self.factor
       end
 
-      def screen_x
+      def real_x
+        (self.x / self.factor).to_i
+      end
+
+      def real_y
+        (self.y / self.factor).to_i
+      end
+
+      def retrofied_x
         (self.x * self.factor).to_i
       end
 
-      def screen_y
+      def retrofied_y
         (self.y * self.factor).to_i
       end
 
