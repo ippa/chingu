@@ -28,7 +28,6 @@ module Chingu
     #  :x, :y, :angle, :factor_x, :factor_y, :center_x, :center_y, :zorder, :mode, :visible
     #
     module Sprite
-      include Chingu::Helpers::OptionsSetter
       include Chingu::Helpers::RotationCenter    # Adds easy and verbose modification of @center_x and @center_y
       
       module ClassMethods
@@ -37,21 +36,31 @@ module Chingu
         end
       end
       
-      attr_accessor :x, :y, :angle, :factor_x, :factor_y, :center_x, :center_y, :zorder, :mode, :visible, :color
+      attr_accessor :x, :y, :angle, :factor_x, :factor_y, :center_x, :center_y, :zorder, :mode, :color
       attr_reader :factor, :center, :height, :width, :image     
+      attr_accessor :visible # kill this? force use of setter      
 
       def setup_trait(object_options = {})        
-        # default settings for all variables unless set in constructor
-        defaults = {
-          :x => 0, :y => 0, :angle => 0, :factor => ($window.factor||1.0),
-          :zorder => 100, :center_x => 0.5, :center_y => 0.5,
-          :mode => :default, :color => nil, :visible => true
-        }
+        @visible = true   unless options[:visible] == false
+        self.image =  options[:image]  if options[:image]
+        self.color =  options[:color] || ::Gosu::Color::WHITE.dup
+        self.alpha =  options[:alpha]  if options[:alpha]
+        self.mode =   options[:mode] || :default
+        self.x =      options[:x] || 0
+        self.y =      options[:y] || 0
+        self.zorder = options[:zorder] || 100
+        self.angle =  options[:angle] || 0
         
-        # if user specs :image take care of it first since width, height etc depends on it.
-        self.image = object_options.delete(:image)  if object_options[:image]
+        self.factor = options[:factor] || options[:scale] || $window.factor || 1.0
+        self.factor_x = options[:factor_x].to_f if options[:factor_x]
+        self.factor_y = options[:factor_y].to_f if options[:factor_y]
+        self.rotation_center = options[:rotation_center] || :center_center
         
-        set_options(trait_options[:sprite].merge(object_options), defaults)
+        if self.image
+          self.width  = options[:width]   if options[:width]
+          self.height = options[:height]  if options[:height]
+          self.size   = options[:size]    if options[:size]
+        end
         
         super
       end
