@@ -88,21 +88,14 @@ module Chingu
     
     def draw
       @visible_game_objects.each { |go| go.draw_trait; go.draw; }
-      #@game_objects.select { |object| object.visible }.each do |object|
-      #  object.draw_trait
-      #  object.draw
-      #end
     end
 
     def force_draw
-      @game_objects.each do |object|
-        object.draw_trait
-        object.draw
-      end
+      @game_objects.each { |go| go.draw_trait; go.draw }
     end
 
     def draw_relative(x=0, y=0, zorder=0, angle=0, center_x=0, center_y=0, factor_x=0, factor_y=0)
-      @game_objects.select { |object| object.visible }.each do |object| 
+      @visible_game_objects.each do |object| 
         object.draw_trait
         object.draw_relative(x, y, zorder, angle, center_x, center_y, factor_x, factor_y)
       end
@@ -110,17 +103,10 @@ module Chingu
           
     def update
       @unpaused_game_objects.each { |go| go.update_trait; go.update; }
-      #@game_objects.select { |object| not object.paused }.each do |object| 
-      #  object.update_trait
-      #  object.update
-      #end
     end
     
     def force_update
-      @game_objects.each do |object|
-        object.update_trait
-        object.update
-      end
+      @game_objects.each { |go| go.update_trait; go.update; }
     end
     
     def each
