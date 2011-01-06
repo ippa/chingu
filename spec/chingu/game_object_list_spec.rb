@@ -4,7 +4,7 @@ module Chingu
 
   describe GameObjectList do
     before :each do
-      @game = Chingu::Window.new      
+      @game = Chingu::Window.new
     end
     
     after :each do

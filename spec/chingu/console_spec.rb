@@ -6,7 +6,11 @@ module Chingu
     before :each do
       @console = Chingu::Console.new
     end
-    
+
+    after :each do
+      $window = nil
+    end
+
     it { @console.should respond_to :start }
     it { @console.should respond_to :fps }
     it { @console.should respond_to :update }

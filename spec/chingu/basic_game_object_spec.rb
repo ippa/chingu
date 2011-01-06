@@ -29,9 +29,10 @@ module Chingu
     it { should respond_to(:filename) }
 
     context "A class inherited from BasicGameObject" do
+      
       it "should be automatically stored in $window.game_objects" do
+        MyBasicGameObject.instances = []
         3.times { go = MyBasicGameObject.create }
-        $window.update
         $window.game_objects.size.should == 3
       end
       
@@ -41,34 +42,40 @@ module Chingu
       end
       
       it "should keep track of its instances in class#all" do
+        MyBasicGameObject.instances = []
         3.times { MyBasicGameObject.create }
         #
         # Can/should we remove the dependency on #update here before the created objects gets saved?
         # We mostly protect against adding to the object array while iterating over it
         #
-        $window.update
         MyBasicGameObject.all.size.should == 3
         MyBasicGameObject.size.should == 3
       end
       
       it "should be removed from game_objects list when destroy() is called" do
+        MyBasicGameObject.instances = []
         go = MyBasicGameObject.create
-        $window.update
         $window.game_objects.size.should == 1
         go.destroy
-        $window.update
         $window.game_objects.size.should == 0
       end
 
-      it "should have all instances removed with classmethod #destroy_all()" do
+      it "should have all internal list cleared with classmethod destroy_all()" do
+        MyBasicGameObject.instances = []
         3.times { MyBasicGameObject.create }
-        $window.update
         MyBasicGameObject.destroy_all
-        $window.update
+        MyBasicGameObject.size.should == 0
+      end
+
+      it "should have all instances removed from parent-list with classmethod destroy_all()" do
+        MyBasicGameObject.instances = []
+        3.times { MyBasicGameObject.create }
+        MyBasicGameObject.destroy_all
         $window.game_objects.size.should == 0
       end
 
       it "should take hash-argument, parse it and save in options" do
+        MyBasicGameObject.instances = []
         game_object = MyBasicGameObject.new(:paused => false, :foo => :bar)
         game_object.paused?.should == false
         game_object.options.should == {:paused => false, :foo => :bar}
@@ -96,8 +103,7 @@ module Chingu
 
     end
     
-    context "when created with defaults in Chingu::Window" do
-      
+    context "when created with defaults in Chingu::Window" do      
       it "should belong to main window it not created inside a game state" do
         subject.parent.should == @game
       end      
