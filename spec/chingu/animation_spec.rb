@@ -36,24 +36,24 @@ module Chingu
     end
 
     describe "Animation loading file: droid_11x15.bmp" do
-      #it "should detect size and frames automatically from filename" do
-      #  @animation.size.should == [11,15]
-      #  @animation.frames.count.should == 14
-      #end
+      it "should detect size and frames automatically from filename" do
+        @animation.size.should == [11,15]
+        @animation.frames.count.should == 14
+      end
       
-      #it "should give correct frames for .first and .last" do
-      #  @animation.first.should == @animation.frames.first
-      #  @animation.last.should == @animation.frames.last
-      #end
+      it "should give correct frames for .first and .last" do
+        @animation.first.should == @animation.frames.first
+        @animation.last.should == @animation.frames.last
+      end
 
       it "should return frame with []" do
         @animation[0].should == @animation.frames.first
       end
 
-      #it "should step animation forward with .next" do
-      #  @animation.next
-      #  @animation.index.should == 1
-      #end
+      it "should step animation forward with .next" do
+        @animation.next
+        @animation.index.should == 1
+      end
 
       it "should stop animation when reaching end if loop and bounce are both false" do
         @animation.loop = false

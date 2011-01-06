@@ -25,7 +25,8 @@ module Chingu
     #   - step: [steps] move animation forward [steps] frames each time we call #next
     #
     def initialize(options)
-      options = {:step => 1, :loop => true, :bounce => false, :width => 32, :height => 32, :index => 0, :delay => 100}.merge(options)
+      #options = {:step => 1, :loop => true, :bounce => false, :width => 32, :height => 32, :index => 0, :delay => 100}.merge(options)
+      options = {:step => 1, :loop => true, :bounce => false, :index => 0, :delay => 100}.merge(options)
       
       @loop = options[:loop]
       @bounce = options[:bounce]
