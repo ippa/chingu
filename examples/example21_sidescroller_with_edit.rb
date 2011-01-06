@@ -10,8 +10,8 @@ include Chingu
 # 
 class Game < Chingu::Window
   def initialize
-    #super(1000,700)
-    super(1024,768, true)
+    super(1000,700)
+    #super(1024,768, true)
   end
   
   def setup

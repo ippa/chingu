@@ -82,6 +82,7 @@ module Chingu
     #
     def delete(game_object)
       range_x, range_y = @game_object_positions[game_object]
+      return unless range_x && range_y
       
       range_x.each do |x|
         range_y.each do |y|
