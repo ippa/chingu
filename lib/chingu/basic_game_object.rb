@@ -8,7 +8,7 @@ module Chingu
   # It will also acts as a container for the trait-system of chingu.
   #
   class BasicGameObject
-    class << self; attr_accessor :instances end
+    class << self; attr_accessor :instances; end
     
     include Chingu::Helpers::ClassInheritableAccessor # adds classmethod class_inheritable_accessor
     
@@ -112,6 +112,7 @@ module Chingu
     # Disable automatic calling of update() and update_trait() each game loop
     #
     def pause!
+      @parent.game_objects.pause_game_object(self)    if @parent && @paused == false
       @paused = true
     end
     alias :pause :pause!
@@ -120,6 +121,7 @@ module Chingu
     # Enable automatic calling of update() and update_trait() each game loop
     #
     def unpause!
+      @parent.game_objects.unpause_game_object(self)  if @parent && @paused == true
       @paused = false
     end
     alias :unpause :unpause!
@@ -158,7 +160,7 @@ module Chingu
     #   Bullet.all.each do {}  # Iterate through all bullets in current game state
     #
     def self.all
-      instances.dup
+      instances ? instances.dup : []
     end
     #def self.old_all
     #  $window.current_scope.game_objects.of_class(self).dup
@@ -190,7 +192,7 @@ module Chingu
     # Returns the total amount of game objects based on this class
     #
     def self.size
-      instances.size
+      all.size
     end
     
     #
@@ -209,7 +211,7 @@ module Chingu
     #
     def self.destroy_all
       all.each { |game_object| game_object.parent.remove_game_object(game_object) }
-      instances.clear
+      instances.clear if  instances
     end
 
     #

@@ -3,6 +3,9 @@ require 'spec_helper'
 class MyBasicGameObject < Chingu::BasicGameObject
 end
 
+class MyBasicGameObject2 < Chingu::BasicGameObject
+end
+
 class MyBasicGameObjectWithSetup < Chingu::BasicGameObject
   def setup
     @paused = true
@@ -28,7 +31,7 @@ module Chingu
     it { should respond_to(:draw_trait) }
     it { should respond_to(:filename) }
 
-    context "A class inherited from BasicGameObject" do
+    context "A class inherited from BasicGameObject using classmethod create" do
       
       it "should be automatically stored in $window.game_objects" do
         MyBasicGameObject.instances = []
@@ -73,7 +76,14 @@ module Chingu
         MyBasicGameObject.destroy_all
         $window.game_objects.size.should == 0
       end
-
+    end
+    
+    context "A class inherited from BasicGameObject" do
+      it "should return empty array on classmethod all() if no objects have been created" do
+        # Only place MyBasicGameObject2 is used
+        MyBasicGameObject2.all.should == []
+      end
+        
       it "should take hash-argument, parse it and save in options" do
         MyBasicGameObject.instances = []
         game_object = MyBasicGameObject.new(:paused => false, :foo => :bar)

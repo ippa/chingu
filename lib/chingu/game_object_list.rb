@@ -26,11 +26,12 @@ module Chingu
   # An instance of GameObjectList is automaticly created as "game_objects" if using Chingu::Window
   #
   class GameObjectList
+    attr_reader :visible_game_objects, :unpaused_game_objects
         
     def initialize(options = {})
       @game_objects = options[:game_objects] || []
-      @add_game_objects = []
-      @remove_game_objects = []      
+      @visible_game_objects = []
+      @unpaused_game_objects = []      
     end
     
     def to_s
@@ -47,15 +48,31 @@ module Chingu
     alias :clear :destroy_all
     alias :remove_all :destroy_all
     
+    def show_game_object(object)
+      @visible_game_objects.push(object)
+    end    
+    def hide_game_object(object)
+      @visible_game_objects.delete(object)
+    end
+    def pause_game_object(object)
+      @unpaused_game_objects.delete(object)
+    end
+    def unpause_game_object(object)
+      @unpaused_game_objects.push(object)
+    end
+    
     def add_game_object(object)
       @game_objects.push(object)
-      #@add_game_objects.push(object)
+      @visible_game_objects.push(object)  if object.respond_to?(:visible)  && object.visible
+      @unpaused_game_objects.push(object) if object.respond_to?(:paused)   && !object.paused
     end
     
     def remove_game_object(object)
       @game_objects.delete(object)
-      #@remove_game_objects.push(object)
+      @visible_game_objects.delete(object)
+      @unpaused_game_objects.delete(object)
     end
+    
     
     def destroy_if
       @game_objects.reject! { |object| yield(object) }
@@ -70,7 +87,15 @@ module Chingu
     end
     
     def draw
-      @game_objects.select { |object| object.visible }.each do |object|
+      @visible_game_objects.each { |go| go.draw_trait; go.draw; }
+      #@game_objects.select { |object| object.visible }.each do |object|
+      #  object.draw_trait
+      #  object.draw
+      #end
+    end
+
+    def force_draw
+      @game_objects.each do |object|
         object.draw_trait
         object.draw
       end
@@ -84,8 +109,16 @@ module Chingu
     end
           
     def update
-      @game_objects.select { |object| not object.paused }.each do |object| 
-        object.update_trait 
+      @unpaused_game_objects.each { |go| go.update_trait; go.update; }
+      #@game_objects.select { |object| not object.paused }.each do |object| 
+      #  object.update_trait
+      #  object.update
+      #end
+    end
+    
+    def force_update
+      @game_objects.each do |object|
+        object.update_trait
         object.update
       end
     end

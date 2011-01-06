@@ -171,6 +171,7 @@ module Chingu
     
     context "class methods" do
       it "should go through all instances of class on #each" do
+        GameObject.destroy_all
         go1 = GameObject.create
         go2 = GameObject.create
         
@@ -183,6 +184,7 @@ module Chingu
       end
 
       it "should go through all instances of class on #each_with_index" do
+        GameObject.destroy_all
         go1 = GameObject.create
         go2 = GameObject.create
         

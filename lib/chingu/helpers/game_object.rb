@@ -40,6 +40,20 @@ module Chingu
       @game_objects
     end
     
+    def show_game_object(object)
+      @game_objects.show_game_object(object)
+    end    
+    def hide_game_object(object)
+      @game_objects.hide_game_object(object)
+    end
+    def pause_game_object(object)
+      @game_objects.pause_game_object(object)
+    end
+    def unpause_game_object(object)
+      @game_objects.unpause_game_object(object)
+    end 
+    
+    
     #
     # Fetch game objects of a certain type/class
     #

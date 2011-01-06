@@ -45,6 +45,24 @@ module Chingu
         @game.game_objects.update
       end
 
+      it "should keep track of unpaused game objects" do
+        go = GameObject.create
+        go.should_receive(:update)
+        @game.game_objects.update
+        go.pause
+        go.should_not_receive(:update)
+        @game.game_objects.update
+      end
+
+      it "should keep track of visible game objects" do
+        go = GameObject.create
+        go.should_receive(:draw)
+        @game.game_objects.draw
+        go.hide!
+        go.should_not_receive(:draw)
+        @game.game_objects.draw
+      end
+
       it "should call draw() on all visible game objects" do
         GameObject.create.should_receive(:draw)
         GameObject.create(:visible => false).should_not_receive(:draw)

@@ -196,6 +196,7 @@ module Chingu
       # Disable automatic calling of draw and draw_trait each game loop
       #
       def hide!
+        @parent.game_objects.hide_game_object(self)  if @parent && @visible == true
         @visible = false
       end
     
@@ -203,6 +204,7 @@ module Chingu
       # Enable automatic calling of draw and draw_trait each game loop
       #
       def show!
+        @parent.game_objects.show_game_object(self)  if @parent && @visible == false
         @visible = true
       end
     
