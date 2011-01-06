@@ -12,6 +12,7 @@ class Game < Chingu::Window
     self.input = { :escape => :exit } # exits example on Escape    
     
     Player.create(:x => 0, :y => 0, :rotation_center => :top_left)
+    Text.create("NOTHING TO SEE HERE YET ;-)", :align => :center)
   end  
 end
 
