@@ -31,6 +31,7 @@ class Game < Chingu::Window
     Benchmark.bm(22) do |x|
       #x.report('GameObject.destroy_all') { GameObject.destroy_all }     # SLOW!
       x.report('SimpleameObject.create') { 50000.times { SimpleGameObject.create } }      
+      x.report('ClassicGameObject.create') { 50000.times { ClassicGameObject.create } }
       x.report('GameObject.create') { 50000.times { GameObject.create } }
       x.report('GameObject.create') { 50000.times { GameObject.create } }
       x.report('GameObject.create') { 50000.times { GameObject.create } }
