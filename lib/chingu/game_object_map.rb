@@ -70,7 +70,7 @@ module Chingu
       @game_object_positions = {}
             
       @game_objects.each do |game_object|
-        puts "#{game_object.class} @ #{game_object.x} / #{game_object.y}" if @debug
+        puts "#{game_object.class} @ #{game_object.x}/#{game_object.y} - #{game_object.bb}" if @debug
         insert(game_object)                
       end
     end
@@ -91,6 +91,7 @@ module Chingu
         @map[x] ||= []
         (start_y ... stop_y).each do |y|
           @map[x][y] = game_object
+          puts "#{game_object.class} => map[#{x}][#{y}]" if @debug
         end
       end      
     end
@@ -125,7 +126,7 @@ module Chingu
     def at(x, y)
       lookup_x = (x / @grid[0]).to_i
       lookup_y = (y / @grid[1]).to_i
-      @map[lookup_x][lookup_y]  rescue nil
+      @map[lookup_x][lookup_y]  rescue nil  # Benchmark this against @map[lookup_x] && @map[lookup_x][lookup_y] => prob faster
     end
 
     #
