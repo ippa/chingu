@@ -66,9 +66,27 @@ Game.new.show
 #draw + create + destroy  2.184000   0.000000   2.184000 (  2.230128)
 
 #
+# WITH HASH instead of ARRAY
+#
+#create 50000 game objects  0.733000   0.016000   0.749000 (  0.737042)
+#force_update            1.045000   0.000000   1.045000 (  1.048060)
+#force_draw              1.154000   0.000000   1.154000 (  1.150065)
+#update                  1.014000   0.000000   1.014000 (  1.028058)
+#draw                    1.139000   0.000000   1.139000 (  1.152066)
+#update + create         1.045000   0.000000   1.045000 (  1.041060)
+#draw + create           1.155000   0.000000   1.155000 (  1.155066)
+#update + create + destroy  1.529000   0.000000   1.529000 (  1.525087)
+#draw + create + destroy  1.653000   0.000000   1.653000 (  1.661095)
+
+
+#
 # CONCLUSION
 #
 # Even when we're adding or destroying objects each game tick
 # we benefit greatly from keeping separate draw and update lists
 # instead of checking visible/paused flags in the draw/update loop itself
+#
+# Hash would be better then Array if we create/destroy tons of object.
+# Arrays are faster to iterate through, which we do alot of gametick.
+#
 #

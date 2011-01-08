@@ -31,7 +31,11 @@ module Chingu
     def initialize(options = {})
       @game_objects = options[:game_objects] || []
       @visible_game_objects = []
-      @unpaused_game_objects = []      
+      @unpaused_game_objects = []
+      
+      #@game_objects = {}
+      #@visible_game_objects = {}
+      #@unpaused_game_objects = {}
     end
     
     def to_s
@@ -43,7 +47,7 @@ module Chingu
     end
     
     def destroy_all
-      @game_objects.clear
+      @game_objects.each { |game_object| game_object.destroy }
     end
     alias :clear :destroy_all
     alias :remove_all :destroy_all
@@ -65,6 +69,10 @@ module Chingu
       @game_objects.push(object)
       @visible_game_objects.push(object)  if object.respond_to?(:visible)  && object.visible
       @unpaused_game_objects.push(object) if object.respond_to?(:paused)   && !object.paused
+      
+      #@game_objects[object] = true
+      #@visible_game_objects[object] = true  if object.respond_to?(:visible)  && object.visible
+      #@unpaused_game_objects[object] = true if object.respond_to?(:paused)   && !object.paused
     end
     
     def remove_game_object(object)
@@ -73,9 +81,8 @@ module Chingu
       @unpaused_game_objects.delete(object)
     end
     
-    
     def destroy_if
-      @game_objects.reject! { |object| yield(object) }
+      @game_objects.select { |object| object.destroy if yield(object) }
     end
     
     def size
@@ -85,11 +92,17 @@ module Chingu
     def empty?
       @game_objects.empty?
     end
+
+    def update
+      @unpaused_game_objects.each { |go| go.update_trait; go.update; }
+    end
+    def force_update
+      @game_objects.each { |go| go.update_trait; go.update; }
+    end
     
     def draw
       @visible_game_objects.each { |go| go.draw_trait; go.draw; }
     end
-
     def force_draw
       @game_objects.each { |go| go.draw_trait; go.draw }
     end
@@ -101,13 +114,6 @@ module Chingu
       end
     end
           
-    def update
-      @unpaused_game_objects.each { |go| go.update_trait; go.update; }
-    end
-    
-    def force_update
-      @game_objects.each { |go| go.update_trait; go.update; }
-    end
     
     def each
       @game_objects.dup.each { |object| yield object }
@@ -165,14 +171,5 @@ module Chingu
     end
     alias :show :show!
     
-    private
-    
-    def sync
-      @game_objects += @add_game_objects
-      @add_game_objects.clear
-      
-      @game_objects -= @remove_game_objects
-      @remove_game_objects.clear      
-    end    
   end  
 end

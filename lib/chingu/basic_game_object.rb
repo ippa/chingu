@@ -167,11 +167,9 @@ module Chingu
     #
     def self.all
       instances ? instances.dup : []
-    end
-    #def self.old_all
-    #  $window.current_scope.game_objects.of_class(self).dup
-    #end
-    
+      # instances ? instances.keys : []                         # for hash instance
+      #  $window.current_scope.game_objects.of_class(self).dup  # old school way
+    end    
     
     #
     # As Array.each on the instances of the current class
