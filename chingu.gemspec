@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{chingu}
-  s.version = "0.8.0.5"
+  s.version = "0.8.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ippa"]
-  s.date = %q{2011-01-03}
+  s.date = %q{2011-01-08}
   s.description = %q{OpenGL accelerated 2D game framework for Ruby. Builds on Gosu (Ruby/C++) which provides all the core functionality. Chingu adds simple yet powerful game states, prettier input handling, deployment safe asset-handling, a basic re-usable game object and stackable game logic.}
   s.email = %q{ippa@rubylicio.us}
   s.extra_rdoc_files = [
@@ -23,15 +23,20 @@ Gem::Specification.new do |s|
     "README.rdoc",
     "Rakefile",
     "benchmarks/README.txt",
+    "benchmarks/array_vs_hash.rb",
     "benchmarks/arrays_bench.rb",
     "benchmarks/benchmark.rb",
     "benchmarks/benchmark3.rb",
     "benchmarks/benchmark4.rb",
     "benchmarks/benchmark5.rb",
     "benchmarks/benchmark6.rb",
+    "benchmarks/game_object_list_benchmark.rb",
     "benchmarks/game_objects_benchmark.rb",
+    "benchmarks/lookup_benchmark.rb",
     "benchmarks/meta_benchmark.rb",
     "benchmarks/meta_benchmark2.rb",
+    "benchmarks/trait_benchmark.rb",
+    "benchmarks/window_benchmark.rb",
     "chingu.gemspec",
     "examples/example10_traits_retrofy.rb",
     "examples/example11_animation.rb",
@@ -155,6 +160,7 @@ Gem::Specification.new do |s|
     "lib/chingu/traits/collision_detection.rb",
     "lib/chingu/traits/effect.rb",
     "lib/chingu/traits/retrofy.rb",
+    "lib/chingu/traits/simple_sprite.rb",
     "lib/chingu/traits/sprite.rb",
     "lib/chingu/traits/timer.rb",
     "lib/chingu/traits/velocity.rb",
@@ -167,6 +173,7 @@ Gem::Specification.new do |s|
     "spec/chingu/console_spec.rb",
     "spec/chingu/fpscounter_spec.rb",
     "spec/chingu/game_object_list_spec.rb",
+    "spec/chingu/game_object_map_spec.rb",
     "spec/chingu/game_object_spec.rb",
     "spec/chingu/game_state_manager_spec.rb",
     "spec/chingu/helpers/input_client_spec.rb",
@@ -224,6 +231,7 @@ Gem::Specification.new do |s|
     "spec/chingu/console_spec.rb",
     "spec/chingu/fpscounter_spec.rb",
     "spec/chingu/game_object_list_spec.rb",
+    "spec/chingu/game_object_map_spec.rb",
     "spec/chingu/game_object_spec.rb",
     "spec/chingu/game_state_manager_spec.rb",
     "spec/chingu/helpers/input_client_spec.rb",
