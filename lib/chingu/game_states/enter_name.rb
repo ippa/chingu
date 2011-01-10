@@ -41,16 +41,16 @@ module Chingu
         on_input(:esc, :pop_game_state)
         
         @callback = options[:callback]
-        @columns = options[:columns] || 10
+        @columns = options[:columns] || 14
         
         @string = []
         @texts = []
-        @index = 1
+        @index = 0
         @letter_size = 30
-        @letters = %w[ A B C D E F G H I J K L M N O P Q R S T U V W X Y Z ! " # % & ( ) [ ] / \\ - = * SPACE DEL ENTER ]
+        @letters = %w[ A B C D E F G H I J K L M N O P Q R S T U V W X Y Z ! " # % & $ ( ) [ ] / \\ - + = * . 1 2 3 4 5 6 7 8 9 0 SPACE DEL ENTER ]
 
         @y = 140
-        @x = ($window.width - 350)/2
+        @x = ($window.width - 600)/2
         
         @letters.each_with_index do |letter, index|
           @texts << Text.create(letter, :x => @x, :y => @y, :size => @letter_size)
@@ -63,6 +63,7 @@ module Chingu
         end
       
         @selected_color = Color::RED
+        @texts[@index].color = Color::RED
         @name = Text.create("", :rotaion_center => :top_center, :x => $window.width/2, :y => 60, :size => 80)
       end
     
@@ -80,14 +81,23 @@ module Chingu
 
       # Move cursor any given value (positive or negative). Used by left() and right()
       def move_cursor(amount = 1)
-        @index += amount
-        @index = 0                if @index >= @letters.size
-        @index = @letters.size-1  if @index < 0
+        #
+        # Curser will wrap
+        #
+        #@index += amount
+        #@index = 0                if @index >= @letters.size
+        #@index = @letters.size-1  if @index < 0
+        
+        #
+        # Cursor won't wrap
+        #
+        new_value = @index + amount
+        @index = new_value  if new_value < @letters.size && new_value >= 0
         
         @texts.each { |text| text.color = Color::WHITE }
         @texts[@index].color = Color::RED
         
-        sleep(0.1)
+        sleep(0.15)
       end
   
       def action
