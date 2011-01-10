@@ -43,6 +43,7 @@ module Chingu
     # Usage:
     #   PlayState < Chingu::GameStates::NetworkClient
     #     def initialize(options = {})
+    #       super   # this is always needed!
     #       connect_to_server(options[:ip], options[:port])
     #     end
     #     
