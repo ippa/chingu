@@ -69,7 +69,7 @@ module Chingu
     # A good idea is to have a socket-ivar in your Player-model and a Player.find_by_socket(socket)
     #
     class NetworkServer < Chingu::GameState
-      attr_reader :sockets, :packet_counter
+      attr_reader :sockets, :packet_counter, :packet_counter
       
       def initialize(options = {})
         super

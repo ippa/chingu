@@ -167,14 +167,12 @@ module Chingu
       # Send a msg to the server
       # Can be whatever ruby-structure that responds to #to_yaml
       #
-      def send_msg(data)
-        @socket.write(data.to_yaml)
-        @socket.flush
+      def send_msg(msg)
+        send_data(msg.to_yaml)
       end
 
       #
-      # Send a msg to the server
-      # Can be whatever ruby-structure that responds to #to_yaml
+      # Send whatever raw data to the server
       #
       def send_data(data)
         @socket.write(data)
