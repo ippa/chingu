@@ -177,7 +177,8 @@ module Chingu
       # Send all buffered outgoing data
       #
       def handle_outgoing_data
-        @sockets.each { |socket| send_data(socket, @buffered_output.emit) }
+        # the "---" part is a little hack to make server understand the YAML is fully transmitted.
+        @sockets.each { |socket| send_data(socket, @buffered_output.emit) + "\n--- \n" }
         @buffered_output = YAML::Stream.new
       end
       
@@ -194,7 +195,8 @@ module Chingu
       # 'msg' must responds to #to_yaml
       #
       def send_msg(socket, msg)
-        send_data(socket, msg.to_yaml)
+        # the "---" part is a little hack to make server understand the YAML is fully transmitted.
+        send_data(socket, msg.to_yaml + "\n--- \n")
       end
       
       #

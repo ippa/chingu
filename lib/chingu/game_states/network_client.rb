@@ -168,7 +168,8 @@ module Chingu
       # Can be whatever ruby-structure that responds to #to_yaml
       #
       def send_msg(msg)
-        send_data(msg.to_yaml)
+        # the "---" part is a little hack to make server understand the YAML is fully transmitted.
+        send_data(msg.to_yaml + "\n--- \n")
       end
 
       #
