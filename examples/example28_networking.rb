@@ -37,9 +37,9 @@ end
 # Our Client. We inherit from Chingu::GameStates::NetworkClient
 #
 class Client < GameStates::NetworkClient
+  
   def on_connect
-    $window.caption = "[#{self.ip}] Connected! Sending a msg..."
-    send_msg(:message => :woff, :to => :dawg)
+    puts "[#{self.ip}] Connected! Sending a msg..."
     send_msg(:hi => :there)
   end
   
@@ -49,12 +49,14 @@ class Client < GameStates::NetworkClient
   def on_msg(msg)
     puts "Client Got: #{msg.inspect}"
   end
+  
 end
 
 #
 # Our Server. We inherit from Chingu::GameStates::NetworkServer
 #
 class Server < GameStates::NetworkServer
+  
   #
   # Overload on_msg callback in server to make something happen
   # Servers #on_msg takes 2 arguments, since server can handle many clients
@@ -67,6 +69,7 @@ class Server < GameStates::NetworkServer
     puts "Server Got: #{msg.inspect}"
     send_msg(socket, {:woff => :mjau, :numbers => [1,2,3]})
   end
+  
 end
 
 Game.new.show
