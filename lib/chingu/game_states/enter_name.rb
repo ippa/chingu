@@ -30,8 +30,9 @@ module Chingu
   
       def initialize(options = {})
         super
-    
-        Text.create("<u>Please enter your name</u>", :rotation_center => :top_center, :x => $window.width/2, :y => 10, :size => 40)
+        
+        #@title = options[:title] || "<u>Please enter your name</u>"
+        #Text.create(@title, :rotation_center => :top_center, :x => $window.width/2, :y => 10, :size => 40)
 
         on_input([:holding_up, :holding_w, :holding_gamepad_up], :up)
         on_input([:holding_down, :holding_s, :holding_gamepad_down], :down)
@@ -62,7 +63,6 @@ module Chingu
           end
         end
       
-        @selected_color = Color::RED
         @texts[@index].color = Color::RED
         @name = Text.create("", :rotaion_center => :top_center, :x => $window.width/2, :y => 60, :size => 80)
       end

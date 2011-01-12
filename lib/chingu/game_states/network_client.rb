@@ -28,26 +28,28 @@ module Chingu
     # Uses nonblocking polling TCP and YAML to communicate. 
     # If your game state inherits from NetworkClient you'll have the following methods available:
     #
-    #   connect_to_server(ip, port)     # Start a blocking connection period, updates in $window.caption
+    #   connect(ip, port)     # Start a blocking connection period, updates in $window.caption
     #   send_data(data)                 # Send raw data on the network, nonblocking
     #   send_msg(whatever ruby data)    # Will get YAML'd and sent to server
     #   handle_incoming_data(max_size)  # Nonblocking read of incoming server data
     #   disconnect_from_server          # Shuts down all network connections
     #   
     # The following callbacks can be overwritten to add your game logic:
-    #   on_connect(socket)      # when the TCP connection to the server is opened
-    #   on_disconnect()         # when server dies or disconnects you
+    #   on_connect              # when the TCP connection to the server is opened
+    #   on_disconnect           # when server dies or disconnects you
     #   on_data(data)           # when raw data arrives from server, if not overloaded this will unpack and call on_msg
     #   on_msg(msg)             # an incoming msgs, could be a ruby hash or array or whatever datastructure you've chosen to send from server
+    #   on_timeout              # connection timed out
+    #   on_connection_refused   # server isn't listening on that port
     #
     # Usage:
     #   PlayState < Chingu::GameStates::NetworkClient
     #     def initialize(options = {})
     #       super   # this is always needed!
-    #       connect_to_server(options[:ip], options[:port])
+    #       connect(options[:ip], options[:port])
     #     end
     #     
-    #     def on_connection(socket)
+    #     def on_connect
     #       send_msg(:cmd => :hello)
     #     end
     #     
@@ -68,7 +70,7 @@ module Chingu
     #
     #
     class NetworkClient < Chingu::GameState
-      attr_reader :latency, :socket, :packet_counter, :packet_buffer
+      attr_reader :latency, :socket, :packet_counter, :packet_buffer, :ip, :port
       
       def initialize(options = {})
         super
@@ -78,6 +80,7 @@ module Chingu
         @latency = 0
         @packet_counter = 0
         @packet_buffer = ""
+        @timeout = options[:timeout] || 4
       end
       
       #
@@ -95,30 +98,40 @@ module Chingu
       # Connect to a given ip:port (the server)
       # Will timeout afte 4 seconds
       #
-      def connect_to_server(ip, port)
+      def connect(ip, port = 7778)
         return if @socket
+        @ip = ip
+        @port = port
     
         begin
           $window.caption = "Connecting to #{ip}:#{port} ... "
-          status = Timeout::timeout(4) do
+          status = Timeout::timeout(@timeout) do
             @socket = TCPSocket.new(ip, port)
             @socket.setsockopt(Socket::IPPROTO_TCP,Socket::TCP_NODELAY,1)
-            on_connect(@socket)
+            on_connect
           end
         rescue Errno::ECONNREFUSED
-          $window.caption = "Server: CONNECTION REFUSED, retrying in 3 seconds..."
-          after(3000) { connect_to_server(ip, port) }
+          on_connection_refused
         rescue Timeout
-          $window.caption = "Server: CONNECTION TIMED OUT, retrying in 3 seconds..."
-          after(3000) { connect_to_server(ip, port) }
+          on_timeout
         end
+      end
+      
+      def on_connection_refused
+        $window.caption = "Server: CONNECTION REFUSED"
+        connect(@ip, @port)
+      end
+      
+      def on_timeout
+        $window.caption = "Server: CONNECTION TIMED OUT"
+        connect(@ip, @port)
       end
       
       #
       # on_connect will be called when client successfully makes a connection to server
       #
-      def on_connect(socket)
-        puts "[Connected to Server #{@ip}:#{port}]" if @debug
+      def on_connect
+        puts "[Connected to Server #{@ip}:#{@port}]" if @debug
       end
       
       #
@@ -153,7 +166,7 @@ module Chingu
           msgs = data.split("--- ")          
           if msgs.size > 1
             @packet_buffer << msgs[0...-1].join("--- ")
-            YAML::load_documents(@packet_buffer) { |doc| on_msg(doc) }
+            YAML::load_documents(@packet_buffer) { |msg| on_msg(msg)  if msg }
             @packet_buffer = msgs.last
           else
             @packet_buffer << msgs.join
@@ -169,7 +182,8 @@ module Chingu
       #
       def send_msg(msg)
         # the "---" part is a little hack to make server understand the YAML is fully transmitted.
-        send_data(msg.to_yaml + "\n--- \n")
+        data = msg.to_yaml + "--- \n"
+        send_data(data)
       end
 
       #

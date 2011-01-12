@@ -21,7 +21,11 @@
 
 module Chingu
   #
-  # 
+  # When you want a quick 'n dirty menu, SimpleMenu might help.
+  # Basic usage:
+  #   SimpleMenu.create(:menu_items => {"StartGame" => PlayState, "Edit" => :exit})
+  #
+  # It will catch keys :up, :down, :return and :space and navigate through the menu
   #
   class SimpleMenu < BasicGameObject
     include Chingu::Helpers::InputClient
@@ -30,7 +34,8 @@ module Chingu
     def initialize(options = {})
       super
       
-      @menu_items = options.delete(:menu_items)     # || {"Exit" => :exit}
+      # @font_size = options.delete(:font_size) || 30
+      @menu_items = options.delete(:menu_items)
       @x = options.delete(:x) || $window.width/2
       @y = options.delete(:y) || 100
       @spacing = options.delete(:spacing) || 100
@@ -64,6 +69,9 @@ module Chingu
       self.input = {:up => lambda{step(-1)}, :down => lambda{step(1)}, [:return, :space] => :select}
     end
     
+    #
+    # Moves selection within the menu. Can be called with negative or positive values. -1 and 1 makes most sense.
+    #
     def step(value)
       selected.options[:on_deselect].call(selected)
       @selected += value

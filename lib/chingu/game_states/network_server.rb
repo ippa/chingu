@@ -28,6 +28,7 @@ module Chingu
     # Uses nonblocking polling TCP and YAML to communicate. 
     # If your game state inherits from NetworkClient you'll have the following methods available:
     #
+    #   start(ip, port)                         # Start server listening on ip:port
     #   send_data(socket, data)                 # Send raw data on the network, nonblocking
     #   send_msg(socket, whatever ruby data)    # Will get YAML'd and sent to server
     #   broadcast_msg(whatever ruby data)       # Send stuff to all connected clients, buffered and dispatched each gametick
@@ -40,6 +41,7 @@ module Chingu
     #   on_disconnect(socket)     # when server dies or disconnects you
     #   on_data(socket, data)     # when raw data arrives from server, if not overloaded this will unpack and call on_msg
     #   on_msg(socket, msg)       # an incoming msgs, could be a ruby hash or array or whatever datastructure you've chosen to send from server
+    #   on_start_error(msg)       # callback for any error during server setup process
     #
     # Usage:
     #   ServerState < Chingu::GameStates::NetworkServer
@@ -69,7 +71,7 @@ module Chingu
     # A good idea is to have a socket-ivar in your Player-model and a Player.find_by_socket(socket)
     #
     class NetworkServer < Chingu::GameState
-      attr_reader :sockets, :packet_counter, :packet_counter
+      attr_reader :sockets, :packet_counter, :packet_counter, :ip, :port
       
       def initialize(options = {})
         super
@@ -86,17 +88,30 @@ module Chingu
       #
       # Start server on ip 'ip' and port 'port'
       #
-      def start_server(ip = '0.0.0.0', port = 7778)
+      def start(ip = '0.0.0.0', port = 7778)
+        @ip = ip
+        @port = port
+        
         begin
           @socket = TCPServer.new(ip, port)
           @socket.setsockopt(Socket::IPPROTO_TCP,Socket::TCP_NODELAY,1)
-          puts "* Server listening on #{ip}:#{port}}"           if @debug
+          puts "* Server listening on #{ip}:#{port}"           if @debug
         rescue
-          puts $!
-          puts "Can't start server on #{ip}:#{port}. Exiting."  if @debug
-          exit
+          on_start_error($!)
         end
       end
+      
+      #
+      # Callback
+      #
+      def on_start_error(msg)
+        if @debug
+          puts "Can't start server on #{ip}:#{port}:\n"
+          puts msg
+        end
+      end
+        
+        
         
       #
       # Default network loop:
@@ -130,6 +145,7 @@ module Chingu
       def handle_incoming_connections
         begin
           socket = @socket.accept_nonblock
+          @sockets << socket
           on_connect(socket)
           @packet_buffers[socket] = ""
         rescue IO::WaitReadable, Errno::EINTR
@@ -145,7 +161,6 @@ module Chingu
           if IO.select([socket], nil, nil, 0.0)
             begin
               packet, sender = socket.recvfrom(max_size)
-              #YAML::load_documents(packet) { |doc| on_msg(socket, doc) }
               on_data(socket, packet)
             rescue Errno::ECONNABORTED, Errno::ECONNRESET
               @packet_buffers[socket] = nil
@@ -163,13 +178,11 @@ module Chingu
           msgs = data.split("--- ")          
           if msgs.size > 1
             @packet_buffers[socket] << msgs[0...-1].join("--- ")
-            YAML::load_documents(@packet_buffers[socket]) { |msg| on_msg(socket, msg) }
+            YAML::load_documents(@packet_buffers[socket]) { |msg| on_msg(socket, msg) if msg}
             @packet_buffers[socket] = msgs.last
           else
             @packet_buffers[socket] << msgs.join
           end
-        rescue ArgumentError
-          puts "Bad YAML recieved:\n#{data}"
         end
       end
       
@@ -178,8 +191,12 @@ module Chingu
       #
       def handle_outgoing_data
         # the "---" part is a little hack to make server understand the YAML is fully transmitted.
-        @sockets.each { |socket| send_data(socket, @buffered_output.emit) + "\n--- \n" }
-        @buffered_output = YAML::Stream.new
+        
+        data = @buffered_output.emit
+        if data.size > 0
+          @sockets.each { |socket| send_data(socket, data + "--- \n") }
+          @buffered_output = YAML::Stream.new
+        end
       end
       
       #
@@ -196,7 +213,7 @@ module Chingu
       #
       def send_msg(socket, msg)
         # the "---" part is a little hack to make server understand the YAML is fully transmitted.
-        send_data(socket, msg.to_yaml + "\n--- \n")
+        send_data(socket, msg.to_yaml + "--- \n")
       end
       
       #
