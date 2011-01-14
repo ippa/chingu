@@ -37,10 +37,12 @@ module Chingu
 
     #   
     # The following callbacks can be overwritten to add your game logic:
+    #
     #   on_connect(socket)        # when the TCP connection to the server is opened
     #   on_disconnect(socket)     # when server dies or disconnects you
     #   on_data(socket, data)     # when raw data arrives from server, if not overloaded this will unpack and call on_msg
     #   on_msg(socket, msg)       # an incoming msgs, could be a ruby hash or array or whatever datastructure you've chosen to send from server
+    #   on_start                  # called when socket is listening and ready
     #   on_start_error(msg)       # callback for any error during server setup process
     #
     # Usage:
