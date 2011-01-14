@@ -71,7 +71,7 @@ module Chingu
     # A good idea is to have a socket-ivar in your Player-model and a Player.find_by_socket(socket)
     #
     class NetworkServer < Chingu::GameState
-      attr_reader :sockets, :packet_counter, :packet_counter, :ip, :port
+      attr_reader :socket, :sockets, :packet_counter, :packet_counter, :ip, :port
       
       def initialize(options = {})
         super
@@ -95,14 +95,22 @@ module Chingu
         begin
           @socket = TCPServer.new(ip, port)
           @socket.setsockopt(Socket::IPPROTO_TCP,Socket::TCP_NODELAY,1)
-          puts "* Server listening on #{ip}:#{port}"           if @debug
+          on_start
+          
         rescue
           on_start_error($!)
         end
       end
       
       #
-      # Callback
+      # Callback for when Socket listens correctly on given host/port
+      #
+      def on_start
+        puts "* Server listening on #{ip}:#{port}"          if @debug
+      end
+      
+      #
+      # Callback for when something goes wrong with startup (when making TCP socket listen to a port)
       #
       def on_start_error(msg)
         if @debug
@@ -123,9 +131,11 @@ module Chingu
       #
       def update
         super
-        handle_incoming_connections
-        handle_incoming_data
-        handle_outgoing_data
+        if @socket && !@socket.closed?
+          handle_incoming_connections
+          handle_incoming_data
+          handle_outgoing_data
+        end
       end
       
       #
@@ -233,6 +243,16 @@ module Chingu
       #
       def disconnect_client(socket)
         socket.close
+      end
+      
+      #
+      # Stops server
+      #
+      def stop
+        begin
+          @socket.close
+        rescue Errno::ENOTCONN
+        end
       end
 
     end

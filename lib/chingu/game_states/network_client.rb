@@ -104,7 +104,6 @@ module Chingu
         @port = port
     
         begin
-          $window.caption = "Connecting to #{ip}:#{port} ... "
           status = Timeout::timeout(@timeout) do
             @socket = TCPSocket.new(ip, port)
             @socket.setsockopt(Socket::IPPROTO_TCP,Socket::TCP_NODELAY,1)
