@@ -74,13 +74,13 @@ module Chingu
       
       def initialize(options = {})
         super
-        
+        @timeout = options[:timeout] || 4        
         @debug = true
+        
         @socket = nil
         @latency = 0
         @packet_counter = 0
         @packet_buffer = ""
-        @timeout = options[:timeout] || 4
       end
       
       #
