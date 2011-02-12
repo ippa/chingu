@@ -9,7 +9,7 @@ module Chingu
     class Move < Tween
       
       def initialize(owner, duration, x, y, &callback)
-        super owner, duration, :x => x, :y => y, &callback
+        super(owner, duration, :x => x, :y => y, &callback)
       end
       
     end

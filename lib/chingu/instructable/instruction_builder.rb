@@ -34,7 +34,7 @@ module Chingu
           
         end
         
-        @instructions.enq instruction
+        @instructions.enq(instruction)
         instruction
       end
       

@@ -66,7 +66,7 @@ module Chingu
       # Add a set of instructions to the instruction queue to be executed
       # asynchronously.
       #
-      def instruct &block
+      def instruct(&block)
         builder = Chingu::Instructable::InstructionBuilder.new(self, @instructions)
         block[builder]
       end

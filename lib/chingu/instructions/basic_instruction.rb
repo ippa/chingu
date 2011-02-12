@@ -5,8 +5,8 @@ module Chingu
     
     class BasicInstruction
       
-      def initialize owner, &callback
-        @owner    = WeakRef.new owner
+      def initialize(owner, &callback)
+        @owner    = WeakRef.new(owner)
         @callback = callback
         @finished = @started = false
       end
@@ -26,13 +26,14 @@ module Chingu
         !!@started
       end
       
-      def start;
+      def start
         @started = true
       end
       
-      def update; end
+      def update
+      end
       
-      def finish *args
+      def finish(*args)
         @callback[*args] if @callback
         @finished = true
       end

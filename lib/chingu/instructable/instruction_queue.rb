@@ -29,8 +29,8 @@ module Chingu
         @queue.first
       end
       
-      def enq *instructions
-        @queue.push *instructions
+      def enq(*instructions)
+        @queue.push(*instructions)
       end
       
       def deq
