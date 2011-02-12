@@ -34,6 +34,7 @@ require File.join(CHINGU_ROOT,"chingu","require_all") # Thanks to http://github.
 # and GameObject to get the correct class_inheritable_accssor
 require_all "#{CHINGU_ROOT}/chingu/helpers"
 require_all "#{CHINGU_ROOT}/chingu/traits"
+require_all "#{CHINGU_ROOT}/chingu/instructions"
 require_all "#{CHINGU_ROOT}/chingu"
 
 module Chingu
