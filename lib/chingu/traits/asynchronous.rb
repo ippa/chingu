@@ -72,7 +72,7 @@ module Chingu
         if block_given?
           add_instruction_block *args, &block
         else
-          enq_instruction *args, &block 
+          add_instruction *args, &block 
         end
       end
       
