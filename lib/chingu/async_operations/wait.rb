@@ -40,8 +40,8 @@ module Chingu
       def update
         @age += $window.milliseconds_since_last_tick
         
-        timed_out = (@life != nil) and (@age >= @life)
-        result    = @condition and @condition[]
+        timed_out = (@life != nil and @age >= @life)
+        result    = (@condition and @condition[])
         
         finish(result) if result or timed_out
       end
