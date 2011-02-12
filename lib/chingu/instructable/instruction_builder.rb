@@ -23,10 +23,19 @@ module Chingu
         when Symbol, String
           klass_name = Chingu::Inflector.camelize(instruction)
           klass = Chingu::Instructions.const_get(klass_name)
-          klass.new(@owner, *args, &block)
+          
+          instruction = klass.new(@owner, *args, &block)
+          
+        when Chingu::Instructions::BasicInstruction
+          # pass
+          
         else
-          instruction.new(@owner, *args, &block)
+          instruction = instruction.new(@owner, *args, &block)
+          
         end
+        
+        @instructions.enq instruction
+        instruction
       end
       
       #

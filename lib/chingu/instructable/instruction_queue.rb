@@ -33,8 +33,8 @@ module Chingu
         @queue.push *instructions
       end
       
-      def deq n = nil
-        @queue.shift n
+      def deq
+        @queue.shift
       end
       
       def clear
