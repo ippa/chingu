@@ -1,14 +1,14 @@
 module Chingu
-  module Instructions
+  module AsyncOperations
     
     #
     # Basic tweening for numerical properties.
     #
-    # 	game_object.instruct do |q|
+    # 	game_object.async do |q|
     # 	  q.tween 1000, :property => new_value
     # 	end
     #
-    class Tween < BasicInstruction
+    class Tween < BasicOp
       
       # TODO Tweening is pretty dumb...make it smarter.
       

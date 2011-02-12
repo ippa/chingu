@@ -23,37 +23,39 @@ module Chingu
   module Traits
     
     #
-    # A chingu trait providing an asynchronous instruction queue
+    # A chingu trait providing an asynchronous operations queue
     #
     # For example:
     # 	class Robot < GameObject
-    # 	  traits :instructable
+    # 	  traits :asynchronous
     # 	  
     # 	  # robot stuff
     # 	end
     # 	
     # 	# later, controlling your robot...
-    # 	robot.instruct do |q|
+    # 	robot.async do |q|
     # 	  q.tween(5000, :x => 1024, :y => 64) { robot.explode }
     # 	end
     #
     # Will move the robot asynchronously from its current location to
-    # (1024, 64), then blow it up. The +instruct+ method returns immediately
+    # (1024, 64), then blow it up. The +async+ method returns immediately
     # after adding instructions to the queue.
     # 
-    # The first instructions on the queue is processed each tick during the
+    # The first operation on the queue is processed each tick during the
     # update phase, then removed from the queue when it is deemed finished.
     # What constitutes "finished" is determined by the particular subclass of
-    # +BasicInstruction+.
+    # +BasicOp+.
     #
     
-    module Instructable
+    module Asynchronous
+      
+      attr_reader :instructions
       
       #
       # Setup
       #
       def setup_trait(options)
-        @instructions = Chingu::Instructable::InstructionQueue.new
+        @instructions = Chingu::Async::OpQueue.new
         super
       end
       
@@ -66,9 +68,24 @@ module Chingu
       # Add a set of instructions to the instruction queue to be executed
       # asynchronously.
       #
-      def instruct(&block)
-        builder = Chingu::Instructable::InstructionBuilder.new(self, @instructions)
+      def async(*args, &block)
+        if block_given?
+          add_instruction_block *args, &block
+        else
+          enq_instruction *args, &block 
+        end
+      end
+      
+      protected
+      
+      def add_instruction_block &block
+        builder = Chingu::Async::QueueBuilder.new(self, @instructions)
         block[builder]
+      end
+      
+      def add_instruction name, *args, &callback
+        builder = Chingu::Async::QueueBuilder.new(self, @instructions)
+        builder.instruct name, *args, &callback
       end
       
     end

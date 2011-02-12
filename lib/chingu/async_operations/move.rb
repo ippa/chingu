@@ -1,7 +1,7 @@
-require "#{CHINGU_ROOT}/chingu/instructions/tween"
+require "#{CHINGU_ROOT}/chingu/async_operations/tween"
 
 module Chingu
-  module Instructions
+  module AsyncOperations
     
     # 
     # Syntactic sugar for tween(duration, :x => x, :y => y)

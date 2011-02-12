@@ -1,7 +1,7 @@
 module Chingu
-  module Instructable
+  module Async
     
-    class InstructionQueue
+    class OpQueue
       # extend Forwardable
       # def_delegator :@queue, :push,  :enq
       # def_delegator :@queue, :shift, :deq

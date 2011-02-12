@@ -1,11 +1,10 @@
 module Chingu
-  module Instructable
+  module Async
     
     #
-    # InstructionBuilder implements a DSL for appending new instructions to
-    # an instruction queue.
+    # Implements a DSL for appending new instructions to an instruction queue.
     #
-    class InstructionBuilder
+    class QueueBuilder
       def initialize(owner, instructions)
         @owner, @instructions = owner, instructions
       end
@@ -22,11 +21,11 @@ module Chingu
         case instruction
         when Symbol, String
           klass_name = Chingu::Inflector.camelize(instruction)
-          klass = Chingu::Instructions.const_get(klass_name)
+          klass = Chingu::AsyncOperations.const_get(klass_name)
           
           instruction = klass.new(@owner, *args, &block)
           
-        when Chingu::Instructions::BasicInstruction
+        when Chingu::AsyncOperations::BasicOp
           # pass
           
         else

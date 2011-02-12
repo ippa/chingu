@@ -1,9 +1,9 @@
 require 'weakref'
 
 module Chingu
-  module Instructions
+  module AsyncOperations
     
-    class BasicInstruction
+    class BasicOp
       
       def initialize(owner, &callback)
         @owner    = WeakRef.new(owner)
