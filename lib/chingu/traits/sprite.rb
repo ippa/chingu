@@ -186,7 +186,7 @@ module Chingu
       def alpha=(value)
         value = 0   if value < 0
         value = 255 if value > 255
-        @color.alpha = value
+        @color.alpha = value.to_i
       end
 
       #
