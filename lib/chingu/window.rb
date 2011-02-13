@@ -100,7 +100,7 @@ module Chingu
     # Frames per second, access with $window.fps or $window.framerate
     #
     def fps
-      @fps_counter.fps
+      @fps_counter.fps      # TODO: switch to Gosu::fps
     end
     alias :framerate :fps
 

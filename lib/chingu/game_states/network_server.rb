@@ -56,7 +56,7 @@ module Chingu
     #       send_msg(:cmd => :ping, :timestamp => Gosu::milliseconds)
     #     end
     #     
-    #     def on_msg(msg)
+    #     def on_msg(socket, msg)
     #       if msg[:cmd] == :pong
     #         latency = Gosu::milliseconds - msg[:timestamp]
     #         puts "Server/Client roundtrip #{latency}ms"
