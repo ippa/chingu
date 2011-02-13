@@ -25,30 +25,26 @@ module Chingu
     #
     # Basic tweening for numerical properties.
     #
-    # 	game_object.async do |q|
-    # 	  q.tween 1000, :property => new_value
-    # 	end
+    # 	game_object.async.tween 1000, :property => new_value
     #
     class Tween < BasicOp
       
       # TODO Tweening is pretty dumb...make it smarter.
       
-      def initialize(owner, duration, properties, &callback)
-        super owner, &callback
+      def initialize(duration, properties)
+        super()
         @age, @life = 0, duration
         @properties = properties
       end
       
       def start
         super
-        owner = @owner.__getobj__
         @properties.each do |name, value|
           @properties[name] = owner.send(name) .. value
         end
       end
       
       def update
-        owner = @owner.__getobj__
         @age += $window.milliseconds_since_last_tick
         t = @age.to_f / @life
         t = 1.0 if t > 1

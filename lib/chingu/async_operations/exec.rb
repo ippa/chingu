@@ -27,8 +27,8 @@ module Chingu
     #
     class Exec < BasicOp
       
-      def initialize(owner, &block)
-        super owner
+      def initialize(&block)
+        super()
         @block = block
       end
       

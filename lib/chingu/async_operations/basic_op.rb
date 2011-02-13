@@ -26,10 +26,48 @@ module Chingu
     
     class BasicOp
       
-      def initialize(owner, &callback)
-        @owner    = WeakRef.new(owner)
-        @callback = callback
-        @finished = @started = false
+      attr_accessor :owner
+      
+      def initialize
+        @state = nil
+      end
+      
+      def owner
+        if WeakRef === @owner
+          @owner.__getobj__
+        else
+          @owner
+        end
+      end
+      
+      def owner=(new_owner)
+        @owner = WeakRef.new(new_owner)
+      rescue
+        @owner = new_owner
+      end
+      
+      #
+      # Registers a block to be called when the operation begins.
+      # When called without a block, returns a previously registered block.
+      #
+      def before(&block)
+        if block_given?
+          @before = block
+        else
+          @before
+        end
+      end
+      
+      #
+      # Registers a block to be called when the operation finishes.
+      # When called without a block, returns a previously registered block.
+      #
+      def after(&block)
+        if block_given?
+          @after = block
+        else
+          @after
+        end
       end
       
       #
@@ -37,26 +75,27 @@ module Chingu
       # "finished" is determined by the particular subclass.
       #
       def finished?
-        !!@finished
+        @state == :finished
       end
       
       #
       # Returns true if the instruction has begun being processed.
       #
       def started?
-        !!@started
+        @state == :started || @state == :finished
       end
       
       def start
-        @started = true
+        @state = :started
+        @before[] if @before
       end
       
       def update
       end
       
       def finish(*args)
-        @callback[*args] if @callback
-        @finished = true
+        @after[*args] if @after
+        @state = :finished
       end
       
     end

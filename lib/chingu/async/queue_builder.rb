@@ -44,7 +44,8 @@ module Chingu
           klass_name = Chingu::Inflector.camelize(instruction)
           klass = Chingu::AsyncOperations.const_get(klass_name)
           
-          instruction = klass.new(@owner, *args, &block)
+          instruction = klass.new(*args, &block)
+          instruction.owner = @owner
           
         when Chingu::AsyncOperations::BasicOp
           # pass

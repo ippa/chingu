@@ -25,12 +25,18 @@ module Chingu
   module AsyncOperations
     
     # 
-    # Syntactic sugar for tween(duration, :x => x, :y => y)
+    # Syntactic sugar for tween(duration, :x => x, :y => y, :angle => angle)
     # 
     class Move < Tween
       
-      def initialize(owner, duration, x, y, &callback)
-        super(owner, duration, :x => x, :y => y, &callback)
+      def initialize(owner, duration, x, y, angle = nil)
+        properties = { }
+        
+        properties[:x]     = x unless x.nil?
+        properties[:y]     = y unless y.nil?
+        properties[:angle] = angle unless angle.nil?
+        
+        super(duration, properties)
       end
       
     end

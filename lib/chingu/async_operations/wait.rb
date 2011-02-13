@@ -31,8 +31,8 @@ module Chingu
       
       attr_accessor :timeout, :condition
       
-      def initialize(owner, timeout = nil, &condition)
-        super owner
+      def initialize(timeout = nil, &condition)
+        super()
         @age, @life = 0, timeout
         @condition  = condition
       end

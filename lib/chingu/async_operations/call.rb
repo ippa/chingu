@@ -27,8 +27,8 @@ module Chingu
     #
     class Call < BasicOp
       
-      def initialize(owner, method, *args, &callback)
-        super owner, &callback
+      def initialize(method, *args)
+        super()
         @method, @args = method, args
       end
       
