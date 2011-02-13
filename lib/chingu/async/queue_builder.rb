@@ -50,9 +50,10 @@ module Chingu
         when Chingu::AsyncTasks::BasicTask
           # pass
           
-        else
-          task = task.new(@owner, *args, &block)
+        when Class
+          task = task.new(*args, &block)
           
+        else raise TypeError, "task must be a Task object or task name"
         end
         
         @tasks.enq(task)
