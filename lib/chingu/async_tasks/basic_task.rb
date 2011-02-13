@@ -22,9 +22,9 @@
 require 'weakref'
 
 module Chingu
-  module AsyncOperations
+  module AsyncTasks
     
-    class BasicOp
+    class BasicTask
       
       attr_accessor :owner
       
@@ -47,7 +47,7 @@ module Chingu
       end
       
       #
-      # Registers a block to be called when the operation begins.
+      # Registers a block to be called when the task begins.
       # When called without a block, returns a previously registered block.
       #
       def before(&block)
@@ -59,7 +59,7 @@ module Chingu
       end
       
       #
-      # Registers a block to be called when the operation finishes.
+      # Registers a block to be called when the task finishes.
       # When called without a block, returns a previously registered block.
       #
       def after(&block)
@@ -71,7 +71,7 @@ module Chingu
       end
       
       #
-      # Returns true if the instruction has finished executing. The meaning of
+      # Returns true if the task has finished executing. The meaning of
       # "finished" is determined by the particular subclass.
       #
       def finished?
@@ -79,7 +79,7 @@ module Chingu
       end
       
       #
-      # Returns true if the instruction has begun being processed.
+      # Returns true if the task has begun being processed.
       #
       def started?
         @state == :started || @state == :finished

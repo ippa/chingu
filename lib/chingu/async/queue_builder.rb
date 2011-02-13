@@ -23,47 +23,47 @@ module Chingu
   module Async
     
     #
-    # Implements a DSL for appending new instructions to an instruction queue.
+    # Implements a DSL for appending new tasks to an task queue.
     #
-    class QueueBuilder
-      def initialize(owner, instructions)
-        @owner, @instructions = owner, instructions
+    class TaskBuilder
+      def initialize(owner, tasks)
+        @owner, @tasks = owner, tasks
       end
       
       #
-      # Add a new instruction to the queue. The first argument is a Symbol or
-      # String naming the type of instruction; remaining arguments are passed
-      # on to the instruction's constructor.
+      # Add a new task to the queue. The first argument is a Symbol or
+      # String naming the type of task; remaining arguments are passed
+      # on to the task's constructor.
       # 
       # If a block is supplied, it is scheduled to be executed as soon as the
-      # instruction is finished.
+      # task is finished.
       #
-      def instruct(instruction, *args, &block)
-        case instruction
+      def task(task, *args, &block)
+        case task
         when Symbol, String
-          klass_name = Chingu::Inflector.camelize(instruction)
-          klass = Chingu::AsyncOperations.const_get(klass_name)
+          klass_name = Chingu::Inflector.camelize(task)
+          klass = Chingu::AsyncTasks.const_get(klass_name)
           
-          instruction = klass.new(*args, &block)
-          instruction.owner = @owner
+          task = klass.new(*args, &block)
+          task.owner = @owner
           
-        when Chingu::AsyncOperations::BasicOp
+        when Chingu::AsyncTasks::BasicTask
           # pass
           
         else
-          instruction = instruction.new(@owner, *args, &block)
+          task = task.new(@owner, *args, &block)
           
         end
         
-        @instructions.enq(instruction)
-        instruction
+        @tasks.enq(task)
+        task
       end
       
       #
       # Attempting to invoke a nonexistant method automatically calls
-      # +instruct+ with the method name as the instruction type.
+      # +task+ with the method name as the task type.
       #
-      alias :method_missing :instruct
+      alias :method_missing :task
       
     end
     

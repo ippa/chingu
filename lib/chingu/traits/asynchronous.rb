@@ -23,7 +23,7 @@ module Chingu
   module Traits
     
     #
-    # A chingu trait providing an asynchronous operations queue
+    # A chingu trait providing an asynchronous tasks queue
     #
     # For example:
     # 	class Robot < GameObject
@@ -40,38 +40,38 @@ module Chingu
     #
     # Will move the robot asynchronously from its current location to
     # (1024, 64), then blow it up. The +async+ method returns immediately
-    # after adding instructions to the queue.
+    # after adding tasks to the queue.
     # 
-    # The first operation on the queue is processed each tick during the
+    # The first task on the queue is processed each tick during the
     # update phase, then removed from the queue when it is deemed finished.
     # What constitutes "finished" is determined by the particular subclass of
-    # +BasicOp+.
+    # +BasicTask+.
     #
     
     module Asynchronous
       
-      attr_reader :instructions
+      attr_reader :tasks
       
       #
       # Setup
       #
       def setup_trait(options)
-        @instructions = Chingu::Async::OpQueue.new
+        @tasks = Chingu::Async::TaskList.new
         super
       end
       
       def update_trait
-        @instructions.update
+        @tasks.update
         super
       end
       
       #
-      # Add a set of instructions to the instruction queue to be executed
-      # asynchronously. If no block is given, returns the QueueBuilder that
+      # Add a set of tasks to the task queue to be executed
+      # asynchronously. If no block is given, returns the TaskBuilder that
       # would have been passed to the block.
       #
       def async
-        builder = Chingu::Async::QueueBuilder.new(self, @instructions)
+        builder = Chingu::Async::TaskBuilder.new(self, @tasks)
         if block_given?
           yield builder
         else

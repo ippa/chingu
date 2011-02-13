@@ -20,46 +20,38 @@
 #++
 
 module Chingu
-  module Async
+  module AsyncTasks
     
-    class OpQueue
-      # extend Forwardable
-      # def_delegator :@queue, :push,  :enq
-      # def_delegator :@queue, :shift, :deq
-      # def_delegator :@queue, :first, :front
-      # def_delegator :@queue, :clear
+    #
+    # Basic tweening for numerical properties.
+    #
+    # 	game_object.async.tween 1000, :property => new_value
+    #
+    class Tween < BasicTask
       
-      def initialize
-        @queue = []
+      # TODO Tweening is pretty dumb...make it smarter.
+      
+      def initialize(duration, properties)
+        super()
+        @age, @life = 0, duration
+        @properties = properties
       end
       
-      #
-      # Processes the first instruction on the queue, each tick removing the
-      # instruction once it has finished.
-      #
-      def update
-        if instruction = front
-          instruction.start unless instruction.started?
-          instruction.update
-          deq if instruction.finished?
-          instruction
+      def start
+        super
+        @properties.each do |name, value|
+          @properties[name] = owner.send(name) .. value
         end
       end
       
-      def front
-        @queue.first
-      end
-      
-      def enq(*instructions)
-        @queue.push(*instructions)
-      end
-      
-      def deq
-        @queue.shift
-      end
-      
-      def clear
-        @queue.clear
+      def update
+        @age += $window.milliseconds_since_last_tick
+        t = @age.to_f / @life
+        t = 1.0 if t > 1
+        @properties.each do |name, range|
+          owner.send "#{name}=", range.interpolate(t)
+        end
+        finish if @age >= @life
       end
       
     end

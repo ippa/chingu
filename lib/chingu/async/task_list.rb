@@ -20,20 +20,46 @@
 #++
 
 module Chingu
-  module AsyncOperations
+  module Async
     
-    #
-    # Block execution as an asynchronous operation.
-    #
-    class Exec < BasicOp
+    class TaskList
+      # extend Forwardable
+      # def_delegator :@queue, :push,  :enq
+      # def_delegator :@queue, :shift, :deq
+      # def_delegator :@queue, :first, :front
+      # def_delegator :@queue, :clear
       
-      def initialize(&block)
-        super()
-        @block = block
+      def initialize
+        @queue = []
       end
       
+      #
+      # Processes the first task on the queue, each tick removing the
+      # task once it has finished.
+      #
       def update
-        finish @block[]
+        if task = front
+          task.start unless task.started?
+          task.update
+          deq if task.finished?
+          task
+        end
+      end
+      
+      def front
+        @queue.first
+      end
+      
+      def enq(*tasks)
+        @queue.push(*tasks)
+      end
+      
+      def deq
+        @queue.shift
+      end
+      
+      def clear
+        @queue.clear
       end
       
     end

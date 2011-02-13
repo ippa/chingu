@@ -20,14 +20,14 @@
 #++
 
 module Chingu
-  module AsyncOperations
+  module AsyncTasks
     
     #
-    # Halts processing of instructions until the passed-in block returns a
+    # Halts processing of tasks until the passed-in block returns a
     # true value, or the timeout expires. If no block is given, behaves as if
     # the block returned nil.
     #
-    class Wait < BasicOp
+    class Wait < BasicTask
       
       attr_accessor :timeout, :condition
       

@@ -37,15 +37,15 @@ class Game < Chingu::Window
     # Instruct the boss to move along a path while rotating clockwise.
     # Nothing is actually done until the run loop calls #update.
     @boss.async do |q|
-      # These instructions are performed sequentially and asynchronously
-      # using the magic of queues. Each instructable GameObject has its own!
+      # These tasks are performed sequentially and asynchronously
+      # using the magic of queues. Each GameObject has its own!
       q.wait { button_down? Gosu::KbSpace }
       q.tween(1000, :x => 100, :y => 100, :angle => 45)
       q.tween(1000, :y => 200, :angle => 90)
       q.call :fire!
     end
     
-    # Single instructions can also be given with a less verbose syntax.
+    # Single tasks can also be given with a less verbose syntax.
     # Wait a second...
     @boss.async.wait 1000
     

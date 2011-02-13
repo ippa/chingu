@@ -19,24 +19,21 @@
 #
 #++
 
-require "#{CHINGU_ROOT}/chingu/async_operations/tween"
-
 module Chingu
-  module AsyncOperations
+  module AsyncTasks
     
-    # 
-    # Syntactic sugar for tween(duration, :x => x, :y => y, :angle => angle)
-    # 
-    class Move < Tween
+    #
+    # Block execution as an asynchronous task.
+    #
+    class Exec < BasicTask
       
-      def initialize(owner, duration, x, y, angle = nil)
-        properties = { }
-        
-        properties[:x]     = x unless x.nil?
-        properties[:y]     = y unless y.nil?
-        properties[:angle] = angle unless angle.nil?
-        
-        super(duration, properties)
+      def initialize(&block)
+        super()
+        @block = block
+      end
+      
+      def update
+        finish @block[]
       end
       
     end

@@ -20,37 +20,20 @@
 #++
 
 module Chingu
-  module AsyncOperations
+  module AsyncTasks
     
-    class Parallel < BasicOp
+    #
+    # Single method call as an asynchronous task.
+    #
+    class Call < BasicTask
       
-      undef :before
-      undef :after
-      
-      def initialize
-        @subtasks = []
-      end
-      
-      def finished?
-        @subtasks.empty? or @subtasks.all? &:finished?
-      end
-      
-      def started?
-        # Shortcut: if the first task has been started, then all tasks must
-        # have been started.
-        @subtasks.first.started?
-      end
-      
-      def start
-        @subtasks.each &:start
+      def initialize(method, *args)
+        super()
+        @method, @args = method, args
       end
       
       def update
-        @subtasks.each &:update
-      end
-      
-      def finish(*args)
-        @subtasks.each &:finish
+        finish @owner.__getobj__.send(@method, *@args)
       end
       
     end

@@ -19,39 +19,24 @@
 #
 #++
 
+require "#{CHINGU_ROOT}/chingu/async_tasks/tween"
+
 module Chingu
-  module AsyncOperations
+  module AsyncTasks
     
-    #
-    # Basic tweening for numerical properties.
-    #
-    # 	game_object.async.tween 1000, :property => new_value
-    #
-    class Tween < BasicOp
+    # 
+    # Syntactic sugar for tween(duration, :x => x, :y => y, :angle => angle)
+    # 
+    class Move < Tween
       
-      # TODO Tweening is pretty dumb...make it smarter.
-      
-      def initialize(duration, properties)
-        super()
-        @age, @life = 0, duration
-        @properties = properties
-      end
-      
-      def start
-        super
-        @properties.each do |name, value|
-          @properties[name] = owner.send(name) .. value
-        end
-      end
-      
-      def update
-        @age += $window.milliseconds_since_last_tick
-        t = @age.to_f / @life
-        t = 1.0 if t > 1
-        @properties.each do |name, range|
-          owner.send "#{name}=", range.interpolate(t)
-        end
-        finish if @age >= @life
+      def initialize(owner, duration, x, y, angle = nil)
+        properties = { }
+        
+        properties[:x]     = x unless x.nil?
+        properties[:y]     = y unless y.nil?
+        properties[:angle] = angle unless angle.nil?
+        
+        super(duration, properties)
       end
       
     end
