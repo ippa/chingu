@@ -30,20 +30,22 @@ module Chingu
     class Wait < BasicTask
       
       attr_accessor :timeout, :condition
+      attr_reader :result
       
       def initialize(timeout = nil, &condition)
         super()
+        @result     = nil
         @age, @life = 0, timeout
         @condition  = condition
       end
       
-      def update
+      def update(object)
         @age += $window.milliseconds_since_last_tick
-        
-        timed_out = (@life != nil and @age >= @life)
-        result    = (@condition and @condition[])
-        
-        finish(result) if result or timed_out
+        @result = (@condition and @condition[])
+      end
+      
+      def finished?
+        !!@result or (@life != nil and @age >= @life)
       end
       
     end

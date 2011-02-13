@@ -37,10 +37,9 @@ module Chingu
       # Processes the first task on the queue, each tick removing the
       # task once it has finished.
       #
-      def update
+      def update(object)
         if task = front
-          task.start unless task.started?
-          task.update
+          task.update object
           deq if task.finished?
           task
         end

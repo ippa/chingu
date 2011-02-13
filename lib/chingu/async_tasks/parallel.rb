@@ -22,35 +22,39 @@
 module Chingu
   module AsyncTasks
     
+    #
+    # Executes all subtasks in parallel.
+    #
     class Parallel < BasicTask
       
-      undef :before
-      undef :after
-      
-      def initialize
+      def initialize(&block)
         @subtasks = []
+        
+        # Make @subtasks behave like a TaskList for the TaskBuilder.
+        # This is probably a dirty hack!
+        class <<@subtasks
+          alias :enq   :push
+          alias :deq   :shift
+          alias :front :first
+        end
+        
+        add_tasks(&block)
       end
       
+      def add_tasks(&block)
+        builder = Chingu::Async::TaskBuilder.new(@subtasks)
+        block[builder]
+      end
+      
+      #
+      # Returns true if all subtasks have finished executing.
+      #
       def finished?
-        @subtasks.empty? or @subtasks.all? &:finished?
+        @subtasks.empty? or @subtasks.all?(&:finished?)
       end
       
-      def started?
-        # Shortcut: if the first task has been started, then all tasks must
-        # have been started.
-        @subtasks.first.started?
-      end
-      
-      def start
-        @subtasks.each &:start
-      end
-      
-      def update
-        @subtasks.each &:update
-      end
-      
-      def finish(*args)
-        @subtasks.each &:finish
+      def update(object)
+        @subtasks.each { |task| task.update(object) }
       end
       
     end

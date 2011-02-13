@@ -30,10 +30,16 @@ module Chingu
       def initialize(method, *args)
         super()
         @method, @args = method, args
+        @finished = false
       end
       
-      def update
-        finish @owner.__getobj__.send(@method, *@args)
+      def update(object)
+        object.send(@method, *@args)
+        @finished = true
+      end
+      
+      def finished?
+        !!@finished
       end
       
     end

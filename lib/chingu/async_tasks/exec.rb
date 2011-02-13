@@ -30,10 +30,16 @@ module Chingu
       def initialize(&block)
         super()
         @block = block
+        @finished = false
       end
       
-      def update
-        finish @block[]
+      def update(object)
+        @block[]
+        @finished = true
+      end
+      
+      def finished?
+        !!@finished
       end
       
     end

@@ -26,8 +26,8 @@ module Chingu
     # Implements a DSL for appending new tasks to an task queue.
     #
     class TaskBuilder
-      def initialize(owner, tasks)
-        @owner, @tasks = owner, tasks
+      def initialize(tasks)
+        @tasks = tasks
       end
       
       #
@@ -45,7 +45,6 @@ module Chingu
           klass = Chingu::AsyncTasks.const_get(klass_name)
           
           task = klass.new(*args, &block)
-          task.owner = @owner
           
         when Chingu::AsyncTasks::BasicTask
           # pass

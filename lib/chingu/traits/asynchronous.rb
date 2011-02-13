@@ -61,7 +61,7 @@ module Chingu
       end
       
       def update_trait
-        @tasks.update
+        @tasks.update self
         super
       end
       
@@ -71,7 +71,7 @@ module Chingu
       # would have been passed to the block.
       #
       def async
-        builder = Chingu::Async::TaskBuilder.new(self, @tasks)
+        builder = Chingu::Async::TaskBuilder.new(@tasks)
         if block_given?
           yield builder
         else

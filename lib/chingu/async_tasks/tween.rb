@@ -33,25 +33,38 @@ module Chingu
       
       def initialize(duration, properties)
         super()
+        @have_initial_values = false
         @age, @life = 0, duration
         @properties = properties
       end
       
-      def start
-        super
-        @properties.each do |name, value|
-          @properties[name] = owner.send(name) .. value
-        end
-      end
-      
-      def update
+      def update(object)
+        set_initial_values(object) unless have_initial_values?
+        
         @age += $window.milliseconds_since_last_tick
         t = @age.to_f / @life
         t = 1.0 if t > 1
         @properties.each do |name, range|
-          owner.send "#{name}=", range.interpolate(t)
+          object.send "#{name}=", range.interpolate(t)
         end
-        finish if @age >= @life
+      end
+      
+      def finished?
+        @age >= @life
+      end
+      
+      private
+      
+      def set_initial_values(object)
+        # TODO find a better and more general way to set up tweening.
+        @properties.each do |name, value|
+          @properties[name] = object.send(name) .. value
+        end
+        @have_initial_values = true
+      end
+      
+      def have_initial_values?
+        !!@have_initial_values
       end
       
     end

@@ -29,7 +29,7 @@ module Chingu
     # 
     class Move < Tween
       
-      def initialize(owner, duration, x, y, angle = nil)
+      def initialize(duration, x, y, angle = nil)
         properties = { }
         
         properties[:x]     = x unless x.nil?
