@@ -784,7 +784,7 @@ tick and removed when it has finished.
 
   # Simple one-trick example
   # This will cause an object to move from its current location to 64,64.
-  @guy.async :tween, :x => 64, :y => 64
+  @guy.async.tween :x => 64, :y => 64
   
   # Block syntax example
   # This will cause a line of text to fade out and vanish.

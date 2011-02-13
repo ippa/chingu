@@ -34,7 +34,8 @@ module Chingu
     # 	
     # 	# later, controlling your robot...
     # 	robot.async do |q|
-    # 	  q.tween(5000, :x => 1024, :y => 64) { robot.explode }
+    # 	  q.tween(5000, :x => 1024, :y => 64)
+    # 	  q.call :explode
     # 	end
     #
     # Will move the robot asynchronously from its current location to
@@ -66,26 +67,16 @@ module Chingu
       
       #
       # Add a set of instructions to the instruction queue to be executed
-      # asynchronously.
+      # asynchronously. If no block is given, returns the QueueBuilder that
+      # would have been passed to the block.
       #
-      def async(*args, &block)
+      def async
+        builder = Chingu::Async::QueueBuilder.new(self, @instructions)
         if block_given?
-          add_instruction_block *args, &block
+          yield builder
         else
-          add_instruction *args, &block 
+          builder
         end
-      end
-      
-      protected
-      
-      def add_instruction_block &block
-        builder = Chingu::Async::QueueBuilder.new(self, @instructions)
-        block[builder]
-      end
-      
-      def add_instruction name, *args, &callback
-        builder = Chingu::Async::QueueBuilder.new(self, @instructions)
-        builder.instruct name, *args, &callback
       end
       
     end

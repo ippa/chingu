@@ -47,7 +47,7 @@ class Game < Chingu::Window
     
     # Single instructions can also be given with a less verbose syntax.
     # Wait a second...
-    @boss.async(:wait, 1000)
+    @boss.async.wait 1000
     
     # Move and fire one more time, just for good measure.
     @boss.async do |q|
