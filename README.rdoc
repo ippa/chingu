@@ -797,7 +797,7 @@ tick and removed when it has finished.
   end
 
 Currently available operations are wait(timeout, &condition), tween(timeout,
-properties) and call(method, *arguments).
+properties), call(method, *arguments) and exec { ... }.
 
 For a more complete example of how to use this trait, see
 examples/example_async.rb.
