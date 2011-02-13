@@ -19,29 +19,28 @@
 #
 #++
 
-CHINGU_ROOT = File.dirname(File.expand_path(__FILE__))
-ROOT = File.dirname(File.expand_path($0))
-
-require 'rubygems' unless RUBY_VERSION =~ /1\.9/
-require 'gosu'
-require 'yaml'
-require 'rest_client'
-require 'crack/xml'
-
-require File.join(CHINGU_ROOT,"chingu","require_all") # Thanks to http://github.com/tarcieri/require_all !
-
-# Seems like we need to include chingu/helpers first for BasicGameObject
-# and GameObject to get the correct class_inheritable_accssor
-require_all "#{CHINGU_ROOT}/chingu/helpers"
-require_all "#{CHINGU_ROOT}/chingu/traits"
-require_all "#{CHINGU_ROOT}/chingu/async"
-require_all "#{CHINGU_ROOT}/chingu/async_tasks"
-require_all "#{CHINGU_ROOT}/chingu"
+require 'weakref'
 
 module Chingu
-  VERSION = "0.8.1"
-  
-  DEBUG_COLOR = Gosu::Color.new(0xFFFF0000)
-  DEBUG_ZORDER = 9999
-  INFINITY = 1.0 / 0
+  module Async
+    
+    class BasicTask
+      
+      def initialize
+      end
+      
+      #
+      # Returns true if the task has finished executing. The meaning of
+      # "finished" is determined by the particular subclass.
+      #
+      def finished?
+        true
+      end
+      
+      def update(object)
+      end
+      
+    end
+    
+  end
 end

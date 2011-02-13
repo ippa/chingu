@@ -776,6 +776,34 @@ Adds class and instance methods for basic collision detection.
     # do something
   end
   
+==== Trait "asynchronous"
+Allows your code to specify a GameObject's behavior asynchronously, including
+tweening, movement and even method calls. Tasks are added to a queue to be
+processed in order; the task at the front of the queue is updated each tick
+and removed when it has finished.
+
+  # Simple one-trick example
+  # This will cause an object to move from its current location to 64,64.
+  @guy.async.tween :x => 64, :y => 64
+  
+  # Block syntax example
+  # This will cause a line of text to fade out and vanish.
+  Chingu::Text.trait :asynchronous
+  message = Chingu::Text.new 'Goodbye, World!'
+  message.async do |q|
+    q.wait 500
+    q.tween 2000, :alpha => 0, :scale => 2
+    q.call :destroy
+  end
+
+Currently available tasks are wait(timeout, &condition), tween(timeout,
+properties), call(method, *arguments) and exec { ... }.
+
+For a more complete example of how to use this trait, see
+examples/example_async.rb.
+
+
+
 ==== (IN DEVELOPMENT) Trait "retrofy"
 Providing easier handling of the "retrofy" effect (non-blurry zoom)
 Aims to help out when using zoom-factor to create a retrofeeling with big pixels.

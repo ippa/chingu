@@ -19,29 +19,36 @@
 #
 #++
 
-CHINGU_ROOT = File.dirname(File.expand_path(__FILE__))
-ROOT = File.dirname(File.expand_path($0))
-
-require 'rubygems' unless RUBY_VERSION =~ /1\.9/
-require 'gosu'
-require 'yaml'
-require 'rest_client'
-require 'crack/xml'
-
-require File.join(CHINGU_ROOT,"chingu","require_all") # Thanks to http://github.com/tarcieri/require_all !
-
-# Seems like we need to include chingu/helpers first for BasicGameObject
-# and GameObject to get the correct class_inheritable_accssor
-require_all "#{CHINGU_ROOT}/chingu/helpers"
-require_all "#{CHINGU_ROOT}/chingu/traits"
-require_all "#{CHINGU_ROOT}/chingu/async"
-require_all "#{CHINGU_ROOT}/chingu/async_tasks"
-require_all "#{CHINGU_ROOT}/chingu"
-
 module Chingu
-  VERSION = "0.8.1"
-  
-  DEBUG_COLOR = Gosu::Color.new(0xFFFF0000)
-  DEBUG_ZORDER = 9999
-  INFINITY = 1.0 / 0
+  module AsyncTasks
+    
+    #
+    # Halts processing of tasks until the passed-in block returns a
+    # true value, or the timeout expires. If no block is given, behaves as if
+    # the block returned nil.
+    #
+    class Wait < Chingu::Async::BasicTask
+      
+      attr_accessor :timeout, :condition
+      attr_reader :result
+      
+      def initialize(timeout = nil, &condition)
+        super()
+        @result     = nil
+        @age, @life = 0, timeout
+        @condition  = condition
+      end
+      
+      def update(object)
+        @age += $window.milliseconds_since_last_tick
+        @result = (@condition and @condition[])
+      end
+      
+      def finished?
+        !!@result or (@life != nil and @age >= @life)
+      end
+      
+    end
+    
+  end
 end

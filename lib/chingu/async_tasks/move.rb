@@ -19,29 +19,27 @@
 #
 #++
 
-CHINGU_ROOT = File.dirname(File.expand_path(__FILE__))
-ROOT = File.dirname(File.expand_path($0))
-
-require 'rubygems' unless RUBY_VERSION =~ /1\.9/
-require 'gosu'
-require 'yaml'
-require 'rest_client'
-require 'crack/xml'
-
-require File.join(CHINGU_ROOT,"chingu","require_all") # Thanks to http://github.com/tarcieri/require_all !
-
-# Seems like we need to include chingu/helpers first for BasicGameObject
-# and GameObject to get the correct class_inheritable_accssor
-require_all "#{CHINGU_ROOT}/chingu/helpers"
-require_all "#{CHINGU_ROOT}/chingu/traits"
-require_all "#{CHINGU_ROOT}/chingu/async"
-require_all "#{CHINGU_ROOT}/chingu/async_tasks"
-require_all "#{CHINGU_ROOT}/chingu"
+require "#{CHINGU_ROOT}/chingu/async_tasks/tween"
 
 module Chingu
-  VERSION = "0.8.1"
-  
-  DEBUG_COLOR = Gosu::Color.new(0xFFFF0000)
-  DEBUG_ZORDER = 9999
-  INFINITY = 1.0 / 0
+  module AsyncTasks
+    
+    # 
+    # Syntactic sugar for tween(duration, :x => x, :y => y, :angle => angle)
+    # 
+    class Move < Tween
+      
+      def initialize(duration, x, y, angle = nil)
+        properties = { }
+        
+        properties[:x]     = x unless x.nil?
+        properties[:y]     = y unless y.nil?
+        properties[:angle] = angle unless angle.nil?
+        
+        super(duration, properties)
+      end
+      
+    end
+    
+  end
 end

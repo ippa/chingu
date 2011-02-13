@@ -19,29 +19,49 @@
 #
 #++
 
-CHINGU_ROOT = File.dirname(File.expand_path(__FILE__))
-ROOT = File.dirname(File.expand_path($0))
-
-require 'rubygems' unless RUBY_VERSION =~ /1\.9/
-require 'gosu'
-require 'yaml'
-require 'rest_client'
-require 'crack/xml'
-
-require File.join(CHINGU_ROOT,"chingu","require_all") # Thanks to http://github.com/tarcieri/require_all !
-
-# Seems like we need to include chingu/helpers first for BasicGameObject
-# and GameObject to get the correct class_inheritable_accssor
-require_all "#{CHINGU_ROOT}/chingu/helpers"
-require_all "#{CHINGU_ROOT}/chingu/traits"
-require_all "#{CHINGU_ROOT}/chingu/async"
-require_all "#{CHINGU_ROOT}/chingu/async_tasks"
-require_all "#{CHINGU_ROOT}/chingu"
-
 module Chingu
-  VERSION = "0.8.1"
-  
-  DEBUG_COLOR = Gosu::Color.new(0xFFFF0000)
-  DEBUG_ZORDER = 9999
-  INFINITY = 1.0 / 0
+  module Async
+    
+    class TaskList
+      # extend Forwardable
+      # def_delegator :@queue, :push,  :enq
+      # def_delegator :@queue, :shift, :deq
+      # def_delegator :@queue, :first, :front
+      # def_delegator :@queue, :clear
+      
+      def initialize
+        @queue = []
+      end
+      
+      #
+      # Processes the first task on the queue, each tick removing the
+      # task once it has finished.
+      #
+      def update(object)
+        if task = front
+          task.update object
+          deq if task.finished?
+          task
+        end
+      end
+      
+      def front
+        @queue.first
+      end
+      
+      def enq(*tasks)
+        @queue.push(*tasks)
+      end
+      
+      def deq
+        @queue.shift
+      end
+      
+      def clear
+        @queue.clear
+      end
+      
+    end
+    
+  end
 end
