@@ -25,7 +25,7 @@ module Chingu
     #
     # Executes all subtasks in parallel.
     #
-    class Parallel < BasicTask
+    class Parallel < Chingu::Async::BasicTask
       
       def initialize(&block)
         @subtasks = []

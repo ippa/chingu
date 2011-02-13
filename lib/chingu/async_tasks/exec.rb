@@ -25,7 +25,7 @@ module Chingu
     #
     # Block execution as an asynchronous task.
     #
-    class Exec < BasicTask
+    class Exec < Chingu::Async::BasicTask
       
       def initialize(&block)
         super()

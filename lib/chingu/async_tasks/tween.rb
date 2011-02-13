@@ -27,7 +27,7 @@ module Chingu
     #
     # 	game_object.async.tween 1000, :property => new_value
     #
-    class Tween < BasicTask
+    class Tween < Chingu::Async::BasicTask
       
       # TODO Tweening is pretty dumb...make it smarter.
       

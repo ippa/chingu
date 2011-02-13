@@ -25,7 +25,7 @@ module Chingu
     #
     # Single method call as an asynchronous task.
     #
-    class Call < BasicTask
+    class Call < Chingu::Async::BasicTask
       
       def initialize(method, *args)
         super()

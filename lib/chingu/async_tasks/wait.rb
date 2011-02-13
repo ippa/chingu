@@ -27,7 +27,7 @@ module Chingu
     # true value, or the timeout expires. If no block is given, behaves as if
     # the block returned nil.
     #
-    class Wait < BasicTask
+    class Wait < Chingu::Async::BasicTask
       
       attr_accessor :timeout, :condition
       attr_reader :result

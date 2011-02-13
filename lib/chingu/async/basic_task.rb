@@ -22,7 +22,7 @@
 require 'weakref'
 
 module Chingu
-  module AsyncTasks
+  module Async
     
     class BasicTask
       

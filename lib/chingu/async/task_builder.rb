@@ -46,7 +46,7 @@ module Chingu
           
           task = klass.new(*args, &block)
           
-        when Chingu::AsyncTasks::BasicTask
+        when Chingu::Async::BasicTask
           # pass
           
         when Class
