@@ -24,7 +24,11 @@ class Cube < GameObject
   def initialize(options)
     super
     self.input = {  :left => :left, :right => :right, :up => :up, :down => :down, 
-                    :space => :shake1, :return => :shake2 }
+                    :space => :shake1, :return => :shake2, :a => :test_after }
+  end
+  
+  def test_after
+    after(1000) { @color = Color::CYAN }
   end
   
   def left
