@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{chingu}
-  s.version = "0.8.1"
+  s.version = "0.9rc1"
 
-  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
+  s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["ippa"]
-  s.date = %q{2011-01-08}
+  s.date = %q{2011-02-20}
   s.description = %q{OpenGL accelerated 2D game framework for Ruby. Builds on Gosu (Ruby/C++) which provides all the core functionality. Chingu adds simple yet powerful game states, prettier input handling, deployment safe asset-handling, a basic re-usable game object and stackable game logic.}
   s.email = %q{ippa@rubylicio.us}
   s.extra_rdoc_files = [
@@ -30,6 +30,7 @@ Gem::Specification.new do |s|
     "benchmarks/benchmark4.rb",
     "benchmarks/benchmark5.rb",
     "benchmarks/benchmark6.rb",
+    "benchmarks/benchmark_ping_localhost.rb",
     "benchmarks/game_object_list_benchmark.rb",
     "benchmarks/game_objects_benchmark.rb",
     "benchmarks/lookup_benchmark.rb",
@@ -60,6 +61,8 @@ Gem::Specification.new do |s|
     "examples/example25_fibers_state_machine.rb",
     "examples/example26_splash_screen.rb",
     "examples/example27_console.rb",
+    "examples/example28_networking.rb",
+    "examples/example29_asynchronous.rb",
     "examples/example2_gamestate_basics.rb",
     "examples/example3_parallax.rb",
     "examples/example4_gamestates.rb",
@@ -118,10 +121,20 @@ Gem::Specification.new do |s|
     "lib/chingu.rb",
     "lib/chingu/animation.rb",
     "lib/chingu/assets.rb",
+    "lib/chingu/async/basic_task.rb",
+    "lib/chingu/async/task_builder.rb",
+    "lib/chingu/async/task_list.rb",
+    "lib/chingu/async_tasks/call.rb",
+    "lib/chingu/async_tasks/exec.rb",
+    "lib/chingu/async_tasks/move.rb",
+    "lib/chingu/async_tasks/parallel.rb",
+    "lib/chingu/async_tasks/tween.rb",
+    "lib/chingu/async_tasks/wait.rb",
     "lib/chingu/basic_game_object.rb",
     "lib/chingu/classic_game_object.rb",
     "lib/chingu/console.rb",
     "lib/chingu/core_ext/array.rb",
+    "lib/chingu/core_ext/range.rb",
     "lib/chingu/fpscounter.rb",
     "lib/chingu/game_object.rb",
     "lib/chingu/game_object_list.rb",
@@ -132,6 +145,8 @@ Gem::Specification.new do |s|
     "lib/chingu/game_states/edit.rb",
     "lib/chingu/game_states/enter_name.rb",
     "lib/chingu/game_states/fade_to.rb",
+    "lib/chingu/game_states/network_client.rb",
+    "lib/chingu/game_states/network_server.rb",
     "lib/chingu/game_states/pause.rb",
     "lib/chingu/game_states/popup.rb",
     "lib/chingu/gosu_ext/image.rb",
@@ -155,6 +170,7 @@ Gem::Specification.new do |s|
     "lib/chingu/simple_menu.rb",
     "lib/chingu/text.rb",
     "lib/chingu/traits/animation.rb",
+    "lib/chingu/traits/asynchronous.rb",
     "lib/chingu/traits/bounding_box.rb",
     "lib/chingu/traits/bounding_circle.rb",
     "lib/chingu/traits/collision_detection.rb",
@@ -214,6 +230,8 @@ Gem::Specification.new do |s|
     "examples/example25_fibers_state_machine.rb",
     "examples/example26_splash_screen.rb",
     "examples/example27_console.rb",
+    "examples/example28_networking.rb",
+    "examples/example29_asynchronous.rb",
     "examples/example2_gamestate_basics.rb",
     "examples/example3_parallax.rb",
     "examples/example4_gamestates.rb",
@@ -250,14 +268,14 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<gosu>, [">= 0.7.25"])
+      s.add_runtime_dependency(%q<gosu>, [">= 0.7.27"])
       s.add_runtime_dependency(%q<rest-client>, [">= 0"])
       s.add_runtime_dependency(%q<crack>, [">= 0"])
       s.add_development_dependency(%q<rspec>, [">= 2.1.0"])
       s.add_development_dependency(%q<watchr>, [">= 0"])
       s.add_development_dependency(%q<rcov>, [">= 0"])
     else
-      s.add_dependency(%q<gosu>, [">= 0.7.25"])
+      s.add_dependency(%q<gosu>, [">= 0.7.27"])
       s.add_dependency(%q<rest-client>, [">= 0"])
       s.add_dependency(%q<crack>, [">= 0"])
       s.add_dependency(%q<rspec>, [">= 2.1.0"])
@@ -265,7 +283,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<rcov>, [">= 0"])
     end
   else
-    s.add_dependency(%q<gosu>, [">= 0.7.25"])
+    s.add_dependency(%q<gosu>, [">= 0.7.27"])
     s.add_dependency(%q<rest-client>, [">= 0"])
     s.add_dependency(%q<crack>, [">= 0"])
     s.add_dependency(%q<rspec>, [">= 2.1.0"])
