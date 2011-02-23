@@ -96,7 +96,8 @@ module Chingu
       
       #
       # Connect to a given ip:port (the server)
-      # Will timeout afte 4 seconds
+      # Connect is done in a blocking manner.      
+      # Will timeout after 4 seconds
       #
       def connect(ip, port = 7778)
         return if @socket
@@ -116,11 +117,17 @@ module Chingu
         end
       end
       
+      #
+      # Called when connect() fails with connection refused (closed port)
+      #
       def on_connection_refused
         $window.caption = "Server: CONNECTION REFUSED"
         connect(@ip, @port)
       end
-      
+
+      #
+      # Called when connect() recieves no initial answer from server
+      #
       def on_timeout
         $window.caption = "Server: CONNECTION TIMED OUT"
         connect(@ip, @port)
