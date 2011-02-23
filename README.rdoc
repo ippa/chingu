@@ -861,6 +861,24 @@ It's not only that the second example is readable by ppl now even familiar with 
 Set a new x or angle or color and it will instantly update on screen.
 
 
+== DEPRECATIONS
+Chingu (as all libraries) will sometimes break an old API. Naturally we try to not do this, but sometimes it's nessesary 
+to take the library forward. If your old game stops working with a new chingu it could depend on some of the following:
+
+Listing game objects:
+  class Enemy < GameObject; end;
+  class Troll < Enemy; end;
+  class Witch < Enemy; end;
+
+Chingu 0.7
+  Enemy.all       # Will list objects created with Enemy.create, Troll.create, Witch.create
+
+Chingu ~0.8+
+  Enemy.all       # list only list objects created with Enemy.create
+
+We gained a lot of speed breaking that API.
+
+
 == MISC / FAQ
 === How do I access my main-window easily?
 Chingu keeps a global variable, $window, which contains the Chingu::Window instance. 
