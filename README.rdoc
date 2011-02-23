@@ -481,6 +481,8 @@ Or Chingus shortcut:
   
 Chingus inputhandler will detect that Menu is a GameState-class, create a new instance and activate it with push_game_state().
 
+GOTCHA: Currently you can't switch to a new game state from Within GameState#initialize() or GameState#setup()
+
 === Premade game states
 Chingu comes with some pre-made game states.
 A simple but usefull one is GameStates::Pause. Once pushed it will draw the previous game state but not update it --
