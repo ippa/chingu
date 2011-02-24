@@ -37,12 +37,12 @@ module Chingu
       # @font_size = options.delete(:font_size) || 30
       @menu_items = options.delete(:menu_items)
       @x = options.delete(:x) || $window.width/2
-      @y = options.delete(:y) || 100
+      @y = options.delete(:y) || 0
       @spacing = options.delete(:spacing) || 100
       @items = []
       @visible = true
   
-      y = @spacing
+      y = @y
       menu_items.each do |key, value|
         item = if key.is_a? String
           Text.new(key, options.dup)
@@ -57,7 +57,7 @@ module Chingu
         item.options[:on_deselect] = method(:on_deselect)
         item.options[:action] = value
         
-        item.rotation_center = :center_center
+        item.rotation_center = :center_top
         item.x = @x
         item.y = y
         y += item.height + @spacing
