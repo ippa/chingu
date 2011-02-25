@@ -28,7 +28,7 @@ module Chingu
     # Uses nonblocking polling TCP and YAML to communicate. 
     # If your game state inherits from NetworkClient you'll have the following methods available:
     #
-    #   connect(ip, port)     # Start a blocking connection period, updates in $window.caption
+    #   connect(ip, port)               # Start a blocking connection period. only connect() uses previosly given ip:port
     #   send_data(data)                 # Send raw data on the network, nonblocking
     #   send_msg(whatever ruby data)    # Will get YAML'd and sent to server
     #   handle_incoming_data(max_size)  # Nonblocking read of incoming server data
@@ -125,7 +125,6 @@ module Chingu
       # Called when connect() fails with connection refused (closed port)
       #
       def on_connection_refused
-        $window.caption = "Server: CONNECTION REFUSED"
         connect(@ip, @port)
       end
 
@@ -133,7 +132,6 @@ module Chingu
       # Called when connect() recieves no initial answer from server
       #
       def on_timeout
-        $window.caption = "Server: CONNECTION TIMED OUT"
         connect(@ip, @port)
       end
       
@@ -141,14 +139,14 @@ module Chingu
       # on_connect will be called when client successfully makes a connection to server
       #
       def on_connect
-        puts "[Connected to Server #{@ip}:#{@port}]" if @debug
+        puts "[Connected to Server #{@ip}:#{@port}]"  if @debug
       end
       
       #
       # on_disconnect will be called when server disconnects client for whatever reason
       #
       def on_disconnect
-        puts "[Disconnected from Server]"           if @debug
+        puts "[Disconnected from Server]"             if @debug
       end
 
       #
