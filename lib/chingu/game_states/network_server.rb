@@ -47,11 +47,7 @@ module Chingu
     #
     # Usage:
     #   ServerState < Chingu::GameStates::NetworkServer
-    #     def initialize(options = {})
-    #       super   # this is always needed!
-    #       connect_to_server(options[:ip], options[:port])
-    #     end
-    #     
+    #     # incoming client/connection...
     #     def on_connect(socket)
     #       send_msg(:cmd => :ping, :timestamp => Gosu::milliseconds)
     #     end
