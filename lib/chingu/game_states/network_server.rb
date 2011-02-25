@@ -249,6 +249,7 @@ module Chingu
       # Stops server
       #
       def stop
+        return unless @socket
         begin
           @socket.close
         rescue Errno::ENOTCONN
