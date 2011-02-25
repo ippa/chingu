@@ -60,7 +60,7 @@ module Chingu
     #     end
     #   end
     #
-    #   push_game_state ServerState.new(:ip => "127.0.0.1", :port => 7778))
+    #   push_game_state ServerState.new(:ip => "127.0.0.1", :port => 7778).start
     #
     #  NetworkServer works mostly like NetworkClient with a few differences
     #  - since a server handles many sockets (1 for each connected client) all callbacks first argument is 'socket'
@@ -74,6 +74,8 @@ module Chingu
       def initialize(options = {})
         super
         
+        @ip = options[:ip] || "0.0.0.0"
+        @port = options[:port] || 7778
         @debug = true
         @socket = nil
         @sockets = []
@@ -84,20 +86,20 @@ module Chingu
       end
       
       #
-      # Start server on ip 'ip' and port 'port'
+      # Start server
       #
-      def start(ip = '0.0.0.0', port = 7778)
-        @ip = ip
-        @port = port
-        
+      def start(ip=nil, port=nil)
+        @ip = ip      if ip
+        @port = port  if port
         begin
-          @socket = TCPServer.new(ip, port)
+          @socket = TCPServer.new(@ip, @port)
           @socket.setsockopt(Socket::IPPROTO_TCP,Socket::TCP_NODELAY,1)
           on_start
-          
         rescue
           on_start_error($!)
         end
+        
+        return self
       end
       
       #

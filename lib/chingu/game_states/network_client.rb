@@ -77,6 +77,9 @@ module Chingu
         @timeout = options[:timeout] || 4        
         @debug = true
         
+        @ip = options[:ip] || "0.0.0.0"
+        @port = options[:port] || 7778
+        
         @socket = nil
         @latency = 0
         @packet_counter = 0
@@ -99,14 +102,15 @@ module Chingu
       # Connect is done in a blocking manner.      
       # Will timeout after 4 seconds
       #
-      def connect(ip, port = 7778)
+      def connect(ip = nil, port = nil)
         return if @socket
-        @ip = ip
-        @port = port
+        
+        @ip = ip      if ip
+        @port = port  if port
     
         begin
           status = Timeout::timeout(@timeout) do
-            @socket = TCPSocket.new(ip, port)
+            @socket = TCPSocket.new(@ip, @port)
             @socket.setsockopt(Socket::IPPROTO_TCP,Socket::TCP_NODELAY,1)
             on_connect
           end
