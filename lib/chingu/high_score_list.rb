@@ -46,17 +46,6 @@ module Chingu
     #
     def self.load(options = {})
       require 'yaml'
-      
-      begin
-        require 'rest_client'
-        require 'crack/xml'
-      rescue
-        puts "HighScoreList requires 2 gems, please install with:"
-        puts "gem install rest-client"
-        puts "gem install crack"
-        exit
-      end
-      
       high_score_list = HighScoreList.new(options)
       high_score_list.load
       return high_score_list
