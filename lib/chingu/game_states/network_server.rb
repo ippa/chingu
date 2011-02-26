@@ -255,6 +255,7 @@ module Chingu
         rescue Errno::ENOTCONN
         end
       end
+      alias close stop
 
     end
   end

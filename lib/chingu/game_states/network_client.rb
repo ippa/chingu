@@ -209,6 +209,8 @@ module Chingu
       def disconnect_from_server
         @socket.close
       end
+      alias close disconnect_from_server
+      alias stop disconnect_from_server
 
     end
   end
