@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{chingu}
-  s.version = "0.9rc1"
+  s.version = "0.9rc2"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["ippa"]
-  s.date = %q{2011-02-20}
+  s.date = %q{2011-02-26}
   s.description = %q{OpenGL accelerated 2D game framework for Ruby. Builds on Gosu (Ruby/C++) which provides all the core functionality. Chingu adds simple yet powerful game states, prettier input handling, deployment safe asset-handling, a basic re-usable game object and stackable game logic.}
   s.email = %q{ippa@rubylicio.us}
   s.extra_rdoc_files = [
@@ -199,6 +199,7 @@ Gem::Specification.new do |s|
     "spec/chingu/images/rect_20x20.png",
     "spec/chingu/inflector_spec.rb",
     "spec/chingu/input_spec.rb",
+    "spec/chingu/network_spec.rb",
     "spec/chingu/parallax_spec.rb",
     "spec/chingu/text_spec.rb",
     "spec/chingu/window_spec.rb",
@@ -208,7 +209,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/ippa/chingu}
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{chingu}
-  s.rubygems_version = %q{1.3.7}
+  s.rubygems_version = %q{1.5.2}
   s.summary = %q{OpenGL accelerated 2D game framework for Ruby}
   s.test_files = [
     "examples/example10_traits_retrofy.rb",
@@ -257,6 +258,7 @@ Gem::Specification.new do |s|
     "spec/chingu/helpers/options_setter_spec.rb",
     "spec/chingu/inflector_spec.rb",
     "spec/chingu/input_spec.rb",
+    "spec/chingu/network_spec.rb",
     "spec/chingu/parallax_spec.rb",
     "spec/chingu/text_spec.rb",
     "spec/chingu/window_spec.rb",
@@ -264,18 +266,17 @@ Gem::Specification.new do |s|
   ]
 
   if s.respond_to? :specification_version then
-    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<gosu>, [">= 0.7.27"])
+      s.add_runtime_dependency(%q<gosu>, [">= 0.7.27.1"])
       s.add_runtime_dependency(%q<rest-client>, [">= 0"])
       s.add_runtime_dependency(%q<crack>, [">= 0"])
       s.add_development_dependency(%q<rspec>, [">= 2.1.0"])
       s.add_development_dependency(%q<watchr>, [">= 0"])
       s.add_development_dependency(%q<rcov>, [">= 0"])
     else
-      s.add_dependency(%q<gosu>, [">= 0.7.27"])
+      s.add_dependency(%q<gosu>, [">= 0.7.27.1"])
       s.add_dependency(%q<rest-client>, [">= 0"])
       s.add_dependency(%q<crack>, [">= 0"])
       s.add_dependency(%q<rspec>, [">= 2.1.0"])
@@ -283,7 +284,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<rcov>, [">= 0"])
     end
   else
-    s.add_dependency(%q<gosu>, [">= 0.7.27"])
+    s.add_dependency(%q<gosu>, [">= 0.7.27.1"])
     s.add_dependency(%q<rest-client>, [">= 0"])
     s.add_dependency(%q<crack>, [">= 0"])
     s.add_dependency(%q<rspec>, [">= 2.1.0"])
