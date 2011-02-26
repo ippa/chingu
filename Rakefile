@@ -1,4 +1,5 @@
 require 'rubygems'
+require 'psych'
 require File.dirname(__FILE__) + '/lib/chingu'
 include Chingu
 
