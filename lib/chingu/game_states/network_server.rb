@@ -76,7 +76,7 @@ module Chingu
         
         @ip = options[:ip] || "0.0.0.0"
         @port = options[:port] || 7778
-        @debug = true
+        @debug = options[:debug]
         @socket = nil
         @sockets = []
         @buffered_output = YAML::Stream.new

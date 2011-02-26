@@ -75,8 +75,7 @@ module Chingu
       def initialize(options = {})
         super
         @timeout = options[:timeout] || 4        
-        @debug = true
-        
+        @debug = options[:debug]
         @ip = options[:ip] || "0.0.0.0"
         @port = options[:port] || 7778
         
