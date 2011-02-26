@@ -37,6 +37,17 @@ module Chingu
       @login = options[:login] || options[:user]
       @password = options[:password]
       @game_id = options[:game_id]
+      
+      begin
+        require 'rest_client'
+        require 'crack/xml'
+      rescue
+        puts "HighScoreList requires 2 gems, please install with:"
+        puts "gem install rest-client"
+        puts "gem install crack"
+        exit
+      end
+      
       @resource = RestClient::Resource.new("http://api.gamercv.com/games/#{@game_id}/high_scores", 
                                               :user => @login, :password => @password, :timeout => 20, :open_timeout => 5)
                                               

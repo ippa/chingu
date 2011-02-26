@@ -93,8 +93,8 @@ module Chingu
       # 3) #on_data(data) will call #on_msgs(msg)
       #
       def update
-        super
         handle_incoming_data
+        super
       end
       
       #

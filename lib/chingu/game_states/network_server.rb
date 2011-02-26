@@ -131,11 +131,13 @@ module Chingu
       # 5) send all buffered broadcast data in one fell swoop
       #
       def update
-        super
         if @socket && !@socket.closed?
           handle_incoming_connections
           handle_incoming_data
+          super
           handle_outgoing_data
+        else
+          super
         end
       end
       

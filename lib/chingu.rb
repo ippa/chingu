@@ -25,9 +25,8 @@ ROOT = File.dirname(File.expand_path($0))
 require 'rubygems' unless RUBY_VERSION =~ /1\.9/
 require 'gosu'
 require 'yaml'
-require 'rest_client'
-require 'crack/xml'
-
+require 'timeout'
+require 'socket'
 require File.join(CHINGU_ROOT,"chingu","require_all") # Thanks to http://github.com/tarcieri/require_all !
 
 # Seems like we need to include chingu/helpers first for BasicGameObject
@@ -39,7 +38,7 @@ require_all "#{CHINGU_ROOT}/chingu/async_tasks"
 require_all "#{CHINGU_ROOT}/chingu"
 
 module Chingu
-  VERSION = "0.9rc2"
+  VERSION = "0.9rc3"
   
   DEBUG_COLOR = Gosu::Color.new(0xFFFF0000)
   DEBUG_ZORDER = 9999

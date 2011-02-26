@@ -37,7 +37,7 @@ module Chingu
       @file = options[:file] || "high_score_list.yml"
       @size = options[:size] || 100
       @sort_on = options[:sort_on] || :score
-      @high_scores = Array.new
+      @high_scores = Array.new      
     end
     
     #
