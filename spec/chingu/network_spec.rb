@@ -6,7 +6,8 @@ def data_set
     "a String" => ["Woof!"],
     "an Array" => [[1, 2, 3]],
     "a stream of packets" => [{ :foo => :bar }, "Woof!", [1, 2, 3]],
-    "huge packet" => [[:frogspawn] * 1000]
+    "huge packet" => [[:frogspawn] * 1000],
+    "100 small packets" => 100.times.map { rand(100000) },
   }
 end
 
@@ -72,6 +73,7 @@ module Chingu
             data.each {|packet| @server.should_receive(:on_msg).with(an_instance_of(TCPSocket), packet) }
             data.each {|packet| @client.send_msg(packet) }
 
+            sleep 0.05 # Give the server time to buffer.
             @server.update
           end
         end
@@ -84,6 +86,7 @@ module Chingu
             @server.update # Accept the client before sending, so we know of its socket.
             data.each { |packet| @server.send_msg(@server.sockets[0], packet) }
 
+            sleep 0.05 # Give the client time to buffer.
             @client.update
           end
         end
@@ -103,6 +106,8 @@ module Chingu
             end
 
             @server.update # Push the cached messages.
+
+            sleep 0.05 # Give the clients time to buffer.
             @client.update
             @client2.update
           end
