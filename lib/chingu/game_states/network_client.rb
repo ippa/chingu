@@ -118,6 +118,8 @@ module Chingu
         rescue Timeout
           on_timeout
         end
+        
+        return self
       end
       
       #
