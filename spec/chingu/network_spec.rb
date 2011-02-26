@@ -5,7 +5,8 @@ def data_set
     "a Hash" => [{ :foo => :bar }],
     "a String" => ["Woof!"],
     "an Array" => [[1, 2, 3]],
-    "a stream of packets" => [{ :foo => :bar }, "Woof!", [1, 2, 3]]
+    "a stream of packets" => [{ :foo => :bar }, "Woof!", [1, 2, 3]],
+    "huge packet" => [[:frogspawn] * 1000]
   }
 end
 

@@ -80,6 +80,7 @@ module Chingu
         @socket = nil
         @sockets = []
         @buffered_output = YAML::Stream.new
+        @max_read_per_update = options[:max_read_per_update] || 20000
         
         @packet_counter = 0
         @packet_buffers = Hash.new
@@ -166,7 +167,7 @@ module Chingu
       # Call this from your update() to read from socket.
       # handle_incoming_data will call on_data(raw_data) when stuff comes on on the socket.
       #
-      def handle_incoming_data(max_size = 1500)
+      def handle_incoming_data(max_size = @max_read_per_update)
         @sockets.each do |socket|
           if IO.select([socket], nil, nil, 0.0)
             begin
