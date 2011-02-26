@@ -78,7 +78,6 @@ module Chingu
         @debug = options[:debug]
         @ip = options[:ip] || "0.0.0.0"
         @port = options[:port] || 7778
-        @max_read_per_update = options[:max_read_per_update] || 50000
         
         @socket = nil
         @latency = 0
@@ -155,7 +154,7 @@ module Chingu
       # Call this from your update() to read from socket.
       # handle_incoming_data will call on_data(raw_data) when stuff comes on on the socket.
       #
-      def handle_incoming_data(amount = @max_read_per_update)
+      def handle_incoming_data(amount = 1000)
         return unless @socket
         
         if IO.select([@socket], nil, nil, 0.0)
