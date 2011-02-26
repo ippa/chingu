@@ -25,8 +25,6 @@ ROOT = File.dirname(File.expand_path($0))
 require 'rubygems' unless RUBY_VERSION =~ /1\.9/
 require 'gosu'
 require 'yaml'
-require 'rest_client'
-require 'crack/xml'
 
 require File.join(CHINGU_ROOT,"chingu","require_all") # Thanks to http://github.com/tarcieri/require_all !
 

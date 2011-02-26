@@ -38,6 +38,15 @@ module Chingu
       @size = options[:size] || 100
       @sort_on = options[:sort_on] || :score
       @high_scores = Array.new
+      
+      begin
+        require 'rest_client'
+        require 'crack/xml'
+      rescue
+        puts "HighScoreList requires 2 gems, please install with:"
+        puts "gem install rest-client"
+        puts "gem install crack"
+      end
     end
     
     #
