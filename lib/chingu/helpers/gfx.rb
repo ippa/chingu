@@ -48,28 +48,24 @@ module Chingu
     #   :orientation  - Either :vertical (top to bottom) or :horizontal (left to right)
     #
     
-    def fill(options, zorder = 0)
+    def fill(material, zorder = 0, mode = :default)
       #
       # if only 1 color-argument is given, assume fullscreen simple color fill.
       #
-      if options.is_a?(Gosu::Color)
-        $window.draw_quad(0, 0, options,
-                        $window.width, 0, options,
-                        $window.width, $window.height, options,
-                        0, $window.height, options, zorder, :default)
+      if material.is_a?(Gosu::Color)
+        rect = Rect.new([0, 0, $window.width, $window.height])
+        _fill_rect(rect, material, material, material, material, zorder, mode)
       else
-        fill_gradient(options)
+        fill_gradient(material)
       end
     end
     
     #
     # Draws an unfilled rect in given color
     #
-    def draw_rect(rect, color, zorder)
-      $window.draw_line(rect.x, rect.y, color, rect.right, rect.y, color, zorder)
-      $window.draw_line(rect.right, rect.y, color, rect.right, rect.bottom, color, zorder)
-      $window.draw_line(rect.right, rect.bottom, color, rect.x, rect.bottom, color, zorder)
-      $window.draw_line(rect.x, rect.bottom, color, rect.x, rect.y, color, zorder)
+    def draw_rect(rect, color, zorder = 0, mode = :default)
+      rect = Rect.new(rect) unless rect.is_a? Rect
+      _stroke_rect(rect, color, color, color, color, zorder, mode)
     end
     
     
@@ -87,13 +83,9 @@ module Chingu
     #
     # Fills a given Rect 'rect' with Color 'color', drawing with zorder 'zorder'
     #
-    def fill_rect(rect, color, zorder = 0)
-      rect = Rect.new(rect)     # Make sure it's a rect
-      $window.draw_quad(  rect.x, rect.y, color,
-                          rect.right, rect.y, color,
-                          rect.right, rect.bottom, color,
-                          rect.x, rect.bottom, color,
-                          zorder, :default)
+    def fill_rect(rect, color, zorder = 0, mode = :default)
+      rect = Rect.new(rect) unless rect.is_a? Rect
+      _fill_rect(rect, color, color, color, color, zorder, mode)
     end
     
     #
@@ -105,46 +97,59 @@ module Chingu
     #   :orientation  - Either :vertical (top to bottom) or :horizontal (left to right)
     #
     def fill_gradient(options)
-      default_options = { :from => Gosu::Color::BLACK,
-                          :to => Gosu::Color::WHITE,
-                          :thickness => 10, 
-                          :orientation => :vertical,
-                          :rect => Rect.new([0, 0, $window.width, $window.height]),
-                          :zorder => 0,
-                          :mode => :default
-                        }
-      options = default_options.merge(options)
+      options = { :from => Gosu::Color::BLACK,
+                  :to => Gosu::Color::WHITE,
+                  :orientation => :vertical,
+                  :rect => [0, 0, $window.width, $window.height],
+                  :zorder => 0,
+                  :mode => :default
+                }.merge!(options)
       
       rect   = Rect.new(options[:rect])
       colors = options[:colors] || options.values_at(:from, :to)
+      zorder = options[:zorder]
+      mode   = options[:mode]
       
       case options[:orientation]
       when :vertical
         rect.height /= colors.count - 1
         colors.each_cons(2) do |from, to|
-          $window.draw_quad(  rect.left,  rect.top,    from,
-                              rect.right, rect.top,    from,
-                              rect.right, rect.bottom, to,
-                              rect.left,  rect.bottom, to,
-                              options[:zorder], options[:mode]
-                            )
+          _fill_rect(rect, from, to, to, from, zorder, mode)
           rect.top += rect.height
         end
       when :horizontal
         rect.width /= colors.count - 1
         colors.each_cons(2) do |from, to|
-          $window.draw_quad(  rect.left,  rect.top,    from,
-                              rect.left,  rect.bottom, from,
-                              rect.right, rect.bottom, to,
-                              rect.right, rect.top,    to,
-                              options[:zorder], options[:mode]
-                            )
+          _fill_rect(rect, from, from, to, to, zorder, mode)
           rect.left += rect.width
         end
       else
         raise ArgumentError, "bad gradient orientation: #{options[:orientation]}"
       end
+      
     end
+    
+    private
+    
+    def _fill_rect(rect, color_a, color_b, color_c, color_d, zorder, mode)
+      left,  top    = *rect.topleft
+      right, bottom = *rect.bottomright
+      $window.draw_quad(left,  top,    color_a,
+                        left,  bottom, color_b,
+                        right, bottom, color_c,
+                        right, top,    color_d,
+                        zorder, mode)
+    end
+    
+    def _stroke_rect(rect, color_a, color_b, color_c, color_d, zorder, mode)
+      left,  top    = *rect.topleft
+      right, bottom = *rect.bottomright
+      $window.draw_line(left,  top,    color_a, left,  bottom, color_b, zorder, mode)
+      $window.draw_line(left,  bottom, color_b, right, bottom, color_c, zorder, mode)
+      $window.draw_line(right, bottom, color_c, right, top,    color_d, zorder, mode)
+      $window.draw_line(right, top,    color_d, left,  top,    color_a, zorder, mode)
+    end
+    
   end
   
   end
