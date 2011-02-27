@@ -19,6 +19,7 @@
 #
 #++
 
+require 'forwardable'
 
 module Chingu
   #
@@ -26,6 +27,8 @@ module Chingu
   # An instance of GameObjectList is automaticly created as "game_objects" if using Chingu::Window
   #
   class GameObjectList
+    extend Forwardable
+    
     attr_reader :visible_game_objects, :unpaused_game_objects
         
     def initialize(options = {})
@@ -37,6 +40,11 @@ module Chingu
       #@visible_game_objects = {}
       #@unpaused_game_objects = {}
     end
+    
+    def_delegator :@game_objects, :size
+    def_delegator :@game_objects, :empty?
+    def_delegator :@game_objects, :first
+    def_delegator :@game_objects, :last
     
     def to_s
       "#{@game_objects.size} game objects."
@@ -85,14 +93,6 @@ module Chingu
       @game_objects.select { |object| object.destroy if yield(object) }
     end
     
-    def size
-      @game_objects.size
-    end
-    
-    def empty?
-      @game_objects.empty?
-    end
-
     def update
       @unpaused_game_objects.each { |go| go.update_trait; go.update; }
     end
@@ -129,14 +129,6 @@ module Chingu
 
     def map
       @game_objects.map { |object| yield object }
-    end
-
-    def first
-      @game_objects.first
-    end
-
-    def last
-      @game_objects.last
     end
 
     #
