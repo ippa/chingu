@@ -27,7 +27,9 @@ module Chingu
   # All drawings depend on the global variable $window which should be an instance of Gosu::Window or Chingu::Window
   #
   module GFX
-  
+    
+    CIRCLE_STEP = 10
+    
     #
     # Fills whole window with specified 'color' and 'zorder'
     #
@@ -68,17 +70,6 @@ module Chingu
       _stroke_rect(rect, color, color, color, color, zorder, mode)
     end
     
-    
-    #
-    # Draws an unfilled circle, thanks shawn24!
-    #
-    CIRCLE_STEP = 10
-    def draw_circle(cx,cy,r,color)      
-      0.step(360, CIRCLE_STEP) do |a1|
-        a2 = a1 + CIRCLE_STEP
-        $window.draw_line cx + Gosu.offset_x(a1, r), cy + Gosu.offset_y(a1, r), color, cx + Gosu.offset_x(a2, r), cy + Gosu.offset_y(a2, r), color, 9999
-      end
-    end
     
     #
     # Fills a given Rect 'rect' with Color 'color', drawing with zorder 'zorder'
@@ -129,6 +120,23 @@ module Chingu
       
     end
     
+    #
+    # Draws an unfilled circle, thanks shawn24!
+    #
+    def draw_circle(cx, cy, r, color, zorder = 0, mode = :default)
+      draw_arc(cx, cy, r, 0, 360, color, zorder, mode)
+    end
+    
+    #
+    # Draws an unfilled arc from a1 to a2
+    #
+    def draw_arc(cx, cy, r, from, to, color, zorder = 0, mode = :default)
+      from, to = to, from if from > to
+      from.step(to, CIRCLE_STEP).each_cons(2) do |a1, a2|
+        _draw_arc_strip(cx, cy, r, a1, a2, color, zorder, mode)
+      end
+    end
+    
     private
     
     def _fill_rect(rect, color_a, color_b, color_c, color_d, zorder, mode)
@@ -148,6 +156,16 @@ module Chingu
       $window.draw_line(left,  bottom, color_b, right, bottom, color_c, zorder, mode)
       $window.draw_line(right, bottom, color_c, right, top,    color_d, zorder, mode)
       $window.draw_line(right, top,    color_d, left,  top,    color_a, zorder, mode)
+    end
+    
+    def _draw_arc_strip(cx, cy, r, a1, a2, color, zorder = 0, mode = :default)
+      $window.translate(cx, cy) do
+        x1, y1 = Gosu.offset_x(a1, r), Gosu.offset_y(a1, r)
+        x2, y2 = Gosu.offset_x(a2, r), Gosu.offset_y(a2, r)
+        $window.draw_line(x1, y1, color,
+                          x2, y2, color,
+                          zorder, mode)
+      end
     end
     
   end
