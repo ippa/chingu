@@ -19,6 +19,8 @@
 #
 #++
 
+require 'forwardable'
+
 module Chingu
   module Helpers
   
@@ -27,32 +29,16 @@ module Chingu
   # Mixed into Chingu::Window and Chingu::GameState
   #
   module GameObject
-  
-    def add_game_object(object)
-      @game_objects.add_game_object(object)
-    end
+    extend Forwardable
     
-    def remove_game_object(object)
-      @game_objects.remove_game_object(object)
-    end
+    attr_reader :game_objects
     
-    def game_objects
-      @game_objects
-    end
-    
-    def show_game_object(object)
-      @game_objects.show_game_object(object)
-    end    
-    def hide_game_object(object)
-      @game_objects.hide_game_object(object)
-    end
-    def pause_game_object(object)
-      @game_objects.pause_game_object(object)
-    end
-    def unpause_game_object(object)
-      @game_objects.unpause_game_object(object)
-    end 
-    
+    def_delegator :@game_objects, :add_game_object
+    def_delegator :@game_objects, :remove_game_object
+    def_delegator :@game_objects, :show_game_object
+    def_delegator :@game_objects, :hide_game_object
+    def_delegator :@game_objects, :pause_game_object
+    def_delegator :@game_objects, :unpause_game_object
     
     #
     # Fetch game objects of a certain type/class
