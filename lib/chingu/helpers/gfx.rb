@@ -137,6 +137,23 @@ module Chingu
       end
     end
     
+    #
+    # Draws a filled circle
+    #
+    def fill_circle(cx, cy, r, color, zorder = 0, mode = :default)
+      fill_arc(cx, cy, r, 0, 360, color, zorder, mode)
+    end
+    
+    #
+    # Draws a filled arc from a1 to a2
+    #
+    def fill_arc(cx, cy, r, from, to, color, zorder = 0, mode = :default)
+      from, to = to, from if from > to
+      from.step(to, CIRCLE_STEP).each_cons(2) do |a1, a2|
+        _fill_arc_strip(cx, cy, r, a1, a2, color, zorder, mode)
+      end
+    end
+    
     private
     
     def _fill_rect(rect, color_a, color_b, color_c, color_d, zorder, mode)
@@ -165,6 +182,17 @@ module Chingu
         $window.draw_line(x1, y1, color,
                           x2, y2, color,
                           zorder, mode)
+      end
+    end
+    
+    def _fill_arc_strip(cx, cy, r, a1, a2, color, zorder = 0, mode = :default)
+      $window.translate(cx, cy) do
+        x1, y1 = Gosu.offset_x(a1, r), Gosu.offset_y(a1, r)
+        x2, y2 = Gosu.offset_x(a2, r), Gosu.offset_y(a2, r)
+        $window.draw_triangle(0,  0,  color,
+                              x1, y1, color,
+                              x2, y2, color,
+                              zorder, mode)
       end
     end
     
