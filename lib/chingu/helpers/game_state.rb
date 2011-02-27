@@ -19,6 +19,7 @@
 #
 #++
 
+require 'forwardable'
 
 module Chingu
   module Helpers
@@ -29,33 +30,14 @@ module Chingu
   # It will make call new() on a class, and just push an object.
   #
   module GameState
-    def game_states
-      game_state_manager.game_states
-    end
-    
-    def push_game_state(state, options = {})
-      game_state_manager.push_game_state(state, options)
-    end
-  
-    def pop_game_state(options = {})
-      game_state_manager.pop_game_state(options)
-    end
-
-    def switch_game_state(state, options = {})
-      game_state_manager.switch_game_state(state, options)
-    end
-
-    def transitional_game_state(state, options = {})
-      game_state_manager.transitional_game_state(state, options)
-    end
-
-    def current_game_state
-      game_state_manager.current_game_state
-    end
-    
-    def clear_game_states
-      game_state_manager.clear_game_states
-    end
+    extend Forwardable
+    def_delegator :game_state_manager, :game_states
+    def_delegator :game_state_manager, :push_game_state
+    def_delegator :game_state_manager, :pop_game_state
+    def_delegator :game_state_manager, :switch_game_state
+    def_delegator :game_state_manager, :transitional_game_state
+    def_delegator :game_state_manager, :current_game_state
+    def_delegator :game_state_manager, :clear_game_states
   end
   
   end
