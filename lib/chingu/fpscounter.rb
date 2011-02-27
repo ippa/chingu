@@ -26,7 +26,19 @@ module Chingu
   # register_tick() must be called every game loop iteration
   #
 	class FPSCounter
-		attr_reader :fps, :milliseconds_since_last_tick, :ticks
+    attr_reader :milliseconds_since_last_tick
+    alias :dt :milliseconds_since_last_tick
+    
+    #
+    # Frames per second, access with $window.fps or $window.framerate
+    #
+    attr_reader :fps
+    alias :framerate :fps
+    
+    #
+    # Total amount of game iterations (ticks)
+    #
+    attr_reader :ticks
   
 		def initialize
 			@current_second = Gosu::milliseconds / 1000
