@@ -28,8 +28,6 @@ module Chingu
   #
   module GFX
     
-    CIRCLE_STEP = 10
-    
     #
     # Fills whole window with specified 'color' and 'zorder'
     #
@@ -132,8 +130,15 @@ module Chingu
     #
     def draw_arc(cx, cy, r, from, to, color, zorder = 0, mode = :default)
       from, to = to, from if from > to
-      from.step(to, CIRCLE_STEP).each_cons(2) do |a1, a2|
-        _draw_arc_strip(cx, cy, r, a1, a2, color, zorder, mode)
+      $window.translate(cx,  cy) do
+        $window.scale(r) do
+          detail = _circle_segments(r)
+          _walk_arc(from, to, detail) do |x1, y1, x2, y2|
+            $window.draw_line(x1, y1, color,
+                              x2, y2, color,
+                              zorder, mode)
+          end
+        end
       end
     end
     
@@ -149,8 +154,16 @@ module Chingu
     #
     def fill_arc(cx, cy, r, from, to, color, zorder = 0, mode = :default)
       from, to = to, from if from > to
-      from.step(to, CIRCLE_STEP).each_cons(2) do |a1, a2|
-        _fill_arc_strip(cx, cy, r, a1, a2, color, zorder, mode)
+      $window.translate(cx,  cy) do
+        $window.scale(r) do
+          detail = _circle_segments(r)
+          _walk_arc(from, to, detail) do |x1, y1, x2, y2|
+            $window.draw_triangle(0,  0,  color,
+                                  x1, y1, color,
+                                  x2, y2, color,
+                                  zorder, mode)
+          end
+        end
       end
     end
     
@@ -175,24 +188,42 @@ module Chingu
       $window.draw_line(right, top,    color_d, left,  top,    color_a, zorder, mode)
     end
     
-    def _draw_arc_strip(cx, cy, r, a1, a2, color, zorder = 0, mode = :default)
-      $window.translate(cx, cy) do
-        x1, y1 = Gosu.offset_x(a1, r), Gosu.offset_y(a1, r)
-        x2, y2 = Gosu.offset_x(a2, r), Gosu.offset_y(a2, r)
-        $window.draw_line(x1, y1, color,
-                          x2, y2, color,
-                          zorder, mode)
-      end
+    #
+    # Calculates a reasonable number of segments for a circle of the given
+    # radius. Forgive the use of a magic number.
+    #
+    # Adapted from SiegeLord's "An Efficient Way to Draw Approximate Circles
+    # in OpenGL" <http://slabode.exofire.net/circle_draw.shtml>.
+    #
+    def _circle_segments(r)
+      10 * Math.sqrt(r)
     end
     
-    def _fill_arc_strip(cx, cy, r, a1, a2, color, zorder = 0, mode = :default)
-      $window.translate(cx, cy) do
-        x1, y1 = Gosu.offset_x(a1, r), Gosu.offset_y(a1, r)
-        x2, y2 = Gosu.offset_x(a2, r), Gosu.offset_y(a2, r)
-        $window.draw_triangle(0,  0,  color,
-                              x1, y1, color,
-                              x2, y2, color,
-                              zorder, mode)
+    #
+    # Appriximates an arc as a series of line segments and passes each segment
+    # to the block. Makes clever use of a transformation matrix to avoid
+    # repeated calls to sin and cos. 
+    #
+    # Adapted from SiegeLord's "An Efficient Way to Draw Approximate Circles
+    # in OpenGL" <http://slabode.exofire.net/circle_draw.shtml>.
+    #
+    def _walk_arc(from, to, detail, &block)
+      walk_segments = ((to - from).to_f * (detail - 1) / 360).floor
+      
+      theta = 2 * Math::PI / detail
+      c = Math.cos(theta)
+      s = Math.sin(theta)
+      
+      x1 = Gosu.offset_x(from, 1)
+      y1 = Gosu.offset_y(from, 1)
+      
+      0.upto(walk_segments) do
+        x2 = c * x1 - s * y1
+        y2 = s * x1 + c * y1
+        
+        block[x1, y1, x2, y2]
+        
+        x1, y1 = x2, y2
       end
     end
     
