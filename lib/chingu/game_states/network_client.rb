@@ -163,7 +163,7 @@ module Chingu
           begin
             packet, sender = @socket.recvfrom(amount)
             on_data(packet)        
-          rescue Errno::ECONNABORTED
+          rescue Errno::ECONNABORTED, Errno::ECONNRESET
             on_disconnect
           end
         end
@@ -192,9 +192,13 @@ module Chingu
       # Send whatever raw data to the server
       #
       def send_data(data)
-        @socket.write([data.length].pack(NetworkServer::PACKET_HEADER_FORMAT))
-        @socket.write(data)
-        @socket.flush
+        begin
+          @socket.write([data.length].pack(NetworkServer::PACKET_HEADER_FORMAT))
+          @socket.write(data)
+          @socket.flush
+        rescue Errno::ECONNABORTED, Errno::ECONNRESET, Errno::EPIPE, Errno::ENOTCONN
+          on_disconnect
+        end
       end
 
       #
