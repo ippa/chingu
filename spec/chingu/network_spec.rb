@@ -73,7 +73,6 @@ module Chingu
             data.each {|packet| @server.should_receive(:on_msg).with(an_instance_of(TCPSocket), packet) }
             data.each {|packet| @client.send_msg(packet) }
 
-            sleep 0.05 # Give the server time to buffer.
             @server.update
           end
         end
@@ -86,7 +85,6 @@ module Chingu
             @server.update # Accept the client before sending, so we know of its socket.
             data.each { |packet| @server.send_msg(@server.sockets[0], packet) }
 
-            sleep 0.05 # Give the client time to buffer.
             @client.update
           end
         end
@@ -97,17 +95,13 @@ module Chingu
           it "should send/recv #{name}" do
             @server.update # Accept the clients, so know about their existence to broadcast.
 
-            # Data should be cached.
-            data.each {|packet| @server.broadcast_msg(packet) }
-
             data.each do |packet|
               @client.should_receive(:on_msg).with(packet)
               @client2.should_receive(:on_msg).with(packet)
             end
 
-            @server.update # Push the cached messages.
+            data.each {|packet| @server.broadcast_msg(packet) }
 
-            sleep 0.05 # Give the clients time to buffer.
             @client.update
             @client2.update
           end

@@ -69,20 +69,62 @@ module Chingu
     # A good idea is to have a socket-ivar in your Player-model and a Player.find_by_socket(socket)
     #
     class NetworkServer < Chingu::GameState
-      attr_reader :socket, :sockets, :packet_counter, :packet_counter, :ip, :port
+      PACKET_HEADER_LENGTH = 4
+      PACKET_HEADER_FORMAT = "N"
+      DEFAULT_PORT = 7778
+
+      class PacketBuffer
+        def initialize
+          @data = '' # Buffered data.
+          @length = nil # Length of the next packet. nil if header not read yet.
+        end
+
+        # Add data string to the buffer.
+        def buffer_data(data)
+          @data << data
+        end
+
+        # Call after adding data with #buffer_data until there are no more packets left.
+        def next_packet
+          # Read the header to find out the length of the next packet.
+          unless @length
+            if @data.length >= PACKET_HEADER_LENGTH
+              @length = @data[0...PACKET_HEADER_LENGTH].unpack(PACKET_HEADER_FORMAT)[0]
+              @data[0...PACKET_HEADER_LENGTH] = ''
+            end
+          end
+
+          # If there is enough data after the header for the full packet, return it.
+          if @length and @length <= @data.length
+            begin
+              packet =  @data[0...@length]
+              @data[0...@length] = ''
+              @length = nil
+              return packet
+            rescue TypeError => ex
+              puts "Bad data received:\n#{@data.inspect}"
+              raise ex
+            end
+          else
+            return nil
+          end
+        end
+      end
+
+      attr_reader :socket, :sockets, :ip, :port
+
+      alias_method :address, :ip
       
       def initialize(options = {})
         super
         
         @ip = options[:ip] || "0.0.0.0"
-        @port = options[:port] || 7778
+        @port = options[:port] || DEFAULT_PORT
         @debug = options[:debug]
         @socket = nil
         @sockets = []
-        @buffered_output = YAML::Stream.new
         @max_read_per_update = options[:max_read_per_update] || 20000
-        
-        @packet_counter = 0
+
         @packet_buffers = Hash.new
       end
       
@@ -134,11 +176,9 @@ module Chingu
         if @socket && !@socket.closed?
           handle_incoming_connections
           handle_incoming_data
-          super
-          handle_outgoing_data
-        else
-          super
         end
+
+        super
       end
       
       #
@@ -157,10 +197,11 @@ module Chingu
 
       def handle_incoming_connections
         begin
-          socket = @socket.accept_nonblock
-          @sockets << socket
-          on_connect(socket)
-          @packet_buffers[socket] = ""
+          while socket = @socket.accept_nonblock
+            @sockets << socket
+            @packet_buffers[socket] = PacketBuffer.new
+            on_connect(socket)
+          end
         rescue IO::WaitReadable, Errno::EINTR
         end
       end
@@ -177,6 +218,7 @@ module Chingu
               on_data(socket, packet)
             rescue Errno::ECONNABORTED, Errno::ECONNRESET
               @packet_buffers[socket] = nil
+
               on_disconnect(socket)
             end
           end
@@ -187,28 +229,12 @@ module Chingu
       # on_data(data) will be called from handle_incoming_data() by default.
       #
       def on_data(socket, data)
-        begin
-          msgs = data.split("--- ")          
-          if msgs.size > 1
-            @packet_buffers[socket] << msgs[0...-1].join("--- ")
-            YAML::load_documents(@packet_buffers[socket]) { |msg| on_msg(socket, msg) if msg}
-            @packet_buffers[socket] = msgs.last
-          else
-            @packet_buffers[socket] << msgs.join
-          end
-        end
-      end
-      
-      #
-      # Send all buffered outgoing data
-      #
-      def handle_outgoing_data
-        # the "---" part is a little hack to make server understand the YAML is fully transmitted.
-        
-        data = @buffered_output.emit
-        if data.size > 0
-          @sockets.each { |socket| send_data(socket, data + "--- \n") }
-          @buffered_output = YAML::Stream.new
+        buffer = @packet_buffers[socket]
+
+        buffer.buffer_data data
+
+        while packet = buffer.next_packet
+          on_msg(socket, Marshal.load(packet))
         end
       end
       
@@ -217,7 +243,8 @@ module Chingu
       # Output is buffered and dispatched once each server-loop
       #
       def broadcast_msg(msg)
-        @buffered_output.add(msg)
+        data = Marshal.dump(msg)
+        @sockets.each {|s| send_data(s, data) }
       end
       
       #
@@ -225,8 +252,7 @@ module Chingu
       # 'msg' must responds to #to_yaml
       #
       def send_msg(socket, msg)
-        # the "---" part is a little hack to make server understand the YAML is fully transmitted.
-        send_data(socket, msg.to_yaml + "--- \n")
+        send_data(socket, Marshal.dump(msg))
       end
       
       #
@@ -234,6 +260,7 @@ module Chingu
       #
       def send_data(socket, data)
         begin
+          socket.write([data.length].pack(PACKET_HEADER_FORMAT))
           socket.write(data)
           socket.flush
         rescue Errno::ECONNABORTED, Errno::ECONNRESET, Errno::EPIPE, Errno::ENOTCONN

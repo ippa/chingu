@@ -71,19 +71,20 @@ module Chingu
     #
     class NetworkClient < Chingu::GameState
       attr_reader :latency, :socket, :packet_counter, :packet_buffer, :ip, :port
+      alias_method :address, :ip
       
       def initialize(options = {})
         super
         @timeout = options[:timeout] || 4        
         @debug = options[:debug]
         @ip = options[:ip] || "0.0.0.0"
-        @port = options[:port] || 7778
+        @port = options[:port] || NetworkServer::DEFAULT_PORT
         @max_read_per_update = options[:max_read_per_update] || 50000
         
         @socket = nil
         @latency = 0
         @packet_counter = 0
-        @packet_buffer = ""
+        @packet_buffer = NetworkServer::PacketBuffer.new
       end
       
       #
@@ -172,17 +173,10 @@ module Chingu
       # on_data(data) will be called from handle_incoming_data() by default.
       #
       def on_data(data)
-        begin
-          msgs = data.split("--- ")          
-          if msgs.size > 1
-            @packet_buffer << msgs[0...-1].join("--- ")
-            YAML::load_documents(@packet_buffer) { |msg| on_msg(msg)  if msg }
-            @packet_buffer = msgs.last
-          else
-            @packet_buffer << msgs.join
-          end
-        rescue ArgumentError
-          puts "Bad YAML recieved:\n#{data}"
+        @packet_buffer.buffer_data data
+
+        while packet = @packet_buffer.next_packet
+          on_msg(Marshal.load(packet))
         end
       end
       
@@ -191,15 +185,14 @@ module Chingu
       # Can be whatever ruby-structure that responds to #to_yaml
       #
       def send_msg(msg)
-        # the "---" part is a little hack to make server understand the YAML is fully transmitted.
-        data = msg.to_yaml + "--- \n"
-        send_data(data)
+        send_data(Marshal.dump(msg))
       end
 
       #
       # Send whatever raw data to the server
       #
       def send_data(data)
+        @socket.write([data.length].pack(NetworkServer::PACKET_HEADER_FORMAT))
         @socket.write(data)
         @socket.flush
       end
