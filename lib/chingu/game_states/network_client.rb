@@ -112,7 +112,6 @@ module Chingu
         begin
           status = Timeout::timeout(@timeout) do
             @socket = TCPSocket.new(@ip, @port)
-            @socket.setsockopt(Socket::IPPROTO_TCP,Socket::TCP_NODELAY,1)
             on_connect
           end
         rescue Errno::ECONNREFUSED
@@ -195,10 +194,14 @@ module Chingu
         begin
           @socket.write([data.length].pack(NetworkServer::PACKET_HEADER_FORMAT))
           @socket.write(data)
-          @socket.flush
         rescue Errno::ECONNABORTED, Errno::ECONNRESET, Errno::EPIPE, Errno::ENOTCONN
           on_disconnect
         end
+      end
+
+      # Ensure that the buffer is cleared of data to write (call at the end of update or, at least after all sends).
+      def flush
+        @socket.flush
       end
 
       #

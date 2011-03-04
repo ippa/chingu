@@ -136,7 +136,6 @@ module Chingu
         @port = port  if port
         begin
           @socket = TCPServer.new(@ip, @port)
-          @socket.setsockopt(Socket::IPPROTO_TCP,Socket::TCP_NODELAY,1)
           on_start
         rescue
           on_start_error($!)
@@ -262,7 +261,6 @@ module Chingu
         begin
           socket.write([data.length].pack(PACKET_HEADER_FORMAT))
           socket.write(data)
-          socket.flush
         rescue Errno::ECONNABORTED, Errno::ECONNRESET, Errno::EPIPE, Errno::ENOTCONN
           on_disconnect(socket)
         end        
@@ -273,6 +271,11 @@ module Chingu
       #
       def disconnect_client(socket)
         socket.close
+      end
+
+      # Ensure that the buffer is cleared of data to write (call at the end of update or, at least after all sends).
+      def flush
+        @sockets.each {|s| s.flush }
       end
       
       #
