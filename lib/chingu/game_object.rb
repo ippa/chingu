@@ -19,7 +19,7 @@
 #
 #++
 
-require_rel 'helpers/*'
+require_rel 'helpers'
 module Chingu
   #
   # GameObject inherits from BasicGameObject to get traits and some class-methods like .all and .destroy
