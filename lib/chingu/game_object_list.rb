@@ -35,10 +35,6 @@ module Chingu
       @game_objects = options[:game_objects] || []
       @visible_game_objects = []
       @unpaused_game_objects = []
-      
-      #@game_objects = {}
-      #@visible_game_objects = {}
-      #@unpaused_game_objects = {}
     end
     
     def_delegator :@game_objects, :size
@@ -77,10 +73,6 @@ module Chingu
       @game_objects.push(object)
       @visible_game_objects.push(object)  if object.respond_to?(:visible)  && object.visible
       @unpaused_game_objects.push(object) if object.respond_to?(:paused)   && !object.paused
-      
-      #@game_objects[object] = true
-      #@visible_game_objects[object] = true  if object.respond_to?(:visible)  && object.visible
-      #@unpaused_game_objects[object] = true if object.respond_to?(:paused)   && !object.paused
     end
     
     def remove_game_object(object)
