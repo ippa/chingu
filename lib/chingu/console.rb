@@ -25,6 +25,7 @@ module Chingu
   #
   #
   class Console
+    include Chingu::Helpers::FPSCounter         # Adds FPSCounter delegators
     include Chingu::Helpers::GameState          # Easy access to the global game state-queue
     include Chingu::Helpers::GameObject         # Adds game_objects_of_class etc ...
     
@@ -73,28 +74,6 @@ module Chingu
       game_state_manager.inside_state || game_state_manager.current_game_state || self
     end
     
-    #
-    # Frames per second, access with $window.fps or $window.framerate
-    #
-    def fps
-      @fps_counter.fps
-    end
-    alias :framerate :fps
-
-    #
-    # Total amount of game iterations (ticks)
-    #
-    def ticks
-      @fps_counter.ticks
-    end
-    
-    #
-    # Mathematical short name for "milliseconds since last tick"
-    #
-    def dt
-      @milliseconds_since_last_tick
-    end
-
     #
     # Chingus core-logic / loop. Gosu will call this each game-iteration.
     #

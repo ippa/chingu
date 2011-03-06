@@ -1,6 +1,6 @@
 #--
 #
-# Chingu -- Game framework built on top of the opengl accelerated gamelib Gosu
+# Chingu -- OpenGL accelerated 2D game framework for Ruby
 # Copyright (C) 2009 ippa / ippa@rubylicio.us
 #
 # This library is free software; you can redistribute it and/or
@@ -24,21 +24,16 @@ require 'forwardable'
 module Chingu
   module Helpers
   
-  #
-  # push_game_state accepts either a class inherited from GameState or an object-instance from such a class.
-  #
-  # It will make call new() on a class, and just push an object.
-  #
-  module GameState
-    extend Forwardable
-    def_delegator :game_state_manager, :game_states
-    def_delegator :game_state_manager, :push_game_state
-    def_delegator :game_state_manager, :pop_game_state
-    def_delegator :game_state_manager, :switch_game_state
-    def_delegator :game_state_manager, :transitional_game_state
-    def_delegator :game_state_manager, :current_game_state
-    def_delegator :game_state_manager, :clear_game_states
-  end
+    #
+    # Convenience-methods for classes that have an FPS counter
+    # Mixed into Chingu::Window and Chingu::Console
+    #
+    module FPSCounter
+      extend Forwardable
+      def_delegator  :@fps_counter, :ticks
+      def_delegators :@fps_counter, :fps, :framerate # TODO: switch to Gosu::fps
+      def_delegators :@fps_counter, :dt, :milliseconds_since_last_tick
+    end
   
   end
 end

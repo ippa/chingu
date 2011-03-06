@@ -27,7 +27,7 @@ module Chingu
   # All drawings depend on the global variable $window which should be an instance of Gosu::Window or Chingu::Window
   #
   module GFX
-  
+    
     #
     # Fills whole window with specified 'color' and 'zorder'
     #
@@ -48,52 +48,33 @@ module Chingu
     #   :orientation  - Either :vertical (top to bottom) or :horizontal (left to right)
     #
     
-    def fill(options, zorder = 0)
+    def fill(material, zorder = 0, mode = :default)
       #
       # if only 1 color-argument is given, assume fullscreen simple color fill.
       #
-      if options.is_a?(Gosu::Color)
-        $window.draw_quad(0, 0, options,
-                        $window.width, 0, options,
-                        $window.width, $window.height, options,
-                        0, $window.height, options, zorder, :default)
+      if material.is_a?(Gosu::Color)
+        rect = Rect.new([0, 0, $window.width, $window.height])
+        _fill_rect(rect, material, material, material, material, zorder, mode)
       else
-        fill_gradient(options)
+        fill_gradient(material)
       end
     end
     
     #
     # Draws an unfilled rect in given color
     #
-    def draw_rect(rect, color, zorder)
-      $window.draw_line(rect.x, rect.y, color, rect.right, rect.y, color, zorder)
-      $window.draw_line(rect.right, rect.y, color, rect.right, rect.bottom, color, zorder)
-      $window.draw_line(rect.right, rect.bottom, color, rect.x, rect.bottom, color, zorder)
-      $window.draw_line(rect.x, rect.bottom, color, rect.x, rect.y, color, zorder)
+    def draw_rect(rect, color, zorder = 0, mode = :default)
+      rect = Rect.new(rect) unless rect.is_a? Rect
+      _stroke_rect(rect, color, color, color, color, zorder, mode)
     end
     
-    
-    #
-    # Draws an unfilled circle, thanks shawn24!
-    #
-    CIRCLE_STEP = 10
-    def draw_circle(cx,cy,r,color)      
-      0.step(360, CIRCLE_STEP) do |a1|
-        a2 = a1 + CIRCLE_STEP
-        $window.draw_line cx + Gosu.offset_x(a1, r), cy + Gosu.offset_y(a1, r), color, cx + Gosu.offset_x(a2, r), cy + Gosu.offset_y(a2, r), color, 9999
-      end
-    end
     
     #
     # Fills a given Rect 'rect' with Color 'color', drawing with zorder 'zorder'
     #
-    def fill_rect(rect, color, zorder = 0)
-      rect = Rect.new(rect)     # Make sure it's a rect
-      $window.draw_quad(  rect.x, rect.y, color,
-                          rect.right, rect.y, color,
-                          rect.right, rect.bottom, color,
-                          rect.x, rect.bottom, color,
-                          zorder, :default)
+    def fill_rect(rect, color, zorder = 0, mode = :default)
+      rect = Rect.new(rect) unless rect.is_a? Rect
+      _fill_rect(rect, color, color, color, color, zorder, mode)
     end
     
     #
@@ -105,46 +86,147 @@ module Chingu
     #   :orientation  - Either :vertical (top to bottom) or :horizontal (left to right)
     #
     def fill_gradient(options)
-      default_options = { :from => Gosu::Color::BLACK,
-                          :to => Gosu::Color::WHITE,
-                          :thickness => 10, 
-                          :orientation => :vertical,
-                          :rect => Rect.new([0, 0, $window.width, $window.height]),
-                          :zorder => 0,
-                          :mode => :default
-                        }
-      options = default_options.merge(options)
+      options = { :from => Gosu::Color::BLACK,
+                  :to => Gosu::Color::WHITE,
+                  :orientation => :vertical,
+                  :rect => [0, 0, $window.width, $window.height],
+                  :zorder => 0,
+                  :mode => :default
+                }.merge!(options)
       
       rect   = Rect.new(options[:rect])
       colors = options[:colors] || options.values_at(:from, :to)
+      zorder = options[:zorder]
+      mode   = options[:mode]
       
       case options[:orientation]
       when :vertical
         rect.height /= colors.count - 1
         colors.each_cons(2) do |from, to|
-          $window.draw_quad(  rect.left,  rect.top,    from,
-                              rect.right, rect.top,    from,
-                              rect.right, rect.bottom, to,
-                              rect.left,  rect.bottom, to,
-                              options[:zorder], options[:mode]
-                            )
+          _fill_rect(rect, from, to, to, from, zorder, mode)
           rect.top += rect.height
         end
       when :horizontal
         rect.width /= colors.count - 1
         colors.each_cons(2) do |from, to|
-          $window.draw_quad(  rect.left,  rect.top,    from,
-                              rect.left,  rect.bottom, from,
-                              rect.right, rect.bottom, to,
-                              rect.right, rect.top,    to,
-                              options[:zorder], options[:mode]
-                            )
+          _fill_rect(rect, from, from, to, to, zorder, mode)
           rect.left += rect.width
         end
       else
         raise ArgumentError, "bad gradient orientation: #{options[:orientation]}"
       end
+      
     end
+    
+    #
+    # Draws an unfilled circle, thanks shawn24!
+    #
+    def draw_circle(cx, cy, r, color, zorder = 0, mode = :default)
+      draw_arc(cx, cy, r, 0, 360, color, zorder, mode)
+    end
+    
+    #
+    # Draws an unfilled arc from a1 to a2
+    #
+    def draw_arc(cx, cy, r, from, to, color, zorder = 0, mode = :default)
+      from, to = to, from if from > to
+      $window.translate(cx,  cy) do
+        $window.scale(r) do
+          detail = _circle_segments(r)
+          _walk_arc(from, to, detail) do |x1, y1, x2, y2|
+            $window.draw_line(x1, y1, color,
+                              x2, y2, color,
+                              zorder, mode)
+          end
+        end
+      end
+    end
+    
+    #
+    # Draws a filled circle
+    #
+    def fill_circle(cx, cy, r, color, zorder = 0, mode = :default)
+      fill_arc(cx, cy, r, 0, 360, color, zorder, mode)
+    end
+    
+    #
+    # Draws a filled arc from a1 to a2
+    #
+    def fill_arc(cx, cy, r, from, to, color, zorder = 0, mode = :default)
+      from, to = to, from if from > to
+      $window.translate(cx,  cy) do
+        $window.scale(r) do
+          detail = _circle_segments(r)
+          _walk_arc(from, to, detail) do |x1, y1, x2, y2|
+            $window.draw_triangle(0,  0,  color,
+                                  x1, y1, color,
+                                  x2, y2, color,
+                                  zorder, mode)
+          end
+        end
+      end
+    end
+    
+    private
+    
+    def _fill_rect(rect, color_a, color_b, color_c, color_d, zorder, mode)
+      left,  top    = *rect.topleft
+      right, bottom = *rect.bottomright
+      $window.draw_quad(left,  top,    color_a,
+                        left,  bottom, color_b,
+                        right, bottom, color_c,
+                        right, top,    color_d,
+                        zorder, mode)
+    end
+    
+    def _stroke_rect(rect, color_a, color_b, color_c, color_d, zorder, mode)
+      left,  top    = *rect.topleft
+      right, bottom = *rect.bottomright
+      $window.draw_line(left,  top,    color_a, left,  bottom, color_b, zorder, mode)
+      $window.draw_line(left,  bottom, color_b, right, bottom, color_c, zorder, mode)
+      $window.draw_line(right, bottom, color_c, right, top,    color_d, zorder, mode)
+      $window.draw_line(right, top,    color_d, left,  top,    color_a, zorder, mode)
+    end
+    
+    #
+    # Calculates a reasonable number of segments for a circle of the given
+    # radius. Forgive the use of a magic number.
+    #
+    # Adapted from SiegeLord's "An Efficient Way to Draw Approximate Circles
+    # in OpenGL" <http://slabode.exofire.net/circle_draw.shtml>.
+    #
+    def _circle_segments(r)
+      10 * Math.sqrt(r)
+    end
+    
+    #
+    # Appriximates an arc as a series of line segments and passes each segment
+    # to the block. Makes clever use of a transformation matrix to avoid
+    # repeated calls to sin and cos. 
+    #
+    # Adapted from SiegeLord's "An Efficient Way to Draw Approximate Circles
+    # in OpenGL" <http://slabode.exofire.net/circle_draw.shtml>.
+    #
+    def _walk_arc(from, to, detail, &block)
+      walk_segments = ((to - from).to_f * (detail - 1) / 360).floor
+      
+      theta = 2 * Math::PI / detail
+      c = Math.cos(theta)
+      s = Math.sin(theta)
+      
+      x1 = Gosu.offset_x(from, 1)
+      y1 = Gosu.offset_y(from, 1)
+      
+      0.upto(walk_segments) do
+        x2 = c * x1 - s * y1
+        y2 = s * x1 + c * y1
+        
+        block[x1, y1, x2, y2]
+        
+        x1, y1 = x2, y2
+      end
+    end
+    
   end
   
   end
