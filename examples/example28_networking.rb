@@ -16,6 +16,7 @@ class Game < Chingu::Window
     @server = Server.new
     
     @server.start("0.0.0.0", 1234)
+    #@client.connect("192.168.0.1", 1234)
     @client.connect("127.0.0.1", 1234)
   end
   
@@ -48,6 +49,10 @@ class Client < GameStates::NetworkClient
   #
   def on_msg(msg)
     puts "Client Got: #{msg.inspect}"
+  end
+  
+  def on_connection_refused
+    puts "connection refused"
   end
   
 end

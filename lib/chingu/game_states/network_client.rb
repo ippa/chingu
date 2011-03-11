@@ -92,18 +92,23 @@ module Chingu
       
       #
       # Default network loop:
-      # 1) read raw data from server with #handle_incoming_data
-      # 2) #handle_incoming_data call #on_data(data)
-      # 3) #on_data(data) will call #on_msgs(msg)
+      # 1) Try to complete outgoing connection if connect() has been called
+      # 2) read raw data from server with #handle_incoming_data
+      # 3) #handle_incoming_data call #on_data(data)
+      # 4) #on_data(data) will call #on_msgs(msg)
       #
       def update
-        # Check up on our nonblocking connection in progress
+  
         if @socket and not @connected
           begin
             # Start/Check on our nonblocking tcp connection
             @socket.connect_nonblock(@sockaddr)
-          rescue IO::WaitWritable # connection in progress, check in next update()
+          rescue Errno::EINPROGRESS   #rescue IO::WaitWritable
           rescue Errno::EALREADY
+            if IO.select([@socket],nil,nil,0.1).nil?
+              @socket = nil
+              on_connection_refused
+            end
           rescue Errno::EISCONN
             @connected = true
             on_connect
