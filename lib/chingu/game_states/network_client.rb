@@ -72,6 +72,8 @@ module Chingu
     class NetworkClient < Chingu::GameState
       attr_reader :latency, :socket, :packet_counter, :packet_buffer, :ip, :port
       alias_method :address, :ip
+
+      def connected?; @connected; end
       
       def initialize(options = {})
         super
@@ -96,7 +98,7 @@ module Chingu
       #
       def update
         # Check up on our nonblocking connection in progress
-        unless @connected
+        if @socket and not @connected
           begin
             # Start/Check on our nonblocking tcp connection
             @socket.connect_nonblock(@sockaddr)
@@ -174,6 +176,8 @@ module Chingu
             packet, sender = @socket.recvfrom(amount)
             on_data(packet)        
           rescue Errno::ECONNABORTED, Errno::ECONNRESET
+            @connected = false
+            @socket = nil
             on_disconnect
           end
         end
@@ -206,6 +210,8 @@ module Chingu
           @socket.write([data.length].pack(NetworkServer::PACKET_HEADER_FORMAT))
           @socket.write(data)
         rescue Errno::ECONNABORTED, Errno::ECONNRESET, Errno::EPIPE, Errno::ENOTCONN
+          @connected = false
+          @socket = nil
           on_disconnect
         end
       end

@@ -38,6 +38,8 @@ module Chingu
         @client.should_receive(:on_connect)
         @server.start
         @client.connect
+
+        @client.update until @client.connected?
         @server.update
         
         @client.stop
@@ -51,6 +53,7 @@ module Chingu
         @client = described_class.new(:ip => "127.0.0.1", :port => 55421) # closed we assume
         @client.should_receive(:on_connection_refused)
         @client.connect
+        5.times { @client.update }
       end
     end
     
@@ -59,6 +62,8 @@ module Chingu
         @server = Chingu::GameStates::NetworkServer.new(:port => 9999).start
         @client = Chingu::GameStates::NetworkClient.new(:ip => "127.0.0.1", :port => 9999).connect
         @client2 = Chingu::GameStates::NetworkClient.new(:ip => "127.0.0.1", :port => 9999).connect
+        @client.update until @client.connected?
+        @client2.update until @client2.connected?
       end
       
       after :each do
@@ -73,7 +78,7 @@ module Chingu
             data.each {|packet| @server.should_receive(:on_msg).with(an_instance_of(TCPSocket), packet) }
             data.each {|packet| @client.send_msg(packet) }
 
-            @server.update
+            5.times { @server.update }
           end
         end
       end
@@ -85,7 +90,7 @@ module Chingu
             @server.update # Accept the client before sending, so we know of its socket.
             data.each { |packet| @server.send_msg(@server.sockets[0], packet) }
 
-            @client.update
+            5.times { @client.update }
           end
         end
       end
@@ -102,8 +107,10 @@ module Chingu
 
             data.each {|packet| @server.broadcast_msg(packet) }
 
-            @client.update
-            @client2.update
+            5.times do
+              @client.update
+              @client2.update
+            end
           end
         end
       end
