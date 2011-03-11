@@ -101,6 +101,7 @@ module Chingu
             # Start/Check on our nonblocking tcp connection
             @socket.connect_nonblock(@sockaddr)
           rescue IO::WaitWritable # connection in progress, check in next update()
+          rescue Errno::EALREADY
           rescue Errno::EISCONN
             @connected = true
             on_connect
