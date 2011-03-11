@@ -28,7 +28,7 @@ module Chingu
     # Uses nonblocking polling TCP and YAML to communicate. 
     # If your game state inherits from NetworkClient you'll have the following methods available:
     #
-    #   connect(ip, port)               # Start a blocking connection period. only connect() uses previosly given ip:port
+    #   connect(ip, port)               # Start a nonblocking connection. only connect() uses previosly given ip:port
     #   send_data(data)                 # Send raw data on the network, nonblocking
     #   send_msg(whatever ruby data)    # Will get YAML'd and sent to server
     #   handle_incoming_data(max_size)  # Nonblocking read of incoming server data
@@ -82,6 +82,7 @@ module Chingu
         @max_read_per_update = options[:max_read_per_update] || 50000
         
         @socket = nil
+        @connected = false
         @latency = 0
         @packet_counter = 0
         @packet_buffer = NetworkServer::PacketBuffer.new
@@ -94,6 +95,22 @@ module Chingu
       # 3) #on_data(data) will call #on_msgs(msg)
       #
       def update
+        # Check up on our nonblocking connection in progress
+        unless @connected
+          begin
+            # Start/Check on our nonblocking tcp connection
+            @socket.connect_nonblock(@sockaddr)
+          rescue IO::WaitWritable # connection in progress, check in next update()
+          rescue Errno::EISCONN
+            @connected = true
+            on_connect
+          rescue Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ECONNRESET
+            on_connection_refused
+          rescue Errno::ETIMEDOUT
+            on_timeout
+          end
+        end
+        
         handle_incoming_data
         super
       end
@@ -109,16 +126,9 @@ module Chingu
         @ip = ip      if ip
         @port = port  if port
     
-        begin
-          status = Timeout::timeout(@timeout) do
-            @socket = TCPSocket.new(@ip, @port)
-            on_connect
-          end
-        rescue Errno::ECONNREFUSED
-          on_connection_refused
-        rescue Timeout
-          on_timeout
-        end
+        # Set up our @socket, update() will handle the actual nonblocking connection
+        @socket = Socket.new(Socket::Constants::AF_INET, Socket::Constants::SOCK_STREAM, 0)
+        @sockaddr = Socket.sockaddr_in(@port, @ip)
         
         return self
       end
