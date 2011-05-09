@@ -118,7 +118,7 @@ module Chingu
     # Disable automatic calling of update() and update_trait() each game loop
     #
     def pause!
-      @parent.game_objects.pause_game_object(self)    if @parent && @paused == false
+      @parent.game_objects.pause_game_object(self)    if @parent && !@paused
       @paused = true
     end
     alias :pause :pause!
@@ -127,7 +127,7 @@ module Chingu
     # Enable automatic calling of update() and update_trait() each game loop
     #
     def unpause!
-      @parent.game_objects.unpause_game_object(self)  if @parent && @paused == true
+      @parent.game_objects.unpause_game_object(self)  if @parent && @paused
       @paused = false
     end
     alias :unpause :unpause!

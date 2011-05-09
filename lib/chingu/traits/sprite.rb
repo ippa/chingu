@@ -71,7 +71,9 @@ module Chingu
       def to_s
         "#{self.class.to_s} @ #{x.to_i} / #{y.to_i} " <<
         "(#{width.to_i} x #{height.to_i}) - " <<
-        " ratio: #{sprintf("%.2f",width/height)} scale: #{sprintf("%.2f", factor_x)}/#{sprintf("%.2f", factor_y)} angle: #{angle.to_i} zorder: #{zorder} alpha: #{alpha}"
+        "ratio: #{sprintf("%.2f",width.to_f/height.to_f)} " << 
+        "scale: #{sprintf("%.2f", factor_x)}/#{sprintf("%.2f", factor_y)} " <<
+        "angle: #{angle.to_i} zorder: #{zorder} alpha: #{alpha}"
       end
 
       def color=(color)
@@ -205,7 +207,7 @@ module Chingu
       # Disable automatic calling of draw and draw_trait each game loop
       #
       def hide!
-        @parent.game_objects.hide_game_object(self)  if @parent && @visible == true
+        @parent.game_objects.hide_game_object(self)  if @parent && @visible
         @visible = false
       end
     
@@ -213,7 +215,7 @@ module Chingu
       # Enable automatic calling of draw and draw_trait each game loop
       #
       def show!
-        @parent.game_objects.show_game_object(self)  if @parent && @visible == false
+        @parent.game_objects.show_game_object(self)  if @parent && !@visible
         @visible = true
       end
     

@@ -63,6 +63,13 @@ module Chingu
         @game.game_objects.draw
       end
 
+      it "should keep track of visible game objects with show!()" do
+        go = GameObject.create(:visible => false)
+        go.show!
+        go.should_receive(:draw)
+        @game.game_objects.draw
+      end
+
       it "should call draw() on all visible game objects" do
         GameObject.create.should_receive(:draw)
         GameObject.create(:visible => false).should_not_receive(:draw)
