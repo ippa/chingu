@@ -24,16 +24,16 @@ module Chingu
   
     #
     # A chingu trait providing timer-methods to its includer, examples:
-    #   during(300) { @color = Color.new(0xFFFFFFFF) }   # forces @color to white ever update for 300 ms
-    #   after(400) { self.destroy! }                     # destroy object after 400 ms
-    #   between(1000,2000) { self.rotate(10) }           # starting after 1 second, call rotate(10) each update during 1 second
+    # during(300) { @color = Color.new(0xFFFFFFFF) } # forces @color to white ever update for 300 ms
+    # after(400) { self.destroy! } # destroy object after 400 ms
+    # between(1000,2000) { self.rotate(10) } # starting after 1 second, call rotate(10) each update during 1 second
     #
     # All the above can be combined with a 'then { do_something }'. For example, a classic shmup damage effect:
-    #   during(100) { @color.alpha = 100 }.then { @color.alpha = 255 }
+    # during(100) { @color.alpha = 100 }.then { @color.alpha = 255 }
     #
     module Timer
     
-      def setup_trait(options)        
+      def setup_trait(options)
         #
         # Timers are saved as an array of arrays where each entry contains:
         # [name, start_time, end_time (or nil if one-shot), &block]
@@ -44,7 +44,7 @@ module Chingu
       end
 
       #
-      # Executes block each update during 'time' milliseconds 
+      # Executes block each update during 'time' milliseconds
       #
       def during(time, options = {}, &block)
         if options[:name]
@@ -59,7 +59,7 @@ module Chingu
       end
       
       #
-      # Executes block after 'time' milliseconds 
+      # Executes block after 'time' milliseconds
       #
       def after(time, options = {}, &block)
         if options[:name]
@@ -89,7 +89,7 @@ module Chingu
       end
 
       #
-      # Executes block every 'delay' milliseconds 
+      # Executes block every 'delay' milliseconds
       #
       def every(delay, options = {}, &block)
         if options[:name]
@@ -98,13 +98,17 @@ module Chingu
         end
         
         ms = Gosu::milliseconds()
-        @_repeating_timers << [options[:name], ms + delay, delay, block]
+        @_repeating_timers << [options[:name], ms + delay, delay, options[:during] ? ms + options[:during] : nil, block]
+        if options[:during]
+          @_last_timer = [options[:name], nil, ms + options[:during]]
+          return self
+        end
       end
 
       #
-      # Executes block after the last timer ends 
+      # Executes block after the last timer ends
       # ...use one-shots start_time for our trailing "then".
-      # ...use durable timers end_time for our trailing "then".      
+      # ...use durable timers end_time for our trailing "then".
       #
       def then(&block)
         start_time = @_last_timer[2].nil? ? @_last_timer[1] : @_last_timer[2]
@@ -142,16 +146,20 @@ module Chingu
         ms = Gosu::milliseconds()
         
         @_timers.each do |name, start_time, end_time, block|
-          block.call  if ms > start_time && (end_time == nil || ms < end_time)
+          block.call if ms > start_time && (end_time == nil || ms < end_time)
         end
                 
         index = 0
-        @_repeating_timers.each do |name, start_time, delay, block|
+        @_repeating_timers.each do |name, start_time, delay, end_time, block|
           if ms > start_time
             block.call  
-            @_repeating_timers[index] = [name, ms + delay, delay, block]
+            @_repeating_timers[index] = [name, ms + delay, delay, end_time, block]
           end
-          index += 1
+          if end_time && ms > end_time
+            @_repeating_timers.delete_at index
+          else
+            index += 1
+          end
         end
 
         # Remove one-shot timers (only a start_time, no end_time) and all timers which have expired
