@@ -112,7 +112,7 @@ module Chingu
           rescue Errno::EISCONN
             @connected = true
             on_connect
-          rescue Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ECONNRESET
+          rescue Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::EINVAL
             @socket = nil
             on_connection_refused
           rescue Errno::ETIMEDOUT
