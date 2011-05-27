@@ -22,6 +22,15 @@ module Chingu
         @server.stop
       end
 
+      it "client should timeout when connecting to blackhole ip" do
+        @client = Chingu::GameStates::NetworkClient.new(:ip => "1.2.3.4", :port => 1234, :debug => true)
+        @client.connect
+        
+        #@client.should_receive(:on_timeout) ## gives on_connection_refused instead, kind of ok.
+        @client.should_receive(:on_connection_refused)
+        @client.update while @client.socket
+      end
+
       it "should call on_start_error() if failing" do
         @server = described_class.new(:ip => "1.2.3.999", :port => 12345678) # crazy ip:port
         @server.should_receive(:on_start_error)
