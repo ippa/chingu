@@ -111,8 +111,7 @@ module Chingu
         end
       end
 
-      attr_reader :socket, :sockets, :ip, :port
-
+      attr_reader :socket, :sockets, :ip, :port, :max_connections
       alias_method :address, :ip
       
       def initialize(options = {})
@@ -121,10 +120,11 @@ module Chingu
         @ip = options[:ip] || "0.0.0.0"
         @port = options[:port] || DEFAULT_PORT
         @debug = options[:debug]
+        @max_read_per_update = options[:max_read_per_update] || 20000
+        @max_connections = options[:max_connections] || 256
+        
         @socket = nil
         @sockets = []
-        @max_read_per_update = options[:max_read_per_update] || 20000
-
         @packet_buffers = Hash.new
       end
       
@@ -197,9 +197,13 @@ module Chingu
       def handle_incoming_connections
         begin
           while socket = @socket.accept_nonblock
-            @sockets << socket
-            @packet_buffers[socket] = PacketBuffer.new
-            on_connect(socket)
+            if @sockets.size < @max_connections
+              @sockets << socket
+              @packet_buffers[socket] = PacketBuffer.new
+              on_connect(socket)
+            else
+              socket.close
+            end
           end
         rescue IO::WaitReadable, Errno::EINTR
         end
@@ -215,7 +219,7 @@ module Chingu
             begin
               packet, sender = socket.recvfrom(max_size)
               on_data(socket, packet)
-            rescue Errno::ECONNABORTED, Errno::ECONNRESET
+            rescue Errno::ECONNABORTED, Errno::ECONNRESET, IOError
               @packet_buffers[socket] = nil
 
               on_disconnect(socket)
@@ -271,11 +275,21 @@ module Chingu
       #
       def disconnect_client(socket)
         socket.close
+        @sockets.delete socket
+        @packet_buffers.delete socket
+        on_disconnect(socket)
+      rescue Errno::ENOTCONN
       end
 
       # Ensure that the buffer is cleared of data to write (call at the end of update or, at least after all sends).
       def flush
-        @sockets.each {|s| s.flush }
+        @sockets.each do |socket| 
+          begin
+            socket.flush 
+          rescue IOError
+            disconnect_client(socket)
+          end
+        end
       end
       
       #
@@ -283,10 +297,12 @@ module Chingu
       #
       def stop
         return unless @socket
-        begin
+        
+        @sockets.each {|socket| disconnect_client(socket) }
+          @sockets = []
           @socket.close
+          @socket = nil
         rescue Errno::ENOTCONN
-        end
       end
       alias close stop
 
