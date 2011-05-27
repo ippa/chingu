@@ -1,9 +1,5 @@
 require 'spec_helper'
 
-class NilClass
-  def empty?; true; end
-end
-
 describe Chingu::Input do
   it "should map all defined Gosu input constants to Chinu symbols" do
     # Simpler if all the inputs are in a big hash.
