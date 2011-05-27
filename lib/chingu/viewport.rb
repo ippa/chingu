@@ -159,7 +159,7 @@ module Chingu
       a = @game_area
       %/
 Vieport
- Position: #{@x}, #{y}
+ Position: #{@x}, #{@y}
  Game area: #{a.x},#{a.y},#{a.width},#{a.height}"        
  Target: #{@target_x}, #{@target_y}
       /
