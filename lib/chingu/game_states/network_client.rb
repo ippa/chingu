@@ -113,8 +113,10 @@ module Chingu
             @connected = true
             on_connect
           rescue Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ECONNRESET
+            @socket = nil
             on_connection_refused
           rescue Errno::ETIMEDOUT
+            @socket = nil
             on_timeout
           end
         end
@@ -145,6 +147,7 @@ module Chingu
       # Called when connect() fails with connection refused (closed port)
       #
       def on_connection_refused
+        puts "[on_connection_refused() #{@ip}:#{@port}]"  if @debug
         connect(@ip, @port)
       end
 
@@ -152,6 +155,7 @@ module Chingu
       # Called when connect() recieves no initial answer from server
       #
       def on_timeout
+        puts "[on_timeout() #{@ip}:#{@port}]"  if @debug
         connect(@ip, @port)
       end
       
