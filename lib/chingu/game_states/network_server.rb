@@ -239,11 +239,12 @@ module Chingu
       # Shuts down all communication (closes socket) with a specific socket
       #
       def disconnect_client(socket)
-        socket.close
+        socket.close and not @socket.closed?
+      rescue Errno::ENOTCONN
+      ensure
         @sockets.delete socket
         @packet_buffers.delete socket
         on_disconnect(socket)
-      rescue Errno::ENOTCONN
       end
 
       # Ensure that the buffer is cleared of data to write (call at the end of update or, at least after all sends).
@@ -261,11 +262,14 @@ module Chingu
       # Stops server
       #
       def stop
+        begin
+          @socket.close if @socket and not @socket.closed?
+        rescue Errno::ENOTCONN
+        end
+
+        @socket = nil
         @sockets.each {|socket| disconnect_client(socket) }
         @sockets = []
-        @socket.close if @socket and not @socket.closed?
-        @socket = nil
-      rescue Errno::ENOTCONN
       end
 
       alias close stop

@@ -242,10 +242,12 @@ module Chingu
       #
       def disconnect_from_server
         @socket.close if @socket and not @socket.closed?
-        @connected = false
-        @socket = nil
-        on_disconnect
       rescue Errno::ENOTCONN
+      ensure
+        @socket = nil
+        was_connected = @connected
+        @connected = false
+        on_disconnect if was_connected
       end
       alias close disconnect_from_server
       alias stop disconnect_from_server
