@@ -1,6 +1,8 @@
 *.gem
 pkg
 .gem
+doc
+.yardoc
 .git
 .idea
 coverage
