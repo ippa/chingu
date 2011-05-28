@@ -16,14 +16,14 @@ module Chingu
     
     describe Chingu::GameStates::NetworkServer do
       it "should open listening port on start()" do
-        @server = described_class.new(:ip => "0.0.0.0", :port => 9999)
+        @server = described_class.new(:address => "0.0.0.0", :port => 9999)
         @server.should_receive(:on_start)
         @server.start
         @server.stop
       end
 
       it "client should timeout when connecting to blackhole ip" do
-        @client = Chingu::GameStates::NetworkClient.new(:ip => "1.2.3.4", :port => 1234, :debug => true)
+        @client = Chingu::GameStates::NetworkClient.new(:address => "1.2.3.4", :port => 1234, :debug => true)
         @client.connect
         
         #@client.should_receive(:on_timeout) ## gives on_connection_refused instead, kind of ok.
@@ -32,15 +32,15 @@ module Chingu
       end
 
       it "should call on_start_error() if failing" do
-        @server = described_class.new(:ip => "1.2.3.999", :port => 12345678) # crazy ip:port
+        @server = described_class.new(:address => "1.2.3.999", :port => 12345678) # crazy address:port
         @server.should_receive(:on_start_error)
         @server.start
         @server.stop
       end
 
       it "should call on_connect() and on_disconnect() when client connects" do
-        @server = described_class.new(:ip => "0.0.0.0", :port => 9999)
-        @client = Chingu::GameStates::NetworkClient.new(:ip => "127.0.0.1", :port => 9999)
+        @server = described_class.new(:address => "0.0.0.0", :port => 9999)
+        @client = Chingu::GameStates::NetworkClient.new(:address => "127.0.0.1", :port => 9999)
         
         @server.should_receive(:on_start)
         @server.should_receive(:on_connect).with(an_instance_of(TCPSocket))
@@ -59,7 +59,7 @@ module Chingu
     
     describe Chingu::GameStates::NetworkClient do
       it "should call on_connection_refused callback when connecting to closed port" do
-        @client = described_class.new(:ip => "127.0.0.1", :port => 55421) # closed we assume
+        @client = described_class.new(:address => "127.0.0.1", :port => 55421) # closed we assume
         @client.should_receive(:on_connection_refused)
         @client.connect
         5.times { @client.update }
@@ -69,8 +69,8 @@ module Chingu
     describe "Network communication" do
       before :each do
         @server = Chingu::GameStates::NetworkServer.new(:port => 9999).start
-        @client = Chingu::GameStates::NetworkClient.new(:ip => "127.0.0.1", :port => 9999).connect
-        @client2 = Chingu::GameStates::NetworkClient.new(:ip => "127.0.0.1", :port => 9999).connect
+        @client = Chingu::GameStates::NetworkClient.new(:address => "127.0.0.1", :port => 9999).connect
+        @client2 = Chingu::GameStates::NetworkClient.new(:address => "127.0.0.1", :port => 9999).connect
         @client.update until @client.connected?
         @client2.update until @client2.connected?
       end
@@ -119,6 +119,94 @@ module Chingu
             5.times do
               @client.update
               @client2.update
+            end
+          end
+        end
+      end
+
+      describe "byte and packet counters" do
+        before :each do
+          @packet = "Hello! " * 10
+          @packet_length = Marshal.dump(@packet).length
+          @packet_length_with_header = @packet_length + 4
+        end
+
+        it "should be zeroed initially" do
+          [@client, @client2, @server].each do |network|
+            network.packets_sent.should be 0
+            network.bytes_sent.should be 0
+            network.packets_received.should be 0
+            network.bytes_received.should be 0
+          end
+        end
+
+        describe "client to server" do
+          before :each do
+            @client.send_msg(@packet)
+            @server.update
+          end
+
+          describe "client" do
+            it "should increment counters correctly when sending a message" do
+              @client.packets_sent.should eq 1
+              @client.bytes_sent.should eq @packet_length_with_header
+            end
+          end
+
+          describe "server" do
+            it "should increment counters correctly when receiving a message" do
+              @server.packets_received.should eq 1
+              @server.bytes_received.should eq @packet_length_with_header
+            end
+          end
+        end
+
+        describe "server to client"  do
+          before :each do
+            @server.update
+            @server.send_msg(@server.sockets[0], @packet)
+            @client.update
+          end
+
+          describe "server" do
+            it "should increment sent counters" do
+              @server.packets_sent.should eq 1
+              @server.bytes_sent.should eq @packet_length_with_header
+            end
+          end
+
+          describe "client" do
+            it "should increment received counters" do
+              @client.packets_received.should eq 1
+              @client.bytes_received.should eq @packet_length_with_header
+              @client2.packets_received.should eq 0
+              @client2.bytes_received.should eq 0
+            end
+          end
+        end
+
+        describe "server to clients"  do
+          before :each do
+            @server.update
+            @server.broadcast_msg(@packet)
+            @client.update
+            @client2.update
+          end
+
+          describe "server" do
+            it "should increment sent counters" do
+              # Single message, broadcast to two clients.
+              @server.packets_sent.should eq 2
+              @server.bytes_sent.should eq @packet_length_with_header * 2
+            end
+          end
+
+          describe "clients" do
+            it "should increment received counters" do
+              [@client, @client2].each do |client|
+                client.packets_received.should eq 1
+                client.bytes_received.should eq @packet_length_with_header
+              end
             end
           end
         end

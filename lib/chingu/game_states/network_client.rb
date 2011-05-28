@@ -25,13 +25,13 @@ module Chingu
     # A game state for a client in a multiplayer game, suitable for smaller/middle sized games.
     # Used in combination with game state NetworkServer.
     #
-    # Uses nonblocking polling TCP and YAML to communicate. 
+    # Uses non-blocking polling TCP and marshal to communicate.
     # If your game state inherits from NetworkClient you'll have the following methods available:
     #
-    #   connect(ip, port)               # Start a nonblocking connection. only connect() uses previosly given ip:port
-    #   send_data(data)                 # Send raw data on the network, nonblocking
-    #   send_msg(whatever ruby data)    # Will get YAML'd and sent to server
-    #   handle_incoming_data(max_size)  # Nonblocking read of incoming server data
+    #   connect(address, port)          # Start a non-blocking connection. only connect() uses previosly given ip:port
+    #   send_data(data)                 # Send raw data on the network, non-blocking
+    #   send_msg(whatever ruby data)    # Will get marshalled and sent to server
+    #   handle_incoming_data(max_size)  # Non-blocking read of incoming server data
     #   disconnect_from_server          # Shuts down all network connections
     #   
     # The following callbacks can be overwritten to add your game logic:
@@ -46,7 +46,7 @@ module Chingu
     #   PlayState < Chingu::GameStates::NetworkClient
     #     def initialize(options = {})
     #       super   # this is always needed!
-    #       connect(options[:ip], options[:port])
+    #       connect(options[:address], options[:port])
     #     end
     #     
     #     def on_connect
@@ -65,29 +65,26 @@ module Chingu
     #
     # So why not EventMachine? No doubt in my mind that EventMachine is a hell of a library Chingu rolls its own for 2 reasons:
     #
-    #   AFAIK EventMachine can be hard to intergrate with the classic game loop, event machine wants its own loop
-    #   Rubys nonblocking sockets work, so why not keep it simple
+    #   AFAIK EventMachine can be hard to integrate with the classic game loop, event machine wants its own loop
+    #   Rubys non-blocking sockets work, so why not keep it simple
     #
     #
-    class NetworkClient < Chingu::GameState
-      attr_reader :latency, :socket, :packet_counter, :packet_buffer, :ip, :port
-      alias_method :address, :ip
+    class NetworkClient < NetworkState
+      attr_reader :latency, :socket, :packet_buffer
 
       def connected?; @connected; end
       
       def initialize(options = {})
-        super
-        @timeout = options[:timeout] || 4        
-        @debug = options[:debug]
-        @ip = options[:ip] || "0.0.0.0"
-        @port = options[:port] || NetworkServer::DEFAULT_PORT
+        super(options)
+
+        @timeout = options[:timeout] || 4
+
         @max_read_per_update = options[:max_read_per_update] || 50000
         
         @socket = nil
         @connected = false
         @latency = 0
-        @packet_counter = 0
-        @packet_buffer = NetworkServer::PacketBuffer.new
+        @packet_buffer = PacketBuffer.new
       end
       
       #
@@ -98,7 +95,7 @@ module Chingu
       # 4) #on_data(data) will call #on_msgs(msg)
       #
       def update
-  
+
         if @socket and not @connected
           begin
             # Start/Check on our nonblocking tcp connection
@@ -126,19 +123,19 @@ module Chingu
       end
       
       #
-      # Connect to a given ip:port (the server)
+      # Connect to a given address:port (the server)
       # Connect is done in a blocking manner.      
       # Will timeout after 4 seconds
       #
-      def connect(ip = nil, port = nil)
+      def connect(address = nil, port = nil)
         return if @socket
         
-        @ip = ip      if ip
+        @address = address      if address
         @port = port  if port
     
         # Set up our @socket, update() will handle the actual nonblocking connection
         @socket = Socket.new(Socket::Constants::AF_INET, Socket::Constants::SOCK_STREAM, 0)
-        @sockaddr = Socket.sockaddr_in(@port, @ip)
+        @sockaddr = Socket.sockaddr_in(@port, @address)
         
         return self
       end
@@ -147,23 +144,23 @@ module Chingu
       # Called when connect() fails with connection refused (closed port)
       #
       def on_connection_refused
-        puts "[on_connection_refused() #{@ip}:#{@port}]"  if @debug
-        connect(@ip, @port)
+        puts "[on_connection_refused() #{@address}:#{@port}]"  if @debug
+        connect(@address, @port)
       end
 
       #
       # Called when connect() recieves no initial answer from server
       #
       def on_timeout
-        puts "[on_timeout() #{@ip}:#{@port}]"  if @debug
-        connect(@ip, @port)
+        puts "[on_timeout() #{@address}:#{@port}]"  if @debug
+        connect(@address, @port)
       end
       
       #
       # on_connect will be called when client successfully makes a connection to server
       #
       def on_connect
-        puts "[Connected to Server #{@ip}:#{@port}]"  if @debug
+        puts "[Connected to Server #{@address}:#{@port}]"  if @debug
       end
       
       #
@@ -185,9 +182,7 @@ module Chingu
             packet, sender = @socket.recvfrom(amount)
             on_data(packet)        
           rescue Errno::ECONNABORTED, Errno::ECONNRESET
-            @connected = false
-            @socket = nil
-            on_disconnect
+            disconnect_from_server
           end
         end
       end
@@ -198,14 +193,26 @@ module Chingu
       def on_data(data)
         @packet_buffer.buffer_data data
 
+        @bytes_received += data.length
+
         while packet = @packet_buffer.next_packet
-          on_msg(Marshal.load(packet))
+          @packets_received += 1
+          begin
+            on_msg(Marshal.load(packet))
+          rescue TypeError
+            disconnect_from_server
+            break
+          end
         end
+      end
+
+      # Handler when message packets are received. Should be overriden in your code.
+      def on_msg(packet)
+        # should be overridden.
       end
       
       #
       # Send a msg to the server
-      # Can be whatever ruby-structure that responds to #to_yaml
       #
       def send_msg(msg)
         send_data(Marshal.dump(msg))
@@ -215,26 +222,30 @@ module Chingu
       # Send whatever raw data to the server
       #
       def send_data(data)
-        begin
-          @socket.write([data.length].pack(NetworkServer::PACKET_HEADER_FORMAT))
-          @socket.write(data)
-        rescue Errno::ECONNABORTED, Errno::ECONNRESET, Errno::EPIPE, Errno::ENOTCONN
-          @connected = false
-          @socket = nil
-          on_disconnect
-        end
+        length = @socket.write([data.length].pack(NetworkServer::PACKET_HEADER_FORMAT))
+        length += @socket.write(data)
+        @packets_sent += 1
+        @bytes_sent += length
+      rescue Errno::ECONNABORTED, Errno::ECONNRESET, Errno::EPIPE, Errno::ENOTCONN
+        disconnect_from_server
       end
 
       # Ensure that the buffer is cleared of data to write (call at the end of update or, at least after all sends).
       def flush
         @socket.flush
+      rescue IOError
+        disconnect_from_server
       end
 
       #
       # Shuts down all communication (closes socket) with server
       #
       def disconnect_from_server
-        @socket.close
+        @socket.close if @socket and not @socket.closed?
+        @connected = false
+        @socket = nil
+        on_disconnect
+      rescue Errno::ENOTCONN
       end
       alias close disconnect_from_server
       alias stop disconnect_from_server

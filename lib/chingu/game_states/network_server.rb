@@ -22,18 +22,18 @@
 module Chingu
   module GameStates  
     #
-    # A game state that acts server in a multiplayer game, suitable for smaller/middle sized games.
+    # A game state that acts server in a multi-player game, suitable for smaller/middle sized games.
     # Used in combination with game state NetworkClient.
     #
-    # Uses nonblocking polling TCP and YAML to communicate. 
+    # Uses non-blocking polling TCP and marshal to communicate.
     # If your game state inherits from NetworkClient you'll have the following methods available:
     #
-    #   start(ip, port)                         # Start server listening on ip:port
-    #   send_data(socket, data)                 # Send raw data on the network, nonblocking
-    #   send_msg(socket, whatever ruby data)    # Will get YAML'd and sent to server
+    #   start(address, port)                    # Start server listening on address:port
+    #   send_data(socket, data)                 # Send raw data on the network, non-blocking
+    #   send_msg(socket, whatever ruby data)    # Will get Marshalled and sent to server
     #   broadcast_msg(whatever ruby data)       # Send stuff to all connected clients, buffered and dispatched each gametick
-    #   handle_incoming_connections             # Nonblocking accept of incoming connections from clients
-    #   handle_incoming_data(max_size)          # Nonblocking read of incoming server data
+    #   handle_incoming_connections             # Non-blocking accept of incoming connections from clients
+    #   handle_incoming_data(max_size)          # Non-blocking read of incoming server data
 
     #   
     # The following callbacks can be overwritten to add your game logic:
@@ -60,82 +60,36 @@ module Chingu
     #     end
     #   end
     #
-    #   push_game_state ServerState.new(:ip => "127.0.0.1", :port => 7778).start
+    #   push_game_state NetworkServer.new(:address => "127.0.0.1", :port => 7778).start
     #
     #  NetworkServer works mostly like NetworkClient with a few differences
     #  - since a server handles many sockets (1 for each connected client) all callbacks first argument is 'socket'
-    #  - same with outgoing packets, send_data and send_msgs first argument is socket.
+    #  - same with outgoing packets, #send_data and #send_msg, first argument is a socket.
     #
     # A good idea is to have a socket-ivar in your Player-model and a Player.find_by_socket(socket)
     #
-    class NetworkServer < Chingu::GameState
-      PACKET_HEADER_LENGTH = 4
-      PACKET_HEADER_FORMAT = "N"
-      DEFAULT_PORT = 7778
-
-      class PacketBuffer
-        def initialize
-          @data = '' # Buffered data.
-          @length = nil # Length of the next packet. nil if header not read yet.
-        end
-
-        # Add data string to the buffer.
-        def buffer_data(data)
-          @data << data
-        end
-
-        # Call after adding data with #buffer_data until there are no more packets left.
-        def next_packet
-          # Read the header to find out the length of the next packet.
-          unless @length
-            if @data.length >= PACKET_HEADER_LENGTH
-              @length = @data[0...PACKET_HEADER_LENGTH].unpack(PACKET_HEADER_FORMAT)[0]
-              @data[0...PACKET_HEADER_LENGTH] = ''
-            end
-          end
-
-          # If there is enough data after the header for the full packet, return it.
-          if @length and @length <= @data.length
-            begin
-              packet =  @data[0...@length]
-              @data[0...@length] = ''
-              @length = nil
-              return packet
-            rescue TypeError => ex
-              puts "Bad data received:\n#{@data.inspect}"
-              raise ex
-            end
-          else
-            return nil
-          end
-        end
-      end
-
-      attr_reader :socket, :sockets, :ip, :port, :max_connections
-      alias_method :address, :ip
+    class NetworkServer < NetworkState
+      attr_reader :socket, :sockets, :max_connections
       
       def initialize(options = {})
-        super
-        
-        @ip = options[:ip] || "0.0.0.0"
-        @port = options[:port] || DEFAULT_PORT
-        @debug = options[:debug]
+        super(options)
+
         @max_read_per_update = options[:max_read_per_update] || 20000
         @max_connections = options[:max_connections] || 256
-        
+
         @socket = nil
         @sockets = []
         @packet_buffers = Hash.new
       end
-      
+
       #
       # Start server
       #
-      def start(ip=nil, port=nil)
-        @ip = ip      if ip
+      def start(address = nil, port = nil)
+        @address = address if address
         @port = port  if port
         begin
-          @socket = TCPServer.new(@ip, @port)
+          @socket = TCPServer.new(@address, @port)
           on_start
         rescue
           on_start_error($!)
@@ -148,7 +102,7 @@ module Chingu
       # Callback for when Socket listens correctly on given host/port
       #
       def on_start
-        puts "* Server listening on #{ip}:#{port}"          if @debug
+        puts "* Server listening on #{address}:#{port}"          if @debug
       end
       
       #
@@ -156,12 +110,11 @@ module Chingu
       #
       def on_start_error(msg)
         if @debug
-          puts "Can't start server on #{ip}:#{port}:\n"
+          puts "Can't start server on #{address}:#{port}:\n"
           puts msg
         end
       end
-        
-        
+
         
       #
       # Default network loop:
@@ -202,7 +155,7 @@ module Chingu
               @packet_buffers[socket] = PacketBuffer.new
               on_connect(socket)
             else
-              socket.close
+              socket.close # Just kick the client. We don't want them :)
             end
           end
         rescue IO::WaitReadable, Errno::EINTR
@@ -220,9 +173,7 @@ module Chingu
               packet, sender = socket.recvfrom(max_size)
               on_data(socket, packet)
             rescue Errno::ECONNABORTED, Errno::ECONNRESET, IOError
-              @packet_buffers[socket] = nil
-
-              on_disconnect(socket)
+              disconnect_client(socket)
             end
           end
         end
@@ -236,38 +187,52 @@ module Chingu
 
         buffer.buffer_data data
 
+        @bytes_received += data.length
+
         while packet = buffer.next_packet
-          on_msg(socket, Marshal.load(packet))
+          @packets_received += 1
+          begin
+            on_msg(socket, Marshal.load(packet))
+          rescue TypeError
+            disconnect_client(socket)
+            break
+          end
         end
+      end
+
+      # Handler when message packets are received. Should be overriden in your code.
+      def on_msg(socket, packet)
+        # should be overridden.
       end
       
       #
-      # Broadcast 'msg' to all connected clients
-      # Output is buffered and dispatched once each server-loop
-      #
+      # Broadcast 'msg' to all connected clients.
+      # Returns amount of data sent.
       def broadcast_msg(msg)
         data = Marshal.dump(msg)
         @sockets.each {|s| send_data(s, data) }
+        data.length * @sockets.size
       end
-      
+
       #
-      # Send 'msg' to 'socket'.
-      # 'msg' must responds to #to_yaml
-      #
+      # Send 'msg' to a specific client 'socket'.
+      # Returns amount of data sent.
       def send_msg(socket, msg)
-        send_data(socket, Marshal.dump(msg))
+        data = Marshal.dump(msg)
+        send_data(socket, data)
+        data.length
       end
       
       #
       # Send raw 'data' to the 'socket'
-      #
+      # Returns amount of data sent, including headers.
       def send_data(socket, data)
-        begin
-          socket.write([data.length].pack(PACKET_HEADER_FORMAT))
-          socket.write(data)
-        rescue Errno::ECONNABORTED, Errno::ECONNRESET, Errno::EPIPE, Errno::ENOTCONN
-          on_disconnect(socket)
-        end        
+        length = socket.write([data.length].pack(PACKET_HEADER_FORMAT))
+        length += socket.write(data)
+        @packets_sent += 1
+        @bytes_sent += length
+      rescue Errno::ECONNABORTED, Errno::ECONNRESET, Errno::EPIPE, Errno::ENOTCONN
+        disconnect_client(socket)
       end
 
       #
@@ -296,14 +261,13 @@ module Chingu
       # Stops server
       #
       def stop
-        return unless @socket
-        
         @sockets.each {|socket| disconnect_client(socket) }
-          @sockets = []
-          @socket.close
-          @socket = nil
-        rescue Errno::ENOTCONN
+        @sockets = []
+        @socket.close if @socket and not @socket.closed?
+        @socket = nil
+      rescue Errno::ENOTCONN
       end
+
       alias close stop
 
     end
