@@ -957,7 +957,7 @@ As far as possible, use correct rubyfied english game_objects, not gameobjects. 
 * (10% done) Make it possible for ppl to use the parts of Chingu they like
 * (done) At least make GameStateManager really easy to use with pure Gosu / Document it!
 * (50% done) Get better at styling rdocs
-* (done) all “gamestate” ? “game state” ?   it's "game state"
+* (done) all "gamestate" -> "game state"
 * (skipping) intergrate MovieMaker - solve this with traits instead.
 * A more robust game state <-> game_object system to connect them together.
 * FIX example4: :p => Pause.new  would Change the "inside_game_state" to Pause and make @player belong to Pause.
