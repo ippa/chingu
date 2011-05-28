@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{chingu}
-  s.version = "0.9rc4"
+  s.version = "0.9rc5"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["ippa"]
-  s.date = %q{2011-03-07}
+  s.date = %q{2011-05-28}
   s.description = %q{OpenGL accelerated 2D game framework for Ruby. Builds on Gosu (Ruby/C++) which provides all the core functionality. Chingu adds simple yet powerful game states, prettier input handling, deployment safe asset-handling, a basic re-usable game object and stackable game logic.}
   s.email = %q{ippa@rubylicio.us}
   s.extra_rdoc_files = [
@@ -244,6 +244,7 @@ Gem::Specification.new do |s|
     "examples/example9_collision_detection.rb",
     "examples/game1.rb",
     "examples/game_of_life.rb",
+    "examples/network_test.rb",
     "examples/tool1_input_codes.rb",
     "spec/chingu/animation_spec.rb",
     "spec/chingu/assets_spec.rb",
