@@ -233,18 +233,18 @@ module Chingu
     alias :clear :clear_game_states
     
     #
-    # Pops through all game states until matching a given game state
-    #
-    def pop_until_game_state(new_state)
+    # Pops through all game states until matching a given game state (takes either a class or instance to match).
+    #    
+    def pop_until_game_state(new_state, options = {})
       if new_state.is_a? Class
-        raise ArgumentError, "No state of given class is on the stack" unless @game_states.map {|s| s.class }.include? new_state
+        raise ArgumentError, "No state of given class is on the stack" unless @game_states[0..-2].any? {|s| s.is_a? new_state }
 
-        @game_states.pop until current_game_state.is_a? new_state
+        pop_game_state(options) until current_game_state.is_a? new_state
 
       else
-        raise ArgumentError, "State is not on the stack" unless @game_states.include? new_state
+        raise ArgumentError, "State is not on the stack" unless @game_states[0..-2].include? new_state
 
-        @game_states.pop while current_game_state != new_state
+        pop_game_state(options) until current_game_state == new_state
       end
     end
         

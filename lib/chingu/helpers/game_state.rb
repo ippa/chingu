@@ -31,6 +31,7 @@ module Chingu
   #
   module GameState
     extend Forwardable
+    
     def_delegator :game_state_manager, :game_states
     def_delegator :game_state_manager, :push_game_state
     def_delegator :game_state_manager, :pop_game_state
@@ -38,6 +39,7 @@ module Chingu
     def_delegator :game_state_manager, :transitional_game_state
     def_delegator :game_state_manager, :current_game_state
     def_delegator :game_state_manager, :clear_game_states
+    def_delegator :game_state_manager, :pop_until_game_state
   end
   
   end
