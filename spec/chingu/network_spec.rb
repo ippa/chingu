@@ -58,11 +58,56 @@ module Chingu
     end
     
     describe Chingu::GameStates::NetworkClient do
-      it "should call on_connection_refused callback when connecting to closed port" do
-        @client = described_class.new(:address => "127.0.0.1", :port => 55421) # closed we assume
-        @client.should_receive(:on_connection_refused)
+      describe "connect" do
+        it "should call on_connection_refused callback when connecting to closed port" do
+          @client = described_class.new(:address => "127.0.0.1", :port => 55421) # closed we assume
+          @client.should_receive(:on_connection_refused)
+          @client.connect
+          5.times { @client.update }
+        end
+ 
+        it "should not call on_timeout callback when unable to connect for less time than the timeout" do
+          @client = described_class.new(:address => "127.0.0.1", :port => 55421, :timeout => 250) # closed we assume
+          @client.connect
+          @client.should_not_receive(:on_timeout)
+          5.times { @client.update; sleep 0.01 }
+        end
+      
+        it "should call on_timeout callback when unable to connect for longer than the timeout" do
+          @client = described_class.new(:address => "127.0.0.1", :port => 55421, :timeout => 250) # closed we assume
+          @client.connect
+          @client.update
+          sleep 0.3   
+          @client.should_receive(:on_timeout)        
+          5.times { @client.update }
+        end
+      end
+    end
+    
+    describe "Connecting" do
+      before :each do        
+        @client = Chingu::GameStates::NetworkClient.new(:address => "127.0.0.1", :port => 9999)    
+        @server = Chingu::GameStates::NetworkServer.new(:port => 9999)        
+      end
+      
+      it "should connect to the server, when the server starts before it" do
+        #@server.start
+        #@client.connect
+        #5.times { @client.update }
+        #@client.should be_connected
+      end
+      
+      it "should connect to the server, even when the server isn't initialy available" do
         @client.connect
-        5.times { @client.update }
+        3.times { @client.update; sleep 0.2; @server.update; @client.flush }
+        @server.start
+        3.times { @client.update; sleep 0.2; @server.update; @client.flush }
+        @client.should be_connected
+      end
+      
+      after :each do 
+        @client.close
+        @server.close
       end
     end
     

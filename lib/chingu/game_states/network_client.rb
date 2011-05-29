@@ -70,20 +70,19 @@ module Chingu
     #
     #
     class NetworkClient < NetworkState
-      attr_reader :latency, :socket, :packet_buffer
+      attr_reader :socket, :timeout
 
       def connected?; @connected; end
       
       def initialize(options = {})
         super(options)
 
-        @timeout = options[:timeout] || 4
+        @timeout = options[:timeout] || 4000
 
         @max_read_per_update = options[:max_read_per_update] || 50000
         
         @socket = nil
         @connected = false
-        @latency = 0
         @packet_buffer = PacketBuffer.new
       end
       
@@ -97,24 +96,29 @@ module Chingu
       def update
 
         if @socket and not @connected
-          begin
-            # Start/Check on our nonblocking tcp connection
-            @socket.connect_nonblock(@sockaddr)
-          rescue Errno::EINPROGRESS   #rescue IO::WaitWritable
-          rescue Errno::EALREADY
-            if IO.select([@socket],nil,nil,0.1).nil?
-              @socket = nil
-              on_connection_refused
-            end
-          rescue Errno::EISCONN
-            @connected = true
-            on_connect
-          rescue Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::EINVAL
-            @socket = nil
-            on_connection_refused
-          rescue Errno::ETIMEDOUT
+          if Gosu::milliseconds >= @connect_times_out_at
             @socket = nil
             on_timeout
+          else
+            begin
+              # Start/Check on our nonblocking tcp connection
+              @socket.connect_nonblock(@sockaddr)
+            rescue Errno::EINPROGRESS   #rescue IO::WaitWritable
+            rescue Errno::EALREADY
+              if IO.select([@socket],nil,nil,0.1).nil?
+                @socket = nil
+                on_connection_refused
+              end
+            rescue Errno::EISCONN
+              @connected = true
+              on_connect
+            rescue Errno::EHOSTUNREACH, Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::EINVAL
+              @socket = nil
+              on_connection_refused
+            rescue Errno::ETIMEDOUT
+              @socket = nil
+              on_timeout
+            end
           end
         end
         
@@ -124,18 +128,25 @@ module Chingu
       
       #
       # Connect to a given address:port (the server)
-      # Connect is done in a blocking manner.      
-      # Will timeout after 4 seconds
-      #
-      def connect(address = nil, port = nil)
+      # Connect is done in a non-blocking manner.
+      # May pass :address and :port, which will overwrite any existing values.
+      def connect(options = {})
+        options = {
+          :address => @address,
+          :port => @port,
+          :reconnect => false, # Doesn't reset the timeout timer; used internally.
+        }.merge! options
+        
         return if @socket
         
-        @address = address      if address
-        @port = port  if port
+        @address = options[:address]
+        @port = options[:port]
     
         # Set up our @socket, update() will handle the actual nonblocking connection
         @socket = Socket.new(Socket::Constants::AF_INET, Socket::Constants::SOCK_STREAM, 0)
         @sockaddr = Socket.sockaddr_in(@port, @address)
+
+        @connect_times_out_at = Gosu::milliseconds + @timeout unless options[:reconnect]
         
         return self
       end
@@ -145,7 +156,7 @@ module Chingu
       #
       def on_connection_refused
         puts "[on_connection_refused() #{@address}:#{@port}]"  if @debug
-        connect(@address, @port)
+        connect(:reconnect => true)
       end
 
       #
@@ -153,7 +164,6 @@ module Chingu
       #
       def on_timeout
         puts "[on_timeout() #{@address}:#{@port}]"  if @debug
-        connect(@address, @port)
       end
       
       #
@@ -232,7 +242,7 @@ module Chingu
 
       # Ensure that the buffer is cleared of data to write (call at the end of update or, at least after all sends).
       def flush
-        @socket.flush
+        @socket.flush if @socket
       rescue IOError
         disconnect_from_server
       end
