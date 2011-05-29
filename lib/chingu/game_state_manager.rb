@@ -97,43 +97,13 @@ module Chingu
     # Switch to a given game state, _replacing_ the current active one.
     # By default setup() is called on the game state  we're switching _to_.
     # .. and finalize() is called on the game state we're switching _from_.
-    #
+    #   
     def switch_game_state(state, options = {})
       options = {:setup => true, :finalize => true, :transitional => true}.merge(options)
       
-      new_state = game_state_instance(state)
-      
-      if new_state
-        # Make sure the game state knows about the manager
-        new_state.game_state_manager = self
-        
-        # Give the soon-to-be-disabled state a chance to clean up by calling finalize() on it.
-        current_game_state.finalize   if current_game_state.respond_to?(:finalize) && options[:finalize]
-        
-        # So BasicGameObject#create connects object to new state in its setup()
-        # Is this doubled in GameState.initialize() ?
-        self.inside_state = new_state
-        
-        # Call setup
-        new_state.setup               if new_state.respond_to?(:setup) && options[:setup]
-        
-        if @transitional_game_state && options[:transitional]
-          # If we have a transitional, switch to that instead, with new_state as first argument
-          transitional_game_state = @transitional_game_state.new(new_state, @transitional_game_state_options)
-          transitional_game_state.game_state_manager = self
-          self.push_game_state(transitional_game_state, :transitional => false)
-        else
-          if current_game_state.nil?
-            @game_states << new_state
-          else
-            # Replace last (active) state with new one
-            @game_states[-1] = new_state
-          end
-        end
-        ## MOVED: self.inside_state = current_game_state
-      end
-      
-      self.inside_state = nil   # no longer 'inside' (as in within initialize() etc) a game state
+      # Don't setup or finalize the underlying state, since it never becomes active.
+      pop_game_state({:setup => false}.merge! options)
+      push_game_state({:finalize => false}.merge! options) 
     end
     alias :switch :switch_game_state
     
