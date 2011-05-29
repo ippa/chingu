@@ -245,23 +245,6 @@ module Chingu
     # Is the window currently muted?
     def muted?
       @times_muted > 0
-    end
-
-    alias_method :old_initialize, :initialize
-    protected :old_initialize
-
-    # Accepts :volume (0.0..1.0, defaults to 0.5) and :muted (Boolean) options.
-    def initialize(width, height, full_screen = false, frame_duration = 1000.0/60, options = {})
-      options = {
-          volume: DEFAULT_VOLUME,
-          muted: false,
-      }.merge! options
-
-      @volume = options[:volume]
-      @times_muted = options[:muted] ? 1 : 0
-
-      old_initialize(width, height, full_screen, frame_duration)
-    end
-    
+    end   
   end
 end

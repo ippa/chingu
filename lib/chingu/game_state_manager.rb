@@ -99,11 +99,11 @@ module Chingu
     # .. and finalize() is called on the game state we're switching _from_.
     #   
     def switch_game_state(state, options = {})
-      options = {:setup => true, :finalize => true, :transitional => true}.merge(options)
+      options = {:setup => true, :finalize => true, :transitional => true}.merge!(options)
       
       # Don't setup or finalize the underlying state, since it never becomes active.
-      pop_game_state({:setup => false}.merge! options)
-      push_game_state({:finalize => false}.merge! options) 
+      pop_game_state({:setup => false}.merge!(options))
+      push_game_state(state, {:finalize => false}.merge!(options)) 
     end
     alias :switch :switch_game_state
     
@@ -207,12 +207,12 @@ module Chingu
     #    
     def pop_until_game_state(new_state, options = {})
       if new_state.is_a? Class
-        raise ArgumentError, "No state of given class is on the stack" unless @game_states[0..-2].any? {|s| s.is_a? new_state }
+        raise ArgumentError, "No state of given class is on the stack" unless @game_states.any? {|s| s.is_a? new_state }
 
         pop_game_state(options) until current_game_state.is_a? new_state
 
       else
-        raise ArgumentError, "State is not on the stack" unless @game_states[0..-2].include? new_state
+        raise ArgumentError, "State is not on the stack" unless @game_states.include? new_state
 
         pop_game_state(options) until current_game_state == new_state
       end
