@@ -18,7 +18,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #
 #++
-
 module Chingu
   module GameStates  
     #
@@ -230,14 +229,16 @@ module Chingu
 
       #
       # Send whatever raw data to the server
-      #
+      # Returns amount of data sent, including header.
       def send_data(data)
         length = @socket.write([data.length].pack(NetworkServer::PACKET_HEADER_FORMAT))
         length += @socket.write(data)
         @packets_sent += 1
         @bytes_sent += length
+        length
       rescue Errno::ECONNABORTED, Errno::ECONNRESET, Errno::EPIPE, Errno::ENOTCONN
         disconnect_from_server
+        0
       end
 
       # Ensure that the buffer is cleared of data to write (call at the end of update or, at least after all sends).

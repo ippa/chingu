@@ -102,8 +102,8 @@ module Chingu
       options = {:setup => true, :finalize => true, :transitional => true}.merge!(options)
       
       # Don't setup or finalize the underlying state, since it never becomes active.
-      pop_game_state({:setup => false}.merge!(options))
-      push_game_state(state, {:finalize => false}.merge!(options)) 
+      pop_game_state(options.merge(:setup => false))
+      push_game_state(state, options.merge(:finalize => false))
     end
     alias :switch :switch_game_state
     

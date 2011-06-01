@@ -68,6 +68,7 @@ module Chingu
     #
     # A good idea is to have a socket-ivar in your Player-model and a Player.find_by_socket(socket)
     #
+
     class NetworkServer < NetworkState
       attr_reader :socket, :sockets, :max_connections
       
@@ -149,14 +150,10 @@ module Chingu
 
       def handle_incoming_connections
         begin
-          while socket = @socket.accept_nonblock
-            if @sockets.size < @max_connections
-              @sockets << socket
-              @packet_buffers[socket] = PacketBuffer.new
-              on_connect(socket)
-            else
-              socket.close # Just kick the client. We don't want them :)
-            end
+          while @sockets.size < @max_connections and socket = @socket.accept_nonblock
+            @sockets << socket
+            @packet_buffers[socket] = PacketBuffer.new
+            on_connect(socket)
           end
         rescue IO::WaitReadable, Errno::EINTR
         end
@@ -210,17 +207,14 @@ module Chingu
       # Returns amount of data sent.
       def broadcast_msg(msg)
         data = Marshal.dump(msg)
-        @sockets.each {|s| send_data(s, data) }
-        data.length * @sockets.size
+        @sockets.inject(0) {|tot, s| tot + send_data(s, data) }
       end
 
       #
       # Send 'msg' to a specific client 'socket'.
       # Returns amount of data sent.
       def send_msg(socket, msg)
-        data = Marshal.dump(msg)
-        send_data(socket, data)
-        data.length
+        send_data(socket, Marshal.dump(msg))
       end
       
       #
@@ -231,15 +225,17 @@ module Chingu
         length += socket.write(data)
         @packets_sent += 1
         @bytes_sent += length
+        length
       rescue Errno::ECONNABORTED, Errno::ECONNRESET, Errno::EPIPE, Errno::ENOTCONN
         disconnect_client(socket)
+        0
       end
 
       #
       # Shuts down all communication (closes socket) with a specific socket
       #
       def disconnect_client(socket)
-        socket.close and not @socket.closed?
+        socket.close
       rescue Errno::ENOTCONN
       ensure
         @sockets.delete socket
