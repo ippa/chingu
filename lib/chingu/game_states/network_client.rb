@@ -121,7 +121,8 @@ module Chingu
           end
         end
         
-        handle_incoming_data
+        handle_incoming_data if @connected
+
         super
       end
       
@@ -184,7 +185,7 @@ module Chingu
       # handle_incoming_data will call on_data(raw_data) when stuff comes on on the socket.
       #
       def handle_incoming_data(amount = @max_read_per_update)
-        return unless @socket
+        return unless @socket and connected?
         
         if IO.select([@socket], nil, nil, 0.0)
           begin
