@@ -67,5 +67,13 @@ module Gosu
       volume *= effective_volume
       old_play(volume, speed, looping) if volume > 0.0
     end
+	
+    alias_method :old_play_pan, :play_pan
+    protected :old_play_pan
+    public
+    def play_pan(pan = 0, volume = 1, speed = 1, looping = false)
+      volume *= effective_volume
+      old_play_pan(pan, volume, speed, looping) if volume > 0.0
+    end
   end
 end
