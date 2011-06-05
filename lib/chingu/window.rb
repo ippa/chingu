@@ -197,7 +197,7 @@ module Chingu
     
     # GLOBAL SOUND SETTINGS
     
-    DEFAULT_VOLUME = 0.5 # Because volume = 1.0 is REALLY loud.
+    DEFAULT_VOLUME = 1.0 # However, 0.5 is a better value for general use.
 
     # Set the global volume of all Samples and Songs, not affected by Window being muted.
     def volume=(value)
