@@ -85,7 +85,7 @@ module Chingu
         lines = text.respond_to?(:lines) ? text.lines : text
         
         lines.each_with_index do |line,i|
-          @font.draw(line, @x_offset, @y_offset + height * (i+3), Z,1,1, @text_color)
+          @font.draw(line.strip, @x_offset, @y_offset + height * (i+3), Z,1,1, @text_color)
         end       
       end
 
