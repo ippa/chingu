@@ -85,7 +85,7 @@ module Chingu
       if options[:background]
         @background = GameObject.new(:image => options[:background])
         @background.attributes = self.attributes
-        @background.color = Color::WHITE
+        @background.color = ::Gosu::Color::WHITE
         @background.zorder -= 1
         @background.x -= @padding
         @background.y -= @padding

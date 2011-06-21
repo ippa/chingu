@@ -89,11 +89,11 @@ module Chingu
     end
       
     def on_deselect(object)
-      object.color = Color::WHITE
+      object.color = ::Gosu::Color::WHITE
     end
     
     def on_select(object)
-      object.color = Color::RED
+      object.color = ::Gosu::Color::RED
     end
     
     def draw
