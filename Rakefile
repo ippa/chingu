@@ -18,9 +18,11 @@ task :default => :spec
 desc "Build gem"
 task :build do
   system "gem build chingu.gemspec"
+  puts "Moving into directory pkg"
+  system "mv chingu-#{Chingu::VERSION}.gem pkg/"
 end
  
 desc "Release new gem"
-task :relase => :build do
-  system "gem push chingu-#{Chingu::VERSION}"
+task :release => :build do
+  system "gem push pkg/chingu-#{Chingu::VERSION}"
 end
