@@ -124,7 +124,8 @@ class Level < Chingu::GameState
                        :holding_right => :move_right, 
                        :holding_up => :move_up, 
                        :holding_down => :move_down, 
-                       :space => :fire }
+                       :space => :fire,
+                       :holding_a => :fire }
 
     #
     # The input-handler understands gamestates. P is pressed --> push_gamegate(Pause)
