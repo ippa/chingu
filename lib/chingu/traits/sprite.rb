@@ -97,9 +97,9 @@ module Chingu
         raise ArgumentError.new("No image set") if image.nil?
         
         @image = if String === image
-                   # 1) Try loading the image the normal way
-                   # 2) Try looking up the picture using Chingus Image-cache
-                   Gosu::Image.new($window, image,false) rescue Gosu::Image[image]
+                   # 1) Try looking up the picture using Chingus Image-cache
+                   # 2) Try loading the image the normal way
+                   Gosu::Image[image] rescue Gosu::Image.new($window, image,false) 
                  elsif image.respond_to? :call
                    image.call
                  else
