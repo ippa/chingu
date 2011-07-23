@@ -84,23 +84,20 @@ module Chingu
 
       if options[:background]
         @background = GameObject.new(:image => options[:background])
-        @background.attributes = self.attributes
-        @background.color = ::Gosu::Color::WHITE
-        @background.zorder -= 1
-        @background.x -= @padding
-        @background.y -= @padding
-        @background.width = self.width + @padding * 2
-        @background.height = self.height + @padding * 2
+        bg_update
+        @no_bg_update = options[:no_bg_update] || false # always update background attribute
       end
       
       self.height = options[:height]  if options[:height]
-    end
-    
+    end    
+
+
     #
     # Set a new text, a new image is created.
     #
     def text=(text)
-      @text = text
+      return if text.dup == @text # Have to make a dup for content comparison
+      @text = text.dup # Make a copy, again to have a different Objectid
       create_image
     end
     
@@ -111,6 +108,14 @@ module Chingu
       @gosu_font.text_width(@text, @factor_x)
     end
     
+    #
+    # Update the background attributes if necessary unless specified 
+    #
+    def update
+      super
+      bg_update if @background and !@no_bg_update
+    end
+
     #
     # Draws @background if present + our text in @image
     #
@@ -130,6 +135,16 @@ module Chingu
       else
         @image = Gosu::Image.from_text($window, @text, @font, @size)
       end
+    end
+
+    def bg_update
+      @background.attributes = self.attributes
+      @background.color = ::Gosu::Color::WHITE
+      @background.zorder -= 1
+      @background.x -= @padding
+      @background.y -= @padding
+      @background.width = self.width + @padding * 2
+      @background.height = self.height + @padding * 2  
     end
   end
 end
