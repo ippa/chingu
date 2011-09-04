@@ -40,11 +40,11 @@ module Chingu
       @sub_animations = {}
       @frame_actions = []
       
-      unless image && File.exists?(file)
+      unless image || File.exists?(@file)
         Gosu::Image.autoload_dirs.each do |autoload_dir|
-          full_path = File.join(autoload_dir, file)
+          full_path = File.join(autoload_dir, @file)
           if File.exists?(full_path)
-            file = full_path
+            @file = full_path
             break
           end
         end
@@ -62,16 +62,14 @@ module Chingu
       elsif options[:size]
         @width = options[:size]
         @height = options[:size]
-      elsif file =~ /_(\d+)x(\d+)/
+      elsif @file =~ /_(\d+)x(\d+)/
         # Auto-detect width/height from filename 
         # Tilefile foo_10x25.png would mean frame width 10px and height 25px
         @width = $1.to_i
         @height = $2.to_i
       else
         # Assume the shortest side is the width/height for each frame
-        #@image = Gosu::Image.new($window, @file)
-        #@width = @height = (@image.width < @image.height) ? @image.width : @image.height
-        image ||= Gosu::Image[file]
+        image ||= Gosu::Image[@file]
         @width = @height = (image.width < image.height) ? image.width : image.height
       end
       

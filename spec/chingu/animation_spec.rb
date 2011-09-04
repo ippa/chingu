@@ -33,8 +33,14 @@ module Chingu
         @anim = Animation.new(:file => "images/droid_11x15.bmp")
         @anim.frames.count.should == 14
       end
+      
+      it "should load from a Gosu image" do
+        Dir.chdir(File.dirname(File.expand_path(__FILE__)))
+        @anim = Animation.new(:image => Gosu::Image["images/droid_11x15.bmp"], :size => [11, 15])
+        @anim.frames.count.should == 14
+      end
     end
-
+    
     describe "Animation loading file: droid_11x15.bmp" do
       it "should detect size and frames automatically from filename" do
         @animation.size.should == [11,15]
