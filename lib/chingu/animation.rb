@@ -26,11 +26,12 @@ module Chingu
     #
     def initialize(options)
       #options = {:step => 1, :loop => true, :bounce => false, :width => 32, :height => 32, :index => 0, :delay => 100}.merge(options)
-      options = {:step => 1, :loop => true, :bounce => false, :index => 0, :delay => 100}.merge(options)
+      options = {:step => 1, :loop => true, :bounce => false, :index => 0, :delay => 100, :file => nil, :image => nil}.merge(options)
       
       @loop = options[:loop]
       @bounce = options[:bounce]
       @file = options[:file]
+      image = options[:image]
       @index = options[:index]
       @delay = options[:delay]
       @step = options[:step] || 1
@@ -39,7 +40,7 @@ module Chingu
       @sub_animations = {}
       @frame_actions = []
       
-      unless File.exists?(@file)
+      unless image || File.exists?(@file)
         Gosu::Image.autoload_dirs.each do |autoload_dir|
           full_path = File.join(autoload_dir, @file)
           if File.exists?(full_path)
@@ -68,11 +69,11 @@ module Chingu
         @height = $2.to_i
       else
         # Assume the shortest side is the width/height for each frame
-        @image = Gosu::Image.new($window, @file)
-        @width = @height = (@image.width < @image.height) ? @image.width : @image.height
+        image ||= Gosu::Image[@file]
+        @width = @height = (image.width < image.height) ? image.width : image.height
       end
       
-      @frames = Gosu::Image.load_tiles($window, @file, @width, @height, true)
+      @frames = Gosu::Image.load_tiles($window, image || @file, @width, @height, true)
     end
     
     #
