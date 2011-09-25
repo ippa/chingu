@@ -42,12 +42,13 @@ class Level < Chingu::GameState
     @parallax = Parallax.create(:rotation_center => :top_left, :zorder => 0)
     @parallax << { :image => "city2.png", :damping => 2, :zorder => 0}
     @parallax << { :image => "city1.png", :damping => 1, :zorder => 1000}
+
     @player = Player.create(:x => 30, :y => 10, :zorder=> 500)
     
     @bg1 = Color.new(0xFFCE28FF)
     @bg2 = Color.new(0xFF013E87)
-    @text = Text.create("Score:", :size => 20, :x => 30, :y => 10) #initialize score string
-    @text1 = Text.create("0", :size => 20, :x => 90, :y => 10 )   #initialize score value to 0
+    @text = Text.create("Score:", :size => 20, :x => 30, :y => 370, :zorder => 1001) #initialize score string
+    @text1 = Text.create("0", :size => 20, :x => 90, :y => 370, :zorder => 1001)   #initialize score value to 0
     
     
   end
@@ -107,7 +108,7 @@ class Level < Chingu::GameState
       if enemy.hit_by(bullet)
         @player.score += 20
             @text1.destroy!       #destroy old score
-            @text1 = Text.create(@player.score, :size => 20, :x => 90, :y => 10 )    #update the new score
+            @text1 = Text.create(@player.score, :size => 20, :x => 90, :y => 370, :zorder => 1001 )    #update the new score
             
       end
     end
