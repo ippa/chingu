@@ -210,7 +210,7 @@ class Level2 < Chingu::GameState
     super
     
     # Move the level forward by increasing the parallax-scrollers camera x-coordinate
-    @parallax.camera_x += 1
+    @parallax.camera_x += 1.5
     
     # Remove all objects outside screen
     game_objects.destroy_if { |game_object| game_object.respond_to?("outside_window?") && game_object.outside_window? }
