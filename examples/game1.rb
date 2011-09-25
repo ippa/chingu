@@ -31,9 +31,9 @@ class Level < Chingu::GameState
   def initialize(options = {})
     super
 
-    @parallax = Parallax.create(:rotation_center => :top_left, :zorder => 200)
-    @parallax << { :image => "city2.png", :damping => 2, :zorder => 200}
-    @parallax << { :image => "city1.png", :damping => 1, :zorder => 900}
+    @parallax = Parallax.create(:rotation_center => :top_left, :zorder => 0)
+    @parallax << { :image => "city2.png", :damping => 2, :zorder => 0}
+    @parallax << { :image => "city1.png", :damping => 1, :zorder => 1000}
     
     @player = Player.create(:x => 30, :y => 10, :zorder=> 500)
     
@@ -101,7 +101,7 @@ class Level < Chingu::GameState
     @timer = @timer * 0.9999
     @total_ticks += 1
     if @total_ticks > @timer
-      Enemy.create(:x => $window.width, :y => rand(300))
+      Enemy.create(:x => $window.width, :y => rand(300), :zorder => (rand(20) * 100))
       @total_ticks = 0
     end
         
