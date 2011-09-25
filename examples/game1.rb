@@ -132,12 +132,7 @@ class Level < Chingu::GameState
     @timer = @timer * 0.9999
     @total_ticks += 1
     if @total_ticks > @timer
-      @select=rand(2)
-      if @select==1
       Enemy.create(:x => $window.width, :y => rand(300), :zorder => (rand(20) * 100))
-    else
-      EnemyPlane.create(:x => $window.width, :y => rand(300), :zorder => (rand(20) * 100))
-     end
       @total_ticks = 0
     end
     
@@ -245,11 +240,16 @@ class Level2 < Chingu::GameState
     @timer = @timer * 0.9999
     @total_ticks += 1
     if @total_ticks > @timer
-      Enemy.create(:x => $window.width, :y => rand(300), :zorder => (rand(20) * 100))
+      @select=rand(2)
+      if @select==1
+        Enemy.create(:x => $window.width, :y => rand(300), :zorder => (rand(20) * 100))
+      else
+        EnemyPlane.create(:x => $window.width, :y => rand(300), :zorder => (rand(20) * 100))
+      end
       @total_ticks = 0
     end
     
-    if @player.score > 19
+    if @player.score > 100
         switch_game_state(Done)
     end
     
