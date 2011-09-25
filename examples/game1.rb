@@ -161,7 +161,7 @@ class Level2 < Chingu::GameState
 
     @parallax = Parallax.create(:rotation_center => :top_left, :zorder => 0)
     @parallax << { :image => "city1.png", :damping => 2, :zorder => 0}
-    @parallax << { :image => "city2.png", :damping => 1, :zorder => 1000}
+    @parallax << { :image => "city3.png", :damping => 1, :zorder => 1000}
 
     @player = Player.create(:x => 30, :y => 10, :zorder=> 500)
     
