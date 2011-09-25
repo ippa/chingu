@@ -226,6 +226,10 @@ class Level2 < Chingu::GameState
     @player.each_bounding_circle_collision(EnemyPlane) do |player, enemy|
         enemy.die
         push_game_state(GameOver)
+    # Collide player with enemies and enemy bullets
+    @player.each_bounding_circle_collision(EnemyPlane) do |player, enemy|
+      enemy.die
+      push_game_state(GameOver)
     end
     
     Bullet.each_bounding_circle_collision(Enemy) do |bullet, enemy|
@@ -245,6 +249,17 @@ class Level2 < Chingu::GameState
         @text1 = Text.create(@player.score, :size => 20, :x => 90, :y => 370, :zorder => 1001 )    #update the new score
       end
     end
+
+    Bullet.each_bounding_circle_collision(EnemyPlane) do |bullet, enemy|
+      bullet.die
+      if enemy.hit_by(bullet)
+        @player.score += 20
+            @text1.destroy!       #destroy old score
+            @text1 = Text.create(@player.score, :size => 20, :x => 90, :y => 370, :zorder => 1001 )    #update the new score
+            
+      end
+    end
+
     
     @timer = @timer * 0.9999
     @total_ticks += 1
