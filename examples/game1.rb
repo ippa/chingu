@@ -39,6 +39,10 @@ class Level < Chingu::GameState
     
     @bg1 = Color.new(0xFFCE28FF)
     @bg2 = Color.new(0xFF013E87)
+    @text = Text.create("Score:", :size => 20, :x => 30, :y => 10) #initialize score string
+    @text1 = Text.create("0", :size => 20, :x => 90, :y => 10 )   #initialize score value to 0
+    
+    
   end
   
   #
@@ -95,6 +99,9 @@ class Level < Chingu::GameState
       bullet.die
       if enemy.hit_by(bullet)
         @player.score += 20
+            @text1.destroy!       #destroy old score
+            @text1 = Text.create(@player.score, :size => 20, :x => 90, :y => 10 )    #update the new score
+            
       end
     end
     
