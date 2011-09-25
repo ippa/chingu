@@ -30,11 +30,12 @@ class Level < Chingu::GameState
   
   def initialize(options = {})
     super
-    
+
     @parallax = Parallax.create(:rotation_center => :top_left, :zorder => 200)
     @parallax << { :image => "city2.png", :damping => 2, :zorder => 200}
-    @parallax << { :image => "city1.png", :damping => 1, :zorder => 200}	
-    @player = Player.create(:x => 30, :y => 10)
+    @parallax << { :image => "city1.png", :damping => 1, :zorder => 900}
+    
+    @player = Player.create(:x => 30, :y => 10, :zorder=> 500)
     
     @bg1 = Color.new(0xFFCE28FF)
     @bg2 = Color.new(0xFF013E87)
@@ -53,7 +54,7 @@ class Level < Chingu::GameState
     @player.y = 100
     
     @parallax.camera_x = 0
-    @total_game_ticks = 100000
+    @total_game_ticks = 10000#100000
     @timer = 100
     @total_ticks = 0
   end
@@ -104,7 +105,7 @@ class Level < Chingu::GameState
       @total_ticks = 0
     end
         
-    $window.caption = "City Battle! Player x/y: #{@player.x}/#{@player.y} - Score: #{@player.score} - FPS: #{$window.fps} - game objects: #{game_objects.size}"
+    #$window.caption = "City Battle! Player x/y: #{@player.x}/#{@player.y} - Score: #{@player.score} - FPS: #{$window.fps} - game objects: #{game_objects.size}"
   end
   
   def draw
