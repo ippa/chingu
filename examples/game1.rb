@@ -222,10 +222,7 @@ class Level2 < Chingu::GameState
       enemy.die
       push_game_state(GameOver)
     end
-    
-    @player.each_bounding_circle_collision(EnemyPlane) do |player, enemy|
-        enemy.die
-        push_game_state(GameOver)
+
     # Collide player with enemies and enemy bullets
     @player.each_bounding_circle_collision(EnemyPlane) do |player, enemy|
       enemy.die
