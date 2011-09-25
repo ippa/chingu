@@ -662,7 +662,7 @@ class Done < Chingu::GameState
   end  
   
   def try_again
-    pop_game_state  # pop back to our playing game state
+    switch_game_state(Level)
   end
 end
 
