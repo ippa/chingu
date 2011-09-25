@@ -102,6 +102,11 @@ class Level < Chingu::GameState
       push_game_state(GameOver)
     end
     
+     @player.each_bounding_circle_collision(EnemyPlane) do |player, enemy|
+        enemy.die
+        push_game_state(GameOver)
+      end
+    
     Bullet.each_bounding_circle_collision(Enemy) do |bullet, enemy|
       bullet.die
       if enemy.hit_by(bullet)
@@ -111,11 +116,28 @@ class Level < Chingu::GameState
             
       end
     end
+
+    Bullet.each_bounding_circle_collision(EnemyPlane) do |bullet, enemy|
+      bullet.die
+      if enemy.hit_by(bullet)
+        @player.score += 20
+            @text1.destroy!       #destroy old score
+            @text1 = Text.create(@player.score, :size => 20, :x => 90, :y => 370, :zorder => 1001 )    #update the new score
+            
+      end
+    end
+
+
     
     @timer = @timer * 0.9999
     @total_ticks += 1
     if @total_ticks > @timer
+      @select=rand(2)
+      if @select==1
       Enemy.create(:x => $window.width, :y => rand(300), :zorder => (rand(20) * 100))
+    else
+      EnemyPlane.create(:x => $window.width, :y => rand(300), :zorder => (rand(20) * 100))
+     end
       @total_ticks = 0
     end
     
@@ -485,6 +507,104 @@ class Enemy < GameObject
     @x -= @velocity
   end
 end
+
+
+#
+# OUR ENEMY Plane
+#
+class EnemyPlane < GameObject
+  has_traits :collision_detection, :timer  
+  attr_reader :radius
+  
+  def setup
+    @velocity = options[:velocity] || 2
+    @health = options[:health] || 100
+    
+    @anim = Animation.new(:file => "media/enemy_plane.png", :size => [32,20], :delay => 100)
+    @image = @anim.first
+      
+    @radius = 5
+    @black = Color.new(0xFF000000)
+    @status == :default
+    
+    @fireball_animation = Chingu::Animation.new(:file => media_path("fireball.png"), :size => [32,32])
+    
+    #
+    # Cache explosion and shrapnel images (created with texplay, not recomended doing over and over each time)
+    #
+    @@shrapnel_image ||= Shrapnel.create_image_for(self)
+    @@explosion_image ||= Explosion.create_image_for(self)
+  end
+  
+  def hit_by(object)
+    return if @status == :dying
+    
+    #
+    # During 20 millisecons, use Gosus :additive draw-mode, which here results in a white sprite
+    # Classic "hit by a bullet"-effect
+    #
+    during(20) { @mode = :additive; }.then { @mode = :default }
+    
+    @health -= 20
+  
+    if @health <= 0
+      die
+      return true
+    else
+      return false
+    end
+  end
+  
+  def fire
+    EnemyBullet.create(:x => self.x, :y => self.y)
+  end
+  
+  def die
+    #
+    # Make sure die() is only called once
+    #
+    return  if @status == :dying
+    @status = :dying
+    
+    #
+    # Play our explosion-sound file
+    # Create an explosion-object
+    # Create some shrapnel-objects
+    #
+    Sound["explosion.wav"].play(0.3)
+    
+    #Explosion.create(:x => @x, :y => @y, :image => @@explosion_image )
+    5.times{ Chingu::Particle.create( :x => @x, 
+                          :y => @y, 
+                          :animation => @fireball_animation,
+                          :scale_rate => +0.05, 
+                          :fade_rate => -10, 
+                          :rotation_rate => +1,
+                          :mode => :default
+                        ) 
+			@x -= @velocity
+			}
+			
+    5.times { Shrapnel.create(:x => @x, :y => @y, :image => @@shrapnel_image)}
+    
+    #
+    # During 200 ms, fade and scale image, then destroy it
+    #
+    @color = @black
+    @color.alpha = 50
+    during(200) { @factor_x += 0.5; @factor_y += 0.5; @x -= 1; @color.alpha -= 1}.then { self.destroy }
+  end
+  
+  def update
+    return if @status == :dying
+    
+    @image = @anim.next
+    @x -= @velocity
+  end
+end
+
+
+
 
 #
 # GAME STATE: GAME OVER
