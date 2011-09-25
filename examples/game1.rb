@@ -42,7 +42,6 @@ class Level < Chingu::GameState
     @text = Text.create("Score:", :size => 20, :x => 30, :y => 10) #initialize score string
     @text1 = Text.create("0", :size => 20, :x => 90, :y => 10 )   #initialize score value to 0
     
-    
   end
   
   #
@@ -288,6 +287,8 @@ class Enemy < GameObject
     @black = Color.new(0xFF000000)
     @status == :default
     
+    @fireball_animation = Chingu::Animation.new(:file => media_path("fireball.png"), :size => [32,32])
+    
     #
     # Cache explosion and shrapnel images (created with texplay, not recomended doing over and over each time)
     #
@@ -331,7 +332,19 @@ class Enemy < GameObject
     # Create some shrapnel-objects
     #
     Sound["explosion.wav"].play(0.3)
-    Explosion.create(:x => @x, :y => @y, :image => @@explosion_image )
+    
+    #Explosion.create(:x => @x, :y => @y, :image => @@explosion_image )
+    5.times{ Chingu::Particle.create( :x => @x, 
+                          :y => @y, 
+                          :animation => @fireball_animation,
+                          :scale_rate => +0.05, 
+                          :fade_rate => -10, 
+                          :rotation_rate => +1,
+                          :mode => :default
+                        ) 
+			@x -= @velocity
+			}
+			
     5.times { Shrapnel.create(:x => @x, :y => @y, :image => @@shrapnel_image)}
     
     #
@@ -349,7 +362,6 @@ class Enemy < GameObject
     @x -= @velocity
   end
 end
-
 
 #
 # GAME STATE: GAME OVER
