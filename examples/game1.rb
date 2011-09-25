@@ -102,11 +102,6 @@ class Level < Chingu::GameState
       push_game_state(GameOver)
     end
     
-     @player.each_bounding_circle_collision(EnemyPlane) do |player, enemy|
-        enemy.die
-        push_game_state(GameOver)
-      end
-    
     Bullet.each_bounding_circle_collision(Enemy) do |bullet, enemy|
       bullet.die
       if enemy.hit_by(bullet)
@@ -127,7 +122,8 @@ class Level < Chingu::GameState
       end
     end
 
-
+    # clean up objects
+    game_objects.destroy_if { |object| object.outside_window? || object.color.alpha == 0 }
     
     @timer = @timer * 0.9999
     @total_ticks += 1
@@ -227,13 +223,26 @@ class Level2 < Chingu::GameState
       push_game_state(GameOver)
     end
     
+    @player.each_bounding_circle_collision(EnemyPlane) do |player, enemy|
+        enemy.die
+        push_game_state(GameOver)
+    end
+    
     Bullet.each_bounding_circle_collision(Enemy) do |bullet, enemy|
       bullet.die
       if enemy.hit_by(bullet)
         @player.score += 20
-            @text1.destroy!       #destroy old score
-            @text1 = Text.create(@player.score, :size => 20, :x => 90, :y => 370, :zorder => 1001 )    #update the new score
-            
+        @text1.destroy!       #destroy old score
+        @text1 = Text.create(@player.score, :size => 20, :x => 90, :y => 370, :zorder => 1001 )    #update the new score
+      end
+    end
+    
+    Bullet.each_bounding_circle_collision(EnemyPlane) do |bullet, enemy|
+      bullet.die
+      if enemy.hit_by(bullet)
+        @player.score += 20
+        @text1.destroy!       #destroy old score
+        @text1 = Text.create(@player.score, :size => 20, :x => 90, :y => 370, :zorder => 1001 )    #update the new score
       end
     end
     
@@ -252,6 +261,9 @@ class Level2 < Chingu::GameState
     if @player.score > 100
         switch_game_state(Done)
     end
+    
+    # clean up objects
+    game_objects.destroy_if { |object| object.outside_window? || object.color.alpha == 0 }
     
     if($debug)
     $window.caption = "City Battle! - Player x/y: #{@player.x}/#{@player.y} - Score: #{@player.score} - FPS: #{$window.fps} - game objects: #{game_objects.size}"
