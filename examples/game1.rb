@@ -125,10 +125,120 @@ class Level < Chingu::GameState
       @total_ticks = 0
     end
     
+    if @player.score > 19
+        switch_game_state(Level2)
+    end
+    
     if($debug)
 	$window.caption = "City Battle! - Player x/y: #{@player.x}/#{@player.y} - Score: #{@player.score} - FPS: #{$window.fps} - game objects: #{game_objects.size}"
     else    
 	$window.caption = "City Battle! - Score: #{@player.score} - FPS: #{$window.fps} - game objects: #{game_objects.size}"
+    end
+  end
+  def draw
+    fill_gradient(:from => @bg2, :to => @bg1)
+    @parallax.draw
+    super    
+  end
+end
+
+
+#
+# GAME STATE: LEVEL2
+#
+class Level2 < Chingu::GameState
+  has_trait :timer
+  
+  def initialize(options = {})
+    super
+
+    @parallax = Parallax.create(:rotation_center => :top_left, :zorder => 0)
+    @parallax << { :image => "city1.png", :damping => 2, :zorder => 0}
+    @parallax << { :image => "city2.png", :damping => 1, :zorder => 1000}
+
+    @player = Player.create(:x => 30, :y => 10, :zorder=> 500)
+    
+    @bg1 = Color.new(0xFFCE28FF)
+    @bg2 = Color.new(0xFF013E87)
+    @text = Text.create("Score:", :size => 20, :x => 30, :y => 370, :zorder => 1001) #initialize score string
+    @text1 = Text.create("0", :size => 20, :x => 90, :y => 370, :zorder => 1001)   #initialize score value to 0
+  end
+  
+  #
+  # This is called each time this GameState is switched/pushed/poped to.
+  #
+  def setup
+    # Remove all lingering game objects
+    Enemy.destroy_all
+    Bullet.destroy_all
+    
+    @player.score = 0
+    @player.x = 10
+    @player.y = 100
+    
+    @parallax.camera_x = 0
+    @total_game_ticks = 10000#100000
+    @timer = 100
+    @total_ticks = 0
+  end
+
+  #
+  # The foremost layer in our parallax scroller is the collidable terrain
+  #
+  def solid_pixel_at?(x, y)
+    begin     
+      @parallax.layers.last.get_pixel(x, y)[3] != 0
+    rescue
+      puts "Error in get_pixel(#{x}, #{y})"
+    end
+  end
+  
+  def update
+    super
+    
+    # Move the level forward by increasing the parallax-scrollers camera x-coordinate
+    @parallax.camera_x += 1
+    
+    # Remove all objects outside screen
+    game_objects.destroy_if { |game_object| game_object.respond_to?("outside_window?") && game_object.outside_window? }
+
+    # Collide bullets with terrain
+    Bullet.select { |o| solid_pixel_at?(o.x, o.y)}.each { |o| o.die }
+        
+    # Collide player with terrain
+    push_game_state(GameOver) if solid_pixel_at?(@player.x, @player.y)
+    
+    # Collide player with enemies and enemy bullets
+    @player.each_bounding_circle_collision(Enemy) do |player, enemy|
+      enemy.die
+      push_game_state(GameOver)
+    end
+    
+    Bullet.each_bounding_circle_collision(Enemy) do |bullet, enemy|
+      bullet.die
+      if enemy.hit_by(bullet)
+        @player.score += 20
+            @text1.destroy!       #destroy old score
+            @text1 = Text.create(@player.score, :size => 20, :x => 90, :y => 370, :zorder => 1001 )    #update the new score
+            
+      end
+    end
+    
+    @timer = @timer * 0.9999
+    @total_ticks += 1
+    if @total_ticks > @timer
+      Enemy.create(:x => $window.width, :y => rand(300), :zorder => (rand(20) * 100))
+      @total_ticks = 0
+    end
+    
+    if @player.score > 19
+        switch_game_state(Done)
+    end
+    
+    if($debug)
+    $window.caption = "City Battle! - Player x/y: #{@player.x}/#{@player.y} - Score: #{@player.score} - FPS: #{$window.fps} - game objects: #{game_objects.size}"
+    else    
+    $window.caption = "City Battle! - Score: #{@player.score} - FPS: #{$window.fps} - game objects: #{game_objects.size}"
     end
   end
   def draw
@@ -396,10 +506,7 @@ end
 # GAME STATE: GAME OVER
 #
 class Done < Chingu::GameState
-  def initialize(options)
-    @score = options[:score]
-  end
-  
+
   def setup
     @text = Text.create("You made it! Score #{@score} (ESC to quit, RETURN to try again!)", :size => 40, :x => 30, :y => 100)
     self.input = { :esc => :exit, :return => :try_again}
