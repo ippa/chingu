@@ -119,7 +119,7 @@ class Level < Chingu::GameState
       @total_ticks = 0
     end
     
-    if @player.score > 19
+    if @player.score > 100
         switch_game_state(Level2)
     end
     
