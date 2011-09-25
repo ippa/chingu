@@ -8,12 +8,20 @@ require 'rubygems' rescue nil
 $LOAD_PATH.unshift File.join(File.expand_path(__FILE__), "..", "..", "lib")
 require 'chingu'
 require 'texplay'     # adds Image#get_pixel
+require 'optparse'
 
 include Gosu
 include Chingu
 
+
 class Game < Chingu::Window  
   def initialize
+    $debug = false
+    ARGV.each do |a|
+	if a == "-debug"
+	   $debug = true
+	end
+    end
     super(1000,400,false)
     self.input = { :escape => :exit }
 		retrofy
@@ -34,7 +42,6 @@ class Level < Chingu::GameState
     @parallax = Parallax.create(:rotation_center => :top_left, :zorder => 0)
     @parallax << { :image => "city2.png", :damping => 2, :zorder => 0}
     @parallax << { :image => "city1.png", :damping => 1, :zorder => 1000}
-    
     @player = Player.create(:x => 30, :y => 10, :zorder=> 500)
     
     @bg1 = Color.new(0xFFCE28FF)
@@ -111,10 +118,13 @@ class Level < Chingu::GameState
       Enemy.create(:x => $window.width, :y => rand(300), :zorder => (rand(20) * 100))
       @total_ticks = 0
     end
-        
-    #$window.caption = "City Battle! Player x/y: #{@player.x}/#{@player.y} - Score: #{@player.score} - FPS: #{$window.fps} - game objects: #{game_objects.size}"
+    
+    if($debug)
+	$window.caption = "City Battle! - Player x/y: #{@player.x}/#{@player.y} - Score: #{@player.score} - FPS: #{$window.fps} - game objects: #{game_objects.size}"
+    else    
+	$window.caption = "City Battle! - Score: #{@player.score} - FPS: #{$window.fps} - game objects: #{game_objects.size}"
+    end
   end
-  
   def draw
     fill_gradient(:from => @bg2, :to => @bg1)
     @parallax.draw
