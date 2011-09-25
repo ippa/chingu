@@ -47,9 +47,9 @@ class Level < Chingu::GameState
     
     @bg1 = Color.new(0xFFCE28FF)
     @bg2 = Color.new(0xFF013E87)
-    @text = Text.create("Score:", :size => 20, :x => 30, :y => 370, :zorder => 1001) #initialize score string
-    @text1 = Text.create("0", :size => 20, :x => 90, :y => 370, :zorder => 1001)   #initialize score value to 0
     
+     @text = Text.create("Score:", :size => 20, :x => 30, :y => 370, :zorder => 1001) #initialize score string
+      @text1 = Text.create("0", :size => 20, :x => 90, :y => 370, :zorder => 1001)   #initialize score value to 0
     
   end
   
@@ -69,6 +69,11 @@ class Level < Chingu::GameState
     @total_game_ticks = 10000#100000
     @timer = 100
     @total_ticks = 0
+    @text.destroy!
+    @text1.destroy!
+    @text = Text.create("Score:", :size => 20, :x => 30, :y => 370, :zorder => 1001) #initialize score string
+    @text1 = Text.create("0", :size => 20, :x => 90, :y => 370, :zorder => 1001)   #initialize score value to 0
+    
   end
 
   #
@@ -293,7 +298,10 @@ class Enemy < GameObject
     @health = options[:health] || 100
     
     @anim = Animation.new(:file => "media/saucer.png", :size => [32,13], :delay => 100)
+    @anim1 = Animation.new(:file => "media/enemy_plane.png", :size => [32,18], :delay => 100)
+    
     @image = @anim.first
+    @image1 = @anim1.first
       
     @radius = 5
     @black = Color.new(0xFF000000)
@@ -370,6 +378,7 @@ class GameOver < Chingu::GameState
     @text = Text.create("GAME OVER (ESC to quit, RETURN to try again!)", :size => 40, :x => 30, :y => 100)
     self.input = { :esc => :exit, :return => :try_again }
     @layover = Color.new(0x99000000)
+  
   end
   
   def draw
