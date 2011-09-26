@@ -30,7 +30,7 @@ class Stuff < GameState
   end
   
   def stop
-    stop_timer(:name => :blink)
+    stop_timer(:blink)
   end
   
   def fast
