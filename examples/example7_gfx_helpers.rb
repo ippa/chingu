@@ -9,11 +9,25 @@ include Chingu
 # GFXHelpers example - demonstrating Chingus GFX
 #
 class Game < Chingu::Window
+  @@number_of_game_states = 7
   def initialize
     super(640,400)
     self.input = {:space => :next_effect, :esc => :exit}
     self.caption = "Example of Chingus GFX Helpers"
-    
+    load_game_states
+  end
+  
+  def next_effect
+    @@number_of_game_states -= 1
+    if @@number_of_game_states == 0
+      load_game_states
+      @@number_of_game_states = 7
+    else
+      pop_game_state
+    end   
+  end
+  
+  def load_game_states
     push_game_state(Fill)
     push_game_state(FillRect)
     push_game_state(FillGradient)
@@ -22,15 +36,13 @@ class Game < Chingu::Window
     push_game_state(DrawCircle)
     push_game_state(Particles)
   end
-  
-  def next_effect
-    pop_game_state
-  end
 end
+
+
 
 class DrawCircle < Chingu::GameState
   def draw
-    $window.caption = "circles and arcs (space to continue)"
+    $window.caption = "circles and arcs (press space to continue)"
     draw_circle(0, 0, 300, Color::RED)
     fill_circle($window.width, $window.height, 200, Color::RED)
     
@@ -44,14 +56,14 @@ end
 
 class Fill < Chingu::GameState 
   def draw
-    $window.caption = "fill (space to continue)"
+    $window.caption = "fill (press space to continue)"
     fill(Color::RED)
   end
 end
 
 class FillRect < Chingu::GameState 
   def draw
-    $window.caption = "fill_rect (space to continue)"
+    $window.caption = "fill_rect (press space to continue)"
     fill_rect([10,10,100,100], Color::WHITE)
   end
 end
@@ -63,7 +75,7 @@ class FillGradient < Chingu::GameState
   end
   
   def draw
-    $window.caption = "fill_gradient (space to continue)"
+    $window.caption = "fill_gradient (press space to continue)" 
     fill_gradient(:from => @pinkish, :to => @blueish, :orientation => :vertical)
   end
 end
@@ -74,7 +86,7 @@ class FillGradientMultipleColors < Chingu::GameState
   end
   
   def draw
-    $window.caption = "fill_gradient with more than two colors (space to continue)"
+    $window.caption = "fill_gradient with more than two colors (press space to continue)"
     fill_gradient(:colors => @colors, :orientation => :horizontal)
   end
 end
@@ -86,7 +98,7 @@ class FillGradientRect < Chingu::GameState
   end
   
   def draw
-    $window.caption = "fill_gradient with :rect-option (space to continue)"
+    $window.caption = "fill_gradient with :rect-option (press space to continue)"
     fill_gradient(:from => @color1, :to => @color2, :rect => [100,100,200,200], :orientation => :horizontal)
   end
 end
