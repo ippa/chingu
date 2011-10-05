@@ -205,7 +205,7 @@ module Chingu
               socket.close
             end
           end
-        rescue IO::WaitReadable, Errno::EINTR
+        rescue Errno::EAGAIN, Errno::EINTR
         end
       end
 
