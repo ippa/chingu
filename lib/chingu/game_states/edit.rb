@@ -138,6 +138,10 @@ module Chingu
         @toolbar_icon_size = [32,32]
         x = 20
         y = 60
+        draw_toolbar_objects
+      end
+
+      def draw_toolbar_objects
         @classes.each do |klass|
           puts "Creating a #{klass}"  if @debug
 
@@ -162,9 +166,8 @@ module Chingu
           rescue
             puts "Couldn't use #{klass} in editor: #{$!}"
           end
-        end
+        end        
       end
-      
       def display_help
 text = <<END_OF_STRING
   F1: This help screen
