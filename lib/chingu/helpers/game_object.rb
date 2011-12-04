@@ -63,7 +63,11 @@ module Chingu
         objects.each do |object|
           object.each_pair do |klassname, attributes|
             begin
-              klass = Kernel::const_get(klassname)
+              klass = Object
+              names = klassname.split('::')
+              names.each do |name|
+                klass = klass.const_defined?(name) ? klass.const_get(name) : klass.const_missing(name)
+              end
               unless klass.class == "GameObject" && !except.include?(klass)
                 puts "Creating #{klassname.to_s}: #{attributes.to_s}" if debug
                 object = klass.create(attributes)
