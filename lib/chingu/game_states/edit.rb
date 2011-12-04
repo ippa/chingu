@@ -136,12 +136,12 @@ module Chingu
 
         @hud_height = 140
         @toolbar_icon_size = [32,32]
-        x = 20
-        y = 60
         draw_toolbar_objects
       end
 
       def draw_toolbar_objects
+        x = 20
+        y = 60
         @classes.each do |klass|
           puts "Creating a #{klass}"  if @debug
 
