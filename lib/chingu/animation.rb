@@ -14,12 +14,13 @@ module Chingu
     
     #
     # Create a new Animation. 
-    # Must use :file OR :frames to create it.
+    # Must use :file OR :frames OR :image to create it.
     #
     #   - loop: [true|false]. After the last frame is used, start from the beginning.
     #   - bounce: [true|false]. After the last frame is used, play it backwards untill the first frame is used again, then start playing forwards again.
     #   - file:   Tile-file to cut up animation frames from. Could be a full path or just a name -- then it will look for media_path(file)
-    #   - frames: Creates the animation from existing images (Array<Image> or Image)
+    #   - frames: Creates the animation from existing images which are the same size (Array<Gosu::Image>)
+    #   - image: Image containing a strip of frames for the animation (Gosu::Image)
     #   - width:  width of each frame in the tileanimation
     #   - height:  width of each frame in the tileanimation
     #   - size: [width, height]-Array or just one fixnum which will spez both height and width
@@ -31,7 +32,9 @@ module Chingu
 
       @loop = options[:loop]
       @bounce = options[:bounce]
-      @file = options[:file]
+      file = options[:file]
+      image = options[:image]
+      @frames = options[:frames]
       @index = options[:index]
       @delay = options[:delay]
       @step = options[:step] || 1
@@ -39,16 +42,26 @@ module Chingu
 
       @sub_animations = {}
       @frame_actions = []
+      
+      raise ArgumentError, "Must provide one of :frames, :image OR :file parameter" unless [@frames, file, image].compact.size == 1
 
-      if @file
-        unless File.exists?(@file)
+      if @frames        
+        raise ArgumentError, "Must provide at least one frame image with :frames" if @frames.empty?
+        raise ArgumentError, ":frames must consist of images only" unless @frames.all? {|i| i.is_a? Gosu::Image }
+        
+        @width, @height = @frames[0].width, @frames[0].height
+        
+        raise ArgumentError, ":frames must be of identical size" unless @frames[1..-1].all? {|i| i.width == @width and i.height == @height }
+        
+      else    
+        if file and not File.exists?(file)
           Gosu::Image.autoload_dirs.each do |autoload_dir|
-            full_path = File.join(autoload_dir, @file)
+            full_path = File.join(autoload_dir, file)
             if File.exists?(full_path)
-              @file = full_path
+              file = full_path
               break
             end
-          end
+          end      
         end
 
         #
@@ -63,27 +76,22 @@ module Chingu
         elsif options[:size]
           @width = options[:size]
           @height = options[:size]
-        elsif @file =~ /_(\d+)x(\d+)/
-          # Auto-detect width/height from filename
-          # Tilefile foo_10x25.png would mean frame width 10px and height 25px
-          @width = $1.to_i
-          @height = $2.to_i
+        elsif file
+          if file =~ /_(\d+)x(\d+)/
+            # Auto-detect width/height from filename
+            # Tilefile foo_10x25.png would mean frame width 10px and height 25px
+            @width = $1.to_i
+            @height = $2.to_i
+          else
+            # Assume the shortest side of the actual file is the width/height for each frame
+            image = Gosu::Image.new($window, file)
+            @width = @height = (image.width < image.height) ? image.width : image.height
+           end
         else
-          # Assume the shortest side is the width/height for each frame
-          @image = Gosu::Image.new($window, @file)
-          @width = @height = (@image.width < @image.height) ? @image.width : @image.height
+          @width = @height = (image.width < image.height) ? image.width : image.height
         end
-
-        @frames = Gosu::Image.load_tiles($window, @file, @width, @height, true)
-      else
-        @frames = Array(options[:frames])
         
-        raise ArgumentError.new("Must provide at least one frame image with :frames") if @frames.empty?
-        raise ArgumentError.new(":frames must consist of images only") unless @frames.all? {|i| i.is_a? Gosu::Image }
-        
-        @width, @height = @frames[0].width, @frames[0].height
-        
-        raise ArgumentError.new(":frames must be of identical size") unless @frames[1..-1].all? {|i| i.width == @width and i.height == @height }
+        @frames = Gosu::Image.load_tiles($window, image || file, @width, @height, true)
       end
     end
     

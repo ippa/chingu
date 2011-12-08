@@ -154,7 +154,7 @@ module Chingu
             @packet_buffers[socket] = PacketBuffer.new
             on_connect(socket)
           end
-        rescue IO::WaitReadable, Errno::EINTR
+        rescue IO::WaitReadable, Errno::EAGAIN, Errno::EINTR
         end
       end
 

@@ -56,7 +56,7 @@ module Chingu
           return @cached_bounding_box
         end
         
-        width, height = self.size
+        width, height = self.width, self.height
         
         if scale = trait_options[:bounding_box][:scale]
           width_scale, height_scale = scale.is_a?(Array) ? [scale[0],scale[1]] : [scale,scale]
