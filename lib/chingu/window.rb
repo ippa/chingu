@@ -194,5 +194,57 @@ module Chingu
 
       $window = nil
     end
+    
+    # GLOBAL SOUND SETTINGS
+    
+    DEFAULT_VOLUME = 1.0 # However, 0.5 is a better value for general use.
+
+    # Set the global volume of all Samples and Songs, not affected by Window being muted.
+    def volume=(value)
+      raise "Bad volume setting" unless value.is_a? Numeric
+
+      old_volume = @volume
+      @volume = [[value, 1.0].min, 0.0].max.to_f
+
+      Song.send(:recalculate_volumes, old_volume, @volume)
+
+      volume
+    end
+
+    # Volume of all Samples and Songs, not affected by the Window being muted.
+    attr_reader :volume
+
+    # Actual volume of all Samples and Songs, affected by the Window being muted.
+    def effective_volume
+      muted? ? 0.0 : @volume
+    end
+
+    # Mute the window and all Samples and Songs played.
+    # Muting stacks, so sound will only be heard if the number of unmutes is the same as the number of mutes.
+    def mute
+      unless muted?
+        Song.send(:resources).each_value {|song| song.send :mute }
+      end
+      @times_muted += 1
+
+      self
+    end
+
+    # Unmute the window and all Samples and Songs played.
+    # Muting stacks, so sound will only be heard if the number of unmutes is the same as the number of mutes.
+    def unmute
+      raise "Can't unmute when not muted" unless muted?
+      @times_muted -= 1
+      unless muted?
+        Song.send(:resources).each_value {|song| song.send :unmute }
+      end
+
+      self
+    end
+
+    # Is the window currently muted?
+    def muted?
+      @times_muted > 0
+    end   
   end
 end

@@ -6,8 +6,9 @@ module Chingu
       @game = Chingu::Window.new
       @test_dir = File.join(File.dirname(File.expand_path(__FILE__)), 'images')
       Gosu::Image.autoload_dirs << @test_dir
-      @animation_clean = Animation.new(:file => File.join(@test_dir, "droid_11x15.bmp"))
-      @animation = Animation.new(:file => File.join(@test_dir, "droid_11x15.bmp"), :delay => 0)
+      @file = "droid_11x15.bmp"
+      @animation_clean = Animation.new(:file => @file)
+      @animation = Animation.new(:file => @file, :delay => 0)
     end
 
     after :each do
@@ -38,6 +39,37 @@ module Chingu
         Dir.chdir(File.dirname(File.expand_path(__FILE__)))
         @anim = Animation.new(:image => Gosu::Image["images/droid_11x15.bmp"], :size => [11, 15])
         @anim.frames.count.should == 14
+      end
+    end
+    
+    describe "Animation loading using :frames" do    
+      it "should have the same frames" do 
+        anim = Animation.new :frames => @animation_clean.frames      
+        anim.frames.should == @animation_clean.frames
+      end
+      
+      it "should reject non-consistent frame sizes" do       
+        ->{ Animation.new :frames => @animation_clean.frames + [Gosu::Image[@file]]}.should raise_error ArgumentError
+      end
+    end
+    
+    describe "Animation loading using :image" do
+      before :each do
+        @anim = Animation.new :image => Gosu::Image[@file]
+      end
+      
+      it "should have the same frames" do       
+        @anim.frames.zip(@animation_clean.frames).all? { |a, b| a.to_blob == b.to_blob }
+      end
+    end
+    
+    describe "Animation loading errors" do      
+      it "should fail unless one of the creation params is given" do       
+        ->{ Animation.new }.should raise_error ArgumentError
+      end
+      
+      it "should fail if more than one creation params" do
+        ->{ Animation.new :image => Gosu::Image[@file], :file => @file}.should raise_error ArgumentError
       end
     end
     
