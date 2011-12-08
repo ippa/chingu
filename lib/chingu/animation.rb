@@ -14,10 +14,13 @@ module Chingu
     
     #
     # Create a new Animation. 
+    # Must use :file OR :frames OR :image to create it.
     #
     #   - loop: [true|false]. After the last frame is used, start from the beginning.
     #   - bounce: [true|false]. After the last frame is used, play it backwards untill the first frame is used again, then start playing forwards again.
     #   - file:   Tile-file to cut up animation frames from. Could be a full path or just a name -- then it will look for media_path(file)
+    #   - frames: Creates the animation from existing images which are the same size (Array<Gosu::Image>)
+    #   - image: Image containing a strip of frames for the animation (Gosu::Image)
     #   - width:  width of each frame in the tileanimation
     #   - height:  width of each frame in the tileanimation
     #   - size: [width, height]-Array or just one fixnum which will spez both height and width
@@ -25,55 +28,71 @@ module Chingu
     #   - step: [steps] move animation forward [steps] frames each time we call #next
     #
     def initialize(options)
-      #options = {:step => 1, :loop => true, :bounce => false, :width => 32, :height => 32, :index => 0, :delay => 100}.merge(options)
-      options = {:step => 1, :loop => true, :bounce => false, :index => 0, :delay => 100, :file => nil, :image => nil}.merge(options)
-      
+      options = {:step => 1, :loop => true, :bounce => false, :index => 0, :delay => 100}.merge!(options)
+
       @loop = options[:loop]
       @bounce = options[:bounce]
-      @file = options[:file]
+      file = options[:file]
       image = options[:image]
+      @frames = options[:frames]
       @index = options[:index]
       @delay = options[:delay]
       @step = options[:step] || 1
       @dt = 0
-      
+
       @sub_animations = {}
       @frame_actions = []
       
-      unless image || File.exists?(@file)
-        Gosu::Image.autoload_dirs.each do |autoload_dir|
-          full_path = File.join(autoload_dir, @file)
-          if File.exists?(full_path)
-            @file = full_path
-            break
-          end
+      raise ArgumentError, "Must provide one of :frames, :image OR :file parameter" unless [@frames, file, image].compact.size == 1
+
+      if @frames        
+        raise ArgumentError, "Must provide at least one frame image with :frames" if @frames.empty?
+        raise ArgumentError, ":frames must consist of images only" unless @frames.all? {|i| i.is_a? Gosu::Image }
+        
+        @width, @height = @frames[0].width, @frames[0].height
+        
+        raise ArgumentError, ":frames must be of identical size" unless @frames[1..-1].all? {|i| i.width == @width and i.height == @height }
+        
+      else    
+        if file and not File.exists?(file)
+          Gosu::Image.autoload_dirs.each do |autoload_dir|
+            full_path = File.join(autoload_dir, file)
+            if File.exists?(full_path)
+              file = full_path
+              break
+            end
+          end      
         end
+
+        #
+        # Various ways of determening the framesize
+        #
+        if options[:height] && options[:width]
+          @height = options[:height]
+          @width = options[:width]
+        elsif options[:size] && options[:size].is_a?(Array)
+          @width = options[:size][0]
+          @height = options[:size][1]
+        elsif options[:size]
+          @width = options[:size]
+          @height = options[:size]
+        elsif file
+          if file =~ /_(\d+)x(\d+)/
+            # Auto-detect width/height from filename
+            # Tilefile foo_10x25.png would mean frame width 10px and height 25px
+            @width = $1.to_i
+            @height = $2.to_i
+          else
+            # Assume the shortest side of the actual file is the width/height for each frame
+            image = Gosu::Image.new($window, file)
+            @width = @height = (image.width < image.height) ? image.width : image.height
+           end
+        else
+          @width = @height = (image.width < image.height) ? image.width : image.height
+        end
+        
+        @frames = Gosu::Image.load_tiles($window, image || file, @width, @height, true)
       end
-      
-      #
-      # Various ways of determening the framesize
-      #
-      if options[:height] && options[:width]
-        @height = options[:height]
-        @width = options[:width]
-      elsif options[:size] && options[:size].is_a?(Array)
-        @width = options[:size][0]
-        @height = options[:size][1]
-      elsif options[:size]
-        @width = options[:size]
-        @height = options[:size]
-      elsif @file =~ /_(\d+)x(\d+)/
-        # Auto-detect width/height from filename 
-        # Tilefile foo_10x25.png would mean frame width 10px and height 25px
-        @width = $1.to_i
-        @height = $2.to_i
-      else
-        # Assume the shortest side is the width/height for each frame
-        image ||= Gosu::Image[@file]
-        @width = @height = (image.width < image.height) ? image.width : image.height
-      end
-      
-      @frames = Gosu::Image.load_tiles($window, image || @file, @width, @height, true)
     end
     
     #
