@@ -49,8 +49,8 @@ module Chingu
         elsif key.is_a? Image
           GameObject.new(options.merge!(:image => key))
         elsif key.is_a? GameObject
-          menu_item.options.merge!(options.dup)
-          menu_item
+          key.options.merge!(options.dup)
+          key
         end
         
         item.options[:on_select] = method(:on_select)
