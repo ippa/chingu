@@ -28,10 +28,10 @@ module Chingu
   #
   #
   # TODO:
-  # Implement use of viewports angle, center_x, center_y, factor_x, factor_y
+  # Implement use of viewports angle, center_x, center_y
   #
   class Viewport
-    attr_accessor :x, :y, :x_target, :y_target, :x_lag, :y_lag, :game_area
+    attr_accessor :x, :y, :x_target, :y_target, :x_lag, :y_lag, :factor_x, :factor_y, :game_area
     
     def initialize(options = {})
       @x = options[:x] || 0
@@ -40,6 +40,8 @@ module Chingu
       @y_target = options[:y_target] || @y
       @x_lag = options[:x_lag] || 0
       @y_lag = options[:y_lag] || 0
+      @factor_x = options[:factor_x] || 1
+      @factor_y = options[:factor_y] || 1
       @game_area = Chingu::Rect.new(options[:game_area] || [@x, @y, $window.width, $window.height])       
     end
     
@@ -57,8 +59,8 @@ module Chingu
     # TODO: Add support for x,y here!
     #
     def center_around(object)
-      self.x = object.x - $window.width / 2
-      self.y = object.y - $window.height / 2
+      self.x = object.x * @factor_x - $window.width / 2
+      self.y = object.y * @factor_y - $window.height / 2
     end
     
     #
@@ -114,14 +116,14 @@ module Chingu
     # Modify viewports x and y from target_x / target_y and x_lag / y_lag 
     # Use this to have the viewport "slide" after the player
     #
-    def move_towards_target			
+    def move_towards_target
       if @x_target && @x != @x_target
-        x_step = @x_target - @x
+        x_step = @x_target * @factor_x - @x
         self.x = @x + x_step * (1.0 - @x_lag)
       end
-      
+
       if @y_target && @y != @y_target
-        y_step = @y_target - @y
+        y_step = @y_target * @factor_y - @y
         self.y = @y + y_step * (1.0 - @y_lag)
       end
     end
@@ -132,9 +134,9 @@ module Chingu
     def x=(x)
       @x = x
       if @game_area
-        @x = @game_area.x                     if @x < @game_area.x
-        @x = @game_area.width-$window.width   if @x > @game_area.width-$window.width
-      end 
+        @x = @game_area.x * @factor_x         if @x < @game_area.x * @factor_x
+        @x = @game_area.width * @factor_x - $window.width   if @x > @game_area.width * @factor_x - $window.width
+      end
     end
 
     #
@@ -143,8 +145,8 @@ module Chingu
     def y=(y)
       @y = y
       if @game_area
-        @y = @game_area.y                       if @y < @game_area.y
-        @y = @game_area.height-$window.height   if @y > @game_area.height-$window.height
+        @y = @game_area.y * @factor_y           if @y < @game_area.y * @factor_y
+        @y = @game_area.height * @factor_y - $window.height   if @y > @game_area.height * @factor_y - $window.height
       end
     end
     
@@ -152,7 +154,9 @@ module Chingu
     # Apply the X/Y viewport-translation, used by trait "viewport"
     #
     def apply(&block)
-      $window.translate(-@x.to_i, -@y.to_i, &block)
+      $window.translate(-@x.to_i, -@y.to_i) do
+        $window.scale(@factor_x, @factor_y, 0, 0, &block)
+      end
     end
 
     def to_s
