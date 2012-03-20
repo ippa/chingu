@@ -63,7 +63,7 @@ module Chingu
           end
         end
       
-        @texts[@index].color = Color::RED
+        @texts[@index].color = ::Gosu::Color::RED
         @name = Text.create("", :rotaion_center => :top_center, :x => $window.width/2, :y => 60, :size => 80)
       end
     
@@ -94,8 +94,8 @@ module Chingu
         new_value = @index + amount
         @index = new_value  if new_value < @letters.size && new_value >= 0
         
-        @texts.each { |text| text.color = Color::WHITE }
-        @texts[@index].color = Color::RED
+        @texts.each { |text| text.color = ::Gosu::Color::WHITE }
+        @texts[@index].color = ::Gosu::Color::RED
         
         sleep(0.15)
       end
