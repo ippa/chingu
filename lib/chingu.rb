@@ -38,7 +38,7 @@ require_all "#{CHINGU_ROOT}/chingu/async_tasks"
 require_all "#{CHINGU_ROOT}/chingu"
 
 module Chingu
-  VERSION = "0.9rc7"
+  VERSION = "0.9rc8"
   
   DEBUG_COLOR = Gosu::Color.new(0xFFFF0000)
   DEBUG_ZORDER = 9999
