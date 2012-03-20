@@ -64,6 +64,8 @@ module Chingu
       @milliseconds_since_last_tick = 0
       @factor = 1
       @cursor = false
+      @times_muted = 0
+      @volume = DEFAULT_VOLUME
       
       setup
     end
