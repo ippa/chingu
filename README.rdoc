@@ -411,21 +411,22 @@ Another example:
   class Game < Chingu::Window
     def initialize
       #
-      # We start by pushing Menu to the game state stack, making it active as the only state on stack.
-      # :setup => :false which will skip setup() from being called (standard when switching to a new state)
+      # We start by pushing Menu to the game state stack, making it active as it's the only state on stack.
+      #
+      # :setup => :false will skip setup() from being called (standard when switching to a new state)
       #
       push_game_state(Menu, :setup => false)
       
       #
       # We push another game state to the stack, Play. We now have 2 states, which active being first / active.
       #
-      # :finalize => false will skip setup() from being called on game state 
-      # that's being pushed down the stack, in this case Intro.setup().
+      # :finalize => false will skip finalize() from being called on game state 
+      # that's being pushed down the stack, in this case Menu.finalize().
       #
       push_game_state(Play, :finalize => false)
     
       #
-      # This would remove Play state from the stack, going back to the Menu-state. But also:
+      # Next, we remove Play state from the stack, going back to the Menu-state. But also:
       # .. skipping the standard call to Menu#setup     (the new game state)
       # .. skipping the standard call to Play#finalize  (the current game state)
       #
@@ -435,7 +436,11 @@ Another example:
       
       #
       # Replace the current game state with a new one.
-      # :setup and :finalize options are available here as well.
+      #
+      # :setup and :finalize options are available here as well but:
+      # .. setup and finalize are always skipped for Menu (the state under Play and Credits)
+      # .. the finalize option only affects the popped game state
+      # .. the setup option only affects the game state you're switching to
       #
       switch_game_state(Credits)
     end
