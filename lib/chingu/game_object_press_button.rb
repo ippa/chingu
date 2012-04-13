@@ -31,11 +31,16 @@ module Chingu
   #
   
   class PressButton < Chingu::GameObject
-    
+  # alias  :oldx=  :x=
+  # alias :old_y= :y= 
+  # old_x = self.instance_method(:x=)
+   
    def initialize(options =  {})
      #Normaly a button has two images, pressed and released
      @released_image = Image[options[:released_image]]
      @pressed_image = Image[options[:pressed_image]]
+     @x = options[:x]
+     @y = options[:y]
      super
    end 
      
@@ -45,11 +50,11 @@ module Chingu
       #The button starts unpressed
       @clicked = false
       @image = @released_image
-      half_width = self.width / 2 
-      half_height = self.height / 2 
+      @half_width = self.width / 2 
+      @half_height = self.height / 2 
       #Total area of the button
-      @button_range = {:x => ((self.x - half_width)..(self.x + self.width - half_width)),
-        :y => ((self.y - half_height)..(self.y + self.height - half_height))}
+      @button_range = {:x => ((self.x - @half_width)..(self.x + self.width - @half_width)),
+        :y => ((self.y - @half_height)..(self.y + self.height - @half_height))}
       #If the user clicks, we check if he clicked a button
       self.input = {:left_mouse_button => :check_click,
         :released_left_mouse_button => :check_release,
@@ -113,4 +118,21 @@ module Chingu
         end
       end        
     end
+    
+    #TODO Overwritte x= method of module sprite
+ #  define_method(:x=) do
+ #         old_x.bind(self).call
+ #         puts "lo pille \n"
+ #         @button_range[:x] = ((self.x - @half_width)..(self.x + self.width - @half_width))
+ #       end
+  
+    def set_x= value
+      @button_range[:x] = ((value - @half_width)..(value + self.width - @half_width))
+      self.x = value
+    end
+    
+    def set_y= value
+      @button_range[:y] = ((value - @half_height)..(value + self.height - @half_height))
+      self.y = value
+    end    
 end  
