@@ -54,6 +54,20 @@ class DrawCircle < Chingu::GameState
   end
 end
 
+class DrawCircle < Chingu::GameState
+  def draw
+    $window.caption = "circles and arcs (space to continue)"
+    draw_circle(0, 0, 300, Color::RED)
+    fill_circle($window.width, $window.height, 200, Color::RED)
+    
+    colors = [Color::RED, Color::YELLOW, Color::GREEN, Color::BLUE]
+    0.step(360, 90).each_cons(2).zip(colors).each do |(a1, a2), color|
+      fill_arc(400, 100, 100, a1, a2, color)
+    end
+    
+  end
+end
+
 class Fill < Chingu::GameState 
   def draw
     $window.caption = "fill (press space to continue)"
