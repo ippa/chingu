@@ -1,4 +1,4 @@
-= CHING
+= CHINGU
 http://github.com/ippa/chingu/tree/master
 
 DOCUMENTATION: http://rdoc.info/projects/ippa/chingu
