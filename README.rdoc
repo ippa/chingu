@@ -1,4 +1,4 @@
-= CHINGU
+= CHING
 http://github.com/ippa/chingu/tree/master
 
 DOCUMENTATION: http://rdoc.info/projects/ippa/chingu
@@ -45,7 +45,7 @@ Links to some of the projects using/depending on Chingu:
 * https://github.com/edward/spacewar  (a small game, unsure of status)
 * https://github.com/jstorimer/zig-zag  (2D scrolling game, unsure of status)
 
-... miss your Chingu project? Msg me on github and I'll add it to the list!
+Am I missing your Chingu project? Msg me on github and I'll add it to the list!
 
 == THE STORY
 The last years I've dabbled around a lot with game development.
@@ -91,7 +91,7 @@ It comes with 2 extras that main window doesn't have. #setup (called when activa
 
 If using game states, the flow of draw/update/button_up/button_down is:
 Chingu::Window --> Chingu::GameStateManager --> Chingu::GameState.
-For example, inside game state Menu you call push_game_state(Level). When Level exists, it will go back to Menu.
+For example, inside game state Menu you call push_game_state(Level). When Level exits, it will go back to Menu.
 
 === Traits
 Traits are extensions (or plugins if you so will) to BasicGameObjects included on the class-level.
@@ -121,7 +121,7 @@ A class to keep track of high scores, limit the list, automatic sorting on score
 A class to keep/sync online highscores to http://gamercv.com/. A lot more fun competing with others for positions then a local list.
 
 === Various Helpers
-Both $window and game states gets some new graphical helpers, currently only 3, but quite useful:
+Both $window and game states gets some new graphical helpers, currently only 5, but quite useful:
 
   fill()          # Fills whole window with color 'color'.
   fill_rect()     # Fills a given Rect 'rect' with Color 'color'
@@ -139,7 +139,7 @@ If you base your models on GameObject (or BasicGameObject) you get:
 == BASICS / EXAMPLES
 
 === Chingu::Window
-With Gosu the main window inherits from Gosu::Window. In Chingu we use Chingu::Window. It's a basic Gosu::Window with extra cheese on top of it. keyboard handling, automatic update/draw calls to all gameobjects, fps counting etc.
+With Gosu the main window inherits from Gosu::Window. In Chingu we use Chingu::Window. It's a basic Gosu::Window with extra cheese on top of it: keyboard handling, automatic update/draw calls to all gameobjects, fps counting etc.
 
 You're probably familiar with this very common Gosu pattern:
   
@@ -236,7 +236,6 @@ If you've worked with Gosu for a while you're probably tired of passing around t
 Chingu solves this (as has many other developers) with a global variable $window. Yes, globals are bad, but in this case it kinda makes sense. It's used under the hood in various places.
 
 The basic flow of Chingu::Window once show() is called is this (this is called one game iteration or game loop):
-  
   - Chingu::Window#draw() is called
   -- draw() is called on game objects belonging to Chingu::Window
   -- draw() is called on all game objects belonging to current game state
@@ -249,13 +248,13 @@ The basic flow of Chingu::Window once show() is called is this (this is called o
   -- Input for game objects belonging to current game state is processed
   -- update() is called on all game objects belonging to current game state
 
-... the above is repeatet until game exists.
-  
+... the above is repeated until game exits.
+
 === Chingu::GameObject
-This is our basic "game unit"-class, meaning most in game objects (players, enemies, bullets etc) should be inherited from Chingu::GameObject.
+This is our basic "game unit"-class, meaning most in-game objects (players, enemies, bullets etc) should be inherited from Chingu::GameObject.
 The basic ideas behind it are:
 
-* Encapsulate only the very common basics that Most in game objects need
+* Encapsulate only the very common basics that _most_ in-game objects need
 * Keep naming close to Gosu, but add smart convenient methods / shortcuts and a more rubyish feeling
 * No game logic allowed in GameObject, since that's not likely to be useful for others.
 
@@ -283,7 +282,7 @@ An example using almost all arguments would be:
   
   #
   # By default Chingu::Window calls update & draw on all GameObjects in it's own update/draw.
-  # If this is not what you want, use :draw and :update
+  # If this is not what you want, use the :draw and :update options:
   #
   @player = Player.new(:draw => false, :update => false)
 
@@ -374,12 +373,12 @@ Game states aren't complicated. In Chingu a GameState is a class that behaves mo
       # screen manipulation here
     end
         
-    # Called Each time when we enter the game state, use this to reset the gamestate to a "virgin state"
+    # Called Each time when we activate/enter the game state, use this to reset the gamestate to a "virgin state"
     def setup
       @player.angle = 0   # point player upwards
     end
     
-    # Called when we leave the game state
+    # Called when we deactivate/leave the game state
     def finalize
       push_game_state(Menu)   # switch to game state "Menu"
     end
@@ -577,7 +576,7 @@ Compare the 2 snippets below:
     @color = Color::WHITE
   end
   
-=== Traits
+== Traits
 Traits (sometimes called behaviors in other frameworks) is a way of adding logic to any class inheriting from BasicGameObject / GameObject.
 Chingus trait-implementation is just ordinary ruby modules with 3 special methods:
  - setup_trait 
@@ -709,7 +708,7 @@ You can also scale the calculated rect with trait-options:
   # :debug => true shows the actual box in red on the screen
   trait :bounding_box, :scale => 1.5, :debug => true
   
-Inside your object you will also get a cache_bounding_box(). After that the bounding_box will be quicker but it will not longer adapt to size-changes.
+The bounding_box trait also provides the method cache_bounding_box(). After calling cache_bounding_box() calls to bounding_box() will be quicker but it will not longer adapt to size-changes.
 
 ==== Trait "bounding_circle"
 Adds accessor 'radius', which returns a Fixnum based on current image size,factor_x and factor_y
@@ -721,7 +720,7 @@ You can also scale the calculated radius with trait-options:
   # :debug => true shows the actual circle in red on the screen
   trait :bounding_circle, :debug => true
 
-Inside your object you will also get a cache_bounding_circle(). After that radius() will be quicker but it will not longer adapt to size-changes.
+The bounding_circle traits provides the method cache_bounding_circle(). After calling cache_bounding_circle() calls to radius() will be quicker but it will not longer adapt to size-changes.
 
 ==== Trait "animation"
 Automatically load animations depending on the class-name.
@@ -855,7 +854,7 @@ Add your own searchpaths like this:
   Gosu::Sound.autoload_dirs << File.join(ROOT, "samples")
 
 This will add \path\to\your\game\gfx and \path\to\your\game\samples  to Image and Sound.
-  
+
 Thanks to Jacious of rubygame-fame (http://rubygame.org/) for his named resource code powering this.
 
 === Text
