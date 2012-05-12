@@ -1,6 +1,5 @@
 # -*- encoding: utf-8 -*-
-require File.dirname(__FILE__) + '/lib/chingu'
-include Chingu
+require File.dirname(__FILE__) + '/lib/chingu/version'
 
 Gem::Specification.new do |s|
   s.name = "chingu"
