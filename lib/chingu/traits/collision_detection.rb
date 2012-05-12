@@ -133,7 +133,8 @@ module Chingu
       def each_bounding_circle_collision(*klasses)
         Array(klasses).each do |klass|
           (klass.respond_to?(:all) ? klass.all : Array(klass)).each do |object|
-            next  unless self.collidable && object.collidable
+            next if object == self
+            next unless self.collidable && object.collidable
             yield(self, object) if Gosu.distance(self.x, self.y, object.x, object.y) < self.radius + object.radius
           end
         end
@@ -146,7 +147,8 @@ module Chingu
       def each_bounding_box_collision(*klasses)
         Array(klasses).each do |klass|
           (klass.respond_to?(:all) ? klass.all : Array(klass)).each do |object|
-            return false  unless self.collidable && object.collidable
+            next if object == self
+            next unless self.collidable && object.collidable
             yield(self, object) if self.bounding_box.collide_rect?(object.bounding_box)
           end
         end
