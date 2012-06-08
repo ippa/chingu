@@ -152,38 +152,4 @@ module Chingu
       @button_range[:y] = ((value - @half_height)..(value + self.height - @half_height))
       self.y = value
     end    
-#end  
-
-################################################################################################################
-
-  #TODO Make text buttons work, thay saiy no width
-  class PressButtonText < Chingu::Text
-  # alias  :oldx=  :x=
-  # alias :old_y= :y= 
-   old_x = self.instance_method(:x=)
-   
-   def initialize(text, options =  {})
-     #Get the button size
-     super 
-     @x = options[:x]
-     @y = options[:y]
-   end 
-   
-  def setup
-    #Set event methods to nill 
-    @on_click_method = @on_release_method  = @on_hold_method  = Proc.new {}
-    #The button starts unpressed
-    @clicked = false
-    #The button can be used/clicked
-    @active = true
-    self.methods
-   # @half_width = self.width / 2 
-  #  @half_height = self.height / 2 
-    #Total area of the button
-   # @button_range = {:x => ((self.x - @half_width)..(self.x + self.width - @half_width)),
-   #   :y => ((self.y - @half_height)..(self.y + self.height - @half_height))}
-  end   
-   
-  end  
-   
 end    
