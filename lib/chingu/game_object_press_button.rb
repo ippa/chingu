@@ -21,7 +21,7 @@ module Chingu
   #
   # PressButton provides a Qt like interface, a normal use would be
   #
-  # myButton = PressButton(:x => x, :y => y,:released_image => image when the button
+  # myButton = PressButton(:x => x, :y => y,:button_image => image when the button
   # is not clicked,:pressed_image => image when the button is clicked )
   #
   # myButton.on_click do
@@ -33,12 +33,11 @@ module Chingu
   class PressButton < Chingu::GameObject
   # alias  :oldx=  :x=
   # alias :old_y= :y= 
-  # old_x = self.instance_method(:x=)
+   old_x = self.instance_method(:x=)
    
    def initialize(options =  {})
      #Normaly a button has two images, pressed and released
-     @released_image = Image[options[:released_image]]
-     @pressed_image = Image[options[:pressed_image]]
+     @button_image = Image[options[:button_image]]
      @x = options[:x]
      @y = options[:y]
      super
@@ -49,7 +48,9 @@ module Chingu
       @on_click_method = @on_release_method  = @on_hold_method  = Proc.new {}
       #The button starts unpressed
       @clicked = false
-      @image = @released_image
+      #The button can be used/clicked
+      @active = true
+      @image = @button_image
       @half_width = self.width / 2 
       @half_height = self.height / 2 
       #Total area of the button
@@ -60,10 +61,23 @@ module Chingu
         :released_left_mouse_button => :check_release,
         :holding_left_mouse_button => :check_hold }
     end
+ 
+    def active= value
+      #If the button was pressed, it does not matter
+      #where the user has the mouse
+      @active = value
+    end 
+    
+   def active? value
+      #If the button was pressed, it does not matter
+      #where the user has the mouse
+      return @active
+    end
     
      def check_click
         #If mouse position is inside the range, then go to click
-        if @button_range[:x].include? $window.mouse_x and
+        if @active and  
+           @button_range[:x].include? $window.mouse_x and
            @button_range[:y].include? $window.mouse_y then
            #The user clicked on this button
            @clicked = true
@@ -72,7 +86,8 @@ module Chingu
      end 
      
     def check_hold
-      if @button_range[:x].include? $window.mouse_x and 
+      if @active and 
+        @button_range[:x].include? $window.mouse_x and 
         @button_range[:y].include? $window.mouse_y then
         self.on_hold
       end
@@ -81,7 +96,7 @@ module Chingu
     def check_release
       #If the button was pressed, it does not matter
       #where the user has the mouse
-      if @clicked then
+      if @active and @clicked then
         @clicked = false
         self.on_release
       end
@@ -95,7 +110,8 @@ module Chingu
         @on_click_method = block
       else
         #On a normal call, execute user's code
-          @image = @pressed_image
+          @factor_x -= 0.02
+          @factor_y -= 0.02
           @on_click_method.call
         end
       end 
@@ -105,7 +121,8 @@ module Chingu
         if block_given?
           @on_release_method = block
         else
-          @image = @released_image
+          @factor_x += 0.02
+          @factor_y += 0.02
           @on_release_method.call
         end
       end 
