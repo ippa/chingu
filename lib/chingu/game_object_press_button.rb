@@ -31,19 +31,21 @@ module Chingu
   #
   
   class PressButton < Chingu::GameObject
-  # alias  :oldx=  :x=
-  # alias :old_y= :y= 
-   old_x = self.instance_method(:x=)
+   alias :old_x=  :x=
+   alias :old_y= :y= 
    
    def initialize(options =  {})
+     super 
      #Get the button image
-     @button_image = Image[options[:button_image]]
+     if options[:button_image]
+      @button_image = Image[options[:button_image]]
+     else
+      @animation = Animation.new(:file => options[:button_animation], 
+      :size => options[:size]||[50,50], :delay => options[:delay]||100)
+      @button_image = @animation.first
+     end   
      @x = options[:x]
      @y = options[:y]
-     super
-   end 
-     
-    def setup
       #Set event methods to nill 
       @on_click_method = @on_release_method  = @on_hold_method  = Proc.new {}
       #The button starts unpressed
@@ -51,16 +53,17 @@ module Chingu
       #The button can be used/clicked
       @active = true
       @image = @button_image
-      @half_width = self.width / 2 
-      @half_height = self.height / 2 
+      @half_width = @button_image.width / 2 
+      @half_height = @button_image.height / 2 
       #Total area of the button
-      @button_range = {:x => ((self.x - @half_width)..(self.x + self.width - @half_width)),
-        :y => ((self.y - @half_height)..(self.y + self.height - @half_height))}
+      @button_range = {:x => ((self.x - @half_width)..(self.x + @button_image.width - @half_width)),
+      :y => ((self.y - @half_height)..(self.y + @button_image.height - @half_height))}
       #If the user clicks, we check if he clicked a button
       self.input = {:left_mouse_button => :check_click,
         :released_left_mouse_button => :check_release,
         :holding_left_mouse_button => :check_hold }
-    end
+      @initialized = true
+   end 
  
     def active= value
       #If the button was pressed, it does not matter
@@ -134,22 +137,25 @@ module Chingu
           @on_hold_method.call
         end
       end        
+    
+    def x= value
+      @x = value
+      old_x = value
+      if @initialized
+        @button_range[:x] = ((value - @half_width)..(value + @button_image.width - @half_width)) 
+      end       
     end
     
-    #TODO Overwritte x= method of module sprite
- #  define_method(:x=) do
- #         old_x.bind(self).call
- #         puts "lo pille \n"
- #         @button_range[:x] = ((self.x - @half_width)..(self.x + self.width - @half_width))
- #       end
-  
-    def set_x= value
-      @button_range[:x] = ((value - @half_width)..(value + self.width - @half_width))
-      self.x = value
-    end
+    def y= value
+      @y = value
+      old_y = value
+      if @initialized
+        @button_range[:y] = ((value - @half_height)..(value + @button_image.height - @half_height))
+      end       
+    end      
     
-    def set_y= value
-      @button_range[:y] = ((value - @half_height)..(value + self.height - @half_height))
-      self.y = value
-    end    
+    def update
+      @image = @animation.next if @animation  
+    end
+  end  
 end    
