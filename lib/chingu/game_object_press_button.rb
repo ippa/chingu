@@ -40,9 +40,14 @@ module Chingu
      if options[:button_image]
       @button_image = Image[options[:button_image]]
      else
-      @animation = Animation.new(:file => options[:button_animation], 
-      :size => options[:size]||[50,50], :delay => options[:delay]||100)
-      @button_image = @animation.first
+      #Get the button animation
+      if options[:button_animation]
+        @animation = Animation.new(:file => options[:button_animation], 
+        :size => options[:size]||[50,50], :delay => options[:delay]||100)
+        @button_image = @animation.first
+      else
+        raise "A button needs an image or an animation\n"
+      end    
      end   
      @x = options[:x]
      @y = options[:y]
@@ -66,14 +71,10 @@ module Chingu
    end 
  
     def active= value
-      #If the button was pressed, it does not matter
-      #where the user has the mouse
       @active = value
     end 
     
    def active? value
-      #If the button was pressed, it does not matter
-      #where the user has the mouse
       return @active
     end
     
@@ -107,7 +108,6 @@ module Chingu
      
     #Methods that allow QT like use. 
     def on_click(&block)
-      #Set pressed image
       if block_given?
         #If is first call, save the block that will be executed
         @on_click_method = block
