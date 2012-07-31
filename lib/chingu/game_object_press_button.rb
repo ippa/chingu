@@ -49,8 +49,6 @@ module Chingu
         raise "A button needs an image or an animation\n"
       end    
      end   
-     @x = options[:x]
-     @y = options[:y]
       #Set event methods to nill 
       @on_click_method = @on_release_method  = @on_hold_method  = Proc.new {}
       #The button starts unpressed
@@ -58,11 +56,11 @@ module Chingu
       #The button can be used/clicked
       @active = true
       @image = @button_image
-      @half_width = @button_image.width / 2 
-      @half_height = @button_image.height / 2 
+      @half_width = self.width / 2 
+      @half_height = self.height / 2 
       #Total area of the button
-      @button_range = {:x => ((self.x - @half_width)..(self.x + @button_image.width - @half_width)),
-      :y => ((self.y - @half_height)..(self.y + @button_image.height - @half_height))}
+      @button_range = {:x => ((self.x - @half_width)..(self.x + self.width - @half_width)),
+      :y => ((self.y - @half_height)..(self.y + self.height - @half_height))}
       #If the user clicks, we check if he clicked a button
       self.input = {:left_mouse_button => :check_click,
         :released_left_mouse_button => :check_release,
@@ -142,7 +140,7 @@ module Chingu
       @x = value
       old_x = value
       if @initialized
-        @button_range[:x] = ((value - @half_width)..(value + @button_image.width - @half_width)) 
+        @button_range[:x] = ((value - @half_width)..(value + self.width - @half_width)) 
       end       
     end
     
@@ -150,7 +148,7 @@ module Chingu
       @y = value
       old_y = value
       if @initialized
-        @button_range[:y] = ((value - @half_height)..(value + @button_image.height - @half_height))
+        @button_range[:y] = ((value - @half_height)..(value + self.height - @half_height))
       end       
     end      
     
