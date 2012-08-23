@@ -111,8 +111,9 @@ An "@image = @animation.next" in your Player#update is usually enough to get you
 
 === Chingu::Parallax
 A class for easy parallaxscrolling. Add layers with different damping, move the camera to generate a new snapshot. See example3.rb for more.
-NOTE: Doing Parallax.create when using a trait viewport will give bad results.
-If you need parallax together with viewport do Parallax.new and then manually doing parallax.update/draw.
+NOTE: -Doing Parallax.create when using a trait viewport will give bad results.-
+-If you need parallax together with viewport do Parallax.new and then manually doing parallax.update/draw.-
+Now the Parallax.create can be used with the trait viewport. Everytime the viewport boundaries change, the Paralax.camera_x/camera_y must be updated too.
 
 === Chingu::HighScoreList
 A class to keep track of high scores, limit the list, automatic sorting on score, save/load to disc. See example13.rb for more.
@@ -757,8 +758,9 @@ This is great for scrolling games. You also have:
   viewport.lag      = 0.95              # Set a lag-factor to use in combination with x_target / y_target
   viewport.x_target = 100               # This will move viewport towards X-coordinate 100, the speed is determined by the lag-parameter.
 
-NOTE: Doing Parallax.create when using a trait viewport will give bad results.
-If you need parallax together with viewport do Parallax.new and then manually doing parallax.update/draw.
+NOTE: -Doing Parallax.create when using a trait viewport will give bad results.-
+-If you need parallax together with viewport do Parallax.new and then manually doing parallax.update/draw.-
+Now you can use normally the Parallax with viewport.
 
 ==== Trait "collision_detection"
 Adds class and instance methods for basic collision detection.
