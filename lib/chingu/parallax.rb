@@ -80,28 +80,28 @@ module Chingu
     # Parallax#camera_x= works in inverse to Parallax#x (moving the "camera", not the image)
     #
     def camera_x=(x)
-      @cx = -x
+      @cx = x
     end
 
     #
     # Parallax#camera_y= works in inverse to Parallax#y (moving the "camera", not the image)
     #
     def camera_y=(y)
-      @cy = -y
+      @cy = y
     end
 
     #
     # Get the x-coordinate for the camera (inverse to x)
     #
     def camera_x
-      -@cx
+      @cx
     end
 
     #
     # Get the y-coordinate for the camera (inverse to y)
     #
     def camera_y
-      -@cy
+      @cy
     end
     
     #
@@ -110,15 +110,15 @@ module Chingu
     def update
       # Viewport data, from GameState parent
       if self.parent.respond_to? :viewport
-	      vpX, vpY = self.camera_x, self.camera_y
+	      vpX, vpY = @cx, @cy
       else
 	      vpX, vpY = 0, 0
       end
   
       @layers.each do |layer|
       	# Get the points which need start to draw
-        layer.x = self.x + (vpX - self.camera_x/layer.damping.to_f).round
-        layer.y = self.y + (vpY - self.camera_y/layer.damping.to_f).round
+        layer.x = self.x + (vpX - @cx/layer.damping.to_f).round
+        layer.y = self.y + (vpY - @cy/layer.damping.to_f).round
 
         # This is the magic that repeats the layer to the left and right
         layer.x -= layer.image.width  while (layer.repeat_x && layer.x > 0)
@@ -132,14 +132,7 @@ module Chingu
     # Draw 
     #
     def draw
-#      # Viewport data, from GameState parent
-#      if  self.parent.respond_to? :viewport
-#      	gaX, gaY, vpW, vpH = self.parent.viewport.game_area
-#      else
-#      	gaX, gaY, vpW, vpH = 0, 0, $window.width, $window.height
-#      end
-#      vpX, vpY = @x, @y
-
+      # Viewport data, from GameState parent
       if  self.parent.respond_to? :viewport
         gaX, gaY, vpW, vpH = self.parent.viewport.game_area
       else
@@ -147,15 +140,16 @@ module Chingu
       end
 
       @layers.each do |layer|
-      	saveX, saveY = layer.x, layer.y
+        save_x, save_y = layer.x, layer.y
+        
         # If layer lands inside our window and repeat_x is true (defaults to true), draw it until window ends
         while layer.repeat_x && layer.x < vpW
           while layer.repeat_y && layer.y < vpH
             layer.draw
             layer.y += layer.image.height
           end
-          layer.y = saveY
-
+          layer.y = save_y
+          
           layer.draw
           layer.x += layer.image.width
         end
@@ -167,7 +161,8 @@ module Chingu
             layer.y += layer.image.height
           end
         end
-        layer.x = saveX
+
+        layer.x = save_x
       end
       self
     end
