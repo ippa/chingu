@@ -1,4 +1,4 @@
 module Chingu
-  VERSION = "0.9rc8"
+  VERSION = "0.9rc9"
 end
 
