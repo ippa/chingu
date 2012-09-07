@@ -223,7 +223,10 @@ module Chingu
     # If the object isn't being managed by Chingu (ie. you're doing manual update/draw calls) the object is only frozen, not removed from any updae cycle (because you are controlling that).
     #
     def destroy
-      @parent.remove_game_object(self)  if @parent
+      if @parent
+        @parent.remove_game_object(self)
+        @parent.remove_input_client(self)
+      end
       self.class.instances.delete(self)
     end
     alias :destroy! :destroy
