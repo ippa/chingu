@@ -59,8 +59,8 @@ module Chingu
     # TODO: Add support for x,y here!
     #
     def center_around(object)
-      self.x = object.x * @factor_x - $window.width / 2
-      self.y = object.y * @factor_y - $window.height / 2
+      self.x = object.x * @factor_x - (@width || $window.width) / 2
+      self.y = object.y * @factor_y - (@height || $window.height) / 2
     end
     
     #
@@ -88,8 +88,8 @@ module Chingu
     #
     def inside?(object, y = nil)
       x, y = y ? [object,y] : [object.x, object.y]      
-      x >= @x && x <= (@x + $window.width) &&
-      y >= @y && y <= (@y + $window.height)
+      x >= @x && x <= (@x + (@width || $window.width)) &&
+      y >= @y && y <= (@y + (@height || $window.height))
     end
 
     # Returns true object is outside the view port
@@ -135,7 +135,7 @@ module Chingu
       @x = x
       if @game_area
         @x = @game_area.x * @factor_x         if @x < @game_area.x * @factor_x
-        @x = @game_area.width * @factor_x - $window.width   if @x > @game_area.width * @factor_x - $window.width
+        @x = @game_area.width * @factor_x - (@width || $window.width)   if @x > @game_area.width * @factor_x - (@width || $window.width)
       end
     end
 
@@ -146,8 +146,16 @@ module Chingu
       @y = y
       if @game_area
         @y = @game_area.y * @factor_y           if @y < @game_area.y * @factor_y
-        @y = @game_area.height * @factor_y - $window.height   if @y > @game_area.height * @factor_y - $window.height
+        @y = @game_area.height * @factor_y - (@height || $window.height)   if @y > @game_area.height * @factor_y - (@height || $window.height)
       end
+    end
+
+    def width=(width)
+    	@width = width
+    end
+
+    def height=(width)
+    	@height = height
     end
     
     #
