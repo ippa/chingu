@@ -73,8 +73,9 @@ module Chingu
                 object = klass.create(attributes)
                 object.options[:created_with_editor] = true if object.options
               end
-            rescue
-              puts "Couldn't create class '#{klassname}'"
+            rescue => e
+              puts "Couldn't create class '#{klassname}' because: #{e}"
+              raise
             end
           end
         end
