@@ -164,6 +164,27 @@ module Chingu
         end
       end
     end
+
+    #
+    # Returns an array of GameObjects in this grid map that collide with the given
+    # GameObject (which is not on the grid). 
+    #
+    def collisions_with(game_object)
+      start_x = (game_object.bb.left / @grid[0]).to_i
+      stop_x =  (game_object.bb.right / @grid[0]).to_i
+
+      objects = []
+      (start_x ... stop_x).each do |x|
+        start_y = (game_object.bb.top / @grid[1]).to_i
+        stop_y =  (game_object.bb.bottom / @grid[1]).to_i
+
+        (start_y ... stop_y).each do |y|
+          objects << @map[x][y] if @map[x] && @map[x][y] && @map[x][y] != game_object  # Don't yield collisions with itself
+        end
+      end
+      objects
+    end
+
     
   end
 end
