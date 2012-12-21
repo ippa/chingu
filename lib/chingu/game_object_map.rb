@@ -207,6 +207,10 @@ module Chingu
     # If options[:only] is set, return true only if the matched object is_a?
     # options[:only].
     #
+    # This can be used to find line-of-sight between two objects, for example:
+    #
+    #   player.sees_enemy if game_object_map.object_between?(player, enemy, :only => Wall) # Walls block vision
+    #
     def object_between?(origin, dest, options={})
       grid_spaces_between(origin, dest) do |x, y|
         if options[:target]
