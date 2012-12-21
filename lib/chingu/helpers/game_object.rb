@@ -75,7 +75,7 @@ module Chingu
               end
             rescue => e
               puts "Couldn't create class '#{klassname}' because: #{e}"
-              raise
+              #raise # I suggest this re-raise the error.
             end
           end
         end
