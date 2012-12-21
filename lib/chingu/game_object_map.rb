@@ -179,7 +179,8 @@ module Chingu
         stop_y =  (game_object.bb.bottom / @grid[1]).to_i
 
         (start_y ... stop_y).each do |y|
-          objects << @map[x][y] if @map[x] && @map[x][y] && @map[x][y] != game_object  # Don't yield collisions with itself
+          obj = game_object_at(x, y)
+          objects << @map[x][y] if obj and obj != game_object  # Don't yield collisions with itself
         end
       end
       objects
