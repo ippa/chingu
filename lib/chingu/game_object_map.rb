@@ -190,7 +190,7 @@ module Chingu
     # Yields to the block each GameObject in this map's grid which lies between
     # two GameObjects: origin and dest. 
     #
-    def each_object_between(origin, dest)
+    def each_game_object_between(origin, dest)
       grid_spaces_between(origin, dest) do |x, y|
         obj = game_object_at(x, y)
         yield if obj and obj != origin and obj != dest
@@ -210,9 +210,9 @@ module Chingu
     #
     # This can be used to find line-of-sight between two objects, for example:
     #
-    #   player.sees_enemy if game_object_map.object_between?(player, enemy, :only => Wall) # Walls block vision
+    #   player.sees_enemy if game_object_map.game_object_between?(player, enemy, :only => Wall) # Walls block vision
     #
-    def object_between?(origin, dest, options={})
+    def game_object_between?(origin, dest, options={})
       grid_spaces_between(origin, dest) do |x, y|
         if options[:target]
           x_pixels = x * @grid[0]
