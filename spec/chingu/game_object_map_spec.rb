@@ -34,6 +34,8 @@ module Chingu
       MyBigGameObject.destroy_all
       @game_object = MyGameObject.create
       @big_game_object = MyBigGameObject.create
+
+      @grid_size = [20,20]
     end
 
     after :each do
@@ -52,7 +54,7 @@ module Chingu
 
     context "containing a game object size 20x20 postion 0,0" do
       before :each do
-        @game_object_map = GameObjectMap.new(:game_objects => MyGameObject.all, :grid => [20,20])
+        @game_object_map = GameObjectMap.new(:game_objects => MyGameObject.all, :grid => @grid_size)
       end
       
       it "should be found at 0,0" do
@@ -74,7 +76,7 @@ module Chingu
 
     context "containing a game object size 40x40 postion 0,0" do
       before :each do
-        @game_object_map = GameObjectMap.new(:game_objects => MyBigGameObject.all, :grid => [20,20])
+        @game_object_map = GameObjectMap.new(:game_objects => MyBigGameObject.all, :grid => @grid_size)
       end
       
       it "should be found at 0,0" do
@@ -91,6 +93,60 @@ module Chingu
         @game_object_map.at(40,40).should == nil
       end
 
+    end
+
+    context "containing game objects size 20x20 at position 100,100 and 1,1" do
+      before :each do
+        @other_game_object = MyGameObject.create
+        @other_game_object.x = @other_game_object.y = 1
+        @game_object.x = @game_object.y = 100
+        @game_object_map = GameObjectMap.new(:game_objects => MyGameObject.all, :grid => @grid_size)
+      end
+
+      context "when a player game object is at 50,100" do
+        before :each do
+          @player = MyGameObject.create
+          @player.x, @player.y = 50, 100
+        end
+
+        context "and a dest game object is at 80, 100" do
+          before :each do
+            @dest = MyGameObject.create
+            @dest.x, @dest.y = 80, 100
+          end
+
+          it "game_object_between? returns false" do
+            @game_object_map.game_object_between?(@player, @dest).should_not be true
+          end
+        end
+
+        context "and a dest game object is at 150, 100" do
+          before :each do
+            @dest = MyGameObject.create
+            @dest.x, @dest.y = 150, 100
+          end
+
+          it "game_object_between? returns true" do
+            @game_object_map.game_object_between?(@player, @dest).should be true
+          end
+
+          it "game_object_between? with target: the grid object between player and dest returns true" do
+            @game_object_map.game_object_between?(@player, @dest, target: @game_object).should be true
+          end
+
+          it "game_object_between? with target: the grid object at 1,1 returns false" do
+            @game_object_map.game_object_between?(@player, @dest, target: @other_game_object).should_not be true
+          end
+
+          it "game_object_between? with only: the game object class of the grid object returns false" do
+            @game_object_map.game_object_between?(@player, @dest, only: @game_object.class).should be true
+          end
+
+          it "game_object_between? with only: a different game object returns false" do
+            @game_object_map.game_object_between?(@player, @dest, only: @big_game_object.class).should_not be true
+          end
+        end
+      end
     end
   end
 end
