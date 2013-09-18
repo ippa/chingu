@@ -174,7 +174,7 @@ module Chingu
     #
     def [](index)
       return @frames[index]               if  index.is_a?(Fixnum)
-      return self.new_from_frames(index)  if  index.is_a?(Range)
+      return self.new_from_frames(index)  if  index.respond_to?(:each)
       return @sub_animations[index]       if  index.is_a?(Symbol)
     end
 
