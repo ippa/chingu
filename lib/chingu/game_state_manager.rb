@@ -131,6 +131,7 @@ module Chingu
                 
         # Give the soon-to-be-disabled state a chance to clean up by calling finalize() on it.
         current_game_state.finalize   if current_game_state.respond_to?(:finalize) && options[:finalize]
+        new_state.previous_game_state = current_game_state
         
         if @transitional_game_state && options[:transitional]
           # If we have a transitional, push that instead, with new_state as first argument
