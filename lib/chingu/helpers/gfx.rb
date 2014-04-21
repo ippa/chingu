@@ -185,7 +185,7 @@ module Chingu
       $window.draw_line(left,  top,    color_a, left,  bottom, color_b, zorder, mode)
       $window.draw_line(left,  bottom, color_b, right, bottom, color_c, zorder, mode)
       $window.draw_line(right, bottom, color_c, right, top,    color_d, zorder, mode)
-      $window.draw_line(right, top,    color_d, left,  top,    color_a, zorder, mode)
+      $window.draw_line(right + 1, top,    color_d, left,  top,    color_a, zorder, mode) # make a COMPLETE rectangle
     end
     
     #
