@@ -43,6 +43,8 @@ module Chingu
       super(options)
       @repeat_x = options[:repeat_x] || true
       @repeat_y = options[:repeat_y] || false
+      @cx = 0
+      @cy = 0
       
       @layers = Array.new
     end
@@ -78,38 +80,46 @@ module Chingu
     # Parallax#camera_x= works in inverse to Parallax#x (moving the "camera", not the image)
     #
     def camera_x=(x)
-      @x = -x
+      @cx = x
     end
 
     #
     # Parallax#camera_y= works in inverse to Parallax#y (moving the "camera", not the image)
     #
     def camera_y=(y)
-      @y = -y
+      @cy = y
     end
 
     #
     # Get the x-coordinate for the camera (inverse to x)
     #
     def camera_x
-      -@x
+      @cx
     end
 
     #
     # Get the y-coordinate for the camera (inverse to y)
     #
     def camera_y
-      -@y
+      @cy
     end
     
     #
     # TODO: make use of $window.milliseconds_since_last_update here!
     #
     def update
+      # Viewport data, from GameState parent
+      if self.parent.respond_to? :viewport
+	      vpX, vpY = @cx, @cy
+      else
+	      vpX, vpY = 0, 0
+      end
+  
       @layers.each do |layer|
-        layer.x = @x / layer.damping
-        layer.y = @y / layer.damping
-        
+      	# Get the points which need start to draw
+        layer.x = self.x + (vpX - @cx/layer.damping.to_f).round
+        layer.y = self.y + (vpY - @cy/layer.damping.to_f).round
+
         # This is the magic that repeats the layer to the left and right
         layer.x -= layer.image.width  while (layer.repeat_x && layer.x > 0)
        
@@ -122,12 +132,19 @@ module Chingu
     # Draw 
     #
     def draw
+      # Viewport data, from GameState parent
+      if  self.parent.respond_to? :viewport
+        gaX, gaY, vpW, vpH = self.parent.viewport.game_area
+      else
+        gaX, gaY, vpW, vpH = 0, 0, $window.width, $window.height
+      end
+
       @layers.each do |layer|
         save_x, save_y = layer.x, layer.y
         
         # If layer lands inside our window and repeat_x is true (defaults to true), draw it until window ends
-        while layer.repeat_x && layer.x < $window.width
-          while layer.repeat_y && layer.y < $window.height
+        while layer.repeat_x && layer.x < vpW
+          while layer.repeat_y && layer.y < vpH
             layer.draw
             layer.y += layer.image.height
           end
@@ -139,7 +156,7 @@ module Chingu
         
         # Special loop for when repeat_y is true but not repeat_x
         if layer.repeat_y && !layer.repeat_x
-          while layer.repeat_y && layer.y < $window.height
+          while layer.repeat_y && layer.y < vpH
             layer.draw
             layer.y += layer.image.height
           end
