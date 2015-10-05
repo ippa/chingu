@@ -585,7 +585,7 @@ Chingus trait-implementation is just ordinary ruby modules with 3 special method
  - draw_trait
 Each of those 3 methods must call "super" to continue the trait-chain.
 
-Inside a certian trait-module you can also have a module called ClassMethods, methods inside that module will be added,
+Inside a certain trait-module you can also have a module called ClassMethods, methods inside that module will be added,
 yes you guessed it, as class methods. If initialize_trait is defined inside ClassMethods it will be called class-evaluation time
 (basicly on the trait :some_trait line).
 
