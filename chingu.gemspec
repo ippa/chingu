@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]  
   s.rubyforge_project = "chingu"
 
-  s.add_runtime_dependency("gosu", [">= 0.7.45"])
+  s.add_runtime_dependency("gosu", [">= 0.10.7"])
   s.add_development_dependency("rspec", [">= 2.1.0"])
   s.add_development_dependency("watchr", [">= 0"])
   s.add_development_dependency("rcov", [">= 0"])
