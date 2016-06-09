@@ -338,8 +338,16 @@ END_OF_STRING
           @left_mouse_click_at = [$window.mouse_x, $window.mouse_y]
         end
         
-        # Put out a new game object in the editor window and select it right away
-        @selected_game_object = copy_game_object(@cursor_game_object)  if @cursor_game_object
+        # Put out a new game objects in the editor window and select it right away
+        if @cursor_game_object
+          selected_game_objects.each do |object|
+            copy_object = copy_game_object(object)
+            copy_object.options[:selected] = true
+            object.options[:selected] = nil
+          end
+          @selected_game_object = selected_game_objects.first
+        end
+
         
         # Check if user clicked on anything in the icon-toolbar of available game objects
         @cursor_game_object = game_object_icon_at($window.mouse_x, $window.mouse_y)
@@ -641,8 +649,8 @@ END_OF_STRING
         # If we don't create it from the toolbar, we're cloning another object
         # When cloning we wan't the cloned objects attributes
         game_object.attributes = template.attributes  unless template.options[:toolbar]       
-        game_object.x = self.mouse_x
-        game_object.y = self.mouse_y
+        game_object.x = template.x || self.mouse_x
+        game_object.y = template.y || self.mouse_y
         game_object.options[:created_with_editor] = true
                 
         game_object.options[:mouse_x_offset] = (game_object.x - self.mouse_x) rescue 0
