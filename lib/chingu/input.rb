@@ -52,12 +52,23 @@ module Chingu
       KbLeftControl => [:left_control, :left_ctrl, :lctrl],
       KbLeftShift   => [:left_shift, :lshift],
       KbLeftMeta    => [:left_meta, :lmeta],
-      
-      
+
+      KbComma           => [:",", :comma],
+      KbApostrophe      => [:"'", :apostrophe],
+      KbBacktick        => [:"~", :backtick],
+      KbMinus           => [:minus],
+      KbEqual           => [:"=", :equal],
+      KbBracketLeft     => [:"}", :bracket_left],
+      KbBracketRight    => [:"{", :bracket_right],
+      KbBackslash       => [:backslash],
+      KbSemicolon       => [:";", :semicolon],
+      KbPeriod          => [:period],
+      KbISO             => [:ISO],
+
       KbNumpadAdd       => [:"+", :add, :plus],
       KbNumpadDivide    => [:"/", :divide],
       KbNumpadMultiply  => [:"*", :multiply],
-      KbNumpadSubtract  => [:"-", :subtract, :minus],
+      KbNumpadSubtract  => [:"-", :subtract, :numpad_minus, :nm_minus],
       KbPageDown        => [:page_down],
       KbPageUp          => [:page_up],
       # KbPause           => [:pause],
@@ -76,12 +87,12 @@ module Chingu
       MsRight           => [:right_mouse_button, :mouse_right],
       MsWheelDown       => [:mouse_wheel_down, :wheel_down],
       MsWheelUp         => [:mouse_wheel_up, :wheel_up],
-      
-      GpDown            => [:gamepad_down, :gp_down, :pad_down],
-      GpLeft            => [:gamepad_left, :gp_left, :pad_left],
-      GpRight           => [:gamepad_right, :gp_right, :pad_right],
-      GpUp              => [:gamepad_up, :gp_up, :pad_up]
     }
+
+    # MsOther, 0-7
+    (0..7).each do |number|
+      CONSTANT_TO_SYMBOL[eval("MsOther#{number}")] = ["ms_other_#{number.to_s}".to_sym]
+    end
     
     # Letters, A-Z
     ("A".."Z").each do |letter|
@@ -103,15 +114,33 @@ module Chingu
       CONSTANT_TO_SYMBOL[eval("KbF#{number.to_s}")] = ["f#{number.to_s}".to_sym, "F#{number.to_s}".to_sym]
     end
 
-    # Gamepad-buttons 0-15
-    (0..15).each do |number|
-      CONSTANT_TO_SYMBOL[eval("GpButton#{number.to_s}")] = [
-        "gamepad_button_#{number.to_s}".to_sym,
-        "gamepad_#{number.to_s}".to_sym,
-        "pad_button_#{number.to_s}".to_sym,
-        "pad_#{number.to_s}".to_sym,
-        "gp_#{number.to_s}".to_sym
+    def gamepad_key(number, key, args = {})
+      number = number.zero? ? '' : number - 1
+
+      constant_name = "Gp#{number}"
+      constant_name += args[:prefix].to_s.capitalize
+      constant_name += key.to_s.to_s.capitalize
+
+      CONSTANT_TO_SYMBOL[eval(constant_name)] = [
+          "gamepad_button#{number}_#{key}".to_sym,
+          "gamepad#{number}_#{key}".to_sym,
+          "pad_button#{number}_#{key}".to_sym,
+          "pad#{number}_#{key}".to_sym,
+          "gp#{number}_#{key}".to_sym
       ]
+    end
+
+    module_function :gamepad_key
+
+    # Gamepads
+    (0..4).each do |gp_number|
+      gamepad_key(gp_number, :down)
+      gamepad_key(gp_number, :left)
+      gamepad_key(gp_number, :right)
+      gamepad_key(gp_number, :up)
+
+      # Gamepad-buttons 0-15
+      (0..15).each { |n| gamepad_key(gp_number, n, prefix: 'button') }
     end
 
     #
