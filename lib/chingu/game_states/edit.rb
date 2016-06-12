@@ -50,7 +50,7 @@ module Chingu
       def initialize(options = {})
         super
                 
-        options = {:draw_grid => true, :snap_to_grid => true, :resize_to_grid => true}.merge(options)
+        options = {draw_grid: true, snap_to_grid: true, resize_to_grid: true}.merge(options)
         
         @grid = options[:grid] || [8,8]
         @grid_color = options[:grid_color] || Gosu::Color.new(0xaa222222)
@@ -148,7 +148,7 @@ module Chingu
           # We initialize x,y,zorder,rotation_center after creation
           # so they're not overwritten by the class initialize/setup or simular
           begin
-            game_object = klass.create(:paused => true)
+            game_object = klass.create(paused: true)
             game_object.x = x + 10
             game_object.y = y
             game_object.options[:toolbar] = true
@@ -156,7 +156,7 @@ module Chingu
 
             # Scale down object to fit our toolbar
             if game_object.image
-              Text.create("#{klass.to_s[0..9]}\n#{game_object.width.to_i}x#{game_object.height.to_i}", :size => 12, :x=>x-16, :y=>y+18, :max_width => 55, :rotation_center => :top_left, :align => :center, :factor => 1)
+              Text.create("#{klass.to_s[0..9]}\n#{game_object.width.to_i}x#{game_object.height.to_i}", size: 12, x: x-16, y: y+18, max_width: 55, rotation_center: :top_left, align: :center, factor: 1)
               game_object.size = @toolbar_icon_size
               x += 50
             else
@@ -207,7 +207,7 @@ text = <<END_OF_STRING
   ALT + Mouse Wheel: Transparency less/more
 END_OF_STRING
         
-        push_game_state( GameStates::Popup.new(:text => text) )
+        push_game_state( GameStates::Popup.new(text: text) )
       end
       
       def draw_grid
@@ -231,12 +231,13 @@ END_OF_STRING
       # SETUP
       #
       def setup
+        @cursor_game_objects = []
         @scroll_border_thickness = 30
         @file = options[:file] || previous_game_state.filename + ".yml"
-        @title = Text.create("File: #{@file}", :x => 5, :y => 2, :factor => 1, :size => 16)
+        @title = Text.create("File: #{@file}", x: 5, y: 2, factor: 1, size: 16)
         @title.text += " - Grid: #{@grid}" if @grid
-        @text = Text.create("", :x => 300, :y => 20, :factor => 1, :size => 16)
-        @status_text = Text.create("-", :x => 5, :y => 20, :factor => 1, :size => 16)
+        @text = Text.create("", x: 300, y: 20, factor: 1, size: 16)
+        @status_text = Text.create("-", x: 5, y: 20, factor: 1, size: 16)
         
         if defined?(previous_game_state.viewport)
           @game_area_backup = previous_game_state.viewport.game_area.dup
@@ -314,8 +315,8 @@ END_OF_STRING
         else
           draw_selections
         end
-        
-        @cursor_game_object.draw_at($window.mouse_x, $window.mouse_y)   if @cursor_game_object
+
+        @cursor_game_objects.compact.each { |object| object.draw_at($window.mouse_x, $window.mouse_y) }
       end
       
       #
@@ -339,8 +340,8 @@ END_OF_STRING
         end
         
         # Put out a new game objects in the editor window and select it right away
-        if @cursor_game_object
-          selected_game_objects.each do |object|
+        if @cursor_game_objects.any?
+          @cursor_game_objects.each do |object|
             copy_object = copy_game_object(object)
             copy_object.options[:selected] = true
             object.options[:selected] = nil
@@ -350,7 +351,8 @@ END_OF_STRING
 
         
         # Check if user clicked on anything in the icon-toolbar of available game objects
-        @cursor_game_object = game_object_icon_at($window.mouse_x, $window.mouse_y)
+        @cursor_game_objects = [game_object_icon_at($window.mouse_x, $window.mouse_y)]
+        @cursor_game_objects.compact!
 
         # Get editable game object that was clicked at (if any)
         @selected_game_object ||= game_object_at(self.mouse_x, self.mouse_y)
@@ -393,7 +395,7 @@ END_OF_STRING
       end
       
       def right_mouse_button
-        @cursor_game_object = @cursor_game_object ?  nil : game_object_at(mouse_x, mouse_y)
+        @cursor_game_objects = [game_object_at(mouse_x, mouse_y)] | selected_game_objects
       end
       def released_right_mouse_button
       end
@@ -450,7 +452,7 @@ END_OF_STRING
       end      
       
       def create_object_nr(number)
-        c = @classes[number].create(:x => self.mouse_x, :y => self.mouse_y, :parent => previous_game_state)  if @classes[number]
+        c = @classes[number].create(x: self.mouse_x, y: self.mouse_y, parent: previous_game_state)  if @classes[number]
         c.options[:created_with_editor] = true
         c.update
         #@text.text = "Created a #{c.class} @ #{c.x} / #{c.y}"
@@ -501,7 +503,7 @@ END_OF_STRING
         pop_game_state
       end
       def save 
-        save_game_objects(:game_objects => editable_game_objects, :file => @file, :classes => @classes, :attributes => @attributes)
+        save_game_objects(game_objects: editable_game_objects, file: @file, classes: @classes, attributes: @attributes)
       end
       def save_and_quit
         save unless holding?(:left_ctrl)
@@ -607,7 +609,7 @@ END_OF_STRING
             
       def esc
         deselect_selected_game_objects
-        @cursor_game_object = nil
+        @cursor_game_objects = []
       end
       def page_up
         self.previous_game_state.viewport.y -= $window.height if defined?(self.previous_game_state.viewport)
@@ -645,12 +647,12 @@ END_OF_STRING
       end
 
       def copy_game_object(template)
-        game_object = template.class.create(:parent => previous_game_state)
+        game_object = template.class.create(parent: previous_game_state)
         # If we don't create it from the toolbar, we're cloning another object
         # When cloning we wan't the cloned objects attributes
-        game_object.attributes = template.attributes  unless template.options[:toolbar]       
-        game_object.x = template.x || self.mouse_x
-        game_object.y = template.y || self.mouse_y
+        game_object.attributes = template.attributes  unless template.options[:toolbar]
+        game_object.x = template.options[:created_with_editor] ? template.x : self.mouse_x
+        game_object.y = template.options[:created_with_editor] ? template.y : self.mouse_y
         game_object.options[:created_with_editor] = true
                 
         game_object.options[:mouse_x_offset] = (game_object.x - self.mouse_x) rescue 0
