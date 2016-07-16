@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
 require 'rubygems'
 require 'rspec'
-require 'chingu/require_all'
+require 'require_all'
 
 require 'chingu'
 
