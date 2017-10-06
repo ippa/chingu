@@ -42,8 +42,8 @@ module Chingu
         subject.center_x.should == 0.5
         subject.center_y.should == 0.5
         subject.mode.should == :default
-        subject.image.should == nil        
-        subject.color.to_s.should == Gosu::Color::WHITE.to_s
+        subject.image.should == nil
+        expect(subject.color).to eq Gosu::Color::WHITE
         subject.alpha.should == 255
       end
       
