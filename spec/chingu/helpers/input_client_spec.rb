@@ -1,31 +1,41 @@
 require "spec_helper"
 
 module Chingu
+
   describe Helpers::InputClient do
+
     before :each do
-      $window = mock Gosu::Window
-      $window.stub!(:button_down?).and_return(false)
+
+      $window = double(Gosu::Window)
+      $window.stub(:button_down?).and_return(false)
 
       @subject = Object.new.extend described_class
-      @subject.stub!(:handler1).and_return(nil)
+      @subject.stub(:handler1).and_return(nil)
+
       @handler1 = @subject.method :handler1
-      @subject.stub!(:handler2).and_return(nil)
+
+      @subject.stub(:handler2).and_return(nil)
+
       @handler2 = @subject.method :handler2
+
+
     end
 
     after :each do
       $window = nil
     end
 
+
     describe "#holding?" do
+
       it "should be true if that key is being held down" do
-        $window.should_receive(:button_down?).with(Gosu::KbSpace).and_return(true)
-        @subject.holding?(:space).should be_true
+       $window.should_receive(:button_down?).with(Gosu::KbSpace).and_return(true)
+        @subject.holding?(:space).should be_truthy
       end
 
       it "should be false if that key is being held down" do
         $window.should_receive(:button_down?).with(Gosu::KbSpace).and_return(false)
-        @subject.holding?(:space).should be_false
+        @subject.holding?(:space).should be_falsey
       end
     end
 
@@ -33,28 +43,28 @@ module Chingu
       it "should be true if all of those keys are being held down" do
         $window.should_receive(:button_down?).with(Gosu::KbSpace).and_return(true)
         $window.should_receive(:button_down?).with(Gosu::KbA).and_return(true)
-        @subject.holding_all?(:space, :a).should be_true
+        @subject.holding_all?(:space, :a).should be_truthy
       end
 
       it "should be false if all of those keys are not being held down" do
-        @subject.holding_all?(:space, :a).should be_false
+        @subject.holding_all?(:space, :a).should be_falsey
       end
 
       it "should be false if some of those keys are not being held down" do
-        $window.stub!(:button_down?).with(Gosu::KbSpace).and_return(true)
-        @subject.holding_all?(:space, :a).should be_false
+        $window.stub(:button_down?).with(Gosu::KbSpace).and_return(true)
+        @subject.holding_all?(:space, :a).should be_falsey
       end
     end
 
     describe "#holding_any?" do
       it "should be true if any of those keys are being held down" do
-        $window.stub!(:button_down?).with(Gosu::KbA).and_return(true)
-        $window.stub!(:button_down?).with(Gosu::KbSpace).and_return(true)
-        @subject.holding_any?(:space, :a).should be_true
+        $window.stub(:button_down?).with(Gosu::KbA).and_return(true)
+        $window.stub(:button_down?).with(Gosu::KbSpace).and_return(true)
+        @subject.holding_any?(:space, :a).should be_truthy
       end
 
       it "should be false if none of those keys are being held down" do
-        @subject.holding_any?(:space, :a).should be_false
+        @subject.holding_any?(:space, :a).should be_falsey
       end
     end
 
@@ -71,8 +81,8 @@ module Chingu
       end
 
       it "should set the input array" do
-        @subject.stub!(:a)
-        @subject.stub!(:b)
+        @subject.stub(:a)
+        @subject.stub(:b)
         @subject.input = [:a, :b]
         @subject.input.should == { :a => [@subject.method(:a)], :b => [@subject.method(:b)] }
       end
@@ -85,8 +95,8 @@ module Chingu
       end
 
       it "should set the input array" do
-        @subject.stub!(:a)
-        @subject.stub!(:b)
+        @subject.stub(:a)
+        @subject.stub(:b)
         @subject.add_inputs :a, :b
         @subject.input.should == { :a => [@subject.method(:a)], :b => [@subject.method(:b)] }
       end
@@ -98,7 +108,7 @@ module Chingu
 
     describe "#on_input" do
       it "should add a handler that is given as a block" do
-        block = lambda { }
+        block = lambda {}
         @subject.on_input :a, &block
         @subject.input.should == { :a => [block] }
       end
@@ -128,9 +138,9 @@ module Chingu
       end
 
       it "should automatically handle to a method if only the input is given" do
-        @subject.stub!(:a)
+        @subject.stub(:a)
         @subject.on_input :a
-        @subject.input.should == { :a => [ @subject.method(:a) ] }
+        @subject.input.should == { :a => [@subject.method(:a)] }
       end
 
       it "should add multiple handlers for the same event, even if given different key names" do
