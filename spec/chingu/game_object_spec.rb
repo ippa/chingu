@@ -3,6 +3,7 @@ require 'spec_helper'
 module Chingu
 
   describe GameObject do
+
     before :each do
       @game = Chingu::Window.new
       
@@ -30,6 +31,7 @@ module Chingu
     it { should respond_to(:draw_relative) }
 
     context "when created with defaults" do
+
       it "should have default values" do
         subject.angle.should == 0
         subject.x.should == 0
