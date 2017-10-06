@@ -8,6 +8,12 @@ require 'chingu/require_all'
 
 require 'chingu'
 
+RSpec.configure  do | config |
+
+  config.expect_with(:rspec) { |c| c.syntax = :should }
+
+end
+
 def media_path(file)
   File.join($window.root, "..", "..", "examples", "media", file)
 end
