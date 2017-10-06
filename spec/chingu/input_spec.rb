@@ -17,7 +17,7 @@ describe Chingu::Input do
 
   it "should map all Chingu symbols to Gosu input codes" do
     described_class::CONSTANT_TO_SYMBOL.values.flatten.uniq.each do |symbol|
-      described_class::SYMBOL_TO_CONSTANT[symbol].should be_kind_of Fixnum
+      described_class::SYMBOL_TO_CONSTANT[symbol].should be_kind_of Integer
     end
   end
 end
