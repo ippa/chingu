@@ -99,7 +99,7 @@ module Chingu
         @image = if String === image
                    # 1) Try looking up the picture using Chingus Image-cache
                    # 2) Try loading the image the normal way
-                   Gosu::Image[image] rescue Gosu::Image.new($window, image,false) 
+                   Gosu::Image[image] rescue Gosu::Image.new(image, {tileable: false})
                  elsif image.respond_to? :call
                    image.call
                  else
