@@ -6,7 +6,12 @@
 #
 #++
 
+require 'gosu'
+
+require_rel File.join('..', 'helpers', 'rotation_center' )
+
 module Chingu
+
   module Traits
 
     #
@@ -28,12 +33,15 @@ module Chingu
     #  :x, :y, :angle, :factor_x, :factor_y, :center_x, :center_y, :zorder, :mode, :visible
     #
     module Sprite
+
       include Chingu::Helpers::RotationCenter    # Adds easy and verbose modification of @center_x and @center_y
       
       module ClassMethods
+
         def initialize_trait(options = {})
           trait_options[:sprite] = options
         end
+
       end
       
       attr_accessor :x, :y, :angle, :factor_x, :factor_y, :center_x, :center_y, :zorder, :mode, :color

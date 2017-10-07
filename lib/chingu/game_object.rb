@@ -19,7 +19,13 @@
 #
 #++
 
+require_rel 'basic_game_object'
+
 require_rel 'helpers'
+
+require_rel 'traits'
+
+
 module Chingu
   #
   # GameObject inherits from BasicGameObject to get traits and some class-methods like .all and .destroy
@@ -28,7 +34,11 @@ module Chingu
   # If you wan't a invisible object but with traits, use BasicGameObject.
   #
   class GameObject < Chingu::BasicGameObject
-    trait :sprite
+
+    trait :sprite  # size, location, etc.
+
     include Chingu::Helpers::InputClient        # Adds input and input=
+
   end
+
 end

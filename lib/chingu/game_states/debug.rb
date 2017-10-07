@@ -19,6 +19,9 @@
 #
 #++
 
+require_relative '../constants'
+
+
 module Chingu  
   module GameStates
   
