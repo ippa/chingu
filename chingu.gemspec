@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
 
   s.summary = "OpenGL accelerated 2D game framework for Ruby."
   
-  s.files = Dir.glob("{lib,examples,benchmarks,spec}/**/*") + %w(LICENSE README.rdoc Rakefile )
+  s.files = Dir.glob("lib/**/*") + Dir.glob("examples/**/*") + %w(LICENSE README.rdoc Rakefile )
 
   s.licenses = [ 'LGPL-2.1' ]
   s.extra_rdoc_files = [ "LICENSE", "README.rdoc" ]  
