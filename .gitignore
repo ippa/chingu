@@ -5,4 +5,5 @@ doc
 .yardoc
 .git
 .idea
+
 coverage

@@ -12,9 +12,11 @@ def data_set
 end
 
 module Chingu
+
   describe "Network" do
     
     describe Chingu::GameStates::NetworkServer do
+
       it "should open listening port on start()" do
         @server = described_class.new(:address => "0.0.0.0", :port => 9999)
         @server.should_receive(:on_start)
@@ -26,8 +28,7 @@ module Chingu
         @client = Chingu::GameStates::NetworkClient.new(:address => "1.2.3.4", :port => 1234, :debug => true)
         @client.connect
         
-        #@client.should_receive(:on_timeout) ## gives on_connection_refused instead, kind of ok.
-        @client.should_receive(:on_connection_refused)
+        @client.should_receive(:on_timeout)
         @client.update while @client.socket
       end
 
@@ -207,6 +208,7 @@ module Chingu
         end
 
         describe "server to client"  do
+
           before :each do
             @server.update
             @server.send_msg(@server.sockets[0], @packet)
@@ -221,7 +223,9 @@ module Chingu
           end
 
           describe "client" do
+
             it "should increment received counters" do
+
               @client.packets_received.should eq 1
               @client.bytes_received.should eq @packet_length_with_header
               @client2.packets_received.should eq 0

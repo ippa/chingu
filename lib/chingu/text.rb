@@ -131,9 +131,9 @@ module Chingu
     #
     def create_image
       if @max_width
-        @image = Gosu::Image.from_text($window, @text, @font, @size, @line_spacing, @max_width, @align)
+        @image = Gosu::Image.from_text( @text, @size, {:font => @font, :spacing => @line_spacing, :width => @max_width, :align => @align})
       else
-        @image = Gosu::Image.from_text($window, @text, @font, @size)
+        @image = Gosu::Image.from_text( @text, @size, {:font => @font})
       end
     end
 

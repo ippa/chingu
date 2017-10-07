@@ -13,15 +13,17 @@ describe Chingu::Helpers::InputDispatcher do
   end
 
   {"button_down" => :a, "button_up" => :released_a}.each_pair do |event, key|
+
     describe "#dispatch_#{event}" do
+
       it "should dispatch key event if key is handled" do
         @client.should_receive(:handler).with(no_args)
-        @client.stub!(:input).with(no_args).and_return({ key => [@client.method(:handler)] })
+        @client.stub(:input).with(no_args).and_return({ key => [@client.method(:handler)] })
         @subject.send("dispatch_#{event}", Gosu::KbA, @client)
       end
 
       it "should not dispatch key event if key is not handled" do
-        @client.stub!(:input).with(no_args).and_return({})
+        @client.stub(:input).with(no_args).and_return({})
         @subject.send("dispatch_#{event}", Gosu::KbA, @client)
       end
     end
@@ -29,8 +31,8 @@ describe Chingu::Helpers::InputDispatcher do
 
   describe "#dispatch_input_for" do
     before :each do
-      $window = mock Chingu::Window
-      $window.stub!(:button_down?).and_return(false)
+      $window = double Chingu::Window
+      $window.stub(:button_down?).and_return(false)
     end
 
     after :each do
@@ -39,13 +41,13 @@ describe Chingu::Helpers::InputDispatcher do
 
     it "should dispatch if a key is being held" do
       @client.should_receive(:handler).with(no_args)
-      $window.stub!(:button_down?).with(Gosu::KbA).and_return(true)
-      @client.stub!(:input).with(no_args).and_return({:holding_a => [@client.method(:handler)]})
+      $window.stub(:button_down?).with(Gosu::KbA).and_return(true)
+      @client.stub(:input).with(no_args).and_return({:holding_a => [@client.method(:handler)]})
       @subject.dispatch_input_for(@client)
     end
 
     it "should do nothing if a key is not held" do
-      @client.stub!(:input).with(no_args).and_return({:holding_a => [lambda { raise "Shouldn't handle input!"}]})
+      @client.stub(:input).with(no_args).and_return({:holding_a => [lambda { raise "Shouldn't handle input!"}]})
       @subject.dispatch_input_for(@client)
     end
   end

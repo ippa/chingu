@@ -10,7 +10,7 @@ class Game < Chingu::Window
     super(640,480,false) # leave it blank and it will be 800,600,non fullscreen
     self.caption = "Press a key or mouse/gamepad button to see the input code"
 
-    @gosu_text = Chingu::Text.create('Gosu code (Fixnum) =>', :x => 25, :y => 200, :size => 18)
+    @gosu_text = Chingu::Text.create('Gosu code (Integer) =>', :x => 25, :y => 200, :size => 18)
     @chingu_text = Chingu::Text.create('Chingu name(s) (Symbol) =>', :x => 25, :y => 250, :size => 18)
 
     input_names = Gosu.constants.select {|constant| constant =~ /^(?:Kb|Ms|Gp)/ }
@@ -27,7 +27,7 @@ class Game < Chingu::Window
     @code = nil
     @key_codes.each do |code|
       if button_down?(code)
-        @gosu_text.text = "Gosu code (Fixnum) => #{code} (Gosu::#{@gosu_inputs[code] || "<not defined>"})"
+        @gosu_text.text = "Gosu code (Integer) => #{code} (Gosu::#{@gosu_inputs[code] || "<not defined>"})"
         symbols = Chingu::Input::CONSTANT_TO_SYMBOL[code].map {|s| s.inspect }.join(", ") rescue "<none defined>"
         @chingu_text.text = "Chingu name(s) (Symbol) => #{symbols}"
         break

@@ -17,7 +17,7 @@ class Game < Chingu::Window
     
     @server.start("0.0.0.0", 1234)
     #@client.connect("192.168.0.1", 1234)
-    @client.connect("127.0.0.1", 1234)
+    @client.connect({ address: "127.0.0.1", port: 1234 })
   end
   
   def update
@@ -40,7 +40,7 @@ end
 class Client < GameStates::NetworkClient
   
   def on_connect
-    puts "[#{self.ip}] Connected! Sending a msg..."
+    puts "[#{self.address}] Connected! Sending a msg..."
     send_msg(:hi => :there)
   end
   

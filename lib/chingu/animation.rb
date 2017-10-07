@@ -118,7 +118,7 @@ module Chingu
     def frame_names=(names)
       names.each do |key, value|
         @sub_animations[key] = self.new_from_frames(value)  if value.is_a? Range
-        @sub_animations[key] = @frames[value]               if value.is_a? Fixnum
+        @sub_animations[key] = @frames[value]               if value.is_a? Integer
         #
         # TODO: Add support for [1,4,5] array frame selection
         #
@@ -173,7 +173,7 @@ module Chingu
     #   @animation[:explode]  # returns a cached Animation-instance with frames earlier set with @animation.frame_names = { ... }
     #
     def [](index)
-      return @frames[index]               if  index.is_a?(Fixnum)
+      return @frames[index]               if  index.is_a?(Integer)
       return self.new_from_frames(index)  if  index.respond_to?(:each)
       return @sub_animations[index]       if  index.is_a?(Symbol)
     end
