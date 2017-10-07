@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
-require File.dirname(__FILE__) + '/lib/chingu/version'
+require File.join(__dir__, '/lib/chingu/version' )
+
 
 Gem::Specification.new do |s|
 
@@ -22,8 +23,8 @@ Gem::Specification.new do |s|
 
 
   s.add_dependency('gosu', '~> 0.12', '>= 0.12.1' )
+  s.add_dependency('require_all', '~> 1.4.0', '>= 1.4.0')
 
-  s.add_development_dependency('rspec', '~> 3.6.0', '>= 3.6.0' )
   s.add_development_dependency('rake', '~> 12.0.0', '>= 12.0.0' )
 
 end
