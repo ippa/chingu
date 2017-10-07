@@ -14,14 +14,17 @@ Gem::Specification.new do |s|
 
   s.summary = "OpenGL accelerated 2D game framework for Ruby."
   
-  s.files = Dir.glob("{lib,examples,benchmarks,spec}/**/*") + %w(LICENSE README.rdoc specs.watchr Rakefile LICENSE) 
+  s.files = Dir.glob("{lib,examples,benchmarks,spec}/**/*") + %w(LICENSE README.rdoc Rakefile )
+
+  s.licenses = [ 'LGPL-2.1' ]
   s.extra_rdoc_files = [ "LICENSE", "README.rdoc" ]  
   s.require_paths = ["lib"]  
 
 
-  s.add_dependency("gosu", [">= 0.7.45"])
+  s.add_dependency('gosu', '~> 0.12', '>= 0.12.1' )
 
-  s.add_development_dependency("rspec")
+  s.add_development_dependency('rspec', '~> 3.6.0', '>= 3.6.0' )
+  s.add_development_dependency('rake', '~> 12.0.0', '>= 12.0.0' )
 
 end
 

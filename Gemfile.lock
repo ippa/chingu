@@ -23,8 +23,8 @@ PLATFORMS
 
 DEPENDENCIES
   gosu
-  rake
-  rspec
+  rake (~> 12.0.0, >= 12.0.0)
+  rspec (~> 3.6.0, >= 3.6.0)
 
 BUNDLED WITH
    1.14.6
