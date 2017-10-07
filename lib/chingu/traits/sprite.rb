@@ -58,8 +58,10 @@ module Chingu
         self.y =      options[:y] || 0
         self.zorder = options[:zorder] || 100
         self.angle =  options[:angle] || 0
-        
-        self.factor = options[:factor] || options[:scale] || $window.factor || 1.0
+
+
+
+        self.factor = options[:factor] || options[:scale] || $window.nil? ? 1.0 : $window.factor
         self.factor_x = options[:factor_x].to_f if options[:factor_x]
         self.factor_y = options[:factor_y].to_f if options[:factor_y]
         self.rotation_center = options[:rotation_center] || :center_center
@@ -237,7 +239,7 @@ module Chingu
 
       # Returns true if object is inside the game window, false if outside
       def inside_window?(x = @x, y = @y)
-        x >= 0 && x <= $window.width && y >= 0 && y <= $window.height
+        x >= 0 && x <= $window.width && y >= 0 && y <= $window.height  # FIXME what if $window is nil?
       end
 
       # Returns true object is outside the game window 
