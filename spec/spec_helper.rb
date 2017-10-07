@@ -1,13 +1,13 @@
 # encoding: utf-8
-$LOAD_PATH.unshift(File.dirname(__FILE__))
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
 require 'rubygems'
 require 'rspec'
 
-require 'chingu/require_all'
 
-require 'chingu'
+require 'require_all'
+
+require_rel '../lib'   # use the require_all gem to require everything in ../lib
+
 
 RSpec.configure  do | config |
 
