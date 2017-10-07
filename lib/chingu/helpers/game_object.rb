@@ -55,11 +55,11 @@ module Chingu
       debug = options[:debug]
       except = Array(options[:except]) || []
       
-      require 'yaml'
+      require 'psych'
       
       puts "* Loading game objects from #{file}" if debug
       if File.exists?(file)
-        objects = YAML.load_file(file)
+        objects = Psych.load_file(file)
         objects.each do |object|
           object.each_pair do |klassname, attributes|
             begin
@@ -100,7 +100,7 @@ module Chingu
       classes = options[:classes]
       attributes = options[:attributes] || [:x, :y, :angle, :zorder, :factor_x, :factor_y, :alpha]
       
-      require 'yaml'
+      require 'psych'
       objects = []
       game_objects.each do |game_object|
         # Only save specified classes, if given.
@@ -117,7 +117,7 @@ module Chingu
         objects << {game_object.class.to_s => attr_hash}
       end
 
-      File.open(file, 'w') { |out| YAML.dump(objects, out) }
+      File.open(file, 'w') { |out| Psych.dump(objects, out) }
     end
     
   end
