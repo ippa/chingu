@@ -48,7 +48,7 @@ module Chingu
         $window.draw_quad(  0,0,@color,
                             $window.width,0,@color,
                             $window.width,$window.height,@color,
-                            0,$window.height,@color, Chingu::DEBUG_ZORDER + 1000)                            
+                            0,$window.height,@color, Chingu::DEBUG_ZORDER + 1000) # FIXME what if $window is nil?
         @text.draw
       end  
     end

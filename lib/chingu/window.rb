@@ -25,11 +25,13 @@ module Chingu
   #
   # On top of that we add:
   # - Default widht / height, --fullscreen option from console
-  # - Sets a global variable $window = self, which is then used throughout Chingu
-  # - Defaultd #update which updates all game_objects which are not pasued
+  # - Sets a global variable $window = self, which is then used throughout Chingu  FIXME!  handle better!
+  # - Default #update which updates all game_objects which are not pasued
   # - Default #draw which draws all game_objects which are visible
   # - Default Asset-directories media/, sfx/, gfx/ etc.
   # - Tracking of button_up/button_down etc to enable Chingus pretty inputhandling
+  #
+  # FIXME handle $window much more elegantly.
   #
   class Window < Gosu::Window
     include Chingu::Helpers::FPSCounter         # Adds FPSCounter delegators

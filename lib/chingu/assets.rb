@@ -1,6 +1,6 @@
 #
 # Rubygames Named Resources for GOSU
-# Assumes a global variable $window having the Gosu::Window instance.
+# Assumes a global variable $window having the Gosu::Window instance.  # FIXME what if $window is nil?  (must check)
 # Quick 'n easy access to sprites, sounds and tiles!
 #
 
@@ -69,7 +69,7 @@ module Gosu
                     name # Font not found in the path. Assume it is an OS font.
                   end
 
-      return Gosu::Font.new($window, font_name, size)
+      return Gosu::Font.new($window, font_name, size) # FIXME what if $window is nil?
     end
 
 

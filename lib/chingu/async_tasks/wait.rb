@@ -40,7 +40,7 @@ module Chingu
       end
       
       def update(object)
-        @age += $window.milliseconds_since_last_tick
+        @age += $window.milliseconds_since_last_tick  # FIXME what if $window is nil?
         @result = (@condition and @condition[])
       end
       

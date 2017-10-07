@@ -39,6 +39,7 @@ module Chingu
     @@size = nil
     @@font = nil
     @@padding = 5
+
     def self.font; @@font; end
     def self.font=(value); @@font = value; end
     def self.size; @@size; end
@@ -54,7 +55,9 @@ module Chingu
     #   :font_name|:font    - Name of a system font, or a filename to a TTF file (must contain ? does not work on Linux). 
     #   :height|:size       - Height of the font in pixels. 
     #   :line_spacing	      - Spacing between two lines of text in pixels. 
-    #   :max_width	        - Width of the bitmap that will be returned. Text will be split into multiple lines to avoid drawing over the right border. When a single word is too long, it will be truncated.
+    #   :max_width	        - Width of the bitmap that will be returned. Text
+    #                         will be split into multiple lines to avoid drawing
+    #                         over the right border. When a single word is too long, it will be truncated.
     #   :align	            - One of :left, :right, :center or :justify. 
     #
     # if :max_width is given the text is drawn using :line_spacing, :align and :max_width

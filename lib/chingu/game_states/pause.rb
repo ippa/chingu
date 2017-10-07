@@ -27,7 +27,7 @@ module Chingu
     # Pause whenever with: 
     #   push_game_state(Chingu::GameStates::Pause)
     #
-    # requires the global $window set to the instance of Gosu::Window (automaticly handled if you use Chingu::Window)
+    # requires the global $window set to the instance of Gosu::Window (automaticly handled if you use Chingu::Window) # FIXME what if $window is nil?
     #
     class Pause < Chingu::GameState
       
@@ -48,9 +48,9 @@ module Chingu
         $window.draw_quad(  0,0,@color,
                             $window.width,0,@color,
                             $window.width,$window.height,@color,
-                            0,$window.height,@color, Chingu::DEBUG_ZORDER)
+                            0,$window.height,@color, Chingu::DEBUG_ZORDER) # FIXME what if $window is nil?
                             
-        @font.draw(@text, ($window.width/2 - @font.text_width(@text)/2), $window.height/2 - @font.height, Chingu::DEBUG_ZORDER + 1)
+        @font.draw(@text, ($window.width/2 - @font.text_width(@text)/2), $window.height/2 - @font.height, Chingu::DEBUG_ZORDER + 1) # FIXME what if $window is nil?
       end  
     end
   end

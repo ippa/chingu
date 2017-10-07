@@ -86,7 +86,7 @@ module Chingu
           $window.draw_quad( 0,0,@color,
                               $window.width,0,@color,
                               $window.width,$window.height,@color,
-                              0,$window.height,@color,@options[:zorder])
+                              0,$window.height,@color,@options[:zorder]) # FIXME what if $window is nil?
         end
         
         if @fading_in && @alpha == 0

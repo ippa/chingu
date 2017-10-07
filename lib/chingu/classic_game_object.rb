@@ -48,7 +48,7 @@ module Chingu
       elsif options[:image].is_a? String
         begin
           # 1) Try loading the image the normal way
-          @image = Gosu::Image.new($window, options[:image])
+          @image = Gosu::Image.new($window, options[:image]) # FIXME what if $window is nil?
         rescue
           # 2) Try looking up the picture using Chingus Image-cache
           @image = Gosu::Image[options[:image]]
@@ -59,7 +59,7 @@ module Chingu
       @y = options[:y] || 0
       @angle = options[:angle] || 0
       
-      self.factor = options[:factor] || options[:scale] || $window.factor || 1.0
+      self.factor = options[:factor] || options[:scale] || $window.factor || 1.0 # FIXME what if $window is nil?
       @factor_x = options[:factor_x].to_f if options[:factor_x]
       @factor_y = options[:factor_y].to_f if options[:factor_y]
       
@@ -221,7 +221,7 @@ module Chingu
 
     # Returns true if object is inside the game window, false if outside
     def inside_window?(x = @x, y = @y)
-      x >= 0 && x <= $window.width && y >= 0 && y <= $window.height
+      x >= 0 && x <= $window.width && y >= 0 && y <= $window.height # FIXME what if $window is nil?
     end
 
     # Returns true object is outside the game window 

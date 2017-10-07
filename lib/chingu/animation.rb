@@ -84,14 +84,14 @@ module Chingu
             @height = $2.to_i
           else
             # Assume the shortest side of the actual file is the width/height for each frame
-            image = Gosu::Image.new($window, file)
+            image = Gosu::Image.new($window, file)  # FIXME what if $window is nil?
             @width = @height = (image.width < image.height) ? image.width : image.height
            end
         else
           @width = @height = (image.width < image.height) ? image.width : image.height
         end
         
-        @frames = Gosu::Image.load_tiles($window, image || file, @width, @height, true)
+        @frames = Gosu::Image.load_tiles($window, image || file, @width, @height, true) # FIXME what if $window is nil?
       end
     end
     
@@ -224,7 +224,7 @@ module Chingu
     #
     def next(recursion = true)
         
-      if (@dt += $window.milliseconds_since_last_tick) >= @delay
+      if (@dt += $window.milliseconds_since_last_tick) >= @delay # FIXME what if $window is nil?
         @dt = 0
         @previous_index = @index
         @index += @step

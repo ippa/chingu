@@ -126,8 +126,8 @@ module Chingu
         save_x, save_y = layer.x, layer.y
         
         # If layer lands inside our window and repeat_x is true (defaults to true), draw it until window ends
-        while layer.repeat_x && layer.x < $window.width
-          while layer.repeat_y && layer.y < $window.height
+        while layer.repeat_x && layer.x < $window.width # FIXME what if $window is nil?
+          while layer.repeat_y && layer.y < $window.height # FIXME what if $window is nil?
             layer.draw
             layer.y += layer.image.height
           end
@@ -139,7 +139,7 @@ module Chingu
         
         # Special loop for when repeat_y is true but not repeat_x
         if layer.repeat_y && !layer.repeat_x
-          while layer.repeat_y && layer.y < $window.height
+          while layer.repeat_y && layer.y < $window.height # FIXME what if $window is nil?
             layer.draw
             layer.y += layer.image.height
           end

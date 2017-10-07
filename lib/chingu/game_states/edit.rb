@@ -27,7 +27,7 @@ module Chingu
     # Start editing in a gamestate with:
     #   push_game_state(Chingu::GameStates::Edit)
     #
-    # requires the global $window set to the instance of Gosu::Window (automaticly handled if you use Chingu::Window)
+    # requires the global $window set to the instance of Gosu::Window (automaticly handled if you use Chingu::Window)  # FIXME what if $window is nil?
     #
     # Edit will only edit game objects created with the editor itself or that's been loaded with load_game_objects.
     # This makes mixing of loaded game objects and code create game objects possible, in the game, and in the editor.
@@ -67,8 +67,8 @@ module Chingu
         #
         # Turn on cursor + turn it back to its original value in finalize()
         #
-        @original_cursor = $window.cursor
-        $window.cursor = true
+        @original_cursor = $window.cursor # FIXME what if $window is nil?
+        $window.cursor = true # FIXME what if $window is nil?
         
         p @classes  if @debug
 
@@ -219,10 +219,10 @@ END_OF_STRING
           start_y = -previous_game_state.viewport.y % @grid.last
         end
         (start_x .. $window.width).step(@grid.first).each do |x|
-          $window.draw_line(x, 1, @grid_color, x, $window.height, @grid_color, 0, :additive)
+          $window.draw_line(x, 1, @grid_color, x, $window.height, @grid_color, 0, :additive) # FIXME what if $window is nil?
         end
         (start_y .. $window.height).step(@grid.last).each do |y|
-          $window.draw_line(1, y, @grid_color, $window.width, y, @grid_color, 0, :additive)
+          $window.draw_line(1, y, @grid_color, $window.width, y, @grid_color, 0, :additive) # FIXME what if $window is nil?
         end
         
       end
@@ -270,16 +270,16 @@ END_OF_STRING
           end
         elsif @left_mouse_button
           if defined?(self.previous_game_state.viewport)
-            self.previous_game_state.viewport.x = @left_mouse_click_at[0] - $window.mouse_x
-            self.previous_game_state.viewport.y = @left_mouse_click_at[1] - $window.mouse_y
+            self.previous_game_state.viewport.x = @left_mouse_click_at[0] - $window.mouse_x # FIXME what if $window is nil?
+            self.previous_game_state.viewport.y = @left_mouse_click_at[1] - $window.mouse_y # FIXME what if $window is nil?
           end
         end
         
         if inside_window?($window.mouse_x, $window.mouse_y)
-          scroll_right  if $window.mouse_x > $window.width - @scroll_border_thickness
-          scroll_left   if $window.mouse_x < @scroll_border_thickness
-          scroll_up     if $window.mouse_y < @scroll_border_thickness
-          scroll_down   if $window.mouse_y > $window.height - @scroll_border_thickness
+          scroll_right  if $window.mouse_x > $window.width - @scroll_border_thickness # FIXME what if $window is nil?
+          scroll_left   if $window.mouse_x < @scroll_border_thickness # FIXME what if $window is nil?
+          scroll_up     if $window.mouse_y < @scroll_border_thickness # FIXME what if $window is nil?
+          scroll_down   if $window.mouse_y > $window.height - @scroll_border_thickness # FIXME what if $window is nil?
         end
       end
       
@@ -291,7 +291,7 @@ END_OF_STRING
         previous_game_state.draw
         
         # Restart z-ordering, everything after this will be drawn on top
-        $window.flush
+        $window.flush  # FIXME what if $window is nil?
                 
         draw_grid if @draw_grid
         
@@ -299,7 +299,7 @@ END_OF_STRING
         # Draw an edit HUD
         #
         $window.draw_quad(  0,0,@hud_color, $window.width,0,@hud_color,
-                            $window.width,@hud_height,@hud_color,0,@hud_height,@hud_color)
+                            $window.width,@hud_height,@hud_color,0,@hud_height,@hud_color) # FIXME what if $window is nil?
              
         #
         # Draw gameobjects
@@ -315,7 +315,7 @@ END_OF_STRING
           draw_selections
         end
         
-        @cursor_game_object.draw_at($window.mouse_x, $window.mouse_y)   if @cursor_game_object
+        @cursor_game_object.draw_at($window.mouse_x, $window.mouse_y)   if @cursor_game_object  # FIXME what if $window is nil?
       end
       
       #
@@ -333,16 +333,16 @@ END_OF_STRING
         @selected_game_object = false
         
         if defined?(self.previous_game_state.viewport)
-          @left_mouse_click_at = [self.previous_game_state.viewport.x + $window.mouse_x, self.previous_game_state.viewport.y + $window.mouse_y]
+          @left_mouse_click_at = [self.previous_game_state.viewport.x + $window.mouse_x, self.previous_game_state.viewport.y + $window.mouse_y]  # FIXME what if $window is nil?
         else
-          @left_mouse_click_at = [$window.mouse_x, $window.mouse_y]
+          @left_mouse_click_at = [$window.mouse_x, $window.mouse_y]  # FIXME what if $window is nil?
         end
         
         # Put out a new game object in the editor window and select it right away
         @selected_game_object = copy_game_object(@cursor_game_object)  if @cursor_game_object
         
         # Check if user clicked on anything in the icon-toolbar of available game objects
-        @cursor_game_object = game_object_icon_at($window.mouse_x, $window.mouse_y)
+        @cursor_game_object = game_object_icon_at($window.mouse_x, $window.mouse_y)  # FIXME what if $window is nil?
 
         # Get editable game object that was clicked at (if any)
         @selected_game_object ||= game_object_at(self.mouse_x, self.mouse_y)
@@ -504,7 +504,7 @@ END_OF_STRING
         if defined?(previous_game_state.viewport)
           previous_game_state.viewport.game_area = @game_area_backup
         end
-        $window.cursor = @original_cursor
+        $window.cursor = @original_cursor  # FIXME what if $window is nil?
       end
             
       def move_left
@@ -602,10 +602,10 @@ END_OF_STRING
         @cursor_game_object = nil
       end
       def page_up
-        self.previous_game_state.viewport.y -= $window.height if defined?(self.previous_game_state.viewport)
+        self.previous_game_state.viewport.y -= $window.height if defined?(self.previous_game_state.viewport)  # FIXME what if $window is nil?
       end
       def page_down
-        self.previous_game_state.viewport.y += $window.height if defined?(self.previous_game_state.viewport)
+        self.previous_game_state.viewport.y += $window.height if defined?(self.previous_game_state.viewport)  # FIXME what if $window is nil?
       end
       def scroll_up(amount = 10)
         self.previous_game_state.viewport.y -= amount if defined?(self.previous_game_state.viewport)
@@ -621,19 +621,19 @@ END_OF_STRING
       end
       
       def mouse_x
-        x = $window.mouse_x
+        x = $window.mouse_x # FIXME what if $window is nil?
         x += self.previous_game_state.viewport.x if defined?(self.previous_game_state.viewport)
         return x
       end
       
       def mouse_y
-        y = $window.mouse_y
+        y = $window.mouse_y # FIXME what if $window is nil?
         y += self.previous_game_state.viewport.y if defined?(self.previous_game_state.viewport)
         return y
       end
 
       def inside_window?(x = $window.mouse_x, y = $window.mouse_y)
-        x >= 0 && x <= $window.width && y >= 0 && y <= $window.height
+        x >= 0 && x <= $window.width && y >= 0 && y <= $window.height  # FIXME what if $window is nil?
       end
 
       def copy_game_object(template)
