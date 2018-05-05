@@ -9,7 +9,7 @@ module Gosu
       public
       # Volume of Samples, affected by Sample.volume and Window#volume and muting.
       def effective_volume
-        @volume * $window.effective_volume
+        @volume * $window.effective_volume # FIXME what if $window is nil?
       end
 
       public

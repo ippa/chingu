@@ -198,7 +198,7 @@ module Chingu
     # Closes main window and terminates the application
     #
     def close_game
-      $window.close
+      $window.close # FIXME what if $window is nil?
     end
   end
 end

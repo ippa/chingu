@@ -48,7 +48,7 @@ module Chingu
         self.y =      options[:y] || 0
         self.zorder = options[:zorder] || 100
         
-        self.factor = options[:factor] || options[:scale] || $window.factor || 1.0
+        self.factor = options[:factor] || options[:scale] || $window.factor || 1.0 # FIXME what if $window is nil?
         self.factor_x = options[:factor_x].to_f if options[:factor_x]
         self.factor_y = options[:factor_y].to_f if options[:factor_y]
         
@@ -93,7 +93,7 @@ module Chingu
         @image = if String === image
                    # 1) Try loading the image the normal way
                    # 2) Try looking up the picture using Chingus Image-cache
-                   Gosu::Image.new($window, image,false) rescue Gosu::Image[image]
+                   Gosu::Image.new($window, image,false) rescue Gosu::Image[image] # FIXME what if $window is nil?
                  elsif image.respond_to? :call
                    image.call
                  else
@@ -219,7 +219,7 @@ module Chingu
 
       # Returns true if object is inside the game window, false if outside
       def inside_window?(x = @x, y = @y)
-        x >= 0 && x <= $window.width && y >= 0 && y <= $window.height
+        x >= 0 && x <= $window.width && y >= 0 && y <= $window.height  # FIXME what if $window is nil?
       end
 
       # Returns true object is outside the game window 

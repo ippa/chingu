@@ -42,7 +42,7 @@ module Chingu
       @y_lag = options[:y_lag] || 0
       @factor_x = options[:factor_x] || 1
       @factor_y = options[:factor_y] || 1
-      @game_area = Chingu::Rect.new(options[:game_area] || [@x, @y, $window.width, $window.height])       
+      @game_area = Chingu::Rect.new(options[:game_area] || [@x, @y, $window.width, $window.height]) # FIXME what if $window is nil?
     end
     
     #
@@ -59,8 +59,8 @@ module Chingu
     # TODO: Add support for x,y here!
     #
     def center_around(object)
-      self.x = object.x * @factor_x - $window.width / 2
-      self.y = object.y * @factor_y - $window.height / 2
+      self.x = object.x * @factor_x - $window.width / 2 # FIXME what if $window is nil?
+      self.y = object.y * @factor_y - $window.height / 2 # FIXME what if $window is nil?
     end
     
     #
@@ -87,9 +87,9 @@ module Chingu
     # height,width,factor_x,factor_y,center_x,center_y as well...
     #
     def inside?(object, y = nil)
-      x, y = y ? [object,y] : [object.x, object.y]      
+      x, y = y ? [object,y] : [object.x, object.y]
       x >= @x && x <= (@x + $window.width) &&
-      y >= @y && y <= (@y + $window.height)
+      y >= @y && y <= (@y + $window.height)  # FIXME what if $window is nil?
     end
 
     # Returns true object is outside the view port
@@ -135,7 +135,7 @@ module Chingu
       @x = x
       if @game_area
         @x = @game_area.x * @factor_x         if @x < @game_area.x * @factor_x
-        @x = @game_area.width * @factor_x - $window.width   if @x > @game_area.width * @factor_x - $window.width
+        @x = @game_area.width * @factor_x - $window.width   if @x > @game_area.width * @factor_x - $window.width # FIXME what if $window is nil?
       end
     end
 
@@ -146,7 +146,7 @@ module Chingu
       @y = y
       if @game_area
         @y = @game_area.y * @factor_y           if @y < @game_area.y * @factor_y
-        @y = @game_area.height * @factor_y - $window.height   if @y > @game_area.height * @factor_y - $window.height
+        @y = @game_area.height * @factor_y - $window.height   if @y > @game_area.height * @factor_y - $window.height # FIXME what if $window is nil?
       end
     end
     
@@ -154,8 +154,9 @@ module Chingu
     # Apply the X/Y viewport-translation, used by trait "viewport"
     #
     def apply(&block)
+      # FIXME what if $window is nil?
       $window.translate(-@x.to_i, -@y.to_i) do
-        $window.scale(@factor_x, @factor_y, 0, 0, &block)
+        $window.scale(@factor_x, @factor_y, 0, 0, &block)  # FIXME what if $window is nil?
       end
     end
 

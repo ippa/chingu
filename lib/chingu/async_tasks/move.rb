@@ -19,7 +19,9 @@
 #
 #++
 
-require "#{CHINGU_ROOT}/chingu/async_tasks/tween"
+#require "#{CHINGU_ROOT}/chingu/async_tasks/tween"
+
+require_relative './tween'
 
 module Chingu
   module AsyncTasks

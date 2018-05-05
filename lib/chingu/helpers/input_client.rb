@@ -57,7 +57,7 @@ module Chingu
       #
       public
       def holding?(key)
-        $window.button_down?(Chingu::Input::SYMBOL_TO_CONSTANT[key])
+        $window.button_down?(Chingu::Input::SYMBOL_TO_CONSTANT[key]) # FIXME what if $window is nil?
       end
 
       # Are any of a list of keys being held down?

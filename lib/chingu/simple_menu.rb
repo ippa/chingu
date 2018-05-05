@@ -36,7 +36,7 @@ module Chingu
       
       # @font_size = options.delete(:font_size) || 30
       @menu_items = options.delete(:menu_items)
-      @x = options.delete(:x) || $window.width/2
+      @x = options.delete(:x) || $window.width/2  # FIXME what if $window is nil?
       @y = options.delete(:y) || 0
       @spacing = options.delete(:spacing) || 100
       @items = []
@@ -123,4 +123,3 @@ module Chingu
     end    
   end
 end
- 

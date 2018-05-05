@@ -24,5 +24,6 @@ end
  
 desc 'Release new gem'
 task :release => :build do
-  system "gem push pkg/chingu-#{Chingu::VERSION}.gem"
+  #system "gem push pkg/chingu-#{Chingu::VERSION}.gem"
+  puts "no op.  (Commented out for now. - ae)"
 end

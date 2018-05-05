@@ -61,7 +61,7 @@ module Chingu
       # Returns true if object is inside the game window, false if outside
       # this special version takes @factor into consideration
       def inside_window?
-        self.x >= 0 && self.x <= $window.width/self.factor && self.y >= 0 && self.y <= $window.height/self.factor
+        self.x >= 0 && self.x <= $window.width/self.factor && self.y >= 0 && self.y <= $window.height/self.factor # FIXME what if $window is nil?
       end
 
       # Returns true object is outside the game window 

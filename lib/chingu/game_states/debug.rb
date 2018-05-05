@@ -19,6 +19,9 @@
 #
 #++
 
+require_relative '../constants'
+
+
 module Chingu  
   module GameStates
   
@@ -69,6 +72,7 @@ module Chingu
       def draw
         previous_state.draw unless previous_state.nil?
 
+        # FIXME what if $window is nil?
         $window.draw_quad(  0,0,@fade_color,
                             $window.width,0,@fade_color,
                             $window.width,$window.height,@fade_color,

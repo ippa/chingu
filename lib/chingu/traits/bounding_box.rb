@@ -94,7 +94,7 @@ module Chingu
       # Visualises the bounding box as a red rectangle.
       #
       def draw_debug
-        $window.draw_rect(self.bounding_box, Chingu::DEBUG_COLOR, Chingu::DEBUG_ZORDER)
+        $window.draw_rect(self.bounding_box, Chingu::DEBUG_COLOR, Chingu::DEBUG_ZORDER) # FIXME what if $window is nil?
       end
       
     end

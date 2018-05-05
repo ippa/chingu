@@ -6,8 +6,9 @@
 #
 require 'rubygems' rescue nil
 $LOAD_PATH.unshift File.join(File.expand_path(__FILE__), "..", "..", "lib")
+
 require 'chingu'
-require 'texplay'     # adds Image#get_pixel
+
 require 'optparse'
 
 include Gosu
@@ -72,12 +73,12 @@ class Level < Chingu::GameState
 
   #
   # The foremost layer in our parallax scroller is the collidable terrain
-  #
+  #    TODO what is the problem if there is an error?
   def solid_pixel_at?(x, y)
     begin     
       @parallax.layers.last.get_pixel(x, y)[3] != 0
     rescue
-      puts "Error in get_pixel(#{x}, #{y})"
+      puts "Error in get_pixel(#{x}, #{y})  [#{__method__} in game1]"
     end
   end
   
@@ -198,7 +199,7 @@ class Level2 < Chingu::GameState
     begin     
       @parallax.layers.last.get_pixel(x, y)[3] != 0
     rescue
-      puts "Error in get_pixel(#{x}, #{y})"
+      puts "Error in get_pixel(#{x}, #{y})  [#{__method__} in game1]"
     end
   end
   
@@ -212,7 +213,7 @@ class Level2 < Chingu::GameState
     game_objects.destroy_if { |game_object| game_object.respond_to?("outside_window?") && game_object.outside_window? }
 
     # Collide bullets with terrain
-    Bullet.select { |o| solid_pixel_at?(o.x, o.y)}.each { |o| o.die }
+    Bullet.select{ |o| solid_pixel_at?(o.x, o.y)}.each { |o| o.die }
         
     # Collide player with terrain
     push_game_state(GameOver) if solid_pixel_at?(@player.x, @player.y)
@@ -380,27 +381,31 @@ class EnemyBullet < Bullet
 end
 
 class Explosion < GameObject
+
   has_traits :timer
   
   def initialize(options)
     super
     
     unless defined?(@@image)
-      @@image = TexPlay::create_blank_image($window, 100, 100)
-      @@image.paint { circle 50,50,49, :fill => true, :color => [1,1,1,1] }
+      #@@image = TexPlay::create_blank_image($window, 100, 100)
+      #@@image.paint { circle 50,50,49, :fill => true, :color => [1,1,1,1] }
+      @@image = Image["explosion-1.png"]
     end
     
     @image = @@image.dup  if @image.nil?
     
     self.rotation_center = :center
     during(100) { self.alpha -= 30}.then { destroy }
+
   end
   
   def self.create_image_for(object)
-    width = height = (object.image.width + object.image.height) / 2
-    explosion_image = TexPlay::create_blank_image($window, 100, 100)
-    explosion_image.paint { circle 50,50,49, :fill => true, :color => [1,1,1,1] }
-    return explosion_image
+    Image["explosion-1.png"]
+    #width = height = (object.image.width + object.image.height) / 2
+    #explosion_image = TexPlay::create_blank_image($window, 100, 100)
+    #explosion_image.paint { circle 50,50,49, :fill => true, :color => [1,1,1,1] }
+    #return explosion_image
   end
   
 end
@@ -418,18 +423,20 @@ class Shrapnel < GameObject
     self.rotation_center = :center
     @status = :default
   end
-  
+
   def self.create_image_for(object)
-    image = object.image
-    width = image.width / 5
-    height = image.width / 5
+
+    Image["saucer-shrapnel-1.png"]
+    #image = object.image
+    #width = image.width / 5
+    #height = image.width / 5
     
-    shrapnel_image = TexPlay::create_blank_image($window, width, height)
-    x1 = rand(image.width/width)
-    y1 = rand(image.height/height)
-    shrapnel_image.paint { splice image,0,0, :crop => [x1, y1, x1+width, y1+height] }    
+    #shrapnel_image = TexPlay::create_blank_image($window, width, height)
+    #x1 = rand(image.width/width)
+    #y1 = rand(image.height/height)
+    #shrapnel_image.paint { splice image,0,0, :crop => [x1, y1, x1+width, y1+height] }
     
-    return shrapnel_image
+    # return shrapnel_image
   end
   
   def die
