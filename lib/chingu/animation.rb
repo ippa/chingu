@@ -84,14 +84,14 @@ module Chingu
             @height = $2.to_i
           else
             # Assume the shortest side of the actual file is the width/height for each frame
-            image = Gosu::Image.new($window, file)
+            image = Gosu::Image.new($window, file)  # FIXME what if $window is nil?
             @width = @height = (image.width < image.height) ? image.width : image.height
            end
         else
           @width = @height = (image.width < image.height) ? image.width : image.height
         end
         
-        @frames = Gosu::Image.load_tiles($window, image || file, @width, @height, true)
+        @frames = Gosu::Image.load_tiles($window, image || file, @width, @height, true) # FIXME what if $window is nil?
       end
     end
     
@@ -118,7 +118,7 @@ module Chingu
     def frame_names=(names)
       names.each do |key, value|
         @sub_animations[key] = self.new_from_frames(value)  if value.is_a? Range
-        @sub_animations[key] = @frames[value]               if value.is_a? Fixnum
+        @sub_animations[key] = @frames[value]               if value.is_a? Integer
         #
         # TODO: Add support for [1,4,5] array frame selection
         #
@@ -173,7 +173,7 @@ module Chingu
     #   @animation[:explode]  # returns a cached Animation-instance with frames earlier set with @animation.frame_names = { ... }
     #
     def [](index)
-      return @frames[index]               if  index.is_a?(Fixnum)
+      return @frames[index]               if  index.is_a?(Integer)
       return self.new_from_frames(index)  if  index.respond_to?(:each)
       return @sub_animations[index]       if  index.is_a?(Symbol)
     end
@@ -224,7 +224,7 @@ module Chingu
     #
     def next(recursion = true)
         
-      if (@dt += $window.milliseconds_since_last_tick) >= @delay
+      if (@dt += $window.milliseconds_since_last_tick) >= @delay # FIXME what if $window is nil?
         @dt = 0
         @previous_index = @index
         @index += @step

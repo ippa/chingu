@@ -80,7 +80,7 @@ module Chingu
       # Visualises the bounding circle as a red circle.
       #
       def draw_debug
-        $window.draw_circle(self.x, self.y, self.radius, Chingu::DEBUG_COLOR)
+        $window.draw_circle(self.x, self.y, self.radius, Chingu::DEBUG_COLOR) # FIXME what if $window is nil?
       end
         
     end

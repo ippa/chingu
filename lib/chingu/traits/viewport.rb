@@ -49,7 +49,7 @@ module Chingu
       def inside_viewport?(object)
         puts "Deprecated, use self.viewport.inside?() instead"
         object.x >= @viewport.x && object.x <= (@viewport.x + $window.width) &&
-        object.y >= @viewport.y && object.y <= (@viewport.y + $window.height)
+        object.y >= @viewport.y && object.y <= (@viewport.y + $window.height)  # FIXME what if $window is nil?
       end
 
       # Returns true object is outside the view port

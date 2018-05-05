@@ -41,7 +41,7 @@ module Chingu
       def update(object)
         set_initial_values(object) unless have_initial_values?
         
-        @age += $window.milliseconds_since_last_tick
+        @age += $window.milliseconds_since_last_tick # FIXME what if $window is nil?
         t = @age.to_f / @life
         t = 1.0 if t > 1
         @properties.each do |name, range|

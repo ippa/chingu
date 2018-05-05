@@ -13,7 +13,9 @@ describe Chingu::Helpers::InputDispatcher do
   end
 
   {"button_down" => :a, "button_up" => :released_a}.each_pair do |event, key|
+
     describe "#dispatch_#{event}" do
+
       it "should dispatch key event if key is handled" do
         @client.should_receive(:handler).with(no_args)
         @client.stub(:input).with(no_args).and_return({ key => [@client.method(:handler)] })

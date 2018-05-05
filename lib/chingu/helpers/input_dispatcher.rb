@@ -61,7 +61,7 @@ module Chingu
       pattern = /^#{prefix}/
       object.input.each do |symbol, actions|
         if symbol.to_s =~ pattern and $window.button_down?(Input::SYMBOL_TO_CONSTANT[$'.to_sym])
-          dispatch_actions(actions)
+          dispatch_actions(actions) # FIXME what if $window is nil?
         end
       end
     end

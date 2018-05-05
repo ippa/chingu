@@ -6,7 +6,12 @@
 #
 #++
 
+require 'gosu'
+
+require_rel File.join('..', 'helpers', 'rotation_center' )
+
 module Chingu
+
   module Traits
 
     #
@@ -28,12 +33,15 @@ module Chingu
     #  :x, :y, :angle, :factor_x, :factor_y, :center_x, :center_y, :zorder, :mode, :visible
     #
     module Sprite
+
       include Chingu::Helpers::RotationCenter    # Adds easy and verbose modification of @center_x and @center_y
       
       module ClassMethods
+
         def initialize_trait(options = {})
           trait_options[:sprite] = options
         end
+
       end
       
       attr_accessor :x, :y, :angle, :factor_x, :factor_y, :center_x, :center_y, :zorder, :mode, :color
@@ -50,8 +58,10 @@ module Chingu
         self.y =      options[:y] || 0
         self.zorder = options[:zorder] || 100
         self.angle =  options[:angle] || 0
-        
-        self.factor = options[:factor] || options[:scale] || $window.factor || 1.0
+
+
+
+        self.factor = options[:factor] || options[:scale] || $window.nil? ? 1.0 : $window.factor
         self.factor_x = options[:factor_x].to_f if options[:factor_x]
         self.factor_y = options[:factor_y].to_f if options[:factor_y]
         self.rotation_center = options[:rotation_center] || :center_center
@@ -99,7 +109,7 @@ module Chingu
         @image = if String === image
                    # 1) Try looking up the picture using Chingus Image-cache
                    # 2) Try loading the image the normal way
-                   Gosu::Image[image] rescue Gosu::Image.new($window, image,false) 
+                   Gosu::Image[image] rescue Gosu::Image.new(image, {tileable: false})
                  elsif image.respond_to? :call
                    image.call
                  else
@@ -229,7 +239,7 @@ module Chingu
 
       # Returns true if object is inside the game window, false if outside
       def inside_window?(x = @x, y = @y)
-        x >= 0 && x <= $window.width && y >= 0 && y <= $window.height
+        x >= 0 && x <= $window.width && y >= 0 && y <= $window.height  # FIXME what if $window is nil?
       end
 
       # Returns true object is outside the game window 

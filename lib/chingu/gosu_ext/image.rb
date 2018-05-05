@@ -21,22 +21,11 @@
 
 #
 # Core extensions to GOSU
-# Some of these require the gem 'texplay'
 #
-module Gosu  
+module Gosu
   class Image
-    #
-    # Returns true if the pixel at x, y is 100% transperant (good for collisiondetection)
-    # Requires texplay
-    #
-    def transparent_pixel?(x, y)
-      begin
-        self.get_pixel(x,y)[3] == 0
-      rescue
-        puts "Error in get_pixel at x/y: #{x}/#{y}: #{$!}"
-      end
-    end
-    
+
+
     #
     # Retrofy should be called just after the image is loaded.
     # When retrofied an image will use a non-blurry zoom.
@@ -45,17 +34,19 @@ module Gosu
     def retrofy
       Gosu::enable_undocumented_retrofication
       self
-      
+
       #
       # The below code depends on the bad opengl gem
       # And it could affect other images anyhow... 
       # So let's use Gosu::enable_undocumented_retrofication until further notice.
       #
-      
+
       #glBindTexture(GL_TEXTURE_2D, self.gl_tex_info.tex_name)
       #glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
       #glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
       #self
     end
+
   end
+
 end

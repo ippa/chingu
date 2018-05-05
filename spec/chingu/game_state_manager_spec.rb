@@ -41,19 +41,36 @@ module Chingu
     end
 
     describe "pop_game_state" do
-      before :each do
+
+      it "should replace current game state with last one" do
         @game.push_game_state(Chingu::GameStates::Pause)
         @game.push_game_state(Chingu::GameStates::Edit)
-      end
-      
-      it "should replace current game state with last one" do
+
         @game.pop_game_state
         @game.current_game_state.class.should == Chingu::GameStates::Pause
       end
       
       it "should decrement total # of game states" do
+        @game.push_game_state(Chingu::GameStates::Pause)
+        @game.push_game_state(Chingu::GameStates::Edit)
+
         @game.pop_game_state        
         @game.game_states.count.should == 1
+      end
+
+      it 'should handle pop when game states is < 2' do
+        @game.push_game_state(Chingu::GameStates::Pause)
+        @game.push_game_state(Chingu::GameStates::Edit)
+        @game.push_game_state(Chingu::GameStates::EnterName)
+
+        expect(@game.current_game_state).to be_a Chingu::GameStates::EnterName
+
+        @game.pop_game_state
+        expect(@game.current_game_state).to be_a Chingu::GameStates::Edit
+
+        @game.pop_game_state
+        expect(@game.current_game_state).to be_a Chingu::GameStates::Pause
+
       end
     end
 

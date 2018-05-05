@@ -45,7 +45,7 @@ module Chingu
     # If no :file is given, HighScoreList tries to load from file "high_score_list.yml"
     #
     def self.load(options = {})
-      require 'yaml'
+      require 'psych'
       high_score_list = HighScoreList.new(options)
       high_score_list.load
       return high_score_list
@@ -91,7 +91,7 @@ module Chingu
     # Load data from previously specified @file
     #
     def load
-      @high_scores = YAML.load_file(@file)  if File.exists?(@file)
+      @high_scores = Psych.load_file(@file)  if File.exists?(@file)
       @high_scores = @high_scores[0..@size]
     end
 
@@ -117,9 +117,9 @@ module Chingu
     # Save high score data into previously specified @file
     #
     def save_to_file
-      require 'yaml'
+      require 'psych'
       File.open(@file, 'w') do |out|
-        YAML.dump(@high_scores, out)
+        Psych.dump(@high_scores, out)
       end
     end
 

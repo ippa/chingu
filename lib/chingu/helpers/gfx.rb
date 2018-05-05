@@ -24,7 +24,7 @@ module Chingu
     
   #
   # Various helper-methods to manipulate the screen.
-  # All drawings depend on the global variable $window which should be an instance of Gosu::Window or Chingu::Window
+  # All drawings depend on the global variable $window which should be an instance of Gosu::Window or Chingu::Window  # FIXME what if $window is nil?
   #
   module GFX
     
@@ -32,6 +32,7 @@ module Chingu
     # Fills whole window with specified 'color' and 'zorder'
     #
     #def fill(color, zorder = 0)
+    # # FIXME what if $window is nil?
     #  $window.draw_quad(0, 0, color,
     #                    $window.width, 0, color,
     #                    $window.width, $window.height, color,
@@ -53,7 +54,7 @@ module Chingu
       # if only 1 color-argument is given, assume fullscreen simple color fill.
       #
       if material.is_a?(Gosu::Color)
-        rect = Rect.new([0, 0, $window.width, $window.height])
+        rect = Rect.new([0, 0, $window.width, $window.height]) # FIXME what if $window is nil?
         _fill_rect(rect, material, material, material, material, zorder, mode)
       else
         fill_gradient(material)
@@ -92,7 +93,7 @@ module Chingu
                   :rect => [0, 0, $window.width, $window.height],
                   :zorder => 0,
                   :mode => :default
-                }.merge!(options)
+                }.merge!(options)   # FIXME what if $window is nil?
       
       rect   = Rect.new(options[:rect])
       colors = options[:colors] || options.values_at(:from, :to)
@@ -136,7 +137,7 @@ module Chingu
           _walk_arc(from, to, detail) do |x1, y1, x2, y2|
             $window.draw_line(x1, y1, color,
                               x2, y2, color,
-                              zorder, mode)
+                              zorder, mode) # FIXME what if $window is nil?
           end
         end
       end
@@ -161,7 +162,7 @@ module Chingu
             $window.draw_triangle(0,  0,  color,
                                   x1, y1, color,
                                   x2, y2, color,
-                                  zorder, mode)
+                                  zorder, mode)  # FIXME what if $window is nil?
           end
         end
       end
@@ -176,16 +177,16 @@ module Chingu
                         left,  bottom, color_b,
                         right, bottom, color_c,
                         right, top,    color_d,
-                        zorder, mode)
+                        zorder, mode) # FIXME what if $window is nil?
     end
     
     def _stroke_rect(rect, color_a, color_b, color_c, color_d, zorder, mode)
       left,  top    = *rect.topleft
       right, bottom = *rect.bottomright
-      $window.draw_line(left,  top,    color_a, left,  bottom, color_b, zorder, mode)
-      $window.draw_line(left,  bottom, color_b, right, bottom, color_c, zorder, mode)
-      $window.draw_line(right, bottom, color_c, right, top,    color_d, zorder, mode)
-      $window.draw_line(right, top,    color_d, left,  top,    color_a, zorder, mode)
+      $window.draw_line(left,  top,    color_a, left,  bottom, color_b, zorder, mode) # FIXME what if $window is nil?
+      $window.draw_line(left,  bottom, color_b, right, bottom, color_c, zorder, mode) # FIXME what if $window is nil?
+      $window.draw_line(right, bottom, color_c, right, top,    color_d, zorder, mode) # FIXME what if $window is nil?
+      $window.draw_line(right, top,    color_d, left,  top,    color_a, zorder, mode) # FIXME what if $window is nil?
     end
     
     #

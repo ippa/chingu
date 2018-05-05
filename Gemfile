@@ -1,8 +1,10 @@
 source 'http://rubygems.org'
-gem "gosu"
- 
+
+gemspec
+
+
 group :test do
-  gem 'rspec', '>= 2.1.0'
   gem 'watchr'
   #gem 'rcov'
+  gem 'rspec', '~> 3.6.0', '>= 3.6.0'
 end

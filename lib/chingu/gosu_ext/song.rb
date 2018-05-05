@@ -11,7 +11,7 @@ module Gosu
 
       # Volume the song is played at, affected by Song.volume and Window#volume/muting.
       def effective_volume
-        @volume * $window.effective_volume
+        @volume * $window.effective_volume  # FIXME what if $window is nil?
       end
 
       # Volume of Songs, not allowing for global volume settings.

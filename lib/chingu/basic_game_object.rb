@@ -1,5 +1,6 @@
 require_rel 'helpers/class_inheritable_accessor'
 require_rel 'inflector'
+
 module Chingu
   #
   # BasicGameObject. Resonating with 1.9.1, this is our most basic class that all game objects ultimate should build on.

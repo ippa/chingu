@@ -51,7 +51,7 @@ module Chingu
         @letters = %w[ A B C D E F G H I J K L M N O P Q R S T U V W X Y Z ! " # % & $ ( ) [ ] / \\ - + = * . 1 2 3 4 5 6 7 8 9 0 SPACE DEL ENTER ]
 
         @y = 140
-        @x = ($window.width - 600)/2
+        @x = ($window.width - 600)/2  # FIXME what if $window is nil?
         
         @letters.each_with_index do |letter, index|
           @texts << Text.create(letter, :x => @x, :y => @y, :size => @letter_size)
@@ -64,7 +64,7 @@ module Chingu
         end
       
         @texts[@index].color = ::Gosu::Color::RED
-        @name = Text.create("", :rotaion_center => :top_center, :x => $window.width/2, :y => 60, :size => 80)
+        @name = Text.create("", :rotaion_center => :top_center, :x => $window.width/2, :y => 60, :size => 80) # FIXME what if $window is nil?
       end
     
       # Move cursor 1 step to the left
@@ -109,7 +109,7 @@ module Chingu
         end
         
         @name.text = @string.join
-        @name.x = $window.width/2 - @name.width/2
+        @name.x = $window.width/2 - @name.width/2 # FIXME what if $window is nil?
       end
       
       def go

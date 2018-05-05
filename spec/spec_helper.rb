@@ -1,12 +1,24 @@
 # encoding: utf-8
-$LOAD_PATH.unshift(File.dirname(__FILE__))
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
 require 'rubygems'
 require 'rspec'
-require 'chingu/require_all'
 
-require 'chingu'
+
+require 'require_all'
+
+require_rel '../lib'   # use the require_all gem to require everything in ../lib
+
+
+RSpec.configure  do | config |
+
+  config.expect_with(:rspec) { |c| c.syntax = [:should, :expect]}
+
+  config.mock_with :rspec do |mocks|
+    mocks.syntax = [:should, :expect]
+    mocks.verify_doubled_constant_names = true
+  end
+
+end
 
 def media_path(file)
   File.join($window.root, "..", "..", "examples", "media", file)
