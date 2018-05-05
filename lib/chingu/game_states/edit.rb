@@ -351,12 +351,7 @@ END_OF_STRING
 
         
         # Check if user clicked on anything in the icon-toolbar of available game objects
-<<<<<<< HEAD
-        @cursor_game_objects = [game_object_icon_at($window.mouse_x, $window.mouse_y)]
-        @cursor_game_objects.compact!
-=======
-        @cursor_game_object = game_object_icon_at($window.mouse_x, $window.mouse_y)  # FIXME what if $window is nil?
->>>>>>> d4178deb9c355b55443d2c52affe05379c85e00c
+        @cursor_game_objects = [game_object_icon_at($window.mouse_x, $window.mouse_y)].compact
 
         # Get editable game object that was clicked at (if any)
         @selected_game_object ||= game_object_at(self.mouse_x, self.mouse_y)
