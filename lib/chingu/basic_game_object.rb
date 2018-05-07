@@ -141,6 +141,31 @@ module Chingu
     end
 
     #
+    # Disable automatic calling of draw and draw_trait each game loop
+    #
+    def hide!
+      @parent.game_objects.hide_game_object(self) if @parent && visible?
+      @visible = false
+    end
+    alias :hide :hide!
+    
+    #
+    # Enable automatic calling of draw and draw_trait each game loop
+    #
+    def show!
+      @parent.game_objects.show_game_object(self) if @parent && !visible?
+      @visible = true
+    end
+    alias :show :show!
+    
+    #
+    # Returns true if visible (not hidden)
+    #
+    def visible?
+      @visible == true
+    end        
+
+    #
     # Returns a filename-friendly string from the current class-name
     #
     # "FireBall" -> "fire_ball"
