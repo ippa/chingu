@@ -104,7 +104,7 @@ module Chingu
         #
         # if option :apply is false, just calculate velocities, don't apply them to x/y
         #
-        move(@velocity_x, @velocity_y)  unless trait_options[:velocity][:apply] == false
+        move(@velocity_x, @velocity_y) if trait_options[:velocity][:apply] === true
         
         super
       end
