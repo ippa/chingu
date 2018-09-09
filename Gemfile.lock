@@ -2,14 +2,15 @@ PATH
   remote: .
   specs:
     chingu (0.1.0)
-      gosu (~> 0.12, >= 0.12.1)
+      gosu (~> 0.14.0.pre2)
       require_all (~> 1.4.0, >= 1.4.0)
 
 GEM
   remote: http://rubygems.org/
   specs:
     diff-lcs (1.3)
-    gosu (0.12.1)
+    gosu (0.14.0.pre2)
+    gosu (0.14.0.pre2-x64-mingw32)
     rake (12.0.0)
     require_all (1.4.0)
     rspec (3.6.0)
@@ -25,14 +26,17 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.6.0)
     rspec-support (3.6.0)
+    watchr (0.7)
 
 PLATFORMS
   ruby
+  x64-mingw32
 
 DEPENDENCIES
   chingu!
   rake (~> 12.0.0, >= 12.0.0)
   rspec (~> 3.6.0, >= 3.6.0)
+  watchr
 
 BUNDLED WITH
-   1.15.4
+   1.16.2
