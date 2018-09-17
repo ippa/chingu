@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]  
 
 
-  s.add_dependency('gosu', '~> 0.14.0.pre2')
+  s.add_dependency('gosu', '~> 0.13')
   s.add_dependency('require_all', '~> 1.4.0', '>= 1.4.0')
 
   s.add_development_dependency('rake', '~> 12.0.0', '>= 12.0.0' )
