@@ -8,9 +8,9 @@ Chingu development is mostly conducted using Win7 / Ruby 1.9.2.
 
 
 == DESCRIPTION
-OpenGL accelerated 2D game framework for Ruby.
-Builds on the awesome Gosu (Ruby/C++) which provides all the core functionality.
-It adds simple yet powerful game states, pretty input handling, deployment safe asset-handling, a basic re-usable game object and automation of common task.
+OpenGL is build on Gosu(Ruby/C++) and  accelerates 2D game framework for Ruby.
+Gosu provides the core functionality, the powerful game states, the input handling, 
+the deployment safe asset-handling, a basic re-usable game object and the automation of a common task.
 
 
 == INSTALL
