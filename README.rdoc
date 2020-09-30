@@ -17,7 +17,7 @@ It adds simple yet powerful game states, pretty input handling, deployment safe 
   gem install chingu
 
 
-== QUICK START (TRY OUT THE EXAMPLES)
+== QUICK START (TRY OUT WITH THE EXAMPLES)
 Chingu comes with 25+ examples demonstrating various parts of Chingu. 
 Please browse the examples-directory in the Chingu root directory.
 The examples start out very simple. Watch out for instructions in the windows titlebar.
