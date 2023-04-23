@@ -1,6 +1,6 @@
 require 'benchmark'
 require 'rubygems'
-require 'randomr'
+# require 'randomr'
 
 a = Array.new
 n = 1000000
@@ -46,7 +46,7 @@ end
 n = 1000000
 Benchmark.bm(22) do |x|
   x.report('randomr(100)') do
-    for i in 1..n; Randomr.randomr; end
+    for i in 1..n; rand; end
   end
   
   x.report('rand(100)') do

@@ -20,6 +20,7 @@
 #++
 
 require 'socket'
+require_relative 'network_state'
 
 module Chingu
   module GameStates  

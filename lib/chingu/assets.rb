@@ -6,7 +6,6 @@
 
 require 'gosu'
 
-
 module Chingu
 
 
@@ -26,9 +25,7 @@ module Chingu
 
 
   class Asset
-
     include Chingu::NamedResource
-
 
     def self.autoload(name)
       find_file(name)

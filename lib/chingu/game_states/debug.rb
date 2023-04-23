@@ -20,7 +20,7 @@
 #++
 
 require_relative '../constants'
-
+require_relative '../game_state'
 
 module Chingu  
   module GameStates

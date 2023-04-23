@@ -2,12 +2,15 @@
 
 require 'rubygems'
 require 'rspec'
-
-
 require 'require_all'
 
-require_rel '../lib'   # use the require_all gem to require everything in ../lib
+# require_rel '../lib'   # use the require_all gem to require everything in ../lib
 
+# Dir["#{Dir.pwd}/lib/**/*.rb"].each { |f| 
+#   p f
+#   require f
+# }
+require 'chingu'
 
 RSpec.configure  do | config |
 

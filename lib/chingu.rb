@@ -21,7 +21,12 @@
 
 require 'require_all'
 
-require_rel 'chingu/**/*.rb'
+# require_rel 'chingu/**/*.rb'
+
+
+require "#{Dir.pwd}/lib/chingu/named_resource"
+
+Dir["#{Dir.pwd}/{lib}/**/*.rb"].sort.each { |f|  require f }
 
 #CHINGU_ROOT = File.dirname(File.expand_path(__FILE__))
 
@@ -44,3 +49,4 @@ require 'gosu'
 #require_all "#{CHINGU_ROOT}/chingu/async_tasks"
 #require_all "#{CHINGU_ROOT}/chingu"
 #require_all "#{CHINGU_ROOT}/chingu/version"
+

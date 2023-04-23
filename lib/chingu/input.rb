@@ -61,6 +61,7 @@ module Chingu
       KbBracketLeft     => [:"}", :bracket_left],
       KbBracketRight    => [:"{", :bracket_right],
       KbBackslash       => [:backslash],
+      KbSlash           => [:slash],
       KbSemicolon       => [:";", :semicolon],
       KbPeriod          => [:period],
       KbISO             => [:ISO],
@@ -71,7 +72,7 @@ module Chingu
       KbNumpadSubtract  => [:"-", :subtract, :numpad_minus, :nm_minus],
       KbPageDown        => [:page_down],
       KbPageUp          => [:page_up],
-      # KbPause           => [:pause],
+      KbPause           => [:pause],
       KbReturn          => [:return],
       KbRight           => [:right_arrow, :right],
       KbRightAlt        => [:right_alt, :ralt],
@@ -81,12 +82,25 @@ module Chingu
       KbSpace           => [:" ", :space],
       KbTab             => [:tabulator, :tab],
       KbUp              => [:up_arrow, :up],
+      KbPrintScreen     => [:print_screen],
+      KbScrollLock      => [:scroll_lock],
+      KbCapsLock        => [:caps_lock],
+      KbNumpadDelete    => [:numpad_delete],
       
       MsLeft            => [:left_mouse_button, :mouse_left],
       MsMiddle          => [:middle_mouse_button, :mouse_middle],
       MsRight           => [:right_mouse_button, :mouse_right],
       MsWheelDown       => [:mouse_wheel_down, :wheel_down],
       MsWheelUp         => [:mouse_wheel_up, :wheel_up],
+
+      GpDpadLeft        => [:dpad_left],
+      GpDpadRight       => [:dpad_right],
+      GpDpadUp          => [:dpad_up],
+      GpDpadDown        => [:dpad_down],
+      GpLeftStickYAxis  => [:left_stick_y_axis],
+      GpRightStickYAxis  => [:right_stick_y_axis],
+      GpLeftStickXAxis  => [:left_stick_x_axis],
+      GpRightStickXAxis  => [:right_stick_x_axis],
     }
 
     # MsOther, 0-7
@@ -112,6 +126,13 @@ module Chingu
     #F-keys, F1-F12
     (1..12).each do |number|
       CONSTANT_TO_SYMBOL[eval("KbF#{number.to_s}")] = ["f#{number.to_s}".to_sym, "F#{number.to_s}".to_sym]
+    end
+
+    (0..3).each do |number|
+      CONSTANT_TO_SYMBOL[eval("Gp#{number.to_s}DpadLeft")] = ["dpad_#{number.to_s}_left".to_sym]
+      CONSTANT_TO_SYMBOL[eval("Gp#{number.to_s}DpadRight")] = ["dpad_#{number.to_s}_right".to_sym]
+      CONSTANT_TO_SYMBOL[eval("Gp#{number.to_s}DpadUp")] = ["dpad_#{number.to_s}_up".to_sym]
+      CONSTANT_TO_SYMBOL[eval("Gp#{number.to_s}DpadDown")] = ["dpad_#{number.to_s}_down".to_sym]
     end
 
     def gamepad_key(number, key, args = {})
