@@ -26,8 +26,7 @@ module Chingu
         @client = Chingu::GameStates::NetworkClient.new(:address => "1.2.3.4", :port => 1234, :debug => true)
         @client.connect
         
-        #@client.should_receive(:on_timeout) ## gives on_connection_refused instead, kind of ok.
-        @client.should_receive(:on_connection_refused)
+        expect(@client).to receive(:on_timeout)
         @client.update while @client.socket
       end
 
@@ -87,10 +86,11 @@ module Chingu
     describe "Connecting" do
       before :each do        
         @client = Chingu::GameStates::NetworkClient.new(:address => "127.0.0.1", :port => 9999)    
-        @server = Chingu::GameStates::NetworkServer.new(:port => 9999)        
+        @server = Chingu::GameStates::NetworkServer.new(:port => 9999)
       end
       
       it "should connect to the server, when the server starts before it" do
+        # TODO
         #@server.start
         #@client.connect
         #5.times { @client.update }
@@ -99,10 +99,11 @@ module Chingu
       
       it "should connect to the server, even when the server isn't initialy available" do
         @client.connect
-        3.times { @client.update; sleep 0.2; @server.update; @client.flush }
+        # FIXME: Is this really necessary?
+        #3.times { @client.update; sleep 0.2; @server.update; @client.flush }
         @server.start
         3.times { @client.update; sleep 0.2; @server.update; @client.flush }
-        @client.should be_connected
+        expect(@client.connected?).to be_truthy
       end
       
       after :each do 

@@ -15,16 +15,16 @@ module Chingu
     
     describe "Image" do
       it "should have default autoload dirs" do
-        Gosu::Image.autoload_dirs.should include(".")
-        Gosu::Image.autoload_dirs.should include("#{@game.root}/media")
+        expect(Gosu::Image.autoload_dirs).to include(".")
+        expect(Gosu::Image.autoload_dirs).to include("#{@game.root}/media")
       end
       
       it "should autoload image in Image.autoload_dirs" do
-        Gosu::Image["rect_20x20.png"].should be_kind_of Gosu::Image
+        expect(Gosu::Image["rect_20x20.png"]).to be_kind_of(Gosu::Image)
       end
     
       it "should return the same cached Gosu::Image if requested twice" do
-        Gosu::Image["rect_20x20.png"].should == Gosu::Image["rect_20x20.png"]
+        expect(Gosu::Image["rect_20x20.png"]).to eq(Gosu::Image["rect_20x20.png"])
       end
       
       #it "should raise error if image is nonexistent" do
@@ -35,22 +35,22 @@ module Chingu
 
     describe "Song" do
       it "should have default autoload dirs" do
-        Gosu::Song.autoload_dirs.should include(".")
-        Gosu::Song.autoload_dirs.should include("#{@game.root}/media")
+        expect(Gosu::Song.autoload_dirs).to include(".")
+        expect(Gosu::Song.autoload_dirs).to include("#{@game.root}/media")
       end
     end
     
     describe "Sample" do
       it "should have default autoload dirs" do
-        Gosu::Sample.autoload_dirs.should include(".")
-        Gosu::Sample.autoload_dirs.should include("#{@game.root}/media")
+        expect(Gosu::Sample.autoload_dirs).to include(".")
+        expect(Gosu::Sample.autoload_dirs).to include("#{@game.root}/media")
       end
     end
         
     describe "Font" do
       it "should have default autoload dirs" do
-        Gosu::Font.autoload_dirs.should include(".")
-        Gosu::Font.autoload_dirs.should include("#{@game.root}/media")
+        expect(Gosu::Font.autoload_dirs).to include(".")
+        expect(Gosu::Font.autoload_dirs).to include("#{@game.root}/media")
       end
     end
     

@@ -16,12 +16,12 @@ describe Chingu::Helpers::InputDispatcher do
     describe "#dispatch_#{event}" do
       it "should dispatch key event if key is handled" do
         @client.should_receive(:handler).with(no_args)
-        @client.stub!(:input).with(no_args).and_return({ key => [@client.method(:handler)] })
+        allow(@client).to receive(:input).with(no_args) { {key => [@client.method(:handler)]} }
         @subject.send("dispatch_#{event}", Gosu::KbA, @client)
       end
 
       it "should not dispatch key event if key is not handled" do
-        @client.stub!(:input).with(no_args).and_return({})
+        allow(@client).to receive(:input).with(no_args) { {} }
         @subject.send("dispatch_#{event}", Gosu::KbA, @client)
       end
     end
@@ -29,8 +29,8 @@ describe Chingu::Helpers::InputDispatcher do
 
   describe "#dispatch_input_for" do
     before :each do
-      $window = mock Chingu::Window
-      $window.stub!(:button_down?).and_return(false)
+      $window = double(Chingu::Window)
+      allow($window).to receive(:button_down?) { false }
     end
 
     after :each do
@@ -39,13 +39,13 @@ describe Chingu::Helpers::InputDispatcher do
 
     it "should dispatch if a key is being held" do
       @client.should_receive(:handler).with(no_args)
-      $window.stub!(:button_down?).with(Gosu::KbA).and_return(true)
-      @client.stub!(:input).with(no_args).and_return({:holding_a => [@client.method(:handler)]})
+      allow($window).to receive(:button_down?).with(Gosu::KbA) { true }
+      allow(@client).to receive(:input).with(no_args) { {:holding_a => [@client.method(:handler)]} }
       @subject.dispatch_input_for(@client)
     end
 
     it "should do nothing if a key is not held" do
-      @client.stub!(:input).with(no_args).and_return({:holding_a => [lambda { raise "Shouldn't handle input!"}]})
+      allow(@client).to receive(:input).with(no_args) { {:holding_a => [lambda { raise "Shouldn't handle input!"}]} }
       @subject.dispatch_input_for(@client)
     end
   end
@@ -67,7 +67,7 @@ describe Chingu::Helpers::InputDispatcher do
       @subject.should_receive(:push_game_state).with(state)
       @subject.send(:dispatch_actions, [state])
     end
-    
+
     it "should push a game-state class" do
       @subject.should_receive(:push_game_state).with(Chingu::GameState)
       @subject.send(:dispatch_actions, [Chingu::GameState])

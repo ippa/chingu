@@ -5,7 +5,7 @@ module Chingu
   describe GameObject do
     before :each do
       @game = Chingu::Window.new
-      
+
       # Gosu uses the paths based on where rspec is, not where this file is, so we need to do it manually!
       Gosu::Image::autoload_dirs.unshift File.join(File.dirname(File.expand_path(__FILE__)), 'images')
     end
@@ -40,11 +40,13 @@ module Chingu
         subject.center_x.should == 0.5
         subject.center_y.should == 0.5
         subject.mode.should == :default
-        subject.image.should == nil        
-        subject.color.to_s.should == Gosu::Color::WHITE.to_s
+        subject.image.should == nil
+        subject.color.should == Gosu::Color::WHITE # Before it tested equality
+                                                   # with .to_s from the two
+                                                   # arguments
         subject.alpha.should == 255
       end
-      
+
       it "should wrap angle at 360" do
         subject.angle.should == 0
         subject.angle += 30
@@ -63,11 +65,11 @@ module Chingu
         subject.alpha.should == 255
       end
     end
-    
+
     it "should have the same value for self.alpha as self.color.alpha" do
       subject.alpha.should == subject.color.alpha
     end
-    
+
     it "should have a corrent filename created from class name" do
       subject.filename.should == "game_object"
     end
@@ -75,7 +77,7 @@ module Chingu
     it "should raise an exception if the image fails to load" do
       lambda { described_class.new(:image => "monkey_with_a_nuclear_tail.png") }.should raise_error Exception
     end
-    
+
     context "position" do
       it "inside_window?" do
         subject.x = 1
@@ -90,20 +92,20 @@ module Chingu
         subject.outside_window?.should == true
       end
     end
-    
+
     context "setters" do
       it "factor should set both factor_x and factor_y" do
         subject.factor = 4
         subject.factor_x.should == 4
         subject.factor_y.should == 4
       end
-      
+
       it "scale should work as alias for factor" do
         subject.scale = 5
         subject.factor.should == 5
       end
     end
-    
+
     context "visibility" do
       it "should hide/show object on self.hide! and self.show!" do
         subject.hide!
@@ -121,7 +123,7 @@ module Chingu
         subject.width.should == 20
         subject.size.should == [20,20]
       end
-      
+
       it "should adapt width,height & size to scaling" do
         subject.factor = 2
         subject.height.should == 40
@@ -135,9 +137,9 @@ module Chingu
         subject.height.should == 40
         subject.factor_x.should == 0.5
         subject.factor_y.should == 2
-      end      
+      end
     end
-    
+
     context "when created with multiple arguments" do
       subject { described_class.new(:image => "rect_20x20.png", :size => [10, 10]) }
       it "should initialize values correclty" do
@@ -145,12 +147,12 @@ module Chingu
         subject.height.should == 10
       end
     end
-    
+
     context "when there's a global factor/scale" do
       before :each do
         $window.factor = 2
       end
-      
+
       subject { described_class.new(:image => "rect_20x20.png") }
 
       it "should use global factor/scale" do
@@ -160,7 +162,7 @@ module Chingu
         subject.height.should == 40
       end
     end
-    
+
     context "when there's missing parts" do
       it "should return nil on width and height if there's no image available" do
         game_object = GameObject.new
@@ -168,13 +170,13 @@ module Chingu
         game_object.height.should == nil
       end
     end
-    
+
     context "class methods" do
       it "should go through all instances of class on #each" do
         GameObject.destroy_all
         go1 = GameObject.create
         go2 = GameObject.create
-        
+
         index = 0
         GameObject.each do |game_object|
           game_object.should == go1 if index==0
@@ -187,7 +189,7 @@ module Chingu
         GameObject.destroy_all
         go1 = GameObject.create
         go2 = GameObject.create
-        
+
         GameObject.each_with_index do |game_object, index|
           game_object.should == go1 if index==0
           game_object.should == go2 if index==1
