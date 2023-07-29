@@ -1,5 +1,5 @@
 *.gem
-pkg
+dist
 .gem
 doc
 .yardoc
