@@ -1,9 +1,9 @@
-require 'rubygems'
 require File.dirname(__FILE__) + '/lib/chingu'
+require 'rspec/core/rake_task'
+
 include Chingu
 
-gem 'rspec', '>= 2.1.0'
-require 'rspec/core/rake_task'
+task :default => :spec
 
 desc "Run the specs under spec"
 RSpec::Core::RakeTask.new { |t| }
@@ -13,16 +13,17 @@ RSpec::Core::RakeTask.new(:rcov) do |t|
   t.rcov = true
   t.rcov_opts = ['-T', '--no-html', '--exclude spec,gem']
 end
-task :default => :spec
 
-desc "Build gem"
+desc "Build the gem"
 task :build do
-  system "gem build chingu.gemspec"
-  puts "Moving into directory pkg"
-  system "mv chingu-#{Chingu::VERSION}.gem pkg/"
+  Dir.mkdir('dist') unless Dir.exist?('dist')
+
+  sh "gem build chingu.gemspec"
+  puts "Moving into directory dist"
+  sh "mv chingu-#{Chingu::VERSION}.gem dist/"
 end
  
 desc "Release new gem"
 task :release => :build do
-  system "gem push pkg/chingu-#{Chingu::VERSION}.gem"
+  sh "gem push dist/chingu-#{Chingu::VERSION}.gem"
 end
