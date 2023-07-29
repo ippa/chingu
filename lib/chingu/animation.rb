@@ -5,15 +5,15 @@ module Chingu
   #
   # An easy to use program to create tileanimations is http://tilestudio.sourceforge.net/ or http://www.humanbalance.net/gale/us/
   #
-  # TODO: 
+  # TODO:
   # Support frames in invidual image-files?
-  # Is autodetection of width / height possible? 
+  # Is autodetection of width / height possible?
   #
   class Animation
     attr_accessor :frames, :delay, :step, :loop, :bounce, :step, :index
-    
+
     #
-    # Create a new Animation. 
+    # Create a new Animation.
     # Must use :file OR :frames OR :image to create it.
     #
     #   - loop: [true|false]. After the last frame is used, start from the beginning.
@@ -42,26 +42,26 @@ module Chingu
 
       @sub_animations = {}
       @frame_actions = []
-      
+
       raise ArgumentError, "Must provide one of :frames, :image OR :file parameter" unless [@frames, file, image].compact.size == 1
 
-      if @frames        
+      if @frames
         raise ArgumentError, "Must provide at least one frame image with :frames" if @frames.empty?
         raise ArgumentError, ":frames must consist of images only" unless @frames.all? {|i| i.is_a? Gosu::Image }
-        
+
         @width, @height = @frames[0].width, @frames[0].height
-        
+
         raise ArgumentError, ":frames must be of identical size" unless @frames[1..-1].all? {|i| i.width == @width and i.height == @height }
-        
-      else    
-        if file and not File.exists?(file)
+
+      else
+        if file and not File.exist?(file)
           Gosu::Image.autoload_dirs.each do |autoload_dir|
             full_path = File.join(autoload_dir, file)
-            if File.exists?(full_path)
+            if File.exist?(full_path)
               file = full_path
               break
             end
-          end      
+          end
         end
 
         #
@@ -90,11 +90,11 @@ module Chingu
         else
           @width = @height = (image.width < image.height) ? image.width : image.height
         end
-        
+
         @frames = Gosu::Image.load_tiles($window, image || file, @width, @height, true)
       end
     end
-    
+
     #
     # Remove transparent space from each frame so the actual sprite is touching the border of the image.
     # This requires TexPlay
@@ -108,7 +108,7 @@ module Chingu
       #  #frame.splice(frame,0,0, :crop => [10, 10, 20, 20])
       #end
     end
-    
+
     #
     # Put name on specific ranges of frames.
     # Eg. name_frames(:default => 0..3, :explode => 3..8)
@@ -118,25 +118,25 @@ module Chingu
     def frame_names=(names)
       names.each do |key, value|
         @sub_animations[key] = self.new_from_frames(value)  if value.is_a? Range
-        @sub_animations[key] = @frames[value]               if value.is_a? Fixnum
+        @sub_animations[key] = @frames[value]               if value.is_a? Integer
         #
         # TODO: Add support for [1,4,5] array frame selection
         #
         # @frame_names[key] = self.new_from_frames(value) if value.is_a? Array
       end
     end
-    
+
     #
     # Return frame names in { :name => range } -form
     #
     def frame_names
       @frame_names
     end
-    
+
     def animations
       @sub_animations.keys
     end
-    
+
     #
     # Returns the first frame (Gosu::Image) from animation
     #
@@ -150,21 +150,21 @@ module Chingu
     def last
       @frames.last
     end
-    
+
     #
     # [width, height] for each frame in the animation
     #
     def size
       [@width, @height]
     end
-		
+
 		#
 		# Returns true if the current frame is the last
 		#
 		def last_frame?
 			@previous_index == @index
 		end
-    
+
     #
     # Fetch a frame or frames:
     #
@@ -173,7 +173,7 @@ module Chingu
     #   @animation[:explode]  # returns a cached Animation-instance with frames earlier set with @animation.frame_names = { ... }
     #
     def [](index)
-      return @frames[index]               if  index.is_a?(Fixnum)
+      return @frames[index]               if  index.is_a?(Integer)
       return self.new_from_frames(index)  if  index.respond_to?(:each)
       return @sub_animations[index]       if  index.is_a?(Symbol)
     end
@@ -194,7 +194,7 @@ module Chingu
     def image
       @frames[@index]
     end
-		
+
     #
     # Resets the animation, re-starts it at frame 0
     # returns itself.
@@ -204,12 +204,12 @@ module Chingu
       self
     end
     alias :reset! :reset
-		
+
     #
     # Returns a new animation with the frames from the original animation.
     # Specify which frames you want with "range", for example "0..3" for the 4 first frames.
     #
-    def new_from_frames(range)				
+    def new_from_frames(range)
       new_animation = self.dup
       new_animation.frames = []
       range.each do |nr|
@@ -217,18 +217,18 @@ module Chingu
       end
       return new_animation
     end
-            
+
     #
     # Propelles the animation forward. Usually called in #update within the class which holds the animation.
     # Animation#next() will look at bounce and loop flags to always return a correct frame (a Gosu#Image)
     #
     def next(recursion = true)
-        
+
       if (@dt += $window.milliseconds_since_last_tick) >= @delay
         @dt = 0
         @previous_index = @index
         @index += @step
-        
+
         # Has the animation hit end or beginning... time for bounce or loop?
         if (@index >= @frames.size || @index < 0)
           if @bounce
@@ -236,7 +236,7 @@ module Chingu
             @index += @step
             @index += @step
           elsif @loop
-            @index = 0	
+            @index = 0
           else
             @index = @previous_index # no bounce or loop, use previous frame
           end
@@ -246,7 +246,7 @@ module Chingu
       @frames[@index]
     end
 		alias :next! :next
-    
+
     #
     # Initialize non-blurry zoom on frames in animation
     #
@@ -254,7 +254,7 @@ module Chingu
       frames.each { |frame| frame.retrofy }
       self
     end
-    
+
     #
     # Execute a certain block of code when a certain frame in the animation is active.
     # This could be used for pixel perfect animation/movement.
@@ -265,6 +265,6 @@ module Chingu
       else
         @frame_actions[frames] = block
       end
-    end		
+    end
   end
 end
