@@ -23,30 +23,30 @@ require 'forwardable'
 
 module Chingu
   module Helpers
-  
+
   #
   # Convenience-methods for classes that hold game objects
   # Mixed into Chingu::Window and Chingu::GameState
   #
   module GameObject
     extend Forwardable
-    
+
     attr_reader :game_objects
-    
+
     def_delegator :@game_objects, :add_game_object
     def_delegator :@game_objects, :remove_game_object
     def_delegator :@game_objects, :show_game_object
     def_delegator :@game_objects, :hide_game_object
     def_delegator :@game_objects, :pause_game_object
     def_delegator :@game_objects, :unpause_game_object
-    
+
     #
     # Fetch game objects of a certain type/class
     #
     def game_objects_of_class(klass)
       @game_objects.select { |game_object| game_object.is_a? klass }
     end
-    
+
     #
     # Creates game objects from a Chingu-spezed game objects file (created with game state 'Edit')
     #
@@ -54,11 +54,11 @@ module Chingu
       file = options[:file] || self.filename + ".yml"
       debug = options[:debug]
       except = Array(options[:except]) || []
-      
+
       require 'yaml'
-      
+
       puts "* Loading game objects from #{file}" if debug
-      if File.exists?(file)
+      if File.exist?(file)
         objects = YAML.load_file(file)
         objects.each do |object|
           object.each_pair do |klassname, attributes|
@@ -81,10 +81,10 @@ module Chingu
         end
       end
     end
-    
+
     #
     # Save given game_objects to a file. Hashoptions
-    # 
+    #
     # :file - a String, name of file to write to, default is current game_state class name.
     # :game_objects - an Array, game objects to save
     # :classes      - an Array, save only game objects of theese classes
@@ -99,15 +99,15 @@ module Chingu
       game_objects = options[:game_objects]
       classes = options[:classes]
       attributes = options[:attributes] || [:x, :y, :angle, :zorder, :factor_x, :factor_y, :alpha]
-      
+
       require 'yaml'
       objects = []
       game_objects.each do |game_object|
         # Only save specified classes, if given.
         next if classes and !classes.empty? and !classes.include?(game_object.class)
-        
+
         attr_hash = {}
-        attributes.each do |attr| 
+        attributes.each do |attr|
           begin
           attr_hash[attr] = game_object.send(attr)
           rescue NoMethodError
@@ -119,7 +119,7 @@ module Chingu
 
       File.open(file, 'w') { |out| YAML.dump(objects, out) }
     end
-    
+
   end
 
   end

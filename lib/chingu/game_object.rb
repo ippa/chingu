@@ -23,12 +23,12 @@ require_rel 'helpers'
 module Chingu
   #
   # GameObject inherits from BasicGameObject to get traits and some class-methods like .all and .destroy
-  # On top of that, it encapsulates GOSUs Image#draw_rot and all its parameters.
+  # On top of that, it encapsulates Gosu's Image#draw_rot and all its parameters.
   # In Chingu GameObject is a visual object, something to put on screen, centers around the .image-parameter.
-  # If you wan't a invisible object but with traits, use BasicGameObject.
+  # If you want a invisible object but with traits, use BasicGameObject.
   #
   class GameObject < Chingu::BasicGameObject
     trait :sprite
-    include Chingu::Helpers::InputClient        # Adds input and input=
+    include Chingu::Helpers::InputClient # Adds input and input=
   end
 end
