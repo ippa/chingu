@@ -62,7 +62,7 @@ module Chingu
     #   push_game_state PlayState.new(:ip => "127.0.0.1", :port => 7778))
     #
     #
-    # So why not EventMachine? No doubt in my mind that EventMachine is a hell of a library Chingu rolls its own for 2 reasons:
+    # So why not EventMachine? No doubt in my mind that EventMachine is a hell of a library, Chingu rolls its own for 2 reasons:
     #
     #   AFAIK EventMachine can be hard to integrate with the classic game loop, event machine wants its own loop
     #   Rubys non-blocking sockets work, so why not keep it simple
@@ -156,7 +156,7 @@ module Chingu
       end
 
       #
-      # Called when connect() recieves no initial answer from server
+      # Called when connect() receives no initial answer from server
       #
       def on_timeout
         puts "[on_timeout() #{@address}:#{@port}]"  if @debug
