@@ -29,7 +29,7 @@ module Chingu
   #
   class HighScoreList
     attr_reader :file, :high_scores
-    
+
     #
     # Create a new high score list with 0 entries
     #
@@ -37,9 +37,9 @@ module Chingu
       @file = options[:file] || "high_score_list.yml"
       @size = options[:size] || 100
       @sort_on = options[:sort_on] || :score
-      @high_scores = Array.new      
+      @high_scores = Array.new
     end
-    
+
     #
     # Create a new high score list and try to load content from :file-parameter
     # If no :file is given, HighScoreList tries to load from file "high_score_list.yml"
@@ -50,7 +50,7 @@ module Chingu
       high_score_list.load
       return high_score_list
     end
-    
+
     #
     # Adda a new high score to the local file
     # 'data' is a hash of key/value-pairs that needs to contain at least the keys :name and :score
@@ -64,7 +64,7 @@ module Chingu
       position_by_score(data[:score])
     end
     alias << add
-    
+
     #
     # Returns the position of full data-hash data entry, used internally
     #
@@ -72,7 +72,7 @@ module Chingu
       position = @high_scores.rindex(data)
       position += 1 if position
     end
-          
+
     #
     # Returns the position 'score' would get in among the high scores:
     #   @high_score_list.position_by_score(999999999) # most likely returns 1 for the number one spot
@@ -86,12 +86,12 @@ module Chingu
       end
       return nil
     end
-    
+
     #
     # Load data from previously specified @file
     #
     def load
-      @high_scores = YAML.load_file(@file)  if File.exists?(@file)
+      @high_scores = YAML.load_file(@file)  if File.exist?(@file)
       @high_scores = @high_scores[0..@size]
     end
 
@@ -101,14 +101,14 @@ module Chingu
     def [](index)
       @high_scores[index]
     end
-    
+
     #
     # Iterate through all high scores
     #
     def each
       @high_scores.each { |high_score| yield high_score }
     end
-    
+
     def each_with_index
       @high_scores.each_with_index { |high_score, index| yield high_score, index }
     end
@@ -124,13 +124,13 @@ module Chingu
     end
 
     private
-    
+
     def add_to_list(data)
       @high_scores.push(data)
       @high_scores.sort! { |a, b| b[@sort_on] <=> a[@sort_on] }
       @high_scores = @high_scores[0..@size]
     end
-    
+
     def force_symbol_hash(hash)
       symbol_hash = {}
       hash.each_pair do |key, value|
@@ -138,6 +138,6 @@ module Chingu
       end
       return symbol_hash
     end
-        
+
   end
 end

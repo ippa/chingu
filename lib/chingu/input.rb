@@ -22,7 +22,7 @@
 module Chingu
   module Input
     include Gosu
-    
+
     #
     # Ruby symbols describing http://www.libgosu.org/rdoc/classes/Gosu.html
     #
@@ -37,7 +37,7 @@ module Chingu
       Kb7 => [:seven],
       Kb8 => [:eight],
       Kb9 => [:nine],
-    
+
       KbBackspace => [:backspace],
       KbDelete    => [:delete, :del],
       KbDown      => [:down_arrow, :down],
@@ -52,8 +52,8 @@ module Chingu
       KbLeftControl => [:left_control, :left_ctrl, :lctrl],
       KbLeftShift   => [:left_shift, :lshift],
       KbLeftMeta    => [:left_meta, :lmeta],
-      
-      
+
+
       KbNumpadAdd       => [:"+", :add, :plus],
       KbNumpadDivide    => [:"/", :divide],
       KbNumpadMultiply  => [:"*", :multiply],
@@ -70,19 +70,19 @@ module Chingu
       KbSpace           => [:" ", :space],
       KbTab             => [:tabulator, :tab],
       KbUp              => [:up_arrow, :up],
-      
+
       MsLeft            => [:left_mouse_button, :mouse_left],
       MsMiddle          => [:middle_mouse_button, :mouse_middle],
       MsRight           => [:right_mouse_button, :mouse_right],
       MsWheelDown       => [:mouse_wheel_down, :wheel_down],
       MsWheelUp         => [:mouse_wheel_up, :wheel_up],
-      
+
       GpDown            => [:gamepad_down, :gp_down, :pad_down],
       GpLeft            => [:gamepad_left, :gp_left, :pad_left],
       GpRight           => [:gamepad_right, :gp_right, :pad_right],
       GpUp              => [:gamepad_up, :gp_up, :pad_up]
     }
-    
+
     # Letters, A-Z
     ("A".."Z").each do |letter|
       CONSTANT_TO_SYMBOL[eval("Kb#{letter}")] = [letter.downcase.to_sym]
@@ -115,7 +115,7 @@ module Chingu
     end
 
     #
-    # Reverse CONSTANT_TO_SYMBOL -> SYMBOL_TO_CONSTNT
+    # Reverse CONSTANT_TO_SYMBOL -> SYMBOL_TO_CONSTANT
     # like: SYMBOL_TO_CONSTANT = CONSTANT_TO_SYMBOL.invert.dup
     #
     SYMBOL_TO_CONSTANT = Hash.new
@@ -124,6 +124,6 @@ module Chingu
         SYMBOL_TO_CONSTANT[symbol] = constant
       end
     end
-    
+
   end
 end
