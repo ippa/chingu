@@ -1,13 +1,11 @@
 source 'http://rubygems.org'
 
-gem "gosu"
+gem 'gosu'
 
 group :test do
-  gem "rspec", ">= 2.1.0"
-  gem "watchr"
-  gem "rcov"
+  gem 'rspec', '>= 2.1.0'
 end
 
 group :dev do
-  gem "rubocop"
+  gem "rubocop", :require => false
 end
