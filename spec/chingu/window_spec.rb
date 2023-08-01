@@ -2,62 +2,68 @@
 
 require 'spec_helper'
 
-module Chingu
-  # FIXME: Using let would be ideal, however the three first tests of context
-  #        'each window iteration' fail
-  describe 'Window' do
-    before do
-      @window = Chingu::Window.new
+describe Chingu::Window do
+  before do
+    # FIXME: Using let would be ideal, however the three first tests of context
+    #        'each window iteration' fail
+    @window = Chingu::Window.new
+  end
+
+  after do
+    @window.close
+  end
+
+  it { expect(@window).to respond_to(:close) }
+  it { expect(@window).to respond_to(:fps) }
+  it { expect(@window).to respond_to(:update) }
+  it { expect(@window).to respond_to(:draw) }
+  it { expect(@window).to respond_to(:root) }
+  it { expect(@window).to respond_to(:game_state_manager) }
+  it { expect(@window).to respond_to(:factor) }
+  it { expect(@window).to respond_to(:cursor) }
+  it { expect(@window).to respond_to(:root) }
+  it { expect(@window).to respond_to(:milliseconds_since_last_tick) }
+
+  context 'When initialized' do
+    it 'returns itself as current scope' do
+      expect(@window.current_scope).to eq(@window)
     end
 
-    after :each do
-      @window.close
+    it 'has 0 game objects' do
+      expect(@window.game_objects.size).to eq(0)
+    end
+  end
+
+  context 'each game iteration' do
+    # TODO: Maybe it'll be more useful to use $window instead of @window,
+    #       as to check that chingu properly sets the global window
+
+    it '$window.update() will call update() on all unpaused game objects' do
+      expect(Chingu::GameObject.create).to receive(:update)
+      expect(Chingu::GameObject.create(paused: true)).not_to receive(:update)
+
+      @window.update
     end
 
-    it { @window.should respond_to :close }
-    it { @window.should respond_to :fps }
-    it { @window.should respond_to :update }
-    it { @window.should respond_to :draw }
-    it { @window.should respond_to :root }
-    it { @window.should respond_to :game_state_manager }
-    it { @window.should respond_to :factor }
-    it { @window.should respond_to :cursor }
-    it { @window.should respond_to :root }
-    it { @window.should respond_to :milliseconds_since_last_tick }
+    it '$window.draw() will call draw() on all visible game objects' do
+      expect(Chingu::GameObject.create).to receive(:draw)
 
-    context 'a new Chingu::Window' do
-      it 'should return itself as current scope' do
-        @window.current_scope.should == @window
-      end
-
-      it 'should have 0 game objects' do
-        @window.game_objects.size.should == 0
-      end
+      @window.draw
     end
 
-    context 'each game iteration' do
-      it '$window.update() should call update() on all unpaused game objects' do
-        GameObject.create.should_receive(:update)
-        GameObject.create(paused: true).should_not_receive(:update)
-        @window.update
-      end
+    it '$window.draw() will not call draw() on invisible game objects' do
+      expect(Chingu::GameObject.create(visible: false)).not_to receive(:draw)
 
-      it '$window.draw() should call draw() on all visible game objects' do
-        GameObject.create.should_receive(:draw)
-        @window.draw
-      end
+      expect(@window.game_objects.first.visible?).to be_falsy
+      @window.draw
+    end
 
-      it '$window.draw() should not call draw() on invisible game objects' do
-        GameObject.create(visible: false).should_not_receive(:draw)
-        @window.game_objects.first.visible?.should
-        @window.draw
-      end
+    it 'increments $window.ticks' do
+      expect(@window.ticks).to eq(0)
 
-      it 'should increment $window.ticks' do
-        @window.ticks.should
-        @window.update
-        @window.ticks.should == 1
-      end
+      @window.update
+
+      expect(@window.ticks).to eq(1)
     end
   end
 end
