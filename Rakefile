@@ -1,4 +1,5 @@
 require 'rspec/core/rake_task'
+
 require_relative 'lib/chingu'
 
 task :default => :spec
