@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 # Add lib/ to load path
 $LOAD_PATH.unshift(File.dirname(__FILE__))
